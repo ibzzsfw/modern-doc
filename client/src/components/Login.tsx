@@ -1,13 +1,19 @@
-import
-  {
-    Box,
-    Button, chakra, Flex, Image, Text, VStack
-  } from '@chakra-ui/react'
+import {
+  Box,
+  Button,
+  chakra,
+  Flex,
+  Image,
+  Text,
+  VStack,
+  Icon,
+} from '@chakra-ui/react'
 import FormInput from '@components/FormInput'
 import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
 import { useLoginStore } from '@/stores/LoginStore'
-
+import { AiFillPhone, AiFillLock } from 'react-icons/ai'
+import { loginWithGithub, loginWithGoogle, loginWithFacebook } from '@/firebase'
 
 const Login = () => {
   let layout = {
@@ -49,14 +55,14 @@ const Login = () => {
     password: Yup.string().required('จำเป็นต้องกรอก'),
   })
 
-  const {setTabIndex} = useLoginStore()
+  const { setTabIndex } = useLoginStore()
 
   return (
     <Box sx={layout}>
       <Flex sx={logoBar}>
-        <Image src="/assets/facebook.png" sx={providerLogo} />
-        <Image src="/assets/google.png" sx={providerLogo} />
-        <Image src="/assets/github.png" sx={providerLogo} />
+        <Image src="/assets/facebook.png" sx={providerLogo} onClick={()=>loginWithFacebook()}/>
+        <Image src="/assets/google.png" sx={providerLogo} onClick={()=>loginWithGoogle()}/>
+        <Image src="/assets/github.png" sx={providerLogo} onClick={()=>loginWithGithub()}/>
       </Flex>
       <Formik
         initialValues={{
@@ -69,18 +75,20 @@ const Login = () => {
         }}
       >
         <Form>
-          <VStack marginBottom="48px" gap="24px">
+          <VStack marginBottom="48px">
             <FormInput
               label="เบอร์โทรศัพท์"
               name="phoneNumber"
               type="tel"
               placeholder="กรอกเบอร์โทรศัพท์"
+              rightElement={<Icon as={AiFillPhone} />}
             />
             <FormInput
               label="รหัสผ่าน"
               name="password"
               type="password"
               placeholder="กรอกรหัสผ่าน"
+              rightElement={<Icon as={AiFillLock} />}
             >
               <Text
                 color="accent.gray"
@@ -94,8 +102,6 @@ const Login = () => {
                 </chakra.span>
               </Text>
             </FormInput>
-
-              
           </VStack>
 
           <VStack margin="auto" gap="8px">
@@ -104,7 +110,11 @@ const Login = () => {
             </Button>
             <Text color="accent.gray" fontSize="14px">
               หรือไม่มีบัญชีผู้ใช้ ?{' '}
-              <chakra.span color="accent.blue" cursor="pointer" onClick={()=>setTabIndex(1)}>
+              <chakra.span
+                color="accent.blue"
+                cursor="pointer"
+                onClick={() => setTabIndex(1)}
+              >
                 ลงทะเบียน
               </chakra.span>
             </Text>
