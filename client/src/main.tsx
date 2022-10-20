@@ -25,7 +25,7 @@ const colors = {
       green: '#17C964',
       gray: '#A3A3A3',
     },
-    backgroud: {
+    background: {
       gray: "#F1F3F5",
       red: '#FDD8E5',
       green: '#DAFBE8',

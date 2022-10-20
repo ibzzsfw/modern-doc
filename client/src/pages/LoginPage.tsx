@@ -16,13 +16,14 @@ import {
 } from '@chakra-ui/react'
 import Login from '@components/Login'
 import Register from '@components/Register'
-import { useLoginStore } from '@/stores/LoginStore'
+import { useLoginStore } from '@stores/LoginStore'
+import Navbar from '@components/Navbar'
 
 const LoginPage = () => {
   let fullPageContainer = {
     width: '100%',
     height: '100vh',
-    background: 'backgroud.gray',
+    background: 'background.gray',
   }
 
   let layout = {
@@ -77,33 +78,35 @@ const LoginPage = () => {
   const { tabIndex, setTabIndex } = useLoginStore()
 
   return (
-    <Box sx={fullPageContainer}>
-      <Flex sx={layout}>
-        <Box sx={logoBox}>
-          <Image src="/assets/logo.png" margin="34px auto 38px auto" />
-          <Text as="h1" sx={logoText}>
-            Modern Doc
-          </Text>
-        </Box>
-        <Box sx={tabBox}>
-          <Tabs isLazy index={tabIndex}>
-            <TabList sx={tabLayout}>
-              <Tab onClick={() => setTabIndex(0)}>เข้าสู่ระบบ</Tab>
-              <Tab onClick={() => setTabIndex(1)}>ลงทะเบียน</Tab>
-            </TabList>
+    <>
+      <Box sx={fullPageContainer}>
+        <Flex sx={layout}>
+          <Box sx={logoBox}>
+            <Image src="/assets/logo.png" margin="34px auto 38px auto" />
+            <Text as="h1" sx={logoText}>
+              Modern Doc
+            </Text>
+          </Box>
+          <Box sx={tabBox}>
+            <Tabs isLazy index={tabIndex}>
+              <TabList sx={tabLayout}>
+                <Tab onClick={() => setTabIndex(0)}>เข้าสู่ระบบ</Tab>
+                <Tab onClick={() => setTabIndex(1)}>ลงทะเบียน</Tab>
+              </TabList>
 
-            <TabPanels sx={tabContentLayout}>
-              <TabPanel>
-                <Login />
-              </TabPanel>
-              <TabPanel>
-                <Register />
-              </TabPanel>
-            </TabPanels>
-          </Tabs>
-        </Box>
-      </Flex>
-    </Box>
+              <TabPanels sx={tabContentLayout}>
+                <TabPanel>
+                  <Login />
+                </TabPanel>
+                <TabPanel>
+                  <Register />
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
+          </Box>
+        </Flex>
+      </Box>
+    </>
   )
 }
 
