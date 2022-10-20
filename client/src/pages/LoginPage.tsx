@@ -15,6 +15,7 @@ import {
   background,
 } from '@chakra-ui/react'
 import Login from '@components/Login'
+import { useLoginStore } from '@/stores/LoginStore'
 
 const LoginPage = () => {
   let fullPageContainer = {
@@ -68,6 +69,8 @@ const LoginPage = () => {
     margin: '36px auto 36px auto',
   }
 
+  const { tabIndex, setTabIndex } = useLoginStore()
+
   return (
     <Box sx={fullPageContainer}>
       <Flex sx={layout}>
@@ -78,10 +81,10 @@ const LoginPage = () => {
           </Text>
         </Box>
         <Box sx={tabBox}>
-          <Tabs >
+          <Tabs isLazy index={tabIndex}>
             <TabList sx={tabLayout}>
-              <Tab>เข้าสู่ระบบ</Tab>
-              <Tab>ลงทะเบียน</Tab>
+              <Tab onClick={() => setTabIndex(0)}>เข้าสู่ระบบ</Tab>
+              <Tab onClick={() => setTabIndex(1)}>ลงทะเบียน</Tab>
             </TabList>
 
             <TabPanels>

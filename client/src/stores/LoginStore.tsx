@@ -1,15 +1,11 @@
 import create from 'zustand'
 
 type LoginStore = {
-  phone: string
-  password: string
-  setPhone: (phone: string) => void
-  setPassword: (password: string) => void
+  tabIndex: 0 | 1
+  setTabIndex: (value: 0 | 1) => void
 }
 
 export const useLoginStore = create<LoginStore>((set) => ({
-  phone: '',
-  password: '',
-  setPhone: (phone: string) => set({ phone }),
-  setPassword: (password: string) => set({ password }),
+  tabIndex: 0,
+  setTabIndex: (value) => set({ tabIndex: value }),
 }))

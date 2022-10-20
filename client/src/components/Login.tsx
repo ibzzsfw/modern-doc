@@ -6,6 +6,8 @@ import
 import FormInput from '@components/FormInput'
 import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
+import { useLoginStore } from '@/stores/LoginStore'
+
 
 const Login = () => {
   let layout = {
@@ -43,23 +45,11 @@ const Login = () => {
     phoneNumber: Yup.string()
       .matches(/^[0-9]+$/, 'กรุณากรอกเฉพาะตัวเลข')
       .length(10, 'เบอร์โทรศัพท์จำเป็นต้องมี 10 หลัก')
-      .required('จำเป็นต้องกรอกช่องนี้'),
+      .required('จำเป็นต้องกรอก'),
     password: Yup.string().required('จำเป็นต้องกรอก'),
   })
 
-  const renderErrorMessage = (msg: any) => {
-    return (
-      <Text
-        position="absolute"
-        fontSize="14px"
-        color="red"
-        height="8px"
-        marginTop="2px"
-      >
-        {msg}
-      </Text>
-    )
-  }
+  const {setTabIndex} = useLoginStore()
 
   return (
     <Box sx={layout}>
@@ -114,7 +104,7 @@ const Login = () => {
             </Button>
             <Text color="accent.gray" fontSize="14px">
               หรือไม่มีบัญชีผู้ใช้ ?{' '}
-              <chakra.span color="accent.blue" cursor="pointer">
+              <chakra.span color="accent.blue" cursor="pointer" onClick={()=>setTabIndex(1)}>
                 ลงทะเบียน
               </chakra.span>
             </Text>
