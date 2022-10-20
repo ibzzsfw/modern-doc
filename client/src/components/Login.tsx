@@ -17,7 +17,7 @@ import { loginWithGithub, loginWithGoogle, loginWithFacebook } from '@/firebase'
 
 const Login = () => {
   let layout = {
-    width: '320px',
+    width: '100%',
     margin: 'auto',
   }
 
@@ -93,7 +93,7 @@ const Login = () => {
               <Text
                 color="accent.gray"
                 fontSize="14px"
-                marginTop="2px"
+                marginTop="4px"
                 textAlign="right"
               >
                 หรือไม่มีบัญชีผู้ใช้ ?{' '}

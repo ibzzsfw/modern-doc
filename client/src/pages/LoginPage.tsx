@@ -15,6 +15,7 @@ import {
   background,
 } from '@chakra-ui/react'
 import Login from '@components/Login'
+import Register from '@components/Register'
 import { useLoginStore } from '@/stores/LoginStore'
 
 const LoginPage = () => {
@@ -69,6 +70,10 @@ const LoginPage = () => {
     margin: '36px auto 36px auto',
   }
 
+  let tabContentLayout = {
+    padding: '0 48px',
+  }
+
   const { tabIndex, setTabIndex } = useLoginStore()
 
   return (
@@ -87,13 +92,13 @@ const LoginPage = () => {
               <Tab onClick={() => setTabIndex(1)}>ลงทะเบียน</Tab>
             </TabList>
 
-            <TabPanels>
+            <TabPanels sx={tabContentLayout}>
               <TabPanel>
-                <Text fontSize="100px">
-                  <Login />
-                </Text>
+                <Login />
               </TabPanel>
-              <TabPanel></TabPanel>
+              <TabPanel>
+                <Register />
+              </TabPanel>
             </TabPanels>
           </Tabs>
         </Box>

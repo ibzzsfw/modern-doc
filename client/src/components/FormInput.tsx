@@ -5,7 +5,8 @@ import {
   InputGroup,
   Text,
   InputRightElement,
-  InputLeftElement
+  InputLeftElement,
+  Select,
 } from '@chakra-ui/react'
 import { ErrorMessage, Field } from 'formik'
 
@@ -20,6 +21,7 @@ type propsType = {
   showCorrectBorder?: boolean
   leftElement?: JSX.Element
   rightElement?: JSX.Element
+  options?: string[]
 }
 
 const FormInput = ({
@@ -32,6 +34,7 @@ const FormInput = ({
   showCorrectBorder,
   leftElement,
   rightElement,
+  options,
 }: propsType) => {
   const renderErrorMessage = (msg: any) => {
     return (
@@ -40,42 +43,83 @@ const FormInput = ({
         fontSize="14px"
         color="red"
         height="8px"
-        marginTop="2px"
+        marginTop="4px"
       >
         {msg}
       </Text>
     )
   }
 
-  return (
-    <FormControl paddingBottom="24px">
-      <FormLabel>{label}</FormLabel>
-      <Field name={name}>
-        {({ field, form: { touched, errors }, meta }: any) => (
-          <InputGroup>
-            {leftElement && <InputLeftElement children={leftElement} />}
-            <Input
-              name={name}
-              type={type}
+  if (type === 'select') {
+    return (
+      <FormControl paddingBottom="24px">
+        <FormLabel>{label}</FormLabel>
+        <Field name={name}>
+          {({ field, form: { touched, errors }, meta }: any) => (
+            <Select
               placeholder={placeholder}
+              name={name}
               isInvalid={meta.touched && meta.error}
               isReadOnly={isReadOnly}
               borderColor={
-                showCorrectBorder && !meta.error ? 'green' : 'initial'
+                showCorrectBorder && !meta.error && meta.touched ? 'green' : 'accent.gray'
               }
               boxShadow={
-                showCorrectBorder && !meta.error ? '0 0 0 1px green' : 'initial'
+                showCorrectBorder && !meta.error && meta.touched
+                  ? '0 0 0 1px green'
+                  : 'accent.gray'
               }
+              _hover={{
+                borderColor: 'accent.gray',
+              }}
               {...field}
-            />
-            {rightElement && <InputRightElement children={rightElement} />}
-          </InputGroup>
-        )}
-      </Field>
-      <ErrorMessage name={name} render={renderErrorMessage} />
-      {children}
-    </FormControl>
-  )
+            >
+              {options?.map((option) => (
+                <option value={option}>{option}</option>
+              ))}
+            </Select>
+          )}
+        </Field>
+        <ErrorMessage name={name} render={renderErrorMessage} />
+        {children}
+      </FormControl>
+    )
+  } else {
+    return (
+      <FormControl paddingBottom="24px">
+        <FormLabel>{label}</FormLabel>
+        <Field name={name}>
+          {({ field, form: { touched, errors }, meta }: any) => (
+            <InputGroup>
+              {leftElement && <InputLeftElement children={leftElement} />}
+              <Input
+                name={name}
+                type={type}
+                placeholder={placeholder}
+                isInvalid={meta.touched && meta.error}
+                isReadOnly={isReadOnly}
+                borderColor={
+                  showCorrectBorder && !meta.error && meta.touched ? 'green' : 'accent.gray'
+                }
+                boxShadow={
+                  showCorrectBorder && !meta.error && meta.touched
+                    ? '0 0 0 1px green'
+                    : 'accent.gray'
+                }
+                _hover={{
+                  borderColor: 'accent.gray',
+                }}
+                {...field}
+              />
+              {rightElement && <InputRightElement children={rightElement} />}
+            </InputGroup>
+          )}
+        </Field>
+        <ErrorMessage name={name} render={renderErrorMessage} />
+        {children}
+      </FormControl>
+    )
+  }
 }
 
 export default FormInput
