@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import AppRoute from './AppRoute'
 import './index.sass'
 
-import { ChakraProvider,extendTheme} from '@chakra-ui/react'
+import { ChakraProvider, extendTheme } from '@chakra-ui/react'
 
 const colors = {
   colors: {
@@ -15,6 +15,7 @@ const colors = {
       red: '#F31260',
       green: '#17C964',
       gray: '#A3A3A3',
+      lightGray: '#889096',
     },
     hover: {
       blue: '#0072F5',
@@ -26,9 +27,10 @@ const colors = {
       gray: '#A3A3A3',
     },
     background: {
-      gray: "#F1F3F5",
+      gray: '#F1F3F5',
       red: '#FDD8E5',
       green: '#DAFBE8',
+      white: '#FFFFFF',
     },
     group: {},
   },

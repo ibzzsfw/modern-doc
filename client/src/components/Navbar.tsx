@@ -15,8 +15,9 @@ const Navbar = () => {
       '0px 10px 10px 2px rgba(0, 0, 0, 0.1), 0px 10px 10px -5px rgba(0, 0, 0, 0.04)',
     justifyContent: 'space-between',
     alignItems: 'center',
-    zIndex: '100',
+    zIndex: '10000',
     marginBottom: '20px',
+    backgroundColor: 'background.gray',
   }
 
   return (

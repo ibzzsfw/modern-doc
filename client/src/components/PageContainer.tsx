@@ -43,7 +43,7 @@ const PageContainer = ({ children, breadcrumb, style }: propsType) => {
             <Box width="100%" height="1px" backgroundColor="accent.black" />
           </>
         )}
-        <Box padding="54px 24px">{children}</Box>
+        <Box padding="48px 24px">{children}</Box>
       </Box>
     </Box>
   )
