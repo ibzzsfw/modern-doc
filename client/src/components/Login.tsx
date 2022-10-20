@@ -1,32 +1,10 @@
-import {
-  Text,
-  Box,
-  Button,
-  Image,
-  Input,
-  Tabs,
-  Tab,
-  TabList,
-  TabPanels,
-  TabPanel,
-  HStack,
-  Flex,
-  chakra,
-  VStack,
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  FormHelperText,
-  InputGroup,
-  InputRightElement,
-  Icon,
-  Center,
-} from '@chakra-ui/react'
-import { MdAccountCircle, MdFormatLineSpacing } from 'react-icons/md'
-import { AiFillLock } from 'react-icons/ai'
-import { useLoginStore } from '@stores/loginStore'
-import { useEffect } from 'react'
-import { Formik, Form, Field, ErrorMessage } from 'formik'
+import
+  {
+    Box,
+    Button, chakra, Flex, Image, Text, VStack
+  } from '@chakra-ui/react'
+import FormInput from '@components/FormInput'
+import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
 
 const Login = () => {
@@ -61,35 +39,27 @@ const Login = () => {
     },
   }
 
-  const { phone, password, setPhone, setPassword } = useLoginStore()
-
   const loginSchema = Yup.object().shape({
-    phone: Yup.string()
-      .length(10, 'Must be 10 digits')
-      .matches(/^[0-9]+$/, 'Must be only digits')
-      .required('Required'),
-    password: Yup.string().required('Required'),
+    phoneNumber: Yup.string()
+      .matches(/^[0-9]+$/, 'กรุณากรอกเฉพาะตัวเลข')
+      .length(10, 'เบอร์โทรศัพท์จำเป็นต้องมี 10 หลัก')
+      .required('จำเป็นต้องกรอกช่องนี้'),
+    password: Yup.string().required('จำเป็นต้องกรอก'),
   })
 
-  const renderInput = (props: any) => {
+  const renderErrorMessage = (msg: any) => {
     return (
-      <InputGroup>
-        <Input
-          name="phoneNumber"
-          type="tel"
-          placeholder="กรอกเบอร์โทร"
-          {...props}
-        />
-        <InputRightElement>
-          <Icon as={MdAccountCircle} />
-        </InputRightElement>
-      </InputGroup>
+      <Text
+        position="absolute"
+        fontSize="14px"
+        color="red"
+        height="8px"
+        marginTop="2px"
+      >
+        {msg}
+      </Text>
     )
   }
-
-  useEffect(() => {
-    console.log(phone)
-  }, [phone])
 
   return (
     <Box sx={layout}>
@@ -105,60 +75,39 @@ const Login = () => {
         }}
         validationSchema={loginSchema}
         onSubmit={(values) => {
-          alert(JSON.stringify(values, null, 2))
+          console.log(values)
         }}
       >
         <Form>
-          <VStack marginBottom='48px'>
-            <FormControl>
-              <FormLabel>เบอร์โทร</FormLabel>
-              <Field
-                name="password"
-                type="password"
-                as={(props: any) => (
-                  <InputGroup>
-                    <Input
-                      name="phoneNumber"
-                      type="tel"
-                      placeholder="กรอกเบอร์โทร"
-                      {...props}
-                    />
-                    <InputRightElement>
-                      <Icon as={MdAccountCircle} />
-                    </InputRightElement>
-                  </InputGroup>
-                )}
-              />
-              <ErrorMessage name="phoneNumber" component="div" />
-            </FormControl>
-
-            <FormControl>
-              <FormLabel>รหัสผ่าน</FormLabel>
-              <Field
-                name="password"
-                type="password"
-                as={(props: any) => (
-                  <InputGroup>
-                    <Input
-                      name="password"
-                      type="password"
-                      placeholder="กรอกรหัสผ่าน"
-                    />
-                    <InputRightElement>
-                      <Icon as={AiFillLock} />
-                    </InputRightElement>
-                  </InputGroup>
-                )}
-              />
-              <ErrorMessage name="password" component="div" />
-              <Text color="accent.gray" fontSize="14px" marginTop="8px">
+          <VStack marginBottom="48px" gap="24px">
+            <FormInput
+              label="เบอร์โทรศัพท์"
+              name="phoneNumber"
+              type="tel"
+              placeholder="กรอกเบอร์โทรศัพท์"
+            />
+            <FormInput
+              label="รหัสผ่าน"
+              name="password"
+              type="password"
+              placeholder="กรอกรหัสผ่าน"
+            >
+              <Text
+                color="accent.gray"
+                fontSize="14px"
+                marginTop="2px"
+                textAlign="right"
+              >
                 หรือไม่มีบัญชีผู้ใช้ ?{' '}
                 <chakra.span color="accent.blue" cursor="pointer">
                   รีเซ็ตรหัสผ่าน
                 </chakra.span>
               </Text>
-            </FormControl>
+            </FormInput>
+
+              
           </VStack>
+
           <VStack margin="auto" gap="8px">
             <Button sx={submitButton} type="submit">
               เข้าสู่ระบบ
