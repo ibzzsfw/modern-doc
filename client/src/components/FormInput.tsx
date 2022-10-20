@@ -22,7 +22,10 @@ type propsType = {
   leftElement?: JSX.Element
   rightElement?: JSX.Element
   options?: string[]
+  format?: string
 }
+
+
 
 const FormInput = ({
   label,
@@ -35,6 +38,7 @@ const FormInput = ({
   leftElement,
   rightElement,
   options,
+  format
 }: propsType) => {
   const renderErrorMessage = (msg: any) => {
     return (

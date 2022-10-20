@@ -33,7 +33,9 @@ const Register = () => {
       .matches(/^[0-9]+$/, 'กรุณากรอกเฉพาะตัวเลข')
       .length(10, 'เบอร์โทรศัพท์จำเป็นต้องมี 10 หลัก')
       .required('จำเป็นต้องกรอก'),
-    password: Yup.string().required('จำเป็นต้องกรอก'),
+    password: Yup.string()
+      .min(6, 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร')
+      .required('จำเป็นต้องกรอก'),
     confirmPassword: Yup.string().required('จำเป็นต้องกรอก'),
   })
 

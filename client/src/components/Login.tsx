@@ -82,6 +82,7 @@ const Login = () => {
               type="tel"
               placeholder="กรอกเบอร์โทรศัพท์"
               rightElement={<Icon as={AiFillPhone} />}
+              format="XXX-XXX-XXXX"
             />
             <FormInput
               label="รหัสผ่าน"

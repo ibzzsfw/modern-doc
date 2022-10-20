@@ -67,7 +67,7 @@ const LoginPage = () => {
 
   let tabLayout = {
     width: '204px',
-    margin: '36px auto 36px auto',
+    margin: '36px auto 32px auto',
   }
 
   let tabContentLayout = {
