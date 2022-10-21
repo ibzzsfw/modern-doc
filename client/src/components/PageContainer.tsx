@@ -21,7 +21,7 @@ const PageContainer = ({ children, breadcrumb, style }: propsType) => {
   return (
     <Box width="100%" backgroundColor="background.gray">
       <Navbar />
-      <Box margin="120px auto" style={style} width="72%">
+      <Box margin="120px auto" style={style} width="96%" maxWidth='1280px'>
         {breadcrumb && (
           <>
             <Breadcrumb

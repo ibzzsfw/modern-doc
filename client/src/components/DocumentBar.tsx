@@ -1,4 +1,13 @@
-import { Flex, HStack, Text, VStack } from '@chakra-ui/react'
+import {
+  Flex,
+  HStack,
+  Text,
+  VStack,
+  Grid,
+  GridItem,
+  Center,
+  SimpleGrid
+} from '@chakra-ui/react'
 
 type propsType = {
   title: string
@@ -6,13 +15,30 @@ type propsType = {
 }
 
 const DocumentBar = ({ title, children }: propsType) => {
+  let layout = {
+    padding: '30px 0',
+    gap: '32px',
+    flexDirection: 'column',
+    maxWidth: '1280px',
+    margin: 'auto',
+  }
+
+  let childrenFlex = {
+    width: '100%',
+    padding: '0 32px',
+    flexWrap: 'wrap',
+    justifyContent: 'space-evenly',
+    margin: 'auto',
+    gap: '32px',
+  }
+
   return (
     <>
-      <Flex padding="30px 0" gap="32px" flexDirection="column">
-        <Text fontSize="18px" fontWeight="bold">
+      <Flex sx={layout}>
+        <Text fontSize="18px" fontWeight="bold" margin={['auto',null,null,0]}>
           {title}
         </Text>
-        <Flex paddingLeft="32px" gap='72px'>{children}</Flex>
+        <Flex sx={childrenFlex}>{children}</Flex>
       </Flex>
     </>
   )

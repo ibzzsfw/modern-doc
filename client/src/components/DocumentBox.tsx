@@ -1,4 +1,15 @@
-import { Avatar, Box, Flex, Icon, Image, Text } from '@chakra-ui/react'
+import {
+  Avatar,
+  Box,
+  Editable,
+  EditableInput,
+  EditablePreview,
+  EditableTextarea,
+  Flex,
+  Icon,
+  Image,
+  Text,
+} from '@chakra-ui/react'
 import { BsThreeDots } from 'react-icons/bs'
 
 type propsType = {
@@ -87,29 +98,31 @@ const DocumentBox = ({
   }
 
   return (
-    <>
-      <Box sx={layout}>
-        <Flex gap="30px" alignItems="center">
-          <Icon as={BsThreeDots} sx={threeDot} boxSize="18px" />
-          <Image src={getImageUrl()} sx={documentImage} />
-          <Flex flexDirection="column">
-            <Text sx={titleText}>{title}</Text>
-            <Text sx={subText}>{getSubText()}</Text>
-          </Flex>
+    <Box sx={layout}>
+      <Flex gap="30px" alignItems="center">
+        <Icon as={BsThreeDots} sx={threeDot} boxSize="18px" />
+        <Image src={getImageUrl()} sx={documentImage} />
+        <Flex flexDirection="column">
+          <Text sx={titleText}>{title}</Text>
+          <Text sx={subText}>{getSubText()}</Text>
         </Flex>
-        {type === 'sharedFile' && (
-          <Flex marginTop="24px" justifyContent="flex-end">
-            {[
-              'https://placekitten.com/40/40',
-              'https://placekitten.com/40/40',
-              'https://placekitten.com/40/40',
-            ].map((url, index) => (
-              <Avatar src={url} width="40px" height="40px" marginLeft="-10px" />
-            ))}
-          </Flex>
-        )}
+      </Flex>
+      <Box marginTop="18px">
+        <Editable
+          defaultValue="note"
+          height="80px"
+          border="2px solid"
+          borderColor="#E2E8F0"
+          borderRadius="8px"
+          padding="4px 12px"
+          fontSize='14px'
+          color='accent.gray'
+        >
+          <EditablePreview />
+          <EditableTextarea _focusVisible={{ boxShadow: 'none' }} />
+        </Editable>
       </Box>
-    </>
+    </Box>
   )
 }
 
