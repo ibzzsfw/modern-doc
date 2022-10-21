@@ -23,7 +23,7 @@ const Register = () => {
     prefix: Yup.mixed().oneOf(prefix),
     firstName: Yup.string().required('จำเป็นต้องกรอก'),
     lastName: Yup.string().required('จำเป็นต้องกรอก'),
-    sex: Yup.string().required('จำเป็นต้องกรอก'),
+    sex: Yup.mixed().oneOf(sex).required('จำเป็นต้องกรอก'),
     birthDate: Yup.string().required('จำเป็นต้องกรอก'),
     citizenId: Yup.string()
       .matches(/^[0-9]+$/, 'กรุณากรอกเฉพาะตัวเลข')

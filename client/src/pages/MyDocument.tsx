@@ -22,7 +22,11 @@ const MyDocument = () => {
 
   return (
     <Box sx={layout}>
-      <Flex alignItems="center" justifyContent="space-between" marginBottom='30px'>
+      <Flex
+        alignItems="center"
+        justifyContent="space-between"
+        marginBottom="30px"
+      >
         <Flex flexDirection="column" gap="0">
           <Text fontSize="32px" fontWeight="700" color="accent.black">
             เอกสารของฉัน
@@ -47,7 +51,14 @@ const MyDocument = () => {
         <DocumentBox type="sharedFile" title="ทะเบียนบ้าน" author="Wang yuan" />
       </DocumentBar>
       <DocumentBar title="แฟ้มเอกสารของฉัน">
-        <DocumentBox type="generatedFolder" title="รักษาดินแดน" amount={9} />
+        <DocumentBox
+          type="generatedFolder"
+          title="สมัครงานกับ TechLead"
+          amount={9}
+          image={
+            'https://cdn.sanity.io/images/xeonec4d/production/fc4aef437fe8753e30757498e7baceb016de4c6c-300x250.png?w=1000'
+          }
+        />
         <DocumentBox type="generatedFolder" title="รักษาดินแดน" amount={9} />
         <DocumentBox type="generatedFolder" title="รักษาดินแดน" amount={9} />
       </DocumentBar>

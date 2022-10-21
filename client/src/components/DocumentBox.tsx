@@ -68,6 +68,9 @@ const DocumentBox = ({
   }
 
   const getImageUrl = () => {
+    if (image) {
+      return image
+    }
     if (type === 'generatedFolder') {
       return '/assets/folder_logo.png'
     }
@@ -115,8 +118,8 @@ const DocumentBox = ({
           borderColor="#E2E8F0"
           borderRadius="8px"
           padding="4px 12px"
-          fontSize='14px'
-          color='accent.gray'
+          fontSize="14px"
+          color="accent.gray"
         >
           <EditablePreview />
           <EditableTextarea _focusVisible={{ boxShadow: 'none' }} />
