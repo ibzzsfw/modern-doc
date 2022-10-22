@@ -9,6 +9,7 @@ import {
     Icon,
     background,
     Button,
+    border,
   } from '@chakra-ui/react'
   import { FiEdit } from 'react-icons/fi'
   import ProfilePicture from '@/components/ProfilePicture'
@@ -19,7 +20,8 @@ const MyProfile = () => {
     let myprofileLayout = {
         backgroundColor: 'background.gray',
         color: 'accent.black',
-        width: '100%'
+        width: '100%',
+        height: '100%',
     }
     let editButton = {
         width: 'auto',
@@ -30,6 +32,7 @@ const MyProfile = () => {
         variant : 'outline',
         border: '1px solid',
         borderColor: '#E2E8F0',
+        left: '460px',
         
         _hover: {
           backgroundColor: 'hover.gray',
@@ -43,11 +46,17 @@ const MyProfile = () => {
 
     return (
         <Box sx={myprofileLayout}>
-            <Button sx={editButton} gap='8px'>
-                <Icon as={FiEdit}/>
-                แก้ไขข้อมูลส่วนตัว</Button>
-                <ProfilePicture/>
-              
+            <VStack >
+            <Button sx={editButton}
+            leftIcon={<FiEdit/>}>
+                    แก้ไขข้อมูลส่วนตัว</Button>
+                <HStack alignItems='start' gap= '138px'>
+                     <ProfilePicture/>
+                     <ProfileFormInput/>
+                    </HStack>
+            </VStack>
+               
+                
                 
         </Box>
     )
