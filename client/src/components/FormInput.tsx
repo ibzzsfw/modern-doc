@@ -23,6 +23,7 @@ type propsType = {
   rightElement?: JSX.Element
   options?: string[]
   format?: string
+  width?: string
 }
 
 
@@ -38,7 +39,8 @@ const FormInput = ({
   leftElement,
   rightElement,
   options,
-  format
+  format,
+  width,
 }: propsType) => {
   const renderErrorMessage = (msg: any) => {
     return (
@@ -65,6 +67,7 @@ const FormInput = ({
               name={name}
               isInvalid={meta.touched && meta.error}
               isReadOnly={isReadOnly}
+              width={width}
               borderColor={
                 showCorrectBorder && !meta.error && meta.touched ? 'green' : 'accent.gray'
               }
@@ -92,9 +95,9 @@ const FormInput = ({
     return (
       <FormControl paddingBottom="24px">
         <FormLabel>{label}</FormLabel>
-        <Field name={name}>
+        <Field name={name} width={width}>
           {({ field, form: { touched, errors }, meta }: any) => (
-            <InputGroup>
+            <InputGroup >
               {leftElement && <InputLeftElement children={leftElement} />}
               <Input
                 name={name}
@@ -102,6 +105,7 @@ const FormInput = ({
                 placeholder={placeholder}
                 isInvalid={meta.touched && meta.error}
                 isReadOnly={isReadOnly}
+                width={width}
                 borderColor={
                   showCorrectBorder && !meta.error && meta.touched ? 'green' : 'accent.gray'
                 }
