@@ -1,5 +1,6 @@
 import { Avatar, Box, Flex, HStack, Image, Text } from '@chakra-ui/react'
 import { Link } from 'react-router-dom'
+import NavbarAvatar from '@components/NavbarAvatar'
 
 const Navbar = () => {
   let layout = {
@@ -22,7 +23,6 @@ const Navbar = () => {
     backgroundColor: 'background.gray',
     maxWidth: '1280px',
     justifyContent: 'space-between',
-
   }
 
   return (
@@ -38,8 +38,7 @@ const Navbar = () => {
             <Text>แฟ้ม</Text>
           </Link>
         </HStack>
-
-        <Avatar width="48px" />
+        <NavbarAvatar/>
       </Flex>
     </Box>
   )
