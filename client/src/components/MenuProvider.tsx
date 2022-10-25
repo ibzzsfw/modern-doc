@@ -136,7 +136,10 @@ const MenuProvider = ({
                           <Flex
                             as="button"
                             sx={{ ...menuButton, ...menu?.style }}
-                            onClick={menu.onClick}
+                            onClick={() => {
+                              menu.onClick
+                              onClose()
+                            }}
                           >
                             {menu.icon && menu.icon}
                             <Text sx={menuText}>{menu.title}</Text>
@@ -148,7 +151,10 @@ const MenuProvider = ({
                         <Flex
                           as="button"
                           sx={{ ...menuButton, ...menu?.style }}
-                          onClick={menu.onClick}
+                          onClick={() => {
+                            menu.onClick
+                            onClose()
+                          }}
                         >
                           {menu.icon && menu.icon}
 

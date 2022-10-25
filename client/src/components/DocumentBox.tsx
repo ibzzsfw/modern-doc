@@ -11,7 +11,7 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { BsThreeDots, BsTrash } from 'react-icons/bs'
-import { GrDocumentText } from 'react-icons/gr'
+import { GrDocumentText, GrDownload } from 'react-icons/gr'
 import { AiFillPrinter, AiOutlineEdit } from 'react-icons/ai'
 
 import MenuProvider from '@components/MenuProvider'
@@ -118,28 +118,25 @@ const DocumentBox = ({
                 onClick: () => {},
               },
               {
-                title: 'รายละเอียด',
-                icon: <Icon as={GrDocumentText} />,
+                title: 'แก้ไขโน้ต',
+                icon: <Icon as={AiOutlineEdit} />,
                 onClick: () => {},
               },
               {
-                title: 'รายละเอียด',
-                icon: <Icon as={GrDocumentText} />,
+                title: 'ดาวน์โหลด',
+                icon: <Icon as={GrDownload} />,
+                onClick: () => {},
+              },
+              {
+                title: 'พิมพ์',
+                icon: <Icon as={AiFillPrinter}/>,
                 onClick: () => {},
               },
             ],
             [
               {
-                title: 'รายละเอียด',
-                icon: <Icon as={AiFillPrinter} color="accent.red" />,
-                style: {
-                  color: 'accent.red',
-                },
-                onClick: () => {},
-              },
-              {
-                title: 'รายละเอียด',
-                icon: <Icon as={AiOutlineEdit} color="accent.red" />,
+                title: 'ลบแฟ้ม',
+                icon: <Icon as={BsTrash} color="accent.red" />,
                 onClick: () => {},
                 style: {
                   color: 'accent.red',
