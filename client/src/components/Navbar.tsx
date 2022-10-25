@@ -31,7 +31,7 @@ const Navbar = () => {
         <Image src="/assets/ModernDoc.png" height="54px" />
 
         <HStack gap="24px">
-          <Link to="/">
+          <Link to="/home">
             <Text>หน้าหลัก</Text>
           </Link>
           <Link to="/folder">

@@ -1,20 +1,12 @@
 import {
-  Avatar,
   Box,
   Editable,
-  EditableInput,
   EditablePreview,
   EditableTextarea,
   Flex,
-  Icon,
   Image,
   Text,
 } from '@chakra-ui/react'
-import { BsThreeDots, BsTrash } from 'react-icons/bs'
-import { GrDocumentText, GrDownload } from 'react-icons/gr'
-import { AiFillPrinter, AiOutlineEdit } from 'react-icons/ai'
-
-import MenuProvider from '@components/MenuProvider'
 
 type propsType = {
   type: 'generatedFolder' | 'generatedFile' | 'uploadedFile' | 'sharedFile'
@@ -23,6 +15,12 @@ type propsType = {
   size?: number
   author?: string
   image?: string
+  showMenu?: boolean
+  showNote?: boolean
+  menu?: any
+  colorBar?: string
+  createdDate?: Date
+  showDate?: boolean
 }
 
 const DocumentBox = ({
@@ -32,6 +30,11 @@ const DocumentBox = ({
   size,
   author,
   image,
+  showNote,
+  menu,
+  colorBar,
+  createdDate,
+  showDate,
 }: propsType) => {
   let layout = {
     width: '320px',
@@ -64,11 +67,14 @@ const DocumentBox = ({
     color: 'accent.gray',
   }
 
-  let threeDot = {
+  let colorBarStyle = {
+    width: '18px',
+    height: '100%',
     position: 'absolute',
-    top: '10px',
-    right: '20px',
-    color: 'accent.black',
+    right: '0px',
+    top: '0px',
+    borderRadius: '0px 8px 8px 0px',
+    backgroundColor: colorBar,
   }
 
   const getImageUrl = () => {
@@ -90,6 +96,12 @@ const DocumentBox = ({
   }
 
   const getSubText = () => {
+    if (showDate) {
+      if (createdDate) {
+        return `สร้างเมื่อ ${createdDate.toLocaleDateString('en-GB')}`
+      }
+      return 'ยังไม่ได้สร้าง'
+    }
     if (type === 'generatedFolder') {
       return `${amount} เอกสาร`
     }
@@ -106,68 +118,32 @@ const DocumentBox = ({
 
   return (
     <Box sx={layout}>
+      {colorBar && <Box sx={colorBarStyle}></Box>}
       <Flex gap="30px" alignItems="center">
-        <MenuProvider
-          left="108px"
-          top="36px"
-          menusList={[
-            [
-              {
-                title: 'รายละเอียด',
-                icon: <Icon as={GrDocumentText} />,
-                onClick: () => {},
-              },
-              {
-                title: 'แก้ไขโน้ต',
-                icon: <Icon as={AiOutlineEdit} />,
-                onClick: () => {},
-              },
-              {
-                title: 'ดาวน์โหลด',
-                icon: <Icon as={GrDownload} />,
-                onClick: () => {},
-              },
-              {
-                title: 'พิมพ์',
-                icon: <Icon as={AiFillPrinter}/>,
-                onClick: () => {},
-              },
-            ],
-            [
-              {
-                title: 'ลบแฟ้ม',
-                icon: <Icon as={BsTrash} color="accent.red" />,
-                onClick: () => {},
-                style: {
-                  color: 'accent.red',
-                },
-              },
-            ],
-          ]}
-        >
-          <Icon as={BsThreeDots} sx={threeDot} boxSize="18px" />
-        </MenuProvider>
+        {menu}
         <Image src={getImageUrl()} sx={documentImage} />
         <Flex flexDirection="column">
           <Text sx={titleText}>{title}</Text>
           <Text sx={subText}>{getSubText()}</Text>
         </Flex>
       </Flex>
-      <Box marginTop="18px">
-        <Editable
-          defaultValue="note"
-          height="80px"
-          border="2px solid"
-          borderColor="#E2E8F0"
-          borderRadius="8px"
-          padding="4px 12px"
-          fontSize="14px"
-          color="accent.gray"
-        >
-          <EditablePreview />
-          <EditableTextarea _focusVisible={{ boxShadow: 'none' }} />
-        </Editable>
-      </Box>
+      {showNote && (
+        <Box marginTop="18px">
+          <Editable
+            defaultValue="note"
+            height="80px"
+            border="2px solid"
+            borderColor="#E2E8F0"
+            borderRadius="8px"
+            padding="4px 12px"
+            fontSize="14px"
+            color="accent.gray"
+          >
+            <EditablePreview />
+            <EditableTextarea _focusVisible={{ boxShadow: 'none' }} />
+          </Editable>
+        </Box>
+      )}
     </Box>
   )
 }
