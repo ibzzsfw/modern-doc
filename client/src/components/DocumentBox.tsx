@@ -10,7 +10,11 @@ import {
   Image,
   Text,
 } from '@chakra-ui/react'
-import { BsThreeDots } from 'react-icons/bs'
+import { BsThreeDots, BsTrash } from 'react-icons/bs'
+import { GrDocumentText } from 'react-icons/gr'
+import { AiFillPrinter, AiOutlineEdit } from 'react-icons/ai'
+
+import MenuProvider from '@components/MenuProvider'
 
 type propsType = {
   type: 'generatedFolder' | 'generatedFile' | 'uploadedFile' | 'sharedFile'
@@ -103,7 +107,49 @@ const DocumentBox = ({
   return (
     <Box sx={layout}>
       <Flex gap="30px" alignItems="center">
-        <Icon as={BsThreeDots} sx={threeDot} boxSize="18px" />
+        <MenuProvider
+          left="108px"
+          top="36px"
+          menusList={[
+            [
+              {
+                title: 'รายละเอียด',
+                icon: <Icon as={GrDocumentText} />,
+                onClick: () => {},
+              },
+              {
+                title: 'รายละเอียด',
+                icon: <Icon as={GrDocumentText} />,
+                onClick: () => {},
+              },
+              {
+                title: 'รายละเอียด',
+                icon: <Icon as={GrDocumentText} />,
+                onClick: () => {},
+              },
+            ],
+            [
+              {
+                title: 'รายละเอียด',
+                icon: <Icon as={AiFillPrinter} color="accent.red" />,
+                style: {
+                  color: 'accent.red',
+                },
+                onClick: () => {},
+              },
+              {
+                title: 'รายละเอียด',
+                icon: <Icon as={AiOutlineEdit} color="accent.red" />,
+                onClick: () => {},
+                style: {
+                  color: 'accent.red',
+                },
+              },
+            ],
+          ]}
+        >
+          <Icon as={BsThreeDots} sx={threeDot} boxSize="18px" />
+        </MenuProvider>
         <Image src={getImageUrl()} sx={documentImage} />
         <Flex flexDirection="column">
           <Text sx={titleText}>{title}</Text>

@@ -18,6 +18,7 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react'
+import { Children } from 'react'
 import { BiLogOutCircle } from 'react-icons/bi'
 import { BsPersonCircle } from 'react-icons/bs'
 import { IoChevronDownOutline } from 'react-icons/io5'
@@ -28,23 +29,23 @@ type Menu = {
   title: string
   link?: string
   onClick?: () => void
-  icon?: As<any>
-  children?: Menu[]
+  icon?: any
+  style?: any
 }
 
 type propsType = {
   top?: string
   left?: string
   width?: string
-  menus: Menu[]
+  menusList: Menu[][]
   children: JSX.Element | JSX.Element[]
 }
 
-const Menu = ({
+const MenuProvider = ({
   top = '0',
   left = '0',
   width = '200px',
-  menus,
+  menusList,
   children,
 }: propsType) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -121,30 +122,44 @@ const Menu = ({
 
   return (
     <>
-      {children}
+      <Box onClick={onOpen}>{children}</Box>
       <Popover isOpen={isOpen} onClose={onClose} placement="right-end">
         <PopoverContent sx={menuLayout}>
           <PopoverBody padding="4px">
             <Flex flexDirection="column" gap="2px">
-              {menus.map((menu, index) => {
-                if (menu.link) {
-                  return (
-                    <Link to={menu.link}>
-                      <Flex as="button" sx={menuButton} onClick={menu.onClick}>
-                        {menu.icon && <Icon as={menu.icon} />}
-                        <Text sx={menuText}>{menu.title}</Text>
-                      </Flex>
-                    </Link>
-                  )
-                } else if (menu.onClick) {
-                  return (
-                    <Flex as="button" sx={menuButton} onClick={menu.onClick}>
-                      {menu.icon && <Icon as={menu.icon} />}
-                      <Text sx={menuText}>{menu.title}</Text>
-                    </Flex>
-                  )
-                }
-              })}
+              {menusList.map((menus, index) => (
+                <>
+                  {menus.map((menu, index) => {
+                    if (menu.link) {
+                      return (
+                        <Link to={menu.link}>
+                          <Flex
+                            as="button"
+                            sx={{ ...menuButton, ...menu?.style }}
+                            onClick={menu.onClick}
+                          >
+                            {menu.icon && menu.icon}
+                            <Text sx={menuText}>{menu.title}</Text>
+                          </Flex>
+                        </Link>
+                      )
+                    } else if (menu.onClick) {
+                      return (
+                        <Flex
+                          as="button"
+                          sx={{ ...menuButton, ...menu?.style }}
+                          onClick={menu.onClick}
+                        >
+                          {menu.icon && menu.icon}
+
+                          <Text sx={menuText}>{menu.title}</Text>
+                        </Flex>
+                      )
+                    }
+                  })}
+                  <Divider />
+                </>
+              ))}
             </Flex>
           </PopoverBody>
         </PopoverContent>
@@ -153,4 +168,4 @@ const Menu = ({
   )
 }
 
-export default Menu
+export default MenuProvider
