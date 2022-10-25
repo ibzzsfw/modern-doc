@@ -20,6 +20,7 @@ import {
 import { BsPersonCircle } from 'react-icons/bs'
 import { IoChevronDownOutline } from 'react-icons/io5'
 import { MdGroups } from 'react-icons/md'
+import {BiLogOutCircle} from 'react-icons/bi'
 
 const NavbarAvatar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -47,7 +48,7 @@ const NavbarAvatar = () => {
     fontSize: '14px',
     fontWeight: 'semibold',
   }
- 
+
   const memberNameText = {
     fontSize: '14px',
     fontWeight: 'normal',
@@ -69,6 +70,19 @@ const NavbarAvatar = () => {
     padding: '8px 16px',
     alignItems: 'center',
     height: '40px',
+    gap: '12px',
+    borderRadius: '4px',
+    _hover: {
+      background: 'background.gray',
+    },
+  }
+
+  const memberList = {
+    width: '100%',
+    textAlign: 'left',
+    padding: '8px 24px',
+    alignItems: 'center',
+    height: '36px',
     gap: '12px',
     borderRadius: '4px',
     _hover: {
@@ -117,15 +131,15 @@ const NavbarAvatar = () => {
                     </Flex>
                   </AccordionButton>
                   <AccordionPanel padding="0">
-                    <Flex as="button" sx={menuButton}>
+                    <Flex as="button" sx={memberList}>
                       <Avatar sx={memberAvatar} />
                       <Text sx={memberNameText}>อลัน สมิธ</Text>
                     </Flex>
-                    <Flex as="button" sx={menuButton}>
+                    <Flex as="button" sx={memberList}>
                       <Avatar sx={memberAvatar} />
                       <Text sx={memberNameText}>อริธ สมัน</Text>
                     </Flex>
-                    <Flex as="button" sx={menuButton}>
+                    <Flex as="button" sx={memberList}>
                       <Avatar sx={memberAvatar} />
                       <Text sx={memberNameText}>ดิโอโก้ ดาโลต์</Text>
                     </Flex>
@@ -133,9 +147,16 @@ const NavbarAvatar = () => {
                 </AccordionItem>
               </Accordion>
               <Divider />
+              <Box>
+                <Flex as="button" sx={menuButton}>
+                  <Icon as={MdGroups} />
+                  <Text sx={menuText}>จัดการสมาชิกครอบครัว</Text>
+                </Flex>
+              </Box>
+              <Divider />
               <Flex as="button" sx={menuButton}>
-                <Icon as={MdGroups} />
-                <Text sx={menuText}>จัดการสมาชิกครอบครัว</Text>
+                <Icon as={BiLogOutCircle} color='accent.red'/>
+                <Text sx={menuText} color='accent.red'>ออกจากระบบ</Text>
               </Flex>
             </Flex>
           </PopoverBody>
