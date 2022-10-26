@@ -7,7 +7,7 @@ import { VStack, Center } from '@chakra-ui/react'
 
 const Home = () => {
   return (
-    <VStack >
+    <VStack marginTop='4px'>
       <Center>
         <SearchBox />
       </Center>
@@ -41,7 +41,7 @@ const Home = () => {
           type="generatedFolder"
           showDate
           createdDate={new Date('12/08/2021')}
-          colorBar="#FF9898"
+          colorBar="#abcedf"
         />
         <DocumentBox
           title="แฟ้มที่ 2"

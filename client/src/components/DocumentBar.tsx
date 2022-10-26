@@ -27,9 +27,8 @@ const DocumentBar = ({ title, children, url }: propsType) => {
 
   let childrenFlex = {
     width: '100%',
-    padding: '0 32px',
     flexWrap: 'wrap',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
     margin: 'auto',
     gap: '32px',
   }
