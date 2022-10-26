@@ -17,15 +17,14 @@ type propsType = {
   type: string
   placeholder: string
   children?: JSX.Element | JSX.Element[]
-  isReadOnly?: boolean
+  disable?: boolean
   showCorrectBorder?: boolean
   leftElement?: JSX.Element
   rightElement?: JSX.Element
   options?: string[]
   format?: string
+  width?: string
 }
-
-
 
 const FormInput = ({
   label,
@@ -33,12 +32,13 @@ const FormInput = ({
   type,
   placeholder,
   children,
-  isReadOnly,
+  disable,
   showCorrectBorder,
   leftElement,
   rightElement,
   options,
-  format
+  format,
+  width,
 }: propsType) => {
   const renderErrorMessage = (msg: any) => {
     return (
@@ -64,9 +64,12 @@ const FormInput = ({
               placeholder={placeholder}
               name={name}
               isInvalid={meta.touched && meta.error}
-              isReadOnly={isReadOnly}
+              disabled={disable}
+              width={width}
               borderColor={
-                showCorrectBorder && !meta.error && meta.touched ? 'green' : 'accent.gray'
+                showCorrectBorder && !meta.error && meta.touched
+                  ? 'green'
+                  : 'accent.gray'
               }
               boxShadow={
                 showCorrectBorder && !meta.error && meta.touched
@@ -92,7 +95,7 @@ const FormInput = ({
     return (
       <FormControl paddingBottom="24px">
         <FormLabel>{label}</FormLabel>
-        <Field name={name}>
+        <Field name={name} width={width}>
           {({ field, form: { touched, errors }, meta }: any) => (
             <InputGroup>
               {leftElement && <InputLeftElement children={leftElement} />}
@@ -101,9 +104,12 @@ const FormInput = ({
                 type={type}
                 placeholder={placeholder}
                 isInvalid={meta.touched && meta.error}
-                isReadOnly={isReadOnly}
+                disabled={disable}
+                width={width}
                 borderColor={
-                  showCorrectBorder && !meta.error && meta.touched ? 'green' : 'accent.gray'
+                  showCorrectBorder && !meta.error && meta.touched
+                    ? 'green'
+                    : 'accent.gray'
                 }
                 boxShadow={
                   showCorrectBorder && !meta.error && meta.touched

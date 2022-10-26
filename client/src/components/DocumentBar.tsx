@@ -6,17 +6,19 @@ import {
   Grid,
   GridItem,
   Center,
-  SimpleGrid
+  SimpleGrid,
 } from '@chakra-ui/react'
+import { Link } from 'react-router-dom'
 
 type propsType = {
   title: string
   children?: JSX.Element | JSX.Element[]
+  url?: string
 }
 
-const DocumentBar = ({ title, children }: propsType) => {
+const DocumentBar = ({ title, children, url }: propsType) => {
   let layout = {
-    padding: '30px 0',
+    padding: '24px 0',
     gap: '32px',
     flexDirection: 'column',
     maxWidth: '1280px',
@@ -25,9 +27,8 @@ const DocumentBar = ({ title, children }: propsType) => {
 
   let childrenFlex = {
     width: '100%',
-    padding: '0 32px',
     flexWrap: 'wrap',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
     margin: 'auto',
     gap: '32px',
   }
@@ -35,9 +36,20 @@ const DocumentBar = ({ title, children }: propsType) => {
   return (
     <>
       <Flex sx={layout}>
-        <Text fontSize="18px" fontWeight="bold" margin={['auto',null,null,0]}>
-          {title}
-        </Text>
+        <Flex width="100%" justifyContent="space-between">
+          <Text
+            fontSize="18px"
+            fontWeight="bold"
+            margin={['auto', null, null, 0]}
+          >
+            {title}
+          </Text>
+          {url && (
+            <Link to={url}>
+              <Text>ดูเพิ่มเติม {'>>'}</Text>
+            </Link>
+          )}
+        </Flex>
         <Flex sx={childrenFlex}>{children}</Flex>
       </Flex>
     </>
