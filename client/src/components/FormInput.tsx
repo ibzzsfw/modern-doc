@@ -17,7 +17,7 @@ type propsType = {
   type: string
   placeholder: string
   children?: JSX.Element | JSX.Element[]
-  isReadOnly?: boolean
+  disable?: boolean
   showCorrectBorder?: boolean
   leftElement?: JSX.Element
   rightElement?: JSX.Element
@@ -26,15 +26,13 @@ type propsType = {
   width?: string
 }
 
-
-
 const FormInput = ({
   label,
   name,
   type,
   placeholder,
   children,
-  isReadOnly,
+  disable,
   showCorrectBorder,
   leftElement,
   rightElement,
@@ -66,10 +64,12 @@ const FormInput = ({
               placeholder={placeholder}
               name={name}
               isInvalid={meta.touched && meta.error}
-              isReadOnly={isReadOnly}
+              disabled={disable}
               width={width}
               borderColor={
-                showCorrectBorder && !meta.error && meta.touched ? 'green' : 'accent.gray'
+                showCorrectBorder && !meta.error && meta.touched
+                  ? 'green'
+                  : 'accent.gray'
               }
               boxShadow={
                 showCorrectBorder && !meta.error && meta.touched
@@ -97,17 +97,19 @@ const FormInput = ({
         <FormLabel>{label}</FormLabel>
         <Field name={name} width={width}>
           {({ field, form: { touched, errors }, meta }: any) => (
-            <InputGroup >
+            <InputGroup>
               {leftElement && <InputLeftElement children={leftElement} />}
               <Input
                 name={name}
                 type={type}
                 placeholder={placeholder}
                 isInvalid={meta.touched && meta.error}
-                isReadOnly={isReadOnly}
+                disabled={disable}
                 width={width}
                 borderColor={
-                  showCorrectBorder && !meta.error && meta.touched ? 'green' : 'accent.gray'
+                  showCorrectBorder && !meta.error && meta.touched
+                    ? 'green'
+                    : 'accent.gray'
                 }
                 boxShadow={
                   showCorrectBorder && !meta.error && meta.touched
