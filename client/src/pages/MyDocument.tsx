@@ -12,6 +12,10 @@ import { FiSearch } from 'react-icons/fi'
 import SearchBox from '@components/SearchBox'
 import DocumentBox from '@components/DocumentBox'
 import DocumentBar from '@components/DocumentBar'
+import MenuProvider from '@components/MenuProvider'
+import { BsThreeDots, BsTrash } from 'react-icons/bs'
+import { GrDocumentText, GrDownload } from 'react-icons/gr'
+import { AiFillPrinter, AiOutlineEdit } from 'react-icons/ai'
 
 const MyDocument = () => {
   let layout = {
@@ -19,6 +23,56 @@ const MyDocument = () => {
     color: 'accent.black',
     width: '100%',
   }
+
+  let threeDot = {
+    position: 'absolute',
+    top: '10px',
+    right: '20px',
+    color: 'accent.black',
+  }
+
+  let menu = (
+    <MenuProvider
+      left="108px"
+      top="36px"
+      menusList={[
+        [
+          {
+            title: 'รายละเอียด',
+            icon: <Icon as={GrDocumentText} />,
+            onClick: () => {},
+          },
+          {
+            title: 'แก้ไขโน้ต',
+            icon: <Icon as={AiOutlineEdit} />,
+            onClick: () => {},
+          },
+          {
+            title: 'ดาวน์โหลด',
+            icon: <Icon as={GrDownload} />,
+            onClick: () => {},
+          },
+          {
+            title: 'พิมพ์',
+            icon: <Icon as={AiFillPrinter} />,
+            onClick: () => {},
+          },
+        ],
+        [
+          {
+            title: 'ลบแฟ้ม',
+            icon: <Icon as={BsTrash} color="accent.red" />,
+            onClick: () => {},
+            style: {
+              color: 'accent.red',
+            },
+          },
+        ],
+      ]}
+    >
+      <Icon as={BsThreeDots} sx={threeDot} boxSize="18px" />
+    </MenuProvider>
+  )
 
   return (
     <Box sx={layout}>
@@ -42,13 +96,23 @@ const MyDocument = () => {
           type="sharedFile"
           title="รักษาดินแดน"
           author="Wang Junkai"
+          showNote
+          menu={menu}
         />
         <DocumentBox
           type="sharedFile"
           title="พาร์สปอร์ต"
           author="Yi yangqianxi"
+          showNote
+          menu={menu}
         />
-        <DocumentBox type="sharedFile" title="ทะเบียนบ้าน" author="Wang yuan" />
+        <DocumentBox
+          type="sharedFile"
+          title="ทะเบียนบ้าน"
+          author="Wang yuan"
+          showNote
+          menu={menu}
+        />
       </DocumentBar>
       <DocumentBar title="แฟ้มเอกสารของฉัน">
         <DocumentBox
@@ -58,14 +122,46 @@ const MyDocument = () => {
           image={
             'https://cdn.sanity.io/images/xeonec4d/production/fc4aef437fe8753e30757498e7baceb016de4c6c-300x250.png?w=1000'
           }
+          showNote
+          menu={menu}
         />
-        <DocumentBox type="generatedFolder" title="รักษาดินแดน" amount={9} />
-        <DocumentBox type="generatedFolder" title="รักษาดินแดน" amount={9} />
+        <DocumentBox
+          type="generatedFolder"
+          title="รักษาดินแดน"
+          amount={9}
+          showNote
+          menu={menu}
+        />
+        <DocumentBox
+          type="generatedFolder"
+          title="รักษาดินแดน"
+          amount={9}
+          showNote
+          menu={menu}
+        />
       </DocumentBar>
       <DocumentBar title="ไฟล์ของฉัน">
-        <DocumentBox type="uploadedFile" title="รักษาดินแดน" size={12} />
-        <DocumentBox type="uploadedFile" title="รักษาดินแดน" size={5.7} />
-        <DocumentBox type="uploadedFile" title="รักษาดินแดน" size={7} />
+        <DocumentBox
+          type="uploadedFile"
+          title="รักษาดินแดน"
+          size={12}
+          showNote
+          menu={menu}
+        />
+        <DocumentBox
+          type="uploadedFile"
+          title="รักษาดินแดน"
+          size={5.7}
+          showNote
+          menu={menu}
+        />
+        <DocumentBox
+          type="uploadedFile"
+          title="รักษาดินแดน"
+          size={7}
+          showNote
+          menu={menu}
+        />
       </DocumentBar>
     </Box>
   )

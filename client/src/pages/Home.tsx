@@ -1,0 +1,118 @@
+import PopularBar from '@components/PopularBar'
+import PopularBox from '@components/PopularBox'
+import DocumentBar from '@/components/DocumentBar'
+import DocumentBox from '@/components/DocumentBox'
+import SearchBox from '@/components/SearchBox'
+import { VStack, Center } from '@chakra-ui/react'
+
+const Home = () => {
+  return (
+    <VStack marginTop='4px'>
+      <Center>
+        <SearchBox />
+      </Center>
+      <PopularBar title="รายการยอดฮิต" url="https://google.co.th">
+        <PopularBox
+          title="ที่ดิน"
+          image="https://trendwatchers.co/wp-content/uploads/2020/04/1_r_46B-6pUz9L0sq9fVuChA.jpeg"
+        />
+        <PopularBox
+          title="ที่ดิน"
+          image="https://trendwatchers.co/wp-content/uploads/2020/04/1_r_46B-6pUz9L0sq9fVuChA.jpeg"
+        />
+        <PopularBox
+          title="ที่ดิน"
+          image="https://trendwatchers.co/wp-content/uploads/2020/04/1_r_46B-6pUz9L0sq9fVuChA.jpeg"
+        />
+        <PopularBox
+          title="ที่ดิน"
+          image="https://trendwatchers.co/wp-content/uploads/2020/04/1_r_46B-6pUz9L0sq9fVuChA.jpeg"
+        />
+        <PopularBox
+          title="ที่ดิน"
+          image="https://trendwatchers.co/wp-content/uploads/2020/04/1_r_46B-6pUz9L0sq9fVuChA.jpeg"
+        />
+      </PopularBar>
+
+      <DocumentBar title="แฟ้มล่าสุด" url="broo">
+        <DocumentBox title="แฟ้มที่ 1" type="generatedFolder" showDate />
+        <DocumentBox
+          title="แฟ้มที่ 2"
+          type="generatedFolder"
+          showDate
+          createdDate={new Date('12/08/2021')}
+          colorBar="#abcedf"
+        />
+        <DocumentBox
+          title="แฟ้มที่ 2"
+          type="generatedFolder"
+          showDate
+          createdDate={new Date('12/08/2021')}
+          colorBar="#FF9898"
+        />
+        <DocumentBox
+          title="แฟ้มที่ 2"
+          type="generatedFolder"
+          showDate
+          createdDate={new Date('12/08/2021')}
+          colorBar="#FF9898"
+        />
+        <DocumentBox
+          title="แฟ้มที่ 2"
+          type="generatedFolder"
+          showDate
+          createdDate={new Date('12/08/2021')}
+          colorBar="#FF9898"
+        />
+        <DocumentBox
+          title="แฟ้มที่ 2"
+          type="generatedFolder"
+          showDate
+          createdDate={new Date('12/08/2021')}
+          colorBar="#FF9898"
+        />
+      </DocumentBar>
+
+      <DocumentBar title="เอกสารล่าสุด" url="broo">
+        <DocumentBox title="แฟ้มที่ 1" type="generatedFile" showDate />
+        <DocumentBox
+          title="แฟ้มที่ 2"
+          type="generatedFile"
+          showDate
+          createdDate={new Date('12/08/2021')}
+          colorBar="#FF9898"
+        />
+        <DocumentBox
+          title="แฟ้มที่ 2"
+          type="generatedFile"
+          showDate
+          createdDate={new Date('12/08/2021')}
+          colorBar="#FF9898"
+        />
+        <DocumentBox
+          title="แฟ้มที่ 2"
+          type="generatedFile"
+          showDate
+          createdDate={new Date('12/08/2021')}
+          colorBar="#FF9898"
+        />
+        <DocumentBox
+          title="แฟ้มที่ 2"
+          type="generatedFile"
+          showDate
+          createdDate={new Date('12/08/2021')}
+          colorBar="#FF9898"
+        />
+        <DocumentBox
+          title="แฟ้มที่ 2"
+          type="generatedFile"
+          showDate
+          createdDate={new Date('12/08/2021')}
+          colorBar="#FF9898"
+        />
+      </DocumentBar>
+    </VStack>
+  )
+}
+
+export default Home
