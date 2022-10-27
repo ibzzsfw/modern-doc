@@ -8,12 +8,21 @@ import {
   Divider,
   Heading,
   Text,
-  Stack,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
   ButtonGroup,
   Center,
 } from '@chakra-ui/react'
 import { Form, Formik } from 'formik'
 import FormInput from '@components/FormInput'
+import ConfirmPassword from '@components/confirmPassword'
+import ChangePassword from './changePassword'
 import * as Yup from 'yup'
 import { useState, useRef } from 'react'
 import { AiTwotoneCalendar } from 'react-icons/ai'
@@ -70,20 +79,6 @@ const ProfileFormInput = () => {
     borderRadius: '100%',
   }
 
-  let submitButton = {
-    height: '40px',
-    backgroundColor: 'accent.blue',
-    color: 'white',
-    margin: 'auto',
-    variant: 'outline',
-    _hover: {
-      backgroundColor: 'hover.blue',
-    },
-    _active: {
-      backgroundColor: 'hover.white',
-    },
-  }
-
   let editButton = {
     width: 'auto',
     height: '40px',
@@ -102,6 +97,21 @@ const ProfileFormInput = () => {
       backgroundColor: 'hover.white',
     },
   }
+  let submitButton = {
+    height: '40px',
+    backgroundColor: 'accent.blue',
+    color: 'white',
+
+    variant: 'outline',
+    _hover: {
+      backgroundColor: 'hover.blue',
+    },
+    _active: {
+      backgroundColor: 'hover.white',
+    },
+  }
+
+
 
   /*const ProfileSchema = Yup.object().shape({
         prefix: Yup.mixed().oneOf(info.prefix),
@@ -230,15 +240,7 @@ const ProfileFormInput = () => {
                 width="238px"
                 disable={editProfile}
               />
-              <Button
-                variant="outline"
-                width="240px"
-                leftIcon={<HiKey />}
-                marginBottom="24px"
-                display={editProfile ? 'unset' : 'none'}
-              >
-                เปลี่ยนรหัสผ่าน
-              </Button>
+              <ChangePassword editProfile={editProfile} />
             </Flex>
             <Text as="b">ที่อยู่ตามทะเบียนบ้าน</Text>
             <Divider />
@@ -341,23 +343,21 @@ const ProfileFormInput = () => {
                 width="146px"
                 disable={editProfile}
               />
-            </Flex>
-            <Flex justify="center" width="100%">
-              <Flex gap="22px">
+            </Flex >
+            <Flex
+              justify="center"
+              width="100%"
+              display={!editProfile ? 'unset' : 'none'}
+            >
+              <Flex gap="22px" align= 'center'>
                 <Button
-                  display={!editProfile ? 'unset' : 'none'}
                   onClick={() => {
                     seteditProfile(true)
                   }}
                 >
                   ยกเลิก
                 </Button>
-                <Button
-                  display={!editProfile ? 'unset' : 'none'}
-                  sx={submitButton}
-                >
-                  ตกลง
-                </Button>
+                <ConfirmPassword />
               </Flex>
             </Flex>
           </VStack>

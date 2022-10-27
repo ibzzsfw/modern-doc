@@ -7,6 +7,7 @@ import Home from '@pages/Home'
 import MyDocument from '@pages/MyDocument'
 import Error from '@pages/Error'
 import { VStack } from '@chakra-ui/react'
+import OTPVerify from './components/OTPVerify'
 
 const AppRoute = () => {
   return (
@@ -41,6 +42,16 @@ const AppRoute = () => {
               <>
                 <PageContainer>
                   <MyProfile />
+                </PageContainer>
+              </>
+            }
+          />
+          <Route
+            path="/otpverify"
+            element={
+              <>
+                <PageContainer>
+                  <OTPVerify />
                 </PageContainer>
               </>
             }
