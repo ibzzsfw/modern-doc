@@ -15,7 +15,13 @@ import {
 } from '@chakra-ui/react'
 import { HiKey } from 'react-icons/hi'
 
-const ChangePassword = ({ editProfile }: any) => {
+type propsType = {
+  editProfile: boolean
+  callback?: ()=>{}
+}
+
+
+const ChangePassword = ({ editProfile,callback }: propsType) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const toast = useToast()
 
@@ -26,7 +32,7 @@ const ChangePassword = ({ editProfile }: any) => {
         width="240px"
         leftIcon={<HiKey />}
         marginBottom="24px"
-        display={editProfile ? 'unset' : 'none'}
+        display={!isOpen ? 'unset' : 'none'}
         onClick={onOpen}
       >
         เปลี่ยนรหัสผ่าน

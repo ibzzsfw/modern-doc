@@ -9,8 +9,8 @@ import {
 } from '@chakra-ui/react'
 import { Form, Formik } from 'formik'
 import FormInput from '@components/FormInput'
-import ConfirmPassword from '@components/confirmPassword'
-import ChangePassword from './changePassword'
+import ConfirmPassword from '@/components/ConfirmPassword'
+import ChangePassword from '@/components/ChangePassword'
 import * as Yup from 'yup'
 import { useState, useRef } from 'react'
 import { AiTwotoneCalendar } from 'react-icons/ai'
@@ -80,6 +80,9 @@ const ProfileFormInput = () => {
     _active: {
       backgroundColor: 'hover.white',
     },
+  }
+  const editProfileHandler = () => {
+    seteditProfile(!editProfile)
   }
 
   /*const ProfileSchema = Yup.object().shape({
@@ -314,11 +317,11 @@ const ProfileFormInput = () => {
               />
             </Flex>
             <Flex
-              justify="center"
+              justifyContent='space-between'
               width="100%"
               display={!editProfile ? 'unset' : 'none'}
             >
-              <Flex gap="22px" align="center">
+              <Flex gap="22px" >
                 <Button
                   onClick={() => {
                     seteditProfile(true)
@@ -326,7 +329,8 @@ const ProfileFormInput = () => {
                 >
                   ยกเลิก
                 </Button>
-                <ConfirmPassword />
+                
+                <ConfirmPassword callback={()=>{seteditProfile(true)}} />
               </Flex>
             </Flex>
           </VStack>
