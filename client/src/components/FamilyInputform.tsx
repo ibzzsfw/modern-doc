@@ -1,0 +1,121 @@
+import { Formik, Form } from 'formik'
+import * as Yup from 'yup'
+import FormInput from '@/components/FormInput'
+import { useState } from 'react'
+import { Flex, VStack, Box, Icon, Button, Link} from '@chakra-ui/react'
+
+
+type propsType = {
+  id?: number
+  prefix?: string
+  firstName?: string
+  lastName?: string
+  relationship?: string
+  citizenId?: string
+  menu?: any 
+  disable?: boolean | 'false' | 'true'
+}
+
+const FamilyInputform = ({id, prefix,firstName,lastName,relationship,citizenId, menu, disable }: propsType) => {
+  
+
+  const selectOptions = {
+    prefix: ['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง'],
+    relationship: ['บิดา', 'มารดา', 'พี่', 'น้อง', 'อื่นๆ'],
+  }
+
+  const deleteInfo = ()=>{
+    
+  }
+
+  return (
+    <VStack>
+      <Box textAlign="end" width="100%">
+        {menu}
+      
+      </Box>
+
+      <Formik
+        initialValues={{
+          prefix: prefix || '',
+          firstName: firstName || '',
+          lastName: lastName || '',
+          relationship: relationship || '',
+          citizenId:  citizenId || '',
+        }}
+        onSubmit={(values) => {
+          console.log(values)
+        }}
+      >
+        <Form>
+          <VStack alignItems="start">
+            <Flex gap="16px">
+              <FormInput
+                label="คำนำหน้า"
+                name="prefix"
+                type="select"
+                options={selectOptions.prefix}
+                
+                showCorrectBorder
+                width="139.2px"
+                disable={!disable}
+              />
+              <FormInput
+                label="ชื่อ"
+                name="firstName"
+                type="text"
+                placeholder="กรอกชื่อ"
+                showCorrectBorder
+                width="219.08px"
+                disable={!disable}
+              />
+              <FormInput
+                label="นามสกุล"
+                name="lastName"
+                type="text"
+                placeholder="กรอกนามสกุล"
+                showCorrectBorder
+                width="238.45px"
+                disable={!disable}
+              />
+            </Flex>
+            <Flex gap="16px">
+              <FormInput
+                label="เกี่ยวข้องเป็น"
+                name="relationship"
+                type="select"
+                options={selectOptions.relationship}
+                showCorrectBorder
+                width="120px"
+                disable={!disable}
+              />
+              <FormInput
+                label="เลขบัตรประจำตัวประชาชน"
+                name="citicenId"
+                type="text"
+                placeholder="กรอกเลขบัตรประจำตัวประชาชน"
+                showCorrectBorder
+                width="250px"
+                disable={!disable}
+              />  
+            </Flex>
+            {!disable ? (<></>): ( 
+            <Flex justify="center" width="100%">
+              <Flex gap="22px" align="center">
+              <Link href = '/family'><Button onClick={() => {
+                  
+                }}>ยกเลิก</Button></Link>  
+                <Button color="blue" onClick={() => {}}>
+                  ตกลง
+                </Button>
+              </Flex>
+            </Flex>)}
+           
+          </VStack>
+        </Form>
+      </Formik>
+    </VStack>
+  )
+}
+
+export default FamilyInputform

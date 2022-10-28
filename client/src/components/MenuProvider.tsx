@@ -137,7 +137,7 @@ const MenuProvider = ({
                             as="button"
                             sx={{ ...menuButton, ...menu?.style }}
                             onClick={() => {
-                              menu.onClick
+                              menu.onClick()
                               onClose()
                             }}
                           >
@@ -152,7 +152,7 @@ const MenuProvider = ({
                           as="button"
                           sx={{ ...menuButton, ...menu?.style }}
                           onClick={() => {
-                            menu.onClick
+                            menu.onClick()
                             onClose()
                           }}
                         >
