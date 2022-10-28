@@ -15,7 +15,7 @@ import {
 import ReactMarkdown from 'react-markdown'
 import { AiOutlineDoubleRight, AiOutlineUpload, AiOutlineDownload, AiFillPrinter } from 'react-icons/ai'
 
-const File = () => {
+const Folder = () => {
 
 
   let detailsBox = {
@@ -71,6 +71,11 @@ const File = () => {
     height: '48px',
     borderBottom: '1px solid',
     borderColor: 'background.gray',
+  }
+
+  let tableRowSelected = {
+    ...tableRow,
+    backgroundColor: 'lightblue',
   }
 
 
@@ -151,7 +156,7 @@ _มี **ตัวหนา** ในบรรทัดที่ทุกตั�
             {
               [...Array(10).keys()].map((index) => {
                 return (<>
-                  <Grid templateColumns='1fr 3fr 1fr 2fr 3fr 1fr' sx={tableRow}>
+                  <Grid templateColumns='1fr 3fr 1fr 2fr 3fr 1fr' sx={(index == 3) ? tableRowSelected : tableRow} key={index}>
                     <Box sx={simpleBox}>
                       <Checkbox />
                     </Box>
@@ -165,7 +170,7 @@ _มี **ตัวหนา** ในบรรทัดที่ทุกตั�
                   </Grid>
                   <Grid templateColumns='1fr 3fr 1fr 2fr 3fr 1fr' sx={tableRow}>
                     <Box sx={simpleBox}>
-                      <IconButton aria-label='Search database' icon={<AiOutlineUpload />} />
+                      <IconButton aria-label='Search database' icon={<AiOutlineUpload />} size='sm'/>
                     </Box>
                     <Box sx={simpleBox}>ชื่อเอกสาร</Box>
                     <Box sx={simpleBox}>จำนวน</Box>
@@ -194,4 +199,4 @@ _มี **ตัวหนา** ในบรรทัดที่ทุกตั�
   )
 }
 
-export default File
+export default Folder

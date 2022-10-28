@@ -5,9 +5,8 @@ import MyProfile from '@pages/MyProfile'
 import PageContainer from '@components/PageContainer'
 import Home from '@pages/Home'
 import MyDocument from '@pages/MydocumentPage'
-import File from '@/pages/Folder'
+import Folder from '@/pages/Folder'
 import Error from '@pages/Error'
-import { VStack } from '@chakra-ui/react'
 import OTPVerify from './components/OTPVerify'
 import FamilyPage from './pages/FamilyPage'
 import AddFamilyPage from './pages/AddFamilyMemberPage'
@@ -64,11 +63,12 @@ const AppRoute = () => {
             element={
               <>
                 <PageContainer>
-                  <File />
+                  <Folder />
                 </PageContainer>
               </>
             }
           />
+          <Route
             path="/family"
             element={
               <>
@@ -77,9 +77,7 @@ const AppRoute = () => {
                 </PageContainer>
               </>
             }
-          >
-           
-          </Route>
+          />
           <Route
               path="/family/add"
               element={
