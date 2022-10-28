@@ -41,16 +41,36 @@ const ChangePassword = ({ editProfile }: any) => {
         <ModalOverlay />
         <ModalContent justifyContent="center">
           <ModalHeader>เปลี่ยนรหัสผ่านใหม่</ModalHeader>
-          <ModalBody>
-            <Formik
+          <Formik
               initialValues={{
                 password: '',
+                newPassword: '',
+                confirmPassword: '',
               }}
               onSubmit={(values) => {
-                console.log(values)
+                if (values.newPassword == values.confirmPassword) {
+                  console.log(values.newPassword)
+                  console.log(values.confirmPassword)
+                  toast({
+                    title: 'เปลี่ยนรหัสผ่านสำเร็จ',
+                    status: 'success',
+                    duration: 5000,
+                   
+                  }) 
+                  onClose()
+                }else{
+                  toast({
+                    title: 'เปลี่ยนรหัสผ่านไม่สำเร็จ',
+                    status: 'error',
+                    duration: 5000,
+                  })
+
+                }
               }}
             >
               <Form>
+          <ModalBody>
+           
                 <FormInput
                   label="รหัสผ่านยืนยัน"
                   name="password"
@@ -60,20 +80,19 @@ const ChangePassword = ({ editProfile }: any) => {
                 />
                 <FormInput
                   label="รหัสผ่านใหม่"
-                  name="password"
+                  name="newpassword"
                   type="password"
                   placeholder="รหัสผ่านใหม่"
                   showCorrectBorder
                 />
                 <FormInput
                   label="ยืนยันรหัสผ่านใหม่"
-                  name="password"
+                  name="newpasswordconfirm"
                   type="password"
                   placeholder="ยืนยันรหัสผ่านใหม่"
                   showCorrectBorder
                 />
-              </Form>
-            </Formik>
+            
           </ModalBody>
 
           <ModalFooter justifyContent="center">
@@ -81,21 +100,13 @@ const ChangePassword = ({ editProfile }: any) => {
               <Button variant="outline" onClick={onClose}>
                 ยกเลิก
               </Button>
-              <Button
-                variant="solid"
-                colorScheme="blue"
-                onClick={() => {
-                  toast({
-                    title: 'เปลี่ยนรหัสผ่านสำเร็จ',
-                    status: 'success',
-                    duration: 5000,
-                  })
-                }}
-              >
+              <Button variant="solid" colorScheme="blue" type="submit" name='submit'>
                 ตกลง
               </Button>
             </Flex>
           </ModalFooter>
+          </Form>
+            </Formik>
         </ModalContent>
       </Modal>
     </>

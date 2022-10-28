@@ -1,14 +1,11 @@
 import {
   Box,
-  
   VStack,
   Icon,
   Button,
   Flex,
   Divider,
-  
   Text,
-  
 } from '@chakra-ui/react'
 import { Form, Formik } from 'formik'
 import FormInput from '@components/FormInput'
@@ -51,23 +48,6 @@ const ProfileFormInput = () => {
     district: ['ธนบุรี'],
     province: ['กรุงเทพมหานคร'],
     postalCode: ['10600'],
-  }
-
-  let layout = {
-    width: '100%',
-    margin: 'auto',
-  }
-
-  let logoBar = {
-    justifyContent: 'space-around',
-    marginBottom: '28px',
-  }
-
-  let providerLogo = {
-    width: '48px',
-    height: '48px',
-    cursor: 'pointer',
-    borderRadius: '100%',
   }
 
   let editButton = {

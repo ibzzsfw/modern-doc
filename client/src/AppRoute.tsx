@@ -9,6 +9,7 @@ import Error from '@pages/Error'
 import { VStack } from '@chakra-ui/react'
 import OTPVerify from './components/OTPVerify'
 import FamilyPage from './pages/FamilyPage'
+import AddFamilyPage from './pages/AddFamilyMemberPage'
 
 const AppRoute = () => {
   return (
@@ -57,7 +58,7 @@ const AppRoute = () => {
               </>
             }
           />
-           <Route
+          <Route
             path="/family"
             element={
               <>
@@ -66,7 +67,19 @@ const AppRoute = () => {
                 </PageContainer>
               </>
             }
-          />
+          >
+           
+          </Route>
+          <Route
+              path="/family/add"
+              element={
+                <>
+                  <PageContainer>
+                    <AddFamilyPage />
+                  </PageContainer>
+                </>
+              }
+            />
           <Route
             path="*"
             element={

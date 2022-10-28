@@ -7,6 +7,7 @@ const ProfilePicture = () => {
     let profilePictureLayout = {
         width: '365px',
         height: '365px',
+        backgroundColor: 'background.white',
        
            
     }
