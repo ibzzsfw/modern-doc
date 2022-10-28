@@ -34,8 +34,11 @@ const Navbar = () => {
           <Link to="/home">
             <Text>หน้าหลัก</Text>
           </Link>
-          <Link to="/folder">
+          <Link to="/mydocument">
             <Text>แฟ้ม</Text>
+          </Link>
+          <Link to="/folder">
+            <Text color='red'>folder page</Text>
           </Link>
         </HStack>
         <NavbarAvatar/>
