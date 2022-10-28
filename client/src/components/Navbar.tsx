@@ -37,6 +37,9 @@ const Navbar = () => {
           <Link to="/mydocument">
             <Text>แฟ้ม</Text>
           </Link>
+          <Link to="/folder">
+            <Text color='red'>folder page</Text>
+          </Link>
         </HStack>
         <NavbarAvatar/>
       </Flex>
