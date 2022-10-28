@@ -7,32 +7,42 @@ import {
   Icon,
   Button,
   VStack,
+  useDisclosure,
+  useToast,
 } from '@chakra-ui/react'
 import FamilyInputform from './FamilyInputform'
-import MenuProvider from './MenuProvider'
-
+import ModalProvider from './ModalProvider'
 import { useState } from 'react'
 
 type dataTypes = {
-  
-    id: number
-    prefix: string
-    firstName: string
-    lastName: string
-    relationship: string
-    citizenId: string
-  } 
-
+  id: number
+  prefix: string
+  firstName: string
+  lastName: string
+  relationship: string
+  citizenId: string
+}
 
 type propsType = {
   data?: dataTypes
   activeForm?: boolean | 'true' | 'false'
   menuActive?: boolean | 'false' | 'true'
-  menuComponent : any
+  disablecitizenId?: boolean | 'false' | 'true'
+  menuComponent?: any
+  toast?: {} | []
+  callback?: () => void
 }
-
-const FamilyInfoBox = ({ data, activeForm, menuActive, menuComponent }: propsType) => {
+const FamilyInfoBox = ({
+  data,
+  activeForm,
+  disablecitizenId,
+  menuActive,
+  menuComponent,
+  callback,
+  toast,
+}: propsType) => {
   const [editFamily, setEditFamily] = useState(false)
+
   let boxLayout = {
     backgroundColor: 'background.white',
     margin: 'auto',
@@ -40,8 +50,6 @@ const FamilyInfoBox = ({ data, activeForm, menuActive, menuComponent }: propsTyp
     position: 'relative',
     padding: '20px',
   }
-  
-
 
   return (
     <Box sx={boxLayout}>
@@ -61,6 +69,9 @@ const FamilyInfoBox = ({ data, activeForm, menuActive, menuComponent }: propsTyp
             lastName={data?.lastName}
             relationship={data?.relationship}
             citizenId={data?.citizenId}
+            closeForm={callback}
+            toast={toast}
+            citizenIdDisable={disablecitizenId}
           />
         </HStack>
       </Flex>

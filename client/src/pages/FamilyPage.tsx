@@ -1,4 +1,4 @@
-import FamilyInfo from '@/components/FamilyInfoBox'
+import FamilyInfoBox from '@/components/FamilyInfoBox'
 import {
   Button,
   Box,
@@ -8,17 +8,18 @@ import {
   Wrap,
   Link,
   Icon,
-  useToast,
+  useDisclosure,
 } from '@chakra-ui/react'
 import { AiOutlineUserAdd } from 'react-icons/ai'
 import MenuProvider from '@/components/MenuProvider'
 import { BsThreeDots, BsTrash } from 'react-icons/bs'
 import { BiEdit } from 'react-icons/bi'
 import { useState } from 'react'
-
+import ManageFamilyMember from '../components/ManageFamilyMember'
+import ModalProvider from '@/components/ModalProvider'
 
 const FamilyPage = () => {
-  var [family, setfamily] = useState([
+  const [family, setfamily] = useState([
     {
       id: 1,
       prefix: 'เด็กชาย',
@@ -44,6 +45,8 @@ const FamilyPage = () => {
       citizenId: '5 4487 45563 21 4',
     },
   ])
+  const [memberState, setmemberState] = useState(2)
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   let threeDot = {
     position: 'absolute',
@@ -51,16 +54,16 @@ const FamilyPage = () => {
     right: '20px',
     color: 'accent.black',
   }
+  const changeNormalstate = () => {
+    setmemberState(2)
+  }
+  const editmember = () => {
+    setmemberState(1)
+  }
   const deleteFamily = () => {
-    const showToast = new Promise((resolve, reject) => {
-
-    })
-    
     console.log('delete')
     family.pop()
-    console.log(family)
     setfamily([...family])
-        
   }
 
   let menu = (
@@ -72,7 +75,9 @@ const FamilyPage = () => {
           {
             title: 'แก้ไขข้อมูลสมาชิก',
             icon: <Icon as={BiEdit} />,
-            onClick: () => {},
+            onClick: () => {
+              editmember()
+            },
           },
         ],
         [
@@ -80,7 +85,7 @@ const FamilyPage = () => {
             title: 'ลบสมาชิก',
             icon: <Icon as={BsTrash} color="accent.red" />,
             onClick: () => {
-              
+              onOpen()
             },
             style: {
               color: 'accent.red',
@@ -111,31 +116,49 @@ const FamilyPage = () => {
     },
   }
 
-  return (
+  return memberState == 0 ? (
+    <ManageFamilyMember cancel={changeNormalstate} isEdit="add" />
+  ) : memberState == 1 ? (
+    <ManageFamilyMember
+      cancel={changeNormalstate}
+      isEdit="edit"
+      data={family[1]}
+    />
+  ) : (
     <Center>
       <Box width="909px">
         <VStack>
           <Box width="100%" textAlign="right">
-            <Link href="/family/add">
-              <Button
-                variant="solid"
-                color="accent.blue"
-                sx={editButton}
-                leftIcon={<AiOutlineUserAdd />}
-              >
-                เพิ่มสามาชิก
-              </Button>
-            </Link>
+            <Button
+              variant="solid"
+              color="accent.blue"
+              sx={editButton}
+              leftIcon={<AiOutlineUserAdd />}
+              onClick={() => {
+                setmemberState(0)
+              }}
+            >
+              เพิ่มสามาชิก
+            </Button>
           </Box>
-          <Button onClick={(e)=>{deleteFamily()}}>delete</Button>
           <Wrap spacing="28px">
-            {family.map((values) => {
+            {family.map((values, index) => {
               return (
-                <FamilyInfo
-                  menuComponent={menu}
-                  menuActive="true"
-                  data={values}
-                />
+                <>
+                  <FamilyInfoBox
+                    menuComponent={menu}
+                    menuActive="true"
+                    data={values}
+                  />
+                  <ModalProvider
+                    isOpen={isOpen}
+                    onOpen={onOpen}
+                    onClose={onClose}
+                    firstName={values.firstName}
+                    lastName={values.lastName}
+                    callback={deleteFamily}
+                  />
+                </>
               )
             })}
           </Wrap>
