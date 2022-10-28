@@ -34,7 +34,7 @@ const Navbar = () => {
           <Link to="/home">
             <Text>หน้าหลัก</Text>
           </Link>
-          <Link to="/folder">
+          <Link to="/mydocument">
             <Text>แฟ้ม</Text>
           </Link>
         </HStack>
