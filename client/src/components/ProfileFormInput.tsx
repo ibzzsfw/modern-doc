@@ -1,23 +1,14 @@
 import {
   Box,
-  HStack,
+  
   VStack,
   Icon,
   Button,
   Flex,
   Divider,
-  Heading,
+  
   Text,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-  ButtonGroup,
-  Center,
+  
 } from '@chakra-ui/react'
 import { Form, Formik } from 'formik'
 import FormInput from '@components/FormInput'
@@ -110,8 +101,6 @@ const ProfileFormInput = () => {
       backgroundColor: 'hover.white',
     },
   }
-
-
 
   /*const ProfileSchema = Yup.object().shape({
         prefix: Yup.mixed().oneOf(info.prefix),
@@ -343,13 +332,13 @@ const ProfileFormInput = () => {
                 width="146px"
                 disable={editProfile}
               />
-            </Flex >
+            </Flex>
             <Flex
               justify="center"
               width="100%"
               display={!editProfile ? 'unset' : 'none'}
             >
-              <Flex gap="22px" align= 'center'>
+              <Flex gap="22px" align="center">
                 <Button
                   onClick={() => {
                     seteditProfile(true)

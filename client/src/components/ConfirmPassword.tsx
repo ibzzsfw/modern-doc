@@ -11,15 +11,14 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
-  useToast
+  useToast,
 } from '@chakra-ui/react'
 
 const ConfirmPassword = () => {
-  const {isOpen ,onOpen, onClose } = useDisclosure()
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const toast = useToast()
-  
-  
-  const submitForm = ()=>{
+
+  const submitForm = () => {
     onClose()
     toast({
       title: 'แก้ไขข้อมูลส่วนตัวสำเร็จ',
@@ -28,15 +27,20 @@ const ConfirmPassword = () => {
     })
   }
 
-  
-
   return (
     <>
-      <Button onClick={onOpen} colorScheme = 'blue'>ตกลง</Button>
+      <Button onClick={onOpen} colorScheme="blue">
+        ตกลง
+      </Button>
 
-      <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}  size = 'sm' >
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        closeOnOverlayClick={false}
+        size="sm"
+      >
         <ModalOverlay />
-        <ModalContent justifyContent= 'center'>
+        <ModalContent justifyContent="center">
           <ModalHeader>ยืนยันการแก้ไขข้อมูล</ModalHeader>
           <ModalBody>
             <Formik
@@ -54,18 +58,17 @@ const ConfirmPassword = () => {
                   type="password"
                   placeholder="กรอกรหัสผ่านเพื่อยืนยัน"
                   showCorrectBorder
-                  
                 />
               </Form>
             </Formik>
           </ModalBody>
 
-          <ModalFooter justifyContent= 'center'>
-            <Flex gap="22px" >
-              <Button variant='outline' onClick={onClose}>
+          <ModalFooter justifyContent="center">
+            <Flex gap="22px">
+              <Button variant="outline" onClick={onClose}>
                 ยกเลิก
               </Button>
-              <Button variant="solid" colorScheme='blue'  onClick={submitForm}>
+              <Button variant="solid" colorScheme="blue" onClick={submitForm}>
                 ตกลง
               </Button>
             </Flex>

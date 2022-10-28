@@ -15,7 +15,6 @@ import {
 import { FiEdit } from 'react-icons/fi'
 import ProfilePicture from '@/components/ProfilePicture'
 import ProfileFormInput from '@/components/ProfileFormInput'
-import OTPVerify from '@/components/OTPVerify'
 
 const MyProfile = () => {
   let myprofileLayout = {
@@ -23,25 +22,13 @@ const MyProfile = () => {
     color: 'accent.black',
     width: '1417px',
     height: '1004px',
-    
   }
-  
 
   return (
-    
-      
-        
-        <HStack  gap="138px">
-          <ProfilePicture />
-          <ProfileFormInput />
-          <OTPVerify />
-        </HStack>
-      
-
-        
-        
-       
-    
+    <HStack gap="138px">
+      <ProfilePicture />
+      <ProfileFormInput />
+    </HStack>
   )
 }
 export default MyProfile

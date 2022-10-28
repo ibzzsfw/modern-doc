@@ -88,7 +88,7 @@ const ChangePassword = ({ editProfile }: any) => {
                   toast({
                     title: 'เปลี่ยนรหัสผ่านสำเร็จ',
                     status: 'success',
-                    duration: 9000,
+                    duration: 5000,
                   })
                 }}
               >
