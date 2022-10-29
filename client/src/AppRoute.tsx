@@ -62,7 +62,7 @@ const AppRoute = () => {
             path="/folder"
             element={
               <>
-                <PageContainer>
+                <PageContainer breadcrumb>
                   <Folder />
                 </PageContainer>
               </>
