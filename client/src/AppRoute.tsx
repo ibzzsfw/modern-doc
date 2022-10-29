@@ -8,8 +8,8 @@ import MyDocument from '@pages/MydocumentPage'
 import Folder from '@/pages/Folder'
 import Error from '@pages/Error'
 import OTPVerify from './components/OTPVerify'
-import FamilyPage from './pages/FamilyPage'
-import AddFamilyPage from './components/ManageFamilyMember'
+import FamilyPage from '@/pages/FamilyPage'
+import SearchPage from '@/pages/SearchPage'
 
 const AppRoute = () => {
   return (
@@ -74,6 +74,16 @@ const AppRoute = () => {
               <>
                 <PageContainer>
                   <FamilyPage />
+                </PageContainer>
+              </>
+            }
+          />
+           <Route
+            path="/search"
+            element={
+              <>
+                <PageContainer>
+                  <SearchPage />
                 </PageContainer>
               </>
             }
