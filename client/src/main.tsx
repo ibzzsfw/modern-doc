@@ -23,6 +23,7 @@ const colors = {
       green: '#17C964',
       gray: '#A3A3A3',
       lightGray: '#889096',
+      yellow: '#F5A524',
     },
     hover: {
       blue: '#0072F5',
@@ -32,6 +33,7 @@ const colors = {
       red: '#F31260',
       green: '#17C964',
       gray: '#A3A3A3',
+      yellow: '#F5A524',
     },
     background: {
       gray: '#F1F3F5',

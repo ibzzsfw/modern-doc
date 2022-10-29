@@ -9,6 +9,11 @@ let breadcrumbConfig = [
     path: '/mydocument',
     history: ['หน้าหลัก'],
   },
+  {
+    title: 'สร้างเอกสาร',
+    path: '/folder',
+    history: ['หน้าหลัก'],
+  },
 ]
 
 const getBreadcrumbFromPath = (path: string) => {
