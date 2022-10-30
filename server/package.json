@@ -5,6 +5,7 @@
   "author": "DylDarab <apicha.oap@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@prisma/client": "4.5.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.2",
     "express": "^4.18.1",
