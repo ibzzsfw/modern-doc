@@ -2,12 +2,14 @@ lockfileVersion: 5.4
 
 specifiers:
   '@types/cors': ^2.8.12
+  '@types/node': ^18.11.8
   cors: ^2.8.5
   dotenv: ^16.0.2
   express: ^4.18.1
   helmet: ^6.0.0
   node-fetch: ^3.2.10
   nodemon: ^2.0.19
+  prisma: ^4.5.0
   sha-1: ^1.0.0
   sha1: ^1.1.1
   ts-node: ^10.9.1
@@ -22,11 +24,13 @@ dependencies:
   nodemon: 2.0.20
   sha-1: 1.0.0
   sha1: 1.1.1
-  ts-node: 10.9.1_typescript@4.8.4
+  ts-node: 10.9.1_7jzoohtnaegavowzoeccrsbhty
   typescript: 4.8.4
 
 devDependencies:
   '@types/cors': 2.8.12
+  '@types/node': 18.11.8
+  prisma: 4.5.0
 
 packages:
 
@@ -53,6 +57,11 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.14
     dev: false
 
+  /@prisma/engines/4.5.0:
+    resolution: {integrity: sha512-4t9ir2SbQQr/wMCNU4YpHWp5hU14J2m3wHUZnGJPpmBF8YtkisxyVyQsKd1e6FyLTaGq8LOLhm6VLYHKqKNm+g==}
+    requiresBuild: true
+    dev: true
+
   /@tsconfig/node10/1.0.9:
     resolution: {integrity: sha512-jNsYVVxU8v5g43Erja32laIDHXeoNvFEpX33OK4d6hljo3jDhCBDhx5dhCCTMWUojscpAagGiRkBKxpdl9fxqA==}
     dev: false
@@ -72,6 +81,9 @@ packages:
   /@types/cors/2.8.12:
     resolution: {integrity: sha512-vt+kDhq/M2ayberEtJcIN/hxXy1Pk+59g2FV/ZQceeaTyCtCucjL2Q7FXlFjtWn4n15KCr1NE2lNNFhp0lEThw==}
     dev: true
+
+  /@types/node/18.11.8:
+    resolution: {integrity: sha512-uGwPWlE0Hj972KkHtCDVwZ8O39GmyjfMane1Z3GUBGGnkZ2USDq7SxLpVIiIHpweY9DS0QTDH0Nw7RNBsAAZ5A==}
 
   /abbrev/1.1.1:
     resolution: {integrity: sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==}
@@ -611,6 +623,15 @@ packages:
     engines: {node: '>=8.6'}
     dev: false
 
+  /prisma/4.5.0:
+    resolution: {integrity: sha512-9Aeg4qiKlv9Wsjz4NO8k2CzRzlvS3A4FYVJ5+28sBBZ0eEwbiVOE/Jj7v6rZC1tFW2s4GSICQOAyuOjc6WsNew==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+    requiresBuild: true
+    dependencies:
+      '@prisma/engines': 4.5.0
+    dev: true
+
   /proxy-addr/2.0.7:
     resolution: {integrity: sha512-llQsMLSUDUPT44jdrU/O37qlnifitDP+ZwrmmZcoSKyLKvtZxpyV0n2/bD/N4tBAAZ/gJEdZU7KMraoK1+XYAg==}
     engines: {node: '>= 0.10'}
@@ -764,7 +785,7 @@ packages:
       nopt: 1.0.10
     dev: false
 
-  /ts-node/10.9.1_typescript@4.8.4:
+  /ts-node/10.9.1_7jzoohtnaegavowzoeccrsbhty:
     resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
     hasBin: true
     peerDependencies:
@@ -783,6 +804,7 @@ packages:
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.3
+      '@types/node': 18.11.8
       acorn: 8.8.0
       acorn-walk: 8.2.0
       arg: 4.1.3

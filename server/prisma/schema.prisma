@@ -1,0 +1,216 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Sex {
+  m
+  f
+}
+
+enum Relationship {
+  householder
+  father
+  mother
+  children
+  cousin
+  spouse
+  other
+}
+
+model User {
+  id                 String               @id @default(uuid()) @db.Uuid
+  householdId        String               @db.Uuid
+  firstName          String
+  lastName           String
+  sex                Sex
+  phoneNumbers       String               @unique @db.VarChar(10)
+  email              String?
+  hashedPassword     String
+  citizenId          String               @unique @db.VarChar(13)
+  relationship       Relationship
+  birthDate          DateTime
+  UserUploadedFile   UserUploadedFile[]
+  UserFreeUploadFile UserFreeUploadFile[]
+  Note               Note[]
+  userFolder         userFolder[]
+  userGeneratedFile  userGeneratedFile[]
+  userField          userField[]
+}
+
+model Field {
+  id                 String               @id @default(uuid()) @db.Uuid
+  name               String               @unique
+  officialName       String               @unique
+  description        String?
+  validationSchema   Json
+  generatedFileId    String?              @db.Uuid
+  GeneratedFileField GeneratedFileField[]
+  userField          userField[]
+}
+
+model GeneratedFile {
+  id                  String                @id @default(uuid()) @db.Uuid
+  name                String                @unique
+  officialName        String                @unique
+  description         String?
+  dayLifeSpan         Int                   @default(0)
+  URI                 String
+  GeneratedFileField  GeneratedFileField[]
+  FolderGeneratedFile FolderGeneratedFile[]
+  generatedFileTag    generatedFileTag[]
+  userGeneratedFile   userGeneratedFile[]
+}
+
+model GeneratedFileField {
+  id              String        @id @default(uuid()) @db.Uuid
+  generatedFile   GeneratedFile @relation(fields: [generatedFileId], references: [id])
+  generatedFileId String        @db.Uuid
+  field           Field         @relation(fields: [fieldId], references: [id])
+  fieldId         String        @db.Uuid
+  uploadedFileId  String?       @db.Uuid
+
+  @@unique([generatedFileId, fieldId])
+}
+
+model uploadedFile {
+  id                 String               @id @default(uuid()) @db.Uuid
+  name               String               @unique
+  officialName       String               @unique
+  description        String?
+  dayLifeSpan        Int                  @default(0)
+  URI                String
+  UserUploadedFile   UserUploadedFile[]
+  FolderUploadedFile FolderUploadedFile[]
+  uploadedFileTag    uploadedFileTag[]
+}
+
+model UserUploadedFile {
+  id             String       @id @default(uuid()) @db.Uuid
+  user           User         @relation(fields: [userId], references: [id])
+  userId         String       @db.Uuid
+  uploadedFile   uploadedFile @relation(fields: [uploadedFileId], references: [id])
+  uploadedFileId String       @db.Uuid
+  URI            String
+  isShared       Boolean      @default(false)
+
+  @@unique([userId, uploadedFileId])
+}
+
+model UserFreeUploadFile {
+  id             String    @id @default(uuid()) @db.Uuid
+  user           User      @relation(fields: [userId], references: [id])
+  userId         String    @db.Uuid
+  uploadedDate   DateTime  @default(now())
+  expirationDate DateTime?
+  note           String?
+  URI            String
+  isShared       Boolean   @default(false)
+}
+
+model Note {
+  id           String   @id @default(uuid()) @db.Uuid
+  user         User     @relation(fields: [userId], references: [id])
+  userId       String   @db.Uuid
+  createdDate  DateTime @default(now())
+  ModifiedDate DateTime @updatedAt
+  heading      String
+  content      String?
+}
+
+model Folder {
+  id                  String                @id @default(uuid()) @db.Uuid
+  name                String
+  officialName        String
+  description         String?
+  dayLifeSpan         Int                   @default(0)
+  FolderUploadedFile  FolderUploadedFile[]
+  FolderGeneratedFile FolderGeneratedFile[]
+  userFolder          userFolder[]
+}
+
+model FolderUploadedFile {
+  id             String       @id @default(uuid()) @db.Uuid
+  folder         Folder       @relation(fields: [folderId], references: [id])
+  folderId       String       @db.Uuid
+  uploadedFile   uploadedFile @relation(fields: [uploadedFileId], references: [id])
+  uploadedFileId String       @db.Uuid
+  amount         Int          @default(1)
+
+  @@unique([folderId, uploadedFileId])
+}
+
+model FolderGeneratedFile {
+  id              String        @id @default(uuid()) @db.Uuid
+  folder          Folder        @relation(fields: [folderId], references: [id])
+  folderId        String        @db.Uuid
+  generatedFile   GeneratedFile @relation(fields: [generatedFileId], references: [id])
+  generatedFileId String        @db.Uuid
+  amount          Int           @default(1)
+
+  @@unique([folderId, generatedFileId])
+}
+
+model Tag {
+  id               String             @id @default(uuid()) @db.Uuid
+  name             String             @unique
+  uploadedFileTag  uploadedFileTag[]
+  generatedFileTag generatedFileTag[]
+}
+
+model uploadedFileTag {
+  id             String       @id @default(uuid()) @db.Uuid
+  uploadedFile   uploadedFile @relation(fields: [uploadedFileId], references: [id])
+  uploadedFileId String       @db.Uuid
+  tag            Tag          @relation(fields: [tagId], references: [id])
+  tagId          String       @db.Uuid
+
+  @@unique([uploadedFileId, tagId])
+}
+
+model generatedFileTag {
+  id              String        @id @default(uuid()) @db.Uuid
+  generatedFile   GeneratedFile @relation(fields: [generatedFileId], references: [id])
+  generatedFileId String        @db.Uuid
+  tag             Tag           @relation(fields: [tagId], references: [id])
+  tagId           String        @db.Uuid
+
+  @@unique([generatedFileId, tagId])
+}
+
+model userFolder {
+  id       String @id @default(uuid()) @db.Uuid
+  user     User   @relation(fields: [userId], references: [id])
+  userId   String @db.Uuid
+  folder   Folder @relation(fields: [folderId], references: [id])
+  folderId String @db.Uuid
+
+  @@unique([userId, folderId])
+}
+
+model userGeneratedFile {
+  id              String        @id @default(uuid()) @db.Uuid
+  user            User          @relation(fields: [userId], references: [id])
+  userId          String        @db.Uuid
+  generatedFile   GeneratedFile @relation(fields: [generatedFileId], references: [id])
+  generatedFileId String        @db.Uuid
+
+  @@unique([userId, generatedFileId])
+}
+
+model userField {
+  id      String @id @default(uuid()) @db.Uuid
+  user    User   @relation(fields: [userId], references: [id])
+  userId  String @db.Uuid
+  field   Field  @relation(fields: [fieldId], references: [id])
+  fieldId String @db.Uuid
+
+  @@unique([userId, fieldId])
+}
