@@ -5,14 +5,6 @@ import { PrismaClient } from '@prisma/client'
 import checkCitizenId from '../utils/checkCitizenId'
 
 class User {
-  public text: string = 'example'
-  static function1 = (): string => {
-    return 'function 1'
-  }
-  static function2 = (): string => {
-    return 'function 2'
-  }
-
   static checkCitizenIdStatus = async (req: Request, res: Response) => {
     const citizenId = req.params.citizenId.toString()
     console.log(citizenId)
