@@ -17,17 +17,17 @@ import { IoChevronBack, IoChevronForward } from 'react-icons/io5'
 import { AiTwotoneCalendar } from 'react-icons/ai'
 
 const Register = () => {
-  const { page, setPage, prefix, sex } = useRegisterStore()
+  const { page, setPage, title, sex } = useRegisterStore()
 
   const registerSchema = Yup.object().shape({
-    prefix: Yup.mixed().oneOf(prefix),
+    title: Yup.mixed().oneOf(title),
     firstName: Yup.string().required('จำเป็นต้องกรอก'),
     lastName: Yup.string().required('จำเป็นต้องกรอก'),
     sex: Yup.mixed().oneOf(sex).required('จำเป็นต้องกรอก'),
-    birthDate: Yup.string().required('จำเป็นต้องกรอก'),
+    birthDate: Yup.date().required('จำเป็นต้องกรอก'),
     citizenId: Yup.string()
       .matches(/^[0-9]+$/, 'กรุณากรอกเฉพาะตัวเลข')
-      .length(13, 'เบอร์โทรศัพท์จำเป็นต้องมี 10 หลัก')
+      .length(13, 'รหัสบัตรประชาชนต้องมี 13 หลัก')
       .required('จำเป็นต้องกรอก'),
     phoneNumber: Yup.string()
       .matches(/^[0-9]+$/, 'กรุณากรอกเฉพาะตัวเลข')
@@ -49,7 +49,7 @@ const Register = () => {
       </Flex>
       <Formik
         initialValues={{
-          prefix: '',
+          title: '',
           firstName: '',
           lastName: '',
           sex: '',
@@ -69,10 +69,10 @@ const Register = () => {
             <VStack marginTop="16px">
               <FormInput
                 label="คำนำหน้า"
-                name="prefix"
+                name="title"
                 type="select"
                 placeholder="--เลือกคำนำหน้า--"
-                options={prefix}
+                options={title}
                 showCorrectBorder
               />
               <FormInput

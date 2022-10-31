@@ -6,9 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider          = "postgresql"
-  url               = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 enum Sex {
@@ -28,22 +27,23 @@ enum Relationship {
 
 model User {
   id                 String               @id @default(uuid()) @db.Uuid
-  householdId        String               @db.Uuid
+  householdId        String               @default(uuid()) @db.Uuid
+  title              String
   firstName          String
   lastName           String
   sex                Sex
-  phoneNumbers       String               @unique @db.VarChar(10)
+  phoneNumber        String               @unique @db.VarChar(10)
   email              String?
   hashedPassword     String
   citizenId          String               @unique @db.VarChar(13)
-  relationship       Relationship
+  relationship       Relationship         @default(householder)
   birthDate          DateTime
   UserUploadedFile   UserUploadedFile[]
   UserFreeUploadFile UserFreeUploadFile[]
   Note               Note[]
-  userFolder         userFolder[]
-  userGeneratedFile  userGeneratedFile[]
-  userField          userField[]
+  userFolder         UserFolder[]
+  userGeneratedFile  UserGeneratedFile[]
+  userField          UserField[]
 }
 
 model Field {
@@ -54,7 +54,7 @@ model Field {
   validationSchema   Json
   generatedFileId    String?              @db.Uuid
   GeneratedFileField GeneratedFileField[]
-  userField          userField[]
+  userField          UserField[]
 }
 
 model GeneratedFile {
@@ -66,8 +66,8 @@ model GeneratedFile {
   URI                 String
   GeneratedFileField  GeneratedFileField[]
   FolderGeneratedFile FolderGeneratedFile[]
-  generatedFileTag    generatedFileTag[]
-  userGeneratedFile   userGeneratedFile[]
+  generatedFileTag    GeneratedFileTag[]
+  userGeneratedFile   UserGeneratedFile[]
 }
 
 model GeneratedFileField {
@@ -81,7 +81,7 @@ model GeneratedFileField {
   @@unique([generatedFileId, fieldId])
 }
 
-model uploadedFile {
+model UploadedFile {
   id                 String               @id @default(uuid()) @db.Uuid
   name               String               @unique
   officialName       String               @unique
@@ -90,14 +90,14 @@ model uploadedFile {
   URI                String
   UserUploadedFile   UserUploadedFile[]
   FolderUploadedFile FolderUploadedFile[]
-  uploadedFileTag    uploadedFileTag[]
+  uploadedFileTag    UploadedFileTag[]
 }
 
 model UserUploadedFile {
   id             String       @id @default(uuid()) @db.Uuid
   user           User         @relation(fields: [userId], references: [id])
   userId         String       @db.Uuid
-  uploadedFile   uploadedFile @relation(fields: [uploadedFileId], references: [id])
+  uploadedFile   UploadedFile @relation(fields: [uploadedFileId], references: [id])
   uploadedFileId String       @db.Uuid
   URI            String
   isShared       Boolean      @default(false)
@@ -134,14 +134,15 @@ model Folder {
   dayLifeSpan         Int                   @default(0)
   FolderUploadedFile  FolderUploadedFile[]
   FolderGeneratedFile FolderGeneratedFile[]
-  userFolder          userFolder[]
+  userFolder          UserFolder[]
+  FolderTag           FolderTag[]
 }
 
 model FolderUploadedFile {
   id             String       @id @default(uuid()) @db.Uuid
   folder         Folder       @relation(fields: [folderId], references: [id])
   folderId       String       @db.Uuid
-  uploadedFile   uploadedFile @relation(fields: [uploadedFileId], references: [id])
+  uploadedFile   UploadedFile @relation(fields: [uploadedFileId], references: [id])
   uploadedFileId String       @db.Uuid
   amount         Int          @default(1)
 
@@ -162,13 +163,14 @@ model FolderGeneratedFile {
 model Tag {
   id               String             @id @default(uuid()) @db.Uuid
   name             String             @unique
-  uploadedFileTag  uploadedFileTag[]
-  generatedFileTag generatedFileTag[]
+  uploadedFileTag  UploadedFileTag[]
+  generatedFileTag GeneratedFileTag[]
+  FolderTag        FolderTag[]
 }
 
-model uploadedFileTag {
+model UploadedFileTag {
   id             String       @id @default(uuid()) @db.Uuid
-  uploadedFile   uploadedFile @relation(fields: [uploadedFileId], references: [id])
+  uploadedFile   UploadedFile @relation(fields: [uploadedFileId], references: [id])
   uploadedFileId String       @db.Uuid
   tag            Tag          @relation(fields: [tagId], references: [id])
   tagId          String       @db.Uuid
@@ -176,7 +178,7 @@ model uploadedFileTag {
   @@unique([uploadedFileId, tagId])
 }
 
-model generatedFileTag {
+model GeneratedFileTag {
   id              String        @id @default(uuid()) @db.Uuid
   generatedFile   GeneratedFile @relation(fields: [generatedFileId], references: [id])
   generatedFileId String        @db.Uuid
@@ -186,7 +188,7 @@ model generatedFileTag {
   @@unique([generatedFileId, tagId])
 }
 
-model userFolder {
+model UserFolder {
   id       String @id @default(uuid()) @db.Uuid
   user     User   @relation(fields: [userId], references: [id])
   userId   String @db.Uuid
@@ -196,7 +198,7 @@ model userFolder {
   @@unique([userId, folderId])
 }
 
-model userGeneratedFile {
+model UserGeneratedFile {
   id              String        @id @default(uuid()) @db.Uuid
   user            User          @relation(fields: [userId], references: [id])
   userId          String        @db.Uuid
@@ -206,7 +208,7 @@ model userGeneratedFile {
   @@unique([userId, generatedFileId])
 }
 
-model userField {
+model UserField {
   id      String @id @default(uuid()) @db.Uuid
   user    User   @relation(fields: [userId], references: [id])
   userId  String @db.Uuid
@@ -214,4 +216,14 @@ model userField {
   fieldId String @db.Uuid
 
   @@unique([userId, fieldId])
+}
+
+model FolderTag {
+  id       String @id @default(uuid()) @db.Uuid
+  folder   Folder @relation(fields: [folderId], references: [id])
+  folderId String @db.Uuid
+  tag      Tag    @relation(fields: [tagId], references: [id])
+  tagId    String @db.Uuid
+
+  @@unique([folderId, tagId])
 }

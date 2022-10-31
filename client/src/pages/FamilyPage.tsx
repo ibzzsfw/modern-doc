@@ -138,7 +138,7 @@ const FamilyPage = () => {
                 setmemberState(0)
               }}
             >
-              เพิ่มสามาชิก
+              เพิ่มสมาชิก
             </Button>
           </Box>
           <Wrap spacing="28px">

@@ -1,23 +1,19 @@
-import { Router } from "express"
-import ExampleRouter from "./ExampleRouter"
+import { Router } from 'express'
+import UserRouter from './UserRouter'
 
-class MasterRouter
-{
+class MasterRouter {
   private router = Router()
-  private exampleRouter = ExampleRouter
+  private UserRouter = UserRouter
 
-  constructor()
-  {
+  constructor() {
     this.configureRoutes()
   }
 
-  configureRoutes = (): void =>
-  {
-    this.router.use("/example", this.exampleRouter)
+  configureRoutes = (): void => {
+    this.router.use('/user', this.UserRouter)
   }
 
-  getRouter = (): Router =>
-  {
+  getRouter = (): Router => {
     return this.router
   }
 }

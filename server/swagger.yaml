@@ -1,0 +1,77 @@
+openapi: 3.0.0
+info:
+  title: ModernDoc API
+  description: API endpoint for ModernDoc
+  version: 0.1.9
+servers:
+  - url: http://localhost:5000
+    description: ModernDoc API
+
+tags:
+  - name: User
+    description: User management
+
+paths:
+  /user:
+    post:
+      tags:
+        - User
+      summary: Create a new user
+      operationId: createUser
+      requestBody:
+        description: User object that needs to be added
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                title:
+                  type: string
+                  description: User's title
+                firstName:
+                  type: string
+                  description: User's first name
+                lastName:
+                  type: string
+                  description: User's last name
+                sex:
+                  type: string
+                  description: m,f
+                birthDate:
+                  type: string
+                  description: User's birth date ISO String
+                citizenId:
+                  type: string
+                  description: User's citizen id
+                phoneNumber: 
+                  type: string
+                  description: User's phone number
+                password:
+                  type: string
+                  description: User's password
+      responses:
+        '201':
+          description: User created
+        '400':
+          description: Invalid input
+  
+  /user/citizenId-status/{citizenId}:
+    get:
+      tags:
+        - User
+      summary: Check if citizen id is available
+      operationId: checkCitizenId
+      parameters:
+        - name: citizenId
+          in: path
+          description: Citizen id to check
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Citizen id available
+        '400':
+          description: Citizen ID is not valid
+        '409':
+          description: Citizen id already exists
