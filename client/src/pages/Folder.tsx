@@ -1,32 +1,10 @@
 import {
-  Flex,
-  Box,
-  Button,
-  HStack,
-  Heading,
-  Tag,
-  Spacer,
-  Grid,
-  Checkbox,
-  Divider,
-  IconButton,
-  ButtonGroup,
-  Badge,
+  Flex
 } from '@chakra-ui/react'
-import ReactMarkdown from 'react-markdown'
-import {
-  AiOutlineDoubleRight,
-  AiOutlineUpload,
-  AiOutlineDownload,
-  AiFillPrinter,
-} from 'react-icons/ai'
-import BadgeStatus from '@/components/DocumentBadge'
-import FolderDetail from '@components/FolderDetail'
 import FileList from '@components/FileList'
-import { useState } from 'react'
+import FolderDetail from '@components/FolderDetail'
 import FolderUploadedFile from '@models/FolderUploadedFile'
 import { addDays, subDays } from 'date-fns'
-import MenuProvider from '@components/MenuProvider'
 
 const Folder = () => {
   const markdown = `
