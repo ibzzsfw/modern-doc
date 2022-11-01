@@ -62,7 +62,7 @@ model GeneratedFile {
   name                String                @unique
   officialName        String                @unique
   description         String?
-  dayLifeSpan         Int                   @default(0)
+  dayLifeSpan         Int                   @default(-1)
   URI                 String
   GeneratedFileField  GeneratedFileField[]
   FolderGeneratedFile FolderGeneratedFile[]
@@ -86,7 +86,7 @@ model UploadedFile {
   name               String               @unique
   officialName       String               @unique
   description        String?
-  dayLifeSpan        Int                  @default(0)
+  dayLifeSpan        Int                  @default(-1)
   URI                String
   UserUploadedFile   UserUploadedFile[]
   FolderUploadedFile FolderUploadedFile[]
@@ -131,7 +131,7 @@ model Folder {
   name                String
   officialName        String
   description         String?
-  dayLifeSpan         Int                   @default(0)
+  dayLifeSpan         Int                   @default(-1)
   FolderUploadedFile  FolderUploadedFile[]
   FolderGeneratedFile FolderGeneratedFile[]
   userFolder          UserFolder[]
