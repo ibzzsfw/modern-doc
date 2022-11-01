@@ -7,7 +7,7 @@ import {
   HStack,
   Spacer,
 } from '@chakra-ui/react'
-import GeneratedDocumentBadge from '@/components/DocumentBadge'
+import GeneratedDocumentBadge from '@components/DocumentBadge'
 import ReactMarkdown from 'react-markdown'
 import { AiOutlineDoubleRight } from 'react-icons/ai'
 import Status from '@models/DocumentStatus'

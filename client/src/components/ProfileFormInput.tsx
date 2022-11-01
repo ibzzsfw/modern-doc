@@ -6,11 +6,13 @@ import {
   Flex,
   Divider,
   Text,
+  Spacer,
+  HStack,
 } from '@chakra-ui/react'
 import { Form, Formik } from 'formik'
 import FormInput from '@components/FormInput'
-import ConfirmPassword from '@/components/ConfirmPassword'
-import ChangePassword from '@/components/ChangePassword'
+import ConfirmPassword from '@components/ConfirmPassword'
+import ChangePassword from '@components/ChangePassword'
 import * as Yup from 'yup'
 import { useState, useRef } from 'react'
 import { AiTwotoneCalendar } from 'react-icons/ai'
@@ -39,7 +41,7 @@ const ProfileFormInput = () => {
     province: 'กรุงเทพมหานคร',
     postalCode: '10600',
   })
-  const [editProfile, seteditProfile] = useState(true)
+  const [editProfile, setEditProfile] = useState(true)
 
   const selectOptions = {
     prefix: ['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง'],
@@ -82,7 +84,7 @@ const ProfileFormInput = () => {
     },
   }
   const editProfileHandler = () => {
-    seteditProfile(!editProfile)
+    setEditProfile(!editProfile)
   }
 
   /*const ProfileSchema = Yup.object().shape({
@@ -107,13 +109,13 @@ const ProfileFormInput = () => {
     */
   return (
     <VStack>
-      <Box width="100%" textAlign="right">
+      <Box width="100%" textAlign="right" height="40px">
         <Button
           sx={editButton}
-          display={editProfile ? 'unset' : 'none'}
+          visibility={!editProfile ? 'hidden' : 'visible'}
           leftIcon={<FiEdit />}
           onClick={() => {
-            seteditProfile(false)
+            setEditProfile(false)
           }}
         >
           แก้ไขข้อมูลส่วนตัว
@@ -316,23 +318,22 @@ const ProfileFormInput = () => {
                 disable={editProfile}
               />
             </Flex>
-            <Flex
-              justifyContent='space-between'
-              width="100%"
-              display={!editProfile ? 'unset' : 'none'}
-            >
-              <Flex gap="22px" >
+            <Box height="40px" textAlign="right" width='100%'>
+              <HStack gap="22px" justifyContent='flex-end'>
                 <Button
                   onClick={() => {
-                    seteditProfile(true)
+                    setEditProfile(true)
                   }}
                 >
                   ยกเลิก
                 </Button>
-                
-                <ConfirmPassword callback={()=>{seteditProfile(true)}} />
-              </Flex>
-            </Flex>
+                <ConfirmPassword
+                  callback={() => {
+                    setEditProfile(true)
+                  }}
+                />
+              </HStack>
+            </Box>
           </VStack>
         </Form>
       </Formik>

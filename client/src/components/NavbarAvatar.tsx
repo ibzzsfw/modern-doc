@@ -28,7 +28,7 @@ import {
   Link,
 } from '@chakra-ui/react'
 import { BsPersonCircle } from 'react-icons/bs'
-import { IoChevronDownOutline } from 'react-icons/io5'
+import { IoChevronDownOutline, IoChevronForwardOutline } from 'react-icons/io5'
 import { MdGroups } from 'react-icons/md'
 import { BiLogOutCircle } from 'react-icons/bi'
 import { useState } from 'react'
@@ -174,6 +174,8 @@ const NavbarAvatar = () => {
     height: '24px',
   }
 
+  const [isExpand, setIsExpand] = useState(false)
+
   return (
     <Box position="relative">
       <Avatar sx={navbarAvatar} onClick={() => onOpen()} src={owner.url} />
@@ -195,11 +197,19 @@ const NavbarAvatar = () => {
                 <Text sx={menuText}>ข้อมูลส่วนตัว</Text>
               </Flex>
               <Accordion allowToggle>
-                <AccordionItem border="none">
+                <AccordionItem border="none" >
                   <AccordionButton padding="2px" borderRadius="4px">
-                    <Flex as="button" sx={menuButton}>
+                    <Flex
+                      as="button"
+                      sx={menuButton}
+                      justifyContent="space-between"
+                    >
                       <Text sx={menuText}>สมาชิกครอบครัว</Text>
-                      <Icon as={IoChevronDownOutline} />
+                      {isExpand ? (
+                        <Icon as={IoChevronForwardOutline} />
+                      ) : (
+                        <Icon as={IoChevronDownOutline} />
+                      )}
                     </Flex>
                   </AccordionButton>
                   <AccordionPanel padding="0">
@@ -211,7 +221,11 @@ const NavbarAvatar = () => {
                               <Avatar sx={memberAvatar} src={member.url} />
                               <Text sx={memberNameText}>{member.name}</Text>
                             </Flex>
-                            <Modal isOpen={isOpenModal} onClose={onCloseModal}>
+                            <Modal
+                              isOpen={isOpenModal}
+                              onClose={onCloseModal}
+                              isCentered
+                            >
                               <ModalOverlay />
                               <ModalContent>
                                 <ModalHeader>สลับสมาชิก</ModalHeader>

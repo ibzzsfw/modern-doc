@@ -14,18 +14,18 @@ import {
   useToast,
 } from '@chakra-ui/react'
 
-
-
 type propsType = {
-  callback?: ()=>{}
+  callback?: () => void
 }
 
-const ConfirmPassword = ({callback}: propsType) => {
+const ConfirmPassword = ({ callback }: propsType) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const toast = useToast()
 
   const submitForm = () => {
-    callback()
+    if (callback) {
+      callback()
+    }
     onClose()
     toast({
       title: 'แก้ไขข้อมูลส่วนตัวสำเร็จ',

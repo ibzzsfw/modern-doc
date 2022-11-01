@@ -13,8 +13,8 @@ import {
   Center,
 } from '@chakra-ui/react'
 import { FiEdit } from 'react-icons/fi'
-import ProfilePicture from '@/components/ProfilePicture'
-import ProfileFormInput from '@/components/ProfileFormInput'
+import ProfilePicture from '@components/ProfilePicture'
+import ProfileFormInput from '@components/ProfileFormInput'
 
 const MyProfile = () => {
   const data = {}

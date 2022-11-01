@@ -10,7 +10,7 @@ const Navbar = () => {
     top: '0px',
     boxShadow:
       '0px 10px 10px 2px rgba(0, 0, 0, 0.1), 0px 10px 10px -5px rgba(0, 0, 0, 0.04)',
-    zIndex: '10000',
+    zIndex: '10',
     marginBottom: '20px',
   }
 

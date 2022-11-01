@@ -4,12 +4,12 @@ import LoginPage from '@pages/LoginPage'
 import MyProfile from '@pages/MyProfile'
 import PageContainer from '@components/PageContainer'
 import Home from '@pages/Home'
-import MyDocument from '@pages/MydocumentPage'
-import Folder from '@/pages/Folder'
+import MyDocument from '@pages/MyDocumentPage'
+import Folder from '@pages/Folder'
 import Error from '@pages/Error'
 import OTPVerify from './components/OTPVerify'
-import FamilyPage from '@/pages/FamilyPage'
-import SearchPage from '@/pages/SearchPage'
+import FamilyPage from '@pages/FamilyPage'
+import SearchPage from '@pages/SearchPage'
 
 const AppRoute = () => {
   return (

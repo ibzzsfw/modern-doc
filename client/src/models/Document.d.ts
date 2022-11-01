@@ -4,7 +4,7 @@ interface Document {
   officialName?: string | null
   description?: String | null
   dateUploaded?: Date
-  isExpired?: boolean = false
+  dateExpires?: Date
 }
 
 export default Document

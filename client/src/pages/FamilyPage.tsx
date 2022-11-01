@@ -1,4 +1,4 @@
-import FamilyInfoBox from '@/components/FamilyInfoBox'
+import FamilyInfoBox from '@components/FamilyInfoBox'
 import {
   Button,
   Box,
@@ -11,12 +11,12 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import { AiOutlineUserAdd } from 'react-icons/ai'
-import MenuProvider from '@/components/MenuProvider'
+import MenuProvider from '@components/MenuProvider'
 import { BsThreeDots, BsTrash } from 'react-icons/bs'
 import { BiEdit } from 'react-icons/bi'
 import { useState } from 'react'
-import ManageFamilyMember from '../components/ManageFamilyMember'
-import ModalProvider from '@/components/ModalProvider'
+import ManageFamilyMember from '@components/ManageFamilyMember'
+import ModalProvider from '@components/ModalProvider'
 
 const FamilyPage = () => {
   const [family, setfamily] = useState([
@@ -150,6 +150,7 @@ const FamilyPage = () => {
                     menuActive="true"
                     data={values}
                   />
+
                   <ModalProvider
                     isOpen={isOpen}
                     onOpen={onOpen}
