@@ -11,9 +11,9 @@ import {
 import FormInput from '@components/FormInput'
 import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
-import { useLoginStore } from '@/stores/LoginStore'
+import { useLoginStore } from '@stores/LoginStore'
 import { AiFillPhone, AiFillLock } from 'react-icons/ai'
-import { loginWithGithub, loginWithGoogle, loginWithFacebook } from '@/firebase'
+// import { loginWithGithub, loginWithGoogle, loginWithFacebook } from '@/firebase'
 
 const Login = () => {
   let layout = {
@@ -59,11 +59,11 @@ const Login = () => {
 
   return (
     <Box sx={layout}>
-      <Flex sx={logoBar}>
+      {/* <Flex sx={logoBar}>
         <Image src="/assets/facebook.png" sx={providerLogo} onClick={()=>loginWithFacebook()}/>
         <Image src="/assets/google.png" sx={providerLogo} onClick={()=>loginWithGoogle()}/>
         <Image src="/assets/github.png" sx={providerLogo} onClick={()=>loginWithGithub()}/>
-      </Flex>
+      </Flex> */}
       <Formik
         initialValues={{
           phoneNumber: '',

@@ -19,6 +19,7 @@ class UserRouter {
       '/citizenId-status/:citizenId',
       this.controller.checkCitizenIdStatus
     )
+    this.router.get('/test', this.controller.test)
   }
 }
 

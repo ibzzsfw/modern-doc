@@ -10,6 +10,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum FieldType {
+  text
+  number
+  date
+  singleSelect
+  multipleSelect
+}
+
 enum Sex {
   m
   f
@@ -51,10 +59,17 @@ model Field {
   name               String               @unique
   officialName       String               @unique
   description        String?
-  validationSchema   Json
-  generatedFileId    String?              @db.Uuid
+  type               FieldType
   GeneratedFileField GeneratedFileField[]
   userField          UserField[]
+  FieldChoice        FieldChoice[]
+}
+
+model FieldChoice {
+  id      String @id @default(uuid()) @db.Uuid
+  field   Field  @relation(fields: [fieldId], references: [id])
+  fieldId String @db.Uuid
+  choice  String
 }
 
 model GeneratedFile {
@@ -209,11 +224,12 @@ model UserGeneratedFile {
 }
 
 model UserField {
-  id      String @id @default(uuid()) @db.Uuid
-  user    User   @relation(fields: [userId], references: [id])
-  userId  String @db.Uuid
-  field   Field  @relation(fields: [fieldId], references: [id])
-  fieldId String @db.Uuid
+  id       String @id @default(uuid()) @db.Uuid
+  user     User   @relation(fields: [userId], references: [id])
+  userId   String @db.Uuid
+  field    Field  @relation(fields: [fieldId], references: [id])
+  fieldId  String @db.Uuid
+  rawValue String
 
   @@unique([userId, fieldId])
 }

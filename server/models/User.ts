@@ -3,8 +3,29 @@ import * as Yup from 'yup'
 import bcrypt from 'bcryptjs'
 import { PrismaClient } from '@prisma/client'
 import checkCitizenId from '../utils/checkCitizenId'
+import { userInfo } from 'os'
+import getSexText from '../utils/getSexText'
 
 class User {
+  static getFieldValue = (field: string, data: any): string => {
+    switch (field) {
+      case 'personal_firstname':
+        return data.firstName
+      case 'personal_lastname':
+        return data.lastName
+      case 'personal_citizenId':
+        return data.citizenId
+      case 'personal_phonenumber':
+        return data.phoneNumber
+      case 'personal_title':
+        return data.title
+      case 'personal_sex':
+        return getSexText(data.sex)
+      case 'personal_birthdate':
+        return data.birthDate
+    }
+  }
+
   static checkCitizenIdStatus = async (req: Request, res: Response) => {
     const citizenId = req.params.citizenId.toString()
     console.log(citizenId)
@@ -60,7 +81,7 @@ class User {
         phoneNumber,
       } = req.body
 
-      const user = await prisma.user.create({
+      const createUser = await prisma.user.create({
         data: {
           title,
           firstName,
@@ -72,10 +93,72 @@ class User {
           hashedPassword,
         },
       })
+
+      let wantedField = [
+        'personal_sex',
+        'personal_firstname',
+        'personal_phonenumber',
+        'personal_title',
+        'personal_citizenId',
+        'personal_birthdate',
+        'personal_lastname',
+      ]
+      const getFieldId = await prisma.field.findMany({
+        where: {
+          name: {
+            in: wantedField,
+          },
+        },
+        select: {
+          id: true,
+          name: true,
+        },
+      })
+
+      wantedField.map((field) => {
+        getFieldId.map(async (item) => {
+          if (field === item.name) {
+            await prisma.userField.create({
+              data: {
+                userId: createUser.id,
+                fieldId: item.id,
+                rawValue: this.getFieldValue(field, req.body),
+              },
+            })
+          }
+        })
+      })
+
       res.status(201).json({ message: 'success' })
     } catch (err) {
       res.status(400).json({ message: err })
     }
+  }
+
+  static test = async (req: Request, res: Response) => {
+    const prisma = new PrismaClient()
+    let wantedField = [
+      'personal_sex',
+      'personal_firstname',
+      'personal_phonenumber',
+      'personal_title',
+      'personal_citizenId',
+      'personal_birthdate',
+      'personal_lastname',
+    ]
+    const getFieldId = await prisma.field.findMany({
+      where: {
+        name: {
+          in: wantedField,
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+    })
+
+    res.status(201).json(getFieldId)
   }
 }
 
