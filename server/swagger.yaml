@@ -43,18 +43,18 @@ paths:
                 citizenId:
                   type: string
                   description: User's citizen id
-                phoneNumber: 
+                phoneNumber:
                   type: string
                   description: User's phone number
                 password:
                   type: string
                   description: User's password
       responses:
-        '201':
+        "201":
           description: User created
-        '400':
+        "400":
           description: Invalid input
-  
+
   /user/citizenId-status/{citizenId}:
     get:
       tags:
@@ -69,9 +69,9 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Citizen id available
-        '400':
+        "400":
           description: Citizen ID is not valid
-        '409':
+        "409":
           description: Citizen id already exists
