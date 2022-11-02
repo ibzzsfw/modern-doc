@@ -1,0 +1,21 @@
+import { Request, Response } from 'express'
+import Tag from '../models/Tag'
+class TagController {
+    createTag = async (req: Request, res: Response) => {
+        Tag.addTag(req, res)
+    }
+
+    getAllTag = async (req: Request, res: Response) => {
+        Tag.getAllTag(req, res)
+    }
+
+    getTagByName = async (req: Request, res: Response) => {
+        Tag.getTagByName(req, res)
+    }
+
+    getTagById = async (req: Request, res: Response) => {
+        Tag.getTagById(req, res)
+    }
+}
+
+export default new TagController()

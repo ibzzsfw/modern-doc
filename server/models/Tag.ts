@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs'
 import { PrismaClient } from '@prisma/client'
 import checkCitizenId from '../utils/checkCitizenId'
 
-class Form {
+class Tag {
   static addTag = async (req: Request, res: Response) => {
     const { name } = req.body
     const prisma = new PrismaClient()
@@ -20,7 +20,7 @@ class Form {
     }
   }
 
-  static getTag = async (req: Request, res: Response) => {
+  static getAllTag = async (req: Request, res: Response) => {
     const prisma = new PrismaClient()
     try {
       const tags = await prisma.tag.findMany()
@@ -30,25 +30,35 @@ class Form {
     }
   }
 
-  static addTagToFolder = async (req: Request, res: Response) => {
-    const { folderId, tagId } = req.body
+  static getTagByName = async (req: Request, res: Response) => {
     const prisma = new PrismaClient()
     try {
-      const folderTag = await prisma.folderTag.create({
-        data: {
-          folderId,
-          tagId,
+      const tag = await prisma.tag.findFirst({
+        where: {
+          name: {
+            contains: req.params.name.toString(),
+          },
         },
       })
-      return res.status(200).json(folderTag)
+      return res.status(200).json(tag)
     } catch (err) {
       return res.status(500).json({ message: err })
     }
   }
 
-  static addFolder = async (req: Request, res: Response) => {
-    
+  static getTagById = async (req: Request, res: Response) => {
+    const prisma = new PrismaClient()
+    try {
+      const tag = await prisma.tag.findFirst({
+        where: {
+          id: req.params.id,
+        },
+      })
+      return res.status(200).json(tag)
+    } catch (err) {
+      return res.status(500).json({ message: err })
+    }
   }
 }
 
-export default Form
+export default Tag

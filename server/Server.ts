@@ -11,7 +11,7 @@ dotenv.config()
 
 class Server {
   public app: express.Application = express()
-  private port: number = Number(process.env.PORT) || 5000
+  private port: number = Number(process.env.PORT) || 8080
 
   start = (): void => {
     this.app.use('/api-docs', SwaggerUI.serve, SwaggerUI.setup(swaggerDocument))
