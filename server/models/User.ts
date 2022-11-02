@@ -5,6 +5,7 @@ import { PrismaClient } from '@prisma/client'
 import checkCitizenId from '../utils/checkCitizenId'
 import { userInfo } from 'os'
 import getSexText from '../utils/getSexText'
+import jwt from 'jsonwebtoken'
 
 class User {
   static getFieldValue = (field: string, data: any): string => {
@@ -159,6 +160,32 @@ class User {
     })
 
     res.status(201).json(getFieldId)
+  }
+
+  static login = async (req: Request, res: Response) => {
+    let prisma = new PrismaClient()
+    const getUser = await prisma.user.findUnique({
+      where: {
+        phoneNumber: req.body.phoneNumber,
+      },
+    })
+    if (!getUser) {
+      return res.status(404).json({ message: 'ไม่พบข้อมูลผู้ใช้งาน' })
+    }
+
+    console.log(getUser.hashedPassword, req.body.password)
+
+    const isPasswordMatch = await bcrypt.compare(
+      req.body.password,
+      getUser.hashedPassword
+    )
+    if (!isPasswordMatch) {
+      return res.status(403).json({ message: 'รหัสผ่านไม่ถูกต้อง' })
+    }
+    const token = jwt.sign({ id: getUser.id }, process.env.JWT_SECRET, {
+      expiresIn: '1d',
+    })
+    res.status(200).json({ ...getUser, token })
   }
 }
 

@@ -10,6 +10,9 @@ class UserController {
   test = async (req: Request, res: Response) => {
     User.test(req, res)
   }
+  login = async (req: Request, res: Response) => {
+    User.login(req, res)
+  }
 }
 
 export default new UserController()

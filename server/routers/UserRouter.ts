@@ -15,11 +15,15 @@ class UserRouter {
 
   configureRoutes = (): void => {
     this.router.post('/', this.controller.addUser)
+
     this.router.get(
       '/citizenId-status/:citizenId',
       this.controller.checkCitizenIdStatus
     )
+
     this.router.get('/test', this.controller.test)
+
+    this.router.post('/login', this.controller.login)
   }
 }
 
