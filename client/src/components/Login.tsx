@@ -13,7 +13,6 @@ import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
 import { useLoginStore } from '@stores/LoginStore'
 import { AiFillPhone, AiFillLock } from 'react-icons/ai'
-// import { loginWithGithub, loginWithGoogle, loginWithFacebook } from '@/firebase'
 
 const Login = () => {
   let layout = {

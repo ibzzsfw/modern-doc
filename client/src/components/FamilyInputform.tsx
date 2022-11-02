@@ -1,6 +1,6 @@
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
-import FormInput from '@/components/FormInput'
+import FormInput from '@components/FormInput'
 import { useState } from 'react'
 import {
   Flex,

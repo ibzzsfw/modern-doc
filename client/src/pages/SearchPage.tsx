@@ -1,8 +1,8 @@
 import PopularBar from '@components/PopularBar'
 import PopularBox from '@components/PopularBox'
-import DocumentBar from '@/components/DocumentBar'
-import DocumentBox from '@/components/DocumentBox'
-import SearchBox from '@/components/SearchBox'
+import DocumentBar from '@components/DocumentBar'
+import DocumentBox from '@components/DocumentBox'
+import SearchBox from '@components/SearchBox'
 import {
   VStack,
   Center,
