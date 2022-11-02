@@ -1,23 +1,19 @@
 import {
-  Text,
   Box,
-  Button,
+  Flex,
   Image,
-  Input,
-  Tabs,
   Tab,
   TabList,
-  TabPanels,
   TabPanel,
-  HStack,
-  Flex,
-  VStack,
-  background,
+  TabPanels,
+  Tabs,
+  Text,
 } from '@chakra-ui/react'
 import Login from '@components/Login'
 import Register from '@components/Register'
 import { useLoginStore } from '@stores/LoginStore'
-import Navbar from '@components/Navbar'
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
 
 const LoginPage = () => {
   let fullPageContainer = {
@@ -76,6 +72,20 @@ const LoginPage = () => {
   }
 
   const { tabIndex, setTabIndex } = useLoginStore()
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['message'],
+    queryFn: async () => {
+      let response = await axios.get(`${import.meta.env.VITE_API_ENDPOINT}/test`)
+      return response.data
+    },
+  })
+
+  console.log('url',`${import.meta.env.VITE_API_ENDPOINT}/test`)
+
+  if (data) {
+    console.log(data)
+    console.log(`${import.meta.env.VITE_API_ENDPOINT}/test`)
+  }
 
   return (
     <>

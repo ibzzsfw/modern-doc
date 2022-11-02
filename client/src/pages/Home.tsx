@@ -7,7 +7,7 @@ import { VStack, Center } from '@chakra-ui/react'
 
 const Home = () => {
   return (
-    <VStack marginTop='4px'>
+    <VStack marginTop="4px">
       <Center>
         <SearchBox />
       </Center>
