@@ -4,6 +4,7 @@ specifiers:
   '@prisma/client': 4.5.0
   '@types/cors': ^2.8.12
   '@types/node': ^18.11.8
+  async: ^3.2.4
   bcryptjs: ^2.4.3
   cors: ^2.8.5
   dotenv: ^16.0.2
@@ -23,6 +24,7 @@ specifiers:
 
 dependencies:
   '@prisma/client': 4.5.0_prisma@4.5.0
+  async: 3.2.4
   bcryptjs: 2.4.3
   cors: 2.8.5
   dotenv: 16.0.3
@@ -168,6 +170,10 @@ packages:
 
   /array-flatten/1.1.1:
     resolution: {integrity: sha512-PCVAQswWemu6UdxsDFFX/+gVeYqKAod3D3UVm91jHwynguOwAvYPhx8nNlM++NqRcK6CxxpUafjmhIdKiHibqg==}
+    dev: false
+
+  /async/3.2.4:
+    resolution: {integrity: sha512-iAB+JbDEGXhyIUavoDl9WP/Jj106Kz9DEn1DPgYw5ruDn0e3Wgi3sKFm55sASdGBNOQB8F59d9qQ7deqrHA8wQ==}
     dev: false
 
   /balanced-match/1.0.2:
