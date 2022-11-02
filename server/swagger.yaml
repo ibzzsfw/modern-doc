@@ -12,6 +12,8 @@ tags:
     description: User management
   - name: Tag
     description: Tag management
+  - name: Field
+    description: Field management
 
 paths:
   /user:
@@ -174,3 +176,92 @@ paths:
           description: Tag retrieved
         '500':
           description: Tag retrieval failed
+  /tag/edit-name:
+    put:
+      tags:
+        - Tag
+      summary: Edit tag's name
+      operationId: editTagName
+      requestBody:
+        description: Tag object that needs to be edited
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                id:
+                  type: string
+                  description: Tag's id
+                name:
+                  type: string
+                  description: Tag's name
+      responses:
+        '200':
+          description: Tag edited
+        '500':
+          description: Tag edit failed
+  /field:
+    post:
+      tags:
+        - Field
+      summary: Create a new field
+      operationId: createField
+      requestBody:
+        description: Field object that needs to be added
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+                  description: Field's name
+                officialName:
+                  type: string
+                  description: Field's official name
+                description:
+                  type: string
+                  description: Field's description
+                type:
+                  type: string
+                  description: text,number,date,singleSelect,multipleSelect
+      responses:
+        '200':
+          description: Field created
+        '500':
+          description: Field creation failed
+  /field/get-all:
+    get:
+      tags:
+        - Field
+      summary: Get all fields
+      operationId: getFields
+      responses:
+        '200':
+          description: Fields retrieved
+        '500':
+          description: Fields retrieval failed
+  /field/edit-official-name:
+    put:
+      tags:
+        - Field
+      summary: Edit field's official name
+      operationId: editFieldOfficialName
+      requestBody:
+        description: Field object that needs to be edited
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                id:
+                  type: string
+                  description: Field's id
+                officialName:
+                  type: string
+                  description: Field's official name
+      responses:
+        '200':
+          description: Field edited
+        '500':
+          description: Field edit failed

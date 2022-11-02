@@ -16,6 +16,10 @@ class TagController {
     getTagById = async (req: Request, res: Response) => {
         Tag.getTagById(req, res)
     }
+
+    editTagName = async (req: Request, res: Response) => {
+        Tag.editTagName(req, res)
+    }
 }
 
 export default new TagController()

@@ -59,6 +59,24 @@ class Tag {
       return res.status(500).json({ message: err })
     }
   }
+
+  static editTagName = async (req: Request, res: Response) => {
+    const { id, name } = req.body
+    const prisma = new PrismaClient()
+    try {
+      const editTag = await prisma.tag.update({
+        where: {
+          id,
+        },
+        data: {
+          name,
+        },
+      })
+      return res.status(200).json(editTag)
+    } catch (err) {
+      return res.status(500).json({ message: err })
+    }
+  }
 }
 
 export default Tag

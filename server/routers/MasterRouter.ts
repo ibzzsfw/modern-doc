@@ -2,6 +2,7 @@ import { Router } from 'express'
 import UserRouter from './UserRouter'
 import TestRouter from './TestRouter'
 import TagRouter from './TagRouter'
+import FieldRouter from './FieldRouter'
 
 class MasterRouter {
   private router = Router()
@@ -15,7 +16,7 @@ class MasterRouter {
     this.router.use('/user', this.UserRouter)
     this.router.use('/test', TestRouter)
     this.router.use('/tag', TagRouter)
-
+    this.router.use('/field', FieldRouter)
   }
 
   getRouter = (): Router => {

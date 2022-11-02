@@ -18,6 +18,7 @@ class UserRouter {
     this.router.post('/create', this.controller.createTag)
     this.router.get('/name/:name', this.controller.getTagByName)
     this.router.get('/id/:id', this.controller.getTagById)
+    this.router.put('/edit-name', this.controller.editTagName)
   }
 }
 
