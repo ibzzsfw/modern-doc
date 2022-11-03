@@ -27,13 +27,14 @@ class User {
   }
 
   static checkCitizenIdStatus = async (req: Request, res: Response) => {
-    const citizenId = req.params.citizenId.toString()
-    console.log(citizenId)
     const prisma = new PrismaClient()
-    if (!checkCitizenId(citizenId)) {
-      return res.status(400).json({ message: 'Citizen ID is not valid' })
-    }
+    const citizenId = req.params.citizenId
+    const schema = z.string().regex(/^[0-9]{13}$/)
     try {
+      schema.parse(citizenId)
+      if (!checkCitizenId(citizenId)) {
+        return res.status(400).json({ message: 'Citizen ID is not valid' })
+      }
       const user = await prisma.user.findUnique({
         where: {
           citizenId,
@@ -131,28 +132,40 @@ class User {
 
   static login = async (req: Request, res: Response) => {
     let prisma = new PrismaClient()
-    const getUser = await prisma.user.findUnique({
-      where: {
-        phoneNumber: req.body.phoneNumber,
-      },
-    })
-    if (!getUser) {
-      return res.status(404).json({ message: 'ไม่พบข้อมูลผู้ใช้งาน' })
-    }
+    let { phoneNumber, password } = req.body
 
-    console.log(getUser.hashedPassword, req.body.password)
-
-    const isPasswordMatch = await bcrypt.compare(
-      req.body.password,
-      getUser.hashedPassword
-    )
-    if (!isPasswordMatch) {
-      return res.status(403).json({ message: 'รหัสผ่านไม่ถูกต้อง' })
-    }
-    const token = jwt.sign({ id: getUser.id }, process.env.JWT_SECRET, {
-      expiresIn: '1d',
+    const schema = z.object({
+      phoneNumber: z.string().length(10),
+      password: z.string().min(6),
     })
-    res.status(200).json({ ...getUser, token })
+
+    try {
+      schema.parse({ phoneNumber, password })
+      const getUser = await prisma.user.findUnique({
+        where: {
+          phoneNumber: phoneNumber,
+        },
+      })
+      if (!getUser) {
+        return res.status(404).json({ message: 'ไม่พบข้อมูลผู้ใช้งาน' })
+      }
+
+      console.log(getUser.hashedPassword, password)
+
+      const isPasswordMatch = await bcrypt.compare(
+        password,
+        getUser.hashedPassword
+      )
+      if (!isPasswordMatch) {
+        return res.status(403).json({ message: 'รหัสผ่านไม่ถูกต้อง' })
+      }
+      const token = jwt.sign({ id: getUser.id }, process.env.JWT_SECRET, {
+        expiresIn: '1d',
+      })
+      res.status(200).json({ ...getUser, token })
+    } catch (err) {
+      res.status(400).json({ message: err })
+    }
   }
 }
 

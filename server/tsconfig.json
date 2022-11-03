@@ -3,7 +3,7 @@
     "incremental": true,
     "target": "es2017",
     "esModuleInterop": true,
-    "strict": true,
+    "strict": false,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "noUncheckedIndexedAccess": true

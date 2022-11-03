@@ -1,11 +1,25 @@
 import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express'
+import { z } from 'zod'
 
 class Field {
   static async createField(req: Request, res: Response) {
     const prisma = new PrismaClient()
     const { name, officialName, description, type } = req.body
+    const schema = z.object({
+      name: z.string(),
+      officialName: z.string(),
+      description: z.string(),
+      type: z.enum([
+        'text',
+        'number',
+        'date',
+        'singleSelect',
+        'multipleSelect',
+      ]),
+    })
     try {
+      schema.parse({ name, officialName, description, type })
       const field = await prisma.field.create({
         data: {
           name,
@@ -31,9 +45,14 @@ class Field {
   }
 
   static async editFieldOfficialName(req: Request, res: Response) {
-    let { id, officialName } = req.body
     const prisma = new PrismaClient()
+    let { id, officialName } = req.body
+    const schema = z.object({
+      id: z.string().uuid(),
+      officialName: z.string(),
+    })
     try {
+      schema.parse({ id, officialName })
       const editField = await prisma.field.update({
         where: {
           id,
