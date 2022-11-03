@@ -4,7 +4,7 @@ info:
   description: API endpoint for ModernDoc
   version: 0.1.9
 servers:
-  - url: http://localhost:5000
+  - url: http://localhost:8080
     description: ModernDoc API
 
 tags:
@@ -14,6 +14,8 @@ tags:
     description: Tag management
   - name: Field
     description: Field management
+  - name: GeneratedFile
+    description: GeneratedFile management
 
 paths:
   /user:
@@ -140,6 +142,7 @@ paths:
           description: Tags retrieved
         '500':
           description: Tags retrieval failed
+
   /tag/name/{name}:
     get:
       tags:
@@ -158,6 +161,7 @@ paths:
           description: Tag retrieved
         '500':
           description: Tag retrieval failed
+
   /tag/id/{id}:
     get:
       tags:
@@ -176,6 +180,7 @@ paths:
           description: Tag retrieved
         '500':
           description: Tag retrieval failed
+
   /tag/edit-name:
     put:
       tags:
@@ -200,6 +205,7 @@ paths:
           description: Tag edited
         '500':
           description: Tag edit failed
+
   /field:
     post:
       tags:
@@ -230,6 +236,7 @@ paths:
           description: Field created
         '500':
           description: Field creation failed
+
   /field/get-all:
     get:
       tags:
@@ -241,6 +248,7 @@ paths:
           description: Fields retrieved
         '500':
           description: Fields retrieval failed
+
   /field/edit-official-name:
     put:
       tags:
@@ -265,3 +273,168 @@ paths:
           description: Field edited
         '500':
           description: Field edit failed
+
+  /generated-file/create:
+    post:
+      tags:
+        - GeneratedFile
+      summary: Create a new generated file
+      operationId: createGeneratedFile
+      requestBody:
+        description: GeneratedFile object that needs to be added
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+                  description: GeneratedFile's name
+                officialName:
+                  type: string
+                  description: GeneratedFile's official name
+                description:
+                  type: string
+                  description: GeneratedFile's description
+                dayLifeSpan:
+                  type: integer
+                  description: GeneratedFile's day life span
+                URI:
+                  type: string
+                  description: GeneratedFile's URI
+      responses:
+        '200':
+          description: GeneratedFile created
+        '500':
+          description: GeneratedFile creation failed
+
+  /generated-file/get-all:
+    get:
+      tags:
+        - GeneratedFile
+      summary: Get all generated files
+      operationId: getGeneratedFiles
+      responses:
+        '200':
+          description: GeneratedFiles retrieved
+        '500':
+          description: GeneratedFiles retrieval failed
+
+  /generated-file/add-tag:
+    post:
+      tags:
+        - GeneratedFile
+      summary: Add tag to generated file
+      operationId: addTagToGeneratedFile
+      requestBody:
+        description: GeneratedFile object that needs to be edited
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                generatedFileId:
+                  type: string
+                  description: GeneratedFile's id
+                tagId:
+                  type: string
+                  description: Tag's id
+      responses:
+        '200':
+          description: Tag added to generated file
+        '500':
+          description: Tag addition to generated file failed
+
+  /generated-file/add-field:
+    post:
+      tags:
+        - GeneratedFile
+      summary: Add field to generated file
+      operationId: addFieldToGeneratedFile
+      requestBody:
+        description: GeneratedFile object that needs to be edited
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                generatedFileId:
+                  type: string
+                  description: GeneratedFile's id
+                fieldId:
+                  type: string
+                  description: Field's id
+      responses:
+        '200':
+          description: Field added to generated file
+        '500':
+          description: Field addition to generated file failed
+
+  /generated-file/{generatedFileId}/{tagId}:
+    delete:
+      tags:
+        - GeneratedFile
+      summary: Delete tag from generated file
+      operationId: deleteTagFromGeneratedFile
+      parameters:
+        - name: generatedFileId
+          in: path
+          description: GeneratedFile's id
+          required: true
+          schema:
+            type: string
+        - name: tagId
+          in: path
+          description: Tag's id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Tag deleted from generated file
+        '500':
+          description: Tag deletion from generated file failed
+
+  /generated-file/{generatedFileId}/{fieldId}:
+    delete:
+      tags:
+        - GeneratedFile
+      summary: Delete field from generated file
+      operationId: deleteFieldFromGeneratedFile
+      parameters:
+        - name: generatedFileId
+          in: path
+          description: GeneratedFile's id
+          required: true
+          schema:
+            type: string
+        - name: fieldId
+          in: path
+          description: Field's id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Field deleted from generated file
+        '500':
+          description: Field deletion from generated file failed
+
+  /generated-file/get-by-id/{id}:
+    get:
+      tags:
+        - GeneratedFile
+      summary: Get generated file by id
+      operationId: getGeneratedFileById
+      parameters:
+        - name: id
+          in: path
+          description: GeneratedFile's id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: GeneratedFile retrieved
+        '500':
+          description: GeneratedFile retrieval failed
