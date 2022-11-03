@@ -8,9 +8,9 @@ import {
   Spacer,
 } from '@chakra-ui/react'
 import GeneratedDocumentBadge from '@components/DocumentBadge'
-import ReactMarkdown from 'react-markdown'
 import { AiOutlineDoubleRight } from 'react-icons/ai'
 import Status from '@models/DocumentStatus'
+import Markdown from 'marked-react';
 
 type propsType = {
   title: string
@@ -24,6 +24,7 @@ const FolderDetail = ({ title, status, description, markdown }: propsType) => {
     width: '520px',
     flexDirection: 'column',
     rowGap: '1rem',
+    maxHeight: 'inherit',
   }
 
   let abstractBox = {
@@ -84,7 +85,7 @@ const FolderDetail = ({ title, status, description, markdown }: propsType) => {
           <Spacer />
           {/* <BadgeStatus status={status} /> */}
         </HStack>
-        <ReactMarkdown children={markdown} />
+        <Markdown value={markdown} />
         <Box textAlign="end">
           <Button
             size="sm"

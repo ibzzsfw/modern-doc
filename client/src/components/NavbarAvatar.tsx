@@ -32,6 +32,10 @@ import { IoChevronDownOutline, IoChevronForwardOutline } from 'react-icons/io5'
 import { MdGroups } from 'react-icons/md'
 import { BiLogOutCircle } from 'react-icons/bi'
 import { useState } from 'react'
+import { useLoginDataStore } from '@stores/LoginDataStore'
+import getRelationshipText from '@utils/getRelationshipText'
+import shallow from 'zustand/shallow'
+import User from '@models/User'
 
 const NavbarAvatar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -176,17 +180,23 @@ const NavbarAvatar = () => {
 
   const [isExpand, setIsExpand] = useState(false)
 
+  const userRaw = useLoginDataStore((state) => state.user, shallow)
+  const user = new User(userRaw)
   return (
     <Box position="relative">
-      <Avatar sx={navbarAvatar} onClick={() => onOpen()} src={owner.url} />
+      <Avatar
+        sx={navbarAvatar}
+        onClick={() => onOpen()}
+        src={user.profileURI}
+      />
       <Popover isOpen={isOpen} onClose={onClose} placement="right-end">
         <PopoverContent sx={menuLayout}>
           <PopoverHeader>
             <HStack justifyContent="space-around">
-              <Avatar sx={menuAvatar} src={owner.url} />
+              <Avatar sx={menuAvatar} src={user.profileURI} />
               <VStack alignItems="flex-start">
-                <Text sx={nameText}>{owner.name}</Text>
-                <Text sx={relationText}>{owner.relation}</Text>
+                <Text sx={nameText}>{user.getFullName()}</Text>
+                <Text sx={relationText}>{user.getRelationshipText()}</Text>
               </VStack>
             </HStack>
           </PopoverHeader>
@@ -197,7 +207,7 @@ const NavbarAvatar = () => {
                 <Text sx={menuText}>ข้อมูลส่วนตัว</Text>
               </Flex>
               <Accordion allowToggle>
-                <AccordionItem border="none" >
+                <AccordionItem border="none">
                   <AccordionButton padding="2px" borderRadius="4px">
                     <Flex
                       as="button"

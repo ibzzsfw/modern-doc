@@ -1,11 +1,11 @@
-import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 import { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import { z } from 'zod'
-import checkCitizenId from '../utils/checkCitizenId'
-import getSexMF from '../utils/getSexMF'
-import getSexText from '../utils/getSexText'
+import checkCitizenId from '@utils/checkCitizenId'
+import getSexMF from '@utils/getSexMF'
+import getSexText from '@utils/getSexText'
+import Prisma from '@utils/prisma'
 class User {
   static getFieldValue = (field: string, data: any): string => {
     switch (field) {
@@ -27,7 +27,6 @@ class User {
   }
 
   static checkCitizenIdStatus = async (req: Request, res: Response) => {
-    const prisma = new PrismaClient()
     const citizenId = req.params.citizenId
     const schema = z.string().regex(/^[0-9]{13}$/)
     try {
@@ -35,7 +34,7 @@ class User {
       if (!checkCitizenId(citizenId)) {
         return res.status(400).json({ message: 'Citizen ID is not valid' })
       }
-      const user = await prisma.user.findUnique({
+      const user = await Prisma.user.findUnique({
         where: {
           citizenId,
         },
@@ -64,7 +63,7 @@ class User {
     try {
       schema.parse(req.body)
       req.body.sex = getSexMF(req.body.sex)
-      const prisma = new PrismaClient()
+
       let hashedPassword = await bcrypt.hash(req.body.password, 10)
       const {
         title,
@@ -76,7 +75,7 @@ class User {
         phoneNumber,
       } = req.body
 
-      const createUser = await prisma.user.create({
+      const createUser = await Prisma.user.create({
         data: {
           title,
           firstName,
@@ -98,7 +97,7 @@ class User {
         'personal_birthdate',
         'personal_lastname',
       ]
-      const getFieldId = await prisma.field.findMany({
+      const getFieldId = await Prisma.field.findMany({
         where: {
           name: {
             in: wantedField,
@@ -113,7 +112,7 @@ class User {
       wantedField.map((field) => {
         getFieldId.map(async (item) => {
           if (field === item.name) {
-            await prisma.userField.create({
+            await Prisma.userField.create({
               data: {
                 userId: createUser.id,
                 fieldId: item.id,
@@ -131,7 +130,6 @@ class User {
   }
 
   static login = async (req: Request, res: Response) => {
-    let prisma = new PrismaClient()
     let { phoneNumber, password } = req.body
 
     const schema = z.object({
@@ -141,9 +139,24 @@ class User {
 
     try {
       schema.parse({ phoneNumber, password })
-      const getUser = await prisma.user.findUnique({
+      const getUser = await Prisma.user.findUnique({
         where: {
           phoneNumber: phoneNumber,
+        },
+        select: {
+          id: true,
+          householdId: true,
+          title: true,
+          firstName: true,
+          lastName: true,
+          sex: true,
+          phoneNumber: true,
+          email: true,
+          hashedPassword: true,
+          citizenId: true,
+          relationship: true,
+          birthDate: true,
+          profileURI: true,
         },
       })
       if (!getUser) {

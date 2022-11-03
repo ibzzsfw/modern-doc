@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import GeneratedFile from '../models/GeneratedFile'
+import GeneratedFile from '@models/GeneratedFile'
 class UserController {
   create = async (req: Request, res: Response) => {
     GeneratedFile.create(req, res)

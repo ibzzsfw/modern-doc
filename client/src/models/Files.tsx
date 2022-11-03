@@ -1,4 +1,4 @@
-abstract class File {
+abstract class Files {
 
   id: string;
   lastModified: Date;
@@ -13,4 +13,4 @@ abstract class File {
   }
 }
 
-export default File
+export default Files

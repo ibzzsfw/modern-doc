@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import Tag from '../models/Tag'
+import Tag from '@models/Tag'
 class TagController {
     createTag = async (req: Request, res: Response) => {
         Tag.addTag(req, res)

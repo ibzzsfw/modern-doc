@@ -1,16 +1,10 @@
 import create, { StateCreator } from 'zustand'
 import { persist, PersistOptions } from 'zustand/middleware'
+import Relationship from '@models/Relationship'
+import User from '@models/User'
 
 type LoginDataStore = {
-  userId: string
-  householdId: string
-  title: string
-  firstName: string
-  lastName: string
-  citizenId: string
-  phoneNumber: string
-  sex: 'ชาย' | 'หญิง' | ''
-  token: string
+  user: any
   setLoginData: (value: any) => void
 }
 
@@ -22,26 +16,23 @@ type MyPersist = (
 export const useLoginDataStore = create<LoginDataStore>(
   (persist as unknown as MyPersist)(
     (set) => ({
-      userId: '',
-      householdId: '',
-      title: '',
-      firstName: '',
-      lastName: '',
-      citizenId: '',
-      phoneNumber: '',
-      sex: '',
-      token: '',
-      setLoginData: (value) => {
+      user: {
+        userId: '',
+        householdId: '',
+        title: '',
+        firstName: '',
+        lastName: '',
+        citizenId: '',
+        phoneNumber: '',
+        sex: '',
+        token: '',
+        relationship: '',
+        profileURI:
+          'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__480.png',
+      },
+      setLoginData: (user) => {
         set({
-          userId: value.userId,
-          householdId: value.householdId,
-          title: value.title,
-          firstName: value.firstName,
-          lastName: value.lastName,
-          citizenId: value.citizenId,
-          phoneNumber: value.phoneNumber,
-          sex: value.sex,
-          token: value.token,
+          user: user,
         })
       },
     }),

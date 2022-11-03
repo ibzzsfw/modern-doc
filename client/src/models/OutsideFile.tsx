@@ -1,4 +1,6 @@
-class OutsideFile extends File {
+import Files from "./Files";
+
+class OutsideFile extends Files {
 
   dateExpires: Date;
 

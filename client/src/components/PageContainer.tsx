@@ -25,11 +25,9 @@ const PageContainer = ({
   style,
   isProtected,
 }: propsType) => {
-  const { token } = useLoginDataStore()
+  const { user } = useLoginDataStore()
 
-  console.log('this is token',token)
-
-  if (isProtected && !token) {
+  if (isProtected && !user?.token) {
     window.location.href = '/'
   }
 

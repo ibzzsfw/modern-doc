@@ -103,7 +103,7 @@ const LoginPage = () => {
     <>
       <Box sx={fullPageContainer}>
         <Flex sx={layout}>
-          <Box sx={logoBox}>
+          <Box sx={logoBox} scrollSnapType=''>
             <Image src="/assets/logo.png" margin="34px auto 38px auto" />
             <Text as="h1" sx={logoText}>
               Modern Doc

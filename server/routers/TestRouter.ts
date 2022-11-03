@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express'
-import TestController from '../controllers/TestController'
+import TestController from '@controllers/TestController'
 
 class UserRouter {
   private router = Router()

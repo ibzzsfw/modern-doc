@@ -2,7 +2,7 @@ import express from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import helmet from 'helmet'
-import MasterRouter from './routers/MasterRouter'
+import MasterRouter from '@routers/MasterRouter'
 import SwaggerUI from 'swagger-ui-express'
 import YAML from 'yamljs'
 const swaggerDocument = YAML.load('./swagger.yaml')

@@ -1,9 +1,9 @@
 import { Router } from 'express'
-import UserRouter from './UserRouter'
-import TestRouter from './TestRouter'
-import TagRouter from './TagRouter'
-import FieldRouter from './FieldRouter'
-import GeneratedFileRouter from './GeneratedFileRouter'
+import UserRouter from '@routers/UserRouter'
+import TestRouter from '@routers/TestRouter'
+import TagRouter from '@routers/TagRouter'
+import FieldRouter from '@routers/FieldRouter'
+import GeneratedFileRouter from '@routers/GeneratedFileRouter'
 
 class MasterRouter {
   private router = Router()

@@ -48,7 +48,7 @@ const FileList = ({ files }: propsType) => {
   let tableContent = {
     width: 'inherit',
     maxHeight: 'calc(768px - 48px - 80px)',
-    overflowY: 'scroll',
+    overflowY: 'auto',
     overflowX: 'hidden',
   }
 
