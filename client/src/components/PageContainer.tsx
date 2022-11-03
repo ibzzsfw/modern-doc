@@ -29,9 +29,9 @@ const PageContainer = ({
 
   console.log('this is token',token)
 
-  // if (isProtected && !token) {
-  //   window.location.href = '/'
-  // }
+  if (isProtected && !token) {
+    window.location.href = '/'
+  }
 
   return (
     <Box width="100%" backgroundColor="background.gray">
