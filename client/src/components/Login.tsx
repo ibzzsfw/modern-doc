@@ -56,7 +56,6 @@ const Login = () => {
 
   const toast = useToast()
   const setLoginData = useLoginDataStore((state) => state.setLoginData)
-  const token = useLoginDataStore((state) => state.token)
   const setTabIndex = useLoginPageStore((state) => state.setTabIndex)
 
   const loginSchema = Yup.object().shape({
@@ -71,10 +70,6 @@ const Login = () => {
     phoneNumber: string
     password: string
   }
-
-  useEffect(() => {
-    console.log('token now', token)
-  }, [token])
 
   const { mutate } = useMutation(
     async ({ phoneNumber, password }: loginType) => {
@@ -96,31 +91,25 @@ const Login = () => {
           status: 'success',
           duration: 5000,
         })
-        setLoginData({
-          userId: data.id,
-          householdId: data.householdId,
-          title: data.title,
-          firstName: data.firstName,
-          lastName: data.lastName,
-          citizenId: data.citizenId,
-          phoneNumber: data.phoneNumber,
-          sex: data.sex,
-          token: data.token,
-        })
-        console.log('setThis', {
-          userId: data.id,
-          householdId: data.householdId,
-          title: data.title,
-          firstName: data.firstName,
-          lastName: data.lastName,
-          citizenId: data.citizenId,
-          phoneNumber: data.phoneNumber,
-          sex: data.sex,
-          token: data.token,
-        })
-        setTimeout(()=>{
+        setLoginData(
+          new User({
+            userId: data.id,
+            householdId: data.householdId,
+            title: data.title,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            citizenId: data.citizenId,
+            phoneNumber: data.phoneNumber,
+            sex: data.sex,
+            token: data.token,
+            relationship: data.relationship,
+            profileURI: data.profileURI,
+          })
+        )
+
+        setTimeout(() => {
           window.location.pathname = '/home'
-        },1500)
+        }, 1500)
       },
       onError: (error: AxiosError) => {
         console.log(error.message)

@@ -143,6 +143,21 @@ class User {
         where: {
           phoneNumber: phoneNumber,
         },
+        select: {
+          id: true,
+          householdId: true,
+          title: true,
+          firstName: true,
+          lastName: true,
+          sex: true,
+          phoneNumber: true,
+          email: true,
+          hashedPassword: true,
+          citizenId: true,
+          relationship: true,
+          birthDate: true,
+          profileURI: true,
+        },
       })
       if (!getUser) {
         return res.status(404).json({ message: 'ไม่พบข้อมูลผู้ใช้งาน' })

@@ -46,6 +46,7 @@ model User {
   citizenId          String               @unique @db.VarChar(13)
   relationship       Relationship         @default(householder)
   birthDate          DateTime
+  profileURI         String               @default("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__480.png")
   UserUploadedFile   UserUploadedFile[]
   UserFreeUploadFile UserFreeUploadFile[]
   Note               Note[]
