@@ -7,7 +7,6 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "noUncheckedIndexedAccess": true,
-    "baseUrl": ".",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "paths": {
