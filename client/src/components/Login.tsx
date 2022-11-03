@@ -7,12 +7,17 @@ import {
   Text,
   VStack,
   Icon,
+  useToast,
 } from '@chakra-ui/react'
 import FormInput from '@components/FormInput'
 import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
 import { useLoginStore } from '@stores/LoginStore'
 import { AiFillPhone, AiFillLock } from 'react-icons/ai'
+import { useMutation } from '@tanstack/react-query'
+import axios, { Axios, AxiosError, AxiosResponse } from 'axios'
+import { useState } from 'react'
+import User from '@models/User'
 
 const Login = () => {
   let layout = {
@@ -46,6 +51,10 @@ const Login = () => {
     },
   }
 
+  const toast = useToast()
+
+  const { setTabIndex } = useLoginStore()
+
   const loginSchema = Yup.object().shape({
     phoneNumber: Yup.string()
       .matches(/^[0-9]+$/, 'กรุณากรอกเฉพาะตัวเลข')
@@ -54,15 +63,50 @@ const Login = () => {
     password: Yup.string().required('จำเป็นต้องกรอก'),
   })
 
-  const { setTabIndex } = useLoginStore()
+  interface loginType {
+    phoneNumber: string
+    password: string
+  }
+
+  const { mutate } = useMutation(
+    async ({ phoneNumber, password }: loginType) => {
+      let response = await axios.post(
+        `${import.meta.env.VITE_API_ENDPOINT}/user/login`,
+        {
+          phoneNumber: phoneNumber,
+          password: password,
+        }
+      )
+      return response.data
+    },
+    {
+      onSuccess: (data: User) => {
+        console.log(data)
+        toast({
+          title: 'เข้าสู่ระบบสำเร็จ',
+          description: `ยินดีต้อนรับสู่ระบบนะคุณ ${data.firstName}`,
+          status: 'success',
+          duration: 5000,
+        })
+      },
+      onError: (error: AxiosError) => {
+        console.log(error.message)
+        toast({
+          title: 'เข้าสู่ระบบไม่สำเร็จ',
+          description: 'กรุณาตรวจสอบเบอร์โทรศัพท์หรือรหัสผ่าน',
+          status: 'error',
+          duration: 5000,
+        })
+      },
+    }
+  )
+
+  const onLogin = async ({ phoneNumber, password }: loginType) => {
+    mutate({ phoneNumber, password })
+  }
 
   return (
     <Box sx={layout}>
-      {/* <Flex sx={logoBar}>
-        <Image src="/assets/facebook.png" sx={providerLogo} onClick={()=>loginWithFacebook()}/>
-        <Image src="/assets/google.png" sx={providerLogo} onClick={()=>loginWithGoogle()}/>
-        <Image src="/assets/github.png" sx={providerLogo} onClick={()=>loginWithGithub()}/>
-      </Flex> */}
       <Formik
         initialValues={{
           phoneNumber: '',
@@ -70,7 +114,11 @@ const Login = () => {
         }}
         validationSchema={loginSchema}
         onSubmit={(values) => {
-          console.log(values)
+          console.log('ไอห่า')
+          onLogin({
+            phoneNumber: values.phoneNumber,
+            password: values.password,
+          })
         }}
       >
         <Form>
