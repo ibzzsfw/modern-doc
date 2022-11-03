@@ -12,12 +12,13 @@ import {
 import FormInput from '@components/FormInput'
 import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
-import { useLoginStore } from '@stores/LoginStore'
+import { useLoginPageStore } from '@stores/LoginPageStore'
 import { AiFillPhone, AiFillLock } from 'react-icons/ai'
 import { useMutation } from '@tanstack/react-query'
 import axios, { Axios, AxiosError, AxiosResponse } from 'axios'
 import { useState } from 'react'
 import User from '@models/User'
+import { useLoginDataStore } from '@stores/LoginDataStore'
 
 const Login = () => {
   let layout = {
@@ -52,8 +53,8 @@ const Login = () => {
   }
 
   const toast = useToast()
-
-  const { setTabIndex } = useLoginStore()
+  const { setLoginData } = useLoginDataStore()
+  const { setTabIndex } = useLoginPageStore()
 
   const loginSchema = Yup.object().shape({
     phoneNumber: Yup.string()
@@ -80,7 +81,7 @@ const Login = () => {
       return response.data
     },
     {
-      onSuccess: (data: User) => {
+      onSuccess: (data: any) => {
         console.log(data)
         toast({
           title: 'เข้าสู่ระบบสำเร็จ',
@@ -88,6 +89,20 @@ const Login = () => {
           status: 'success',
           duration: 5000,
         })
+        setLoginData({
+          userId: data.userId,
+          householdId: data.householdId,
+          title: data.title,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          citizenId: data.citizenId,
+          phoneNumber: data.phoneNumber,
+          sex: data.sex,
+          token: data.token,
+        })
+        setTimeout(() => {
+          window.location.href = '/home'
+        }, 1500)
       },
       onError: (error: AxiosError) => {
         console.log(error.message)

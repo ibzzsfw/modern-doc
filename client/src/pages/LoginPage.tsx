@@ -11,8 +11,8 @@ import {
 } from '@chakra-ui/react'
 import Login from '@components/Login'
 import Register from '@components/Register'
-import { useLoginStore } from '@stores/LoginStore'
-import { useQuery } from '@tanstack/react-query'
+import { useLoginPageStore } from '@stores/LoginPageStore'
+import { useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 
 const LoginPage = () => {
@@ -71,16 +71,18 @@ const LoginPage = () => {
     padding: '0 48px',
   }
 
-  const { tabIndex, setTabIndex } = useLoginStore()
+  const { tabIndex, setTabIndex } = useLoginPageStore()
   const { data, isLoading, error } = useQuery({
     queryKey: ['message'],
     queryFn: async () => {
-      let response = await axios.get(`${import.meta.env.VITE_API_ENDPOINT}/test`)
+      let response = await axios.get(
+        `${import.meta.env.VITE_API_ENDPOINT}/login`
+      )
       return response.data
     },
   })
 
-  console.log('url',`${import.meta.env.VITE_API_ENDPOINT}/test`)
+  console.log('url', `${import.meta.env.VITE_API_ENDPOINT}/test`)
 
   if (data) {
     console.log(data)

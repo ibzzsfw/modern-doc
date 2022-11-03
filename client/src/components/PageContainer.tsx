@@ -10,18 +10,31 @@ import {
 import Navbar from '@components/Navbar'
 import { IoChevronForward } from 'react-icons/io5'
 import getBreadcrumbFromPath from '@utils/getBreadcrumbFromPath'
+import { useLoginDataStore } from '@stores/LoginDataStore'
 
 type propsType = {
   children: JSX.Element | JSX.Element[]
   breadcrumb?: boolean
   style?: any
+  isProtected?: boolean
 }
 
-const PageContainer = ({ children, breadcrumb, style }: propsType) => {
+const PageContainer = ({
+  children,
+  breadcrumb,
+  style,
+  isProtected,
+}: propsType) => {
+  const { token } = useLoginDataStore()
+
+  if (isProtected && !token) {
+    window.location.href = '/'
+  }
+
   return (
     <Box width="100%" backgroundColor="background.gray">
       <Navbar />
-      <Box margin="120px auto" style={style} width="96%" maxWidth='1280px'>
+      <Box margin="120px auto" style={style} width="96%" maxWidth="1280px">
         {breadcrumb && (
           <>
             <Breadcrumb
@@ -31,13 +44,13 @@ const PageContainer = ({ children, breadcrumb, style }: propsType) => {
               }
               padding="24px 12px"
             >
-              {getBreadcrumbFromPath(window.location.pathname).map(
-                (item) => (
-                  <BreadcrumbItem>
-                    <BreadcrumbLink href={item?.path}>{item?.title}</BreadcrumbLink>
-                  </BreadcrumbItem>
-                )
-              )}
+              {getBreadcrumbFromPath(window.location.pathname).map((item) => (
+                <BreadcrumbItem>
+                  <BreadcrumbLink href={item?.path}>
+                    {item?.title}
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+              ))}
             </Breadcrumb>
 
             <Box width="100%" height="1px" backgroundColor="accent.black" />

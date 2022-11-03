@@ -31,7 +31,7 @@ const AppRoute = () => {
             path="/home"
             element={
               <>
-                <PageContainer>
+                <PageContainer isProtected>
                   <Home />
                 </PageContainer>
               </>
