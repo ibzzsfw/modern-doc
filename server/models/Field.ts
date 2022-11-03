@@ -1,10 +1,9 @@
-import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express'
 import { z } from 'zod'
+import Prisma from '@utils/prisma'
 
 class Field {
   static async createField(req: Request, res: Response) {
-    const prisma = new PrismaClient()
     const { name, officialName, description, type } = req.body
     const schema = z.object({
       name: z.string(),
@@ -20,7 +19,7 @@ class Field {
     })
     try {
       schema.parse({ name, officialName, description, type })
-      const field = await prisma.field.create({
+      const field = await Prisma.field.create({
         data: {
           name,
           officialName,
@@ -35,9 +34,8 @@ class Field {
   }
 
   static async getAllField(req: Request, res: Response) {
-    const prisma = new PrismaClient()
     try {
-      const fields = await prisma.field.findMany()
+      const fields = await Prisma.field.findMany()
       return res.status(200).json(fields)
     } catch (err) {
       return res.status(500).json({ message: err })
@@ -45,7 +43,6 @@ class Field {
   }
 
   static async editFieldOfficialName(req: Request, res: Response) {
-    const prisma = new PrismaClient()
     let { id, officialName } = req.body
     const schema = z.object({
       id: z.string().uuid(),
@@ -53,7 +50,7 @@ class Field {
     })
     try {
       schema.parse({ id, officialName })
-      const editField = await prisma.field.update({
+      const editField = await Prisma.field.update({
         where: {
           id,
         },

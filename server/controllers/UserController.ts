@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import User from '../models/User'
+import User from '@models/User'
 class UserController {
   addUser = async (req: Request, res: Response) => {
     User.addUser(req, res)

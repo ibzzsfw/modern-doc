@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express'
-import TagController from '../controllers/TagController'
+import TagController from '@controllers/TagController'
 
 class UserRouter {
   private router = Router()

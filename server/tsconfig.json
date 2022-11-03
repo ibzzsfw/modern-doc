@@ -6,6 +6,27 @@
     "strict": false,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "noUncheckedIndexedAccess": true
+    "noUncheckedIndexedAccess": true,
+    "baseUrl": ".",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "paths": {
+      "@routers/*": [
+        "./routers/*"
+      ],
+      "@controllers/*": [
+        "./controllers/*"
+      ],
+      "@models/*": [
+        "./models/*"
+      ],
+      "@utils/*": [
+        "./utils/*"
+      ],
+      "@middlewares/*": [
+        "./middlewares/*"
+      ],
+    },
+    "moduleResolution": "Node",
   }
 }

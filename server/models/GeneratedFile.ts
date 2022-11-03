@@ -1,11 +1,11 @@
-import { PrismaClient } from '@prisma/client'
 import async from 'async'
 import { Request, Response } from 'express'
 import { z } from 'zod'
+import Prisma from '@utils/prisma'
 
 class GeneratedFile {
   static async create(req: Request, res: Response) {
-    const prisma = new PrismaClient()
+    
     const { name, officialName, description, dayLifeSpan, URI } = req.body
     const schema = z.object({
       name: z.string(),
@@ -16,7 +16,7 @@ class GeneratedFile {
     })
     try {
       schema.parse({ name, officialName, description, dayLifeSpan, URI })
-      const file = await prisma.generatedFile.create({
+      const file = await Prisma.generatedFile.create({
         data: {
           name,
           officialName,
@@ -32,9 +32,9 @@ class GeneratedFile {
   }
 
   static async getAll(req: Request, res: Response) {
-    const prisma = new PrismaClient()
+    
     try {
-      const files = await prisma.generatedFile.findMany()
+      const files = await Prisma.generatedFile.findMany()
       return res.status(200).json(files)
     } catch (err) {
       return res.status(500).json({ message: err })
@@ -42,7 +42,7 @@ class GeneratedFile {
   }
 
   static async addTag(req: Request, res: Response) {
-    const prisma = new PrismaClient()
+    
     const { generatedFileId, tagId } = req.body
     const schema = z.object({
       generatedFileId: z.string().uuid(),
@@ -50,7 +50,7 @@ class GeneratedFile {
     })
     try {
       schema.parse({ generatedFileId, tagId })
-      const addTag = await prisma.generatedFileTag.create({
+      const addTag = await Prisma.generatedFileTag.create({
         data: {
           generatedFileId,
           tagId,
@@ -63,7 +63,7 @@ class GeneratedFile {
   }
 
   static async deleteTag(req: Request, res: Response) {
-    const prisma = new PrismaClient()
+    
     const { generatedFileId, tagId } = req.params
     const schema = z.object({
       generatedFileId: z.string().uuid(),
@@ -71,7 +71,7 @@ class GeneratedFile {
     })
     try {
       schema.parse({ generatedFileId, tagId })
-      const removeTag = await prisma.generatedFileTag.deleteMany({
+      const removeTag = await Prisma.generatedFileTag.deleteMany({
         where: {
           generatedFileId,
           tagId,
@@ -84,12 +84,12 @@ class GeneratedFile {
   }
 
   static async getById(req: Request, res: Response) {
-    const prisma = new PrismaClient()
+    
     const { id } = req.params
     const schema = z.string().uuid()
     try {
       schema.parse(id)
-      const file = await prisma.generatedFile.findUnique({
+      const file = await Prisma.generatedFile.findUnique({
         where: {
           id: id,
         },
@@ -157,7 +157,7 @@ class GeneratedFile {
   }
 
   static async addField(req: Request, res: Response) {
-    const prisma = new PrismaClient()
+    
     const { generatedFileId, fieldId } = req.body
     const schema = z.object({
       generatedFileId: z.string().uuid(),
@@ -165,7 +165,7 @@ class GeneratedFile {
     })
     try {
       schema.parse({ generatedFileId, fieldId })
-      const addField = await prisma.generatedFileField.create({
+      const addField = await Prisma.generatedFileField.create({
         data: {
           generatedFileId,
           fieldId,
@@ -178,7 +178,7 @@ class GeneratedFile {
   }
 
   static async deleteField(req: Request, res: Response) {
-    const prisma = new PrismaClient()
+    
     const { generatedFileId, fieldId } = req.params
     const schema = z.object({
       generatedFileId: z.string().uuid(),
@@ -186,7 +186,7 @@ class GeneratedFile {
     })
     try {
       schema.parse({ generatedFileId, fieldId })
-      const removeField = await prisma.generatedFileField.deleteMany({
+      const removeField = await Prisma.generatedFileField.deleteMany({
         where: {
           generatedFileId,
           fieldId,

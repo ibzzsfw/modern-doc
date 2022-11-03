@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express'
-import GeneratedFileController from '../controllers/GeneratedFileController'
+import GeneratedFileController from '@controllers/GeneratedFileController'
 
 class UserRouter {
   private router = Router()

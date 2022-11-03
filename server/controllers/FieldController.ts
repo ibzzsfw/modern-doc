@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import Field from '../models/Field'
+import Field from '@models/Field'
 class FieldController {
     createField = async (req: Request, res: Response) => {
         Field.createField(req, res)
