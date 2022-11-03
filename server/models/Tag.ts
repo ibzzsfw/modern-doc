@@ -35,6 +35,7 @@ class Tag {
     
     const schema = z.string()
     try {
+      schema.parse(name)
       const tag = await Prisma.tag.findFirst({
         where: {
           name: {
