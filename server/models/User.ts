@@ -162,7 +162,10 @@ class User {
       const token = jwt.sign({ id: getUser.id }, process.env.JWT_SECRET, {
         expiresIn: '1d',
       })
-      res.status(200).json({ ...getUser, token })
+
+      const userData = { ...getUser, sex: getSexText(getUser.sex) }
+
+      res.status(200).json({ ...userData, token })
     } catch (err) {
       res.status(400).json({ message: err })
     }
