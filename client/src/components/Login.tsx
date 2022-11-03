@@ -19,6 +19,8 @@ import axios, { Axios, AxiosError, AxiosResponse } from 'axios'
 import { useState } from 'react'
 import User from '@models/User'
 import { useLoginDataStore } from '@stores/LoginDataStore'
+import shallow from 'zustand/shallow'
+import { useEffect } from 'react'
 
 const Login = () => {
   let layout = {
@@ -53,8 +55,9 @@ const Login = () => {
   }
 
   const toast = useToast()
-  const { setLoginData } = useLoginDataStore()
-  const { setTabIndex } = useLoginPageStore()
+  const setLoginData = useLoginDataStore((state) => state.setLoginData)
+  const token = useLoginDataStore((state) => state.token)
+  const setTabIndex = useLoginPageStore((state) => state.setTabIndex)
 
   const loginSchema = Yup.object().shape({
     phoneNumber: Yup.string()
@@ -68,6 +71,10 @@ const Login = () => {
     phoneNumber: string
     password: string
   }
+
+  useEffect(() => {
+    console.log('token now', token)
+  }, [token])
 
   const { mutate } = useMutation(
     async ({ phoneNumber, password }: loginType) => {
@@ -90,7 +97,7 @@ const Login = () => {
           duration: 5000,
         })
         setLoginData({
-          userId: data.userId,
+          userId: data.id,
           householdId: data.householdId,
           title: data.title,
           firstName: data.firstName,
@@ -100,9 +107,20 @@ const Login = () => {
           sex: data.sex,
           token: data.token,
         })
-        setTimeout(() => {
-          window.location.href = '/home'
-        }, 1500)
+        console.log('setThis', {
+          userId: data.id,
+          householdId: data.householdId,
+          title: data.title,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          citizenId: data.citizenId,
+          phoneNumber: data.phoneNumber,
+          sex: data.sex,
+          token: data.token,
+        })
+        setTimeout(()=>{
+          window.location.pathname = '/home'
+        },1500)
       },
       onError: (error: AxiosError) => {
         console.log(error.message)
