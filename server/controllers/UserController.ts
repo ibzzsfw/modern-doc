@@ -7,9 +7,6 @@ class UserController {
   checkCitizenIdStatus = async (req: Request, res: Response) => {
     User.checkCitizenIdStatus(req, res)
   }
-  test = async (req: Request, res: Response) => {
-    User.test(req, res)
-  }
   login = async (req: Request, res: Response) => {
     User.login(req, res)
   }

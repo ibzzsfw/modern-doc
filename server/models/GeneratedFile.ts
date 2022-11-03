@@ -1,9 +1,6 @@
-import { Request, Response } from 'express'
-import * as Yup from 'yup'
-import bcrypt from 'bcryptjs'
 import { PrismaClient } from '@prisma/client'
-import checkCitizenId from '../utils/checkCitizenId'
 import async from 'async'
+import { Request, Response } from 'express'
 
 class GeneratedFile {
   static async create(req: Request, res: Response) {

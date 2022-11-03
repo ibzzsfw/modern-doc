@@ -21,8 +21,6 @@ class UserRouter {
       this.controller.checkCitizenIdStatus
     )
 
-    this.router.get('/test', this.controller.test)
-
     this.router.post('/login', this.controller.login)
   }
 }

@@ -1,8 +1,5 @@
-import { Request, Response } from 'express'
-import * as Yup from 'yup'
-import bcrypt from 'bcryptjs'
 import { PrismaClient } from '@prisma/client'
-import checkCitizenId from '../utils/checkCitizenId'
+import { Request, Response } from 'express'
 
 class Tag {
   static addTag = async (req: Request, res: Response) => {

@@ -21,6 +21,7 @@ specifiers:
   typescript: ^4.8.2
   yamljs: ^0.3.0
   yup: ^0.32.11
+  zod: ^3.19.1
 
 dependencies:
   '@prisma/client': 4.5.0_prisma@4.5.0
@@ -40,6 +41,7 @@ dependencies:
   typescript: 4.8.4
   yamljs: 0.3.0
   yup: 0.32.11
+  zod: 3.19.1
 
 devDependencies:
   '@types/cors': 2.8.12
@@ -1085,4 +1087,8 @@ packages:
       nanoclone: 0.2.1
       property-expr: 2.0.5
       toposort: 2.0.2
+    dev: false
+
+  /zod/3.19.1:
+    resolution: {integrity: sha512-LYjZsEDhCdYET9ikFu6dVPGp2YH9DegXjdJToSzD9rO6fy4qiRYFoyEYwps88OseJlPyl2NOe2iJuhEhL7IpEA==}
     dev: false

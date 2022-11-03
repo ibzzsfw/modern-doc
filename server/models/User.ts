@@ -1,12 +1,11 @@
-import { Request, Response } from 'express'
-import * as Yup from 'yup'
-import bcrypt from 'bcryptjs'
 import { PrismaClient } from '@prisma/client'
-import checkCitizenId from '../utils/checkCitizenId'
-import { userInfo } from 'os'
-import getSexText from '../utils/getSexText'
+import bcrypt from 'bcryptjs'
+import { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
-
+import { z } from 'zod'
+import checkCitizenId from '../utils/checkCitizenId'
+import getSexMF from '../utils/getSexMF'
+import getSexText from '../utils/getSexText'
 class User {
   static getFieldValue = (field: string, data: any): string => {
     switch (field) {
@@ -50,27 +49,21 @@ class User {
   }
 
   static addUser = async (req: Request, res: Response) => {
-    let schema = Yup.object().shape({
-      title: Yup.string(),
-      firstName: Yup.string().required('จำเป็นต้องกรอก'),
-      lastName: Yup.string().required('จำเป็นต้องกรอก'),
-      sex: Yup.mixed().oneOf(['m', 'f']).required('จำเป็นต้องกรอก'),
-      birthDate: Yup.date().required('จำเป็นต้องกรอก'),
-      citizenId: Yup.string()
-        .matches(/^[0-9]+$/, 'กรุณากรอกเฉพาะตัวเลข')
-        .length(13, 'รหัสบัตรประชาชนต้องมี 13 หลัก')
-        .required('จำเป็นต้องกรอก'),
-      phoneNumber: Yup.string()
-        .matches(/^[0-9]+$/, 'กรุณากรอกเฉพาะตัวเลข')
-        .length(10, 'เบอร์โทรศัพท์จำเป็นต้องมี 10 หลัก')
-        .required('จำเป็นต้องกรอก'),
-      password: Yup.string()
-        .min(6, 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร')
-        .required('จำเป็นต้องกรอก'),
+    const schema = z.object({
+      title: z.string(),
+      firstName: z.string(),
+      lastName: z.string(),
+      sex: z.enum(['ชาย', 'หญิง']),
+      birthDate: z.string(),
+      citizenId: z.string(),
+      phoneNumber: z.string().length(10),
+      password: z.string().min(6),
     })
+
     try {
+      schema.parse(req.body)
+      req.body.sex = getSexMF(req.body.sex)
       const prisma = new PrismaClient()
-      await schema.validate(req.body, { abortEarly: false })
       let hashedPassword = await bcrypt.hash(req.body.password, 10)
       const {
         title,
@@ -134,32 +127,6 @@ class User {
     } catch (err) {
       res.status(400).json({ message: err })
     }
-  }
-
-  static test = async (req: Request, res: Response) => {
-    const prisma = new PrismaClient()
-    let wantedField = [
-      'personal_sex',
-      'personal_firstname',
-      'personal_phonenumber',
-      'personal_title',
-      'personal_citizenId',
-      'personal_birthdate',
-      'personal_lastname',
-    ]
-    const getFieldId = await prisma.field.findMany({
-      where: {
-        name: {
-          in: wantedField,
-        },
-      },
-      select: {
-        id: true,
-        name: true,
-      },
-    })
-
-    res.status(201).json(getFieldId)
   }
 
   static login = async (req: Request, res: Response) => {
