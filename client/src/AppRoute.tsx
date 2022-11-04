@@ -10,6 +10,7 @@ import Error from '@pages/Error'
 import OTPVerify from './components/OTPVerify'
 import FamilyPage from '@pages/FamilyPage'
 import SearchPage from '@pages/SearchPage'
+import EditDocumentForm from '@components/EditDocumentForm'
 
 const AppRoute = () => {
   return (
@@ -84,6 +85,16 @@ const AppRoute = () => {
               <>
                 <PageContainer>
                   <SearchPage />
+                </PageContainer>
+              </>
+            }
+          />
+          <Route
+            path="/editdoc"
+            element={
+              <>
+                <PageContainer>
+                  <EditDocumentForm />
                 </PageContainer>
               </>
             }
