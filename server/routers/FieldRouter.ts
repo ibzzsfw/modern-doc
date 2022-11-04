@@ -20,6 +20,11 @@ class UserRouter {
       '/edit-official-name',
       this.controller.editFieldOfficialName
     )
+    this.router.post('/add-choice', this.controller.addFieldChoice)
+    this.router.delete(
+      '/delete-choice/:choiceId',
+      this.controller.deleteFieldChoice
+    )
   }
 }
 
