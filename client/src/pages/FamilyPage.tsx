@@ -1,24 +1,21 @@
-import FamilyInfoBox from '@components/FamilyInfoBox'
 import {
-  Button,
   Box,
-  VStack,
-  Flex,
+  Button,
   Center,
-  Wrap,
-  Link,
-  Icon,
   useDisclosure,
+  VStack,
+  Wrap,
 } from '@chakra-ui/react'
 import { AiOutlineUserAdd } from 'react-icons/ai'
-import MenuProvider from '@components/MenuProvider'
-import { BsThreeDots, BsTrash } from 'react-icons/bs'
-import { BiEdit } from 'react-icons/bi'
+
 import { useState } from 'react'
-import ManageFamilyMember from '@components/ManageFamilyMember'
-import ModalProvider from '@components/ModalProvider'
+
+import FamilyInfoBox from '@components/FamilyInfoBox'
+
+import { useFamilyPageStore } from '@stores/FamilyPageStore'
 
 const FamilyPage = () => {
+  const { page, setPage, mode,setMode } = useFamilyPageStore()
   const [family, setfamily] = useState([
     {
       id: 1,
@@ -45,58 +42,8 @@ const FamilyPage = () => {
       citizenId: '5 4487 45563 21 4',
     },
   ])
-  const [memberState, setmemberState] = useState(2)
-  const { isOpen, onOpen, onClose } = useDisclosure()
 
-  let threeDot = {
-    position: 'absolute',
-    top: '10px',
-    right: '20px',
-    color: 'accent.black',
-  }
-  const changeNormalstate = () => {
-    setmemberState(2)
-  }
-  const editmember = () => {
-    setmemberState(1)
-  }
-  const deleteFamily = () => {
-    console.log('delete')
-    family.pop()
-    setfamily([...family])
-  }
 
-  let menu = (
-    <MenuProvider
-      left="690px"
-      top="36px"
-      menusList={[
-        [
-          {
-            title: 'แก้ไขข้อมูลสมาชิก',
-            icon: <Icon as={BiEdit} />,
-            onClick: () => {
-              editmember()
-            },
-          },
-        ],
-        [
-          {
-            title: 'ลบสมาชิก',
-            icon: <Icon as={BsTrash} color="accent.red" />,
-            onClick: () => {
-              onOpen()
-            },
-            style: {
-              color: 'accent.red',
-            },
-          },
-        ],
-      ]}
-    >
-      <Icon as={BsThreeDots} sx={threeDot} boxSize="18px" />
-    </MenuProvider>
-  )
   let editButton = {
     width: 'auto',
     height: '40px',
@@ -116,14 +63,8 @@ const FamilyPage = () => {
     },
   }
 
-  return memberState == 0 ? (
-    <ManageFamilyMember cancel={changeNormalstate} isEdit="add" />
-  ) : memberState == 1 ? (
-    <ManageFamilyMember
-      cancel={changeNormalstate}
-      isEdit="edit"
-      data={family[1]}
-    />
+  return page == 0 || family.length == 0 ? (
+    <FamilyInfoBox activeForm="true" menuActive={false} />
   ) : (
     <Center>
       <Box width="909px">
@@ -135,7 +76,8 @@ const FamilyPage = () => {
               sx={editButton}
               leftIcon={<AiOutlineUserAdd />}
               onClick={() => {
-                setmemberState(0)
+                setMode('add')
+                setPage(0)
               }}
             >
               เพิ่มสมาชิก
@@ -145,20 +87,7 @@ const FamilyPage = () => {
             {family.map((values, index) => {
               return (
                 <>
-                  <FamilyInfoBox
-                    menuComponent={menu}
-                    menuActive="true"
-                    data={values}
-                  />
-
-                  <ModalProvider
-                    isOpen={isOpen}
-                    onOpen={onOpen}
-                    onClose={onClose}
-                    firstName={values.firstName}
-                    lastName={values.lastName}
-                    callback={deleteFamily}
-                  />
+                  <FamilyInfoBox menuActive={true} data={values} activeForm = {false} />
                 </>
               )
             })}

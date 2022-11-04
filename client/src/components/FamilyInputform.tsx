@@ -1,16 +1,10 @@
-import { Formik, Form } from 'formik'
-import * as Yup from 'yup'
-import FormInput from '@components/FormInput'
-import { useState } from 'react'
 import {
-  Flex,
-  VStack,
-  Box,
-  Icon,
-  Button,
-  Link,
-  useToast,
+  Box, Button, Flex, useToast, VStack
 } from '@chakra-ui/react'
+import FormInput from '@components/FormInput'
+import { useFamilyPageStore } from '@stores/FamilyPageStore'
+import { Form, Formik } from 'formik'
+import * as Yup from 'yup'
 
 type propsType = {
   id?: number
@@ -22,8 +16,9 @@ type propsType = {
   menu?: any
   disable?: boolean | 'false' | 'true'
   citizenIdDisable?: boolean | 'false' | 'true'
-  closeForm?: () => void
-  toast?: any
+  callBack? : ()=> void
+  toastDiscription?: any
+  modal? : any
 }
 
 const FamilyInputform = ({
@@ -35,16 +30,16 @@ const FamilyInputform = ({
   citizenId,
   menu,
   disable,
-  closeForm,
-  citizenIdDisable,
-  toast,
-}: propsType) => {
-  const selectOptions = {
-    prefix: ['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง'],
-    relationship: ['บิดา', 'มารดา', 'พี่', 'น้อง', 'อื่นๆ'],
-  }
 
- 
+  citizenIdDisable,
+  toastDiscription,
+  callBack,
+  modal
+}: propsType) => {
+
+  const {prefix:optionPrefix,relationship:optionrelationship} = useFamilyPageStore()
+
+ const toast =  useToast()
 
   const initToast = useToast()
   let submitButton = {
@@ -61,7 +56,17 @@ const FamilyInputform = ({
     },
   }
   
+
+  const familyschema = Yup.object().shape({
+    id: Yup.string(),
+    firstName: Yup.string().required('กรุณากรอกชื่อ'),
+    lastName: Yup.string().required('กรุณากรอกนามสกุล'),
+    relationship: Yup.mixed().oneOf(optionrelationship).required('กรุณาเลือกความสัมพันธ์'),
+    citizenId: Yup.string().required('กรุณากรอกเลขบัตรประชาชน'),
+    prefix: Yup.mixed().oneOf(optionPrefix).required('กรุณาเลือกคำนำหน้า'),
+  })
     
+  
   
 
   return (
@@ -78,7 +83,9 @@ const FamilyInputform = ({
           relationship: relationship || '',
           citizenId: citizenId || '',
         }}
+        validationSchema={familyschema}
         onSubmit={(values) => {
+          toast(toastDiscription)
         }}
       >
         <Form>
@@ -88,7 +95,7 @@ const FamilyInputform = ({
                 label="คำนำหน้า"
                 name="prefix"
                 type="select"
-                options={selectOptions.prefix}
+                options={optionPrefix}
                 placeholder="เลือกคำนำหน้า"
                 showCorrectBorder
                 width="139.2px"
@@ -118,7 +125,7 @@ const FamilyInputform = ({
                 label="เกี่ยวข้องเป็น"
                 name="relationship"
                 type="select"
-                options={selectOptions.relationship}
+                options={optionrelationship}
                 placeholder="เลือกความเกี่ยวข้อง"
                 showCorrectBorder
                 width="120px"
@@ -126,12 +133,12 @@ const FamilyInputform = ({
               />
               <FormInput
                 label="เลขบัตรประจำตัวประชาชน"
-                name="citicenId"
+                name="citizenId"
                 type="text"
                 placeholder="กรอกเลขบัตรประจำตัวประชาชน"
                 showCorrectBorder
                 width="250px"
-                disable={!citizenIdDisable}
+                disable={citizenIdDisable}
               />
             </Flex>
             {!disable ? (
@@ -141,17 +148,14 @@ const FamilyInputform = ({
                 <Flex gap="22px" align="center">
                   <Button
                     onClick={() => {
-                      closeForm()
+                      callBack()
                     }}
                   >
                     ยกเลิก
                   </Button>
                   <Button
                     sx={submitButton}
-                    onClick={() => {
-                      initToast(toast)
-                      closeForm()
-                    }}
+                    type="submit" 
                   >
                     ตกลง
                   </Button>
@@ -161,6 +165,7 @@ const FamilyInputform = ({
           </VStack>
         </Form>
       </Formik>
+      {modal}
     </VStack>
   )
 }

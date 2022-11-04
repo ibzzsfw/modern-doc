@@ -20,6 +20,7 @@ import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import { useState } from 'react'
 import { FiSearch } from 'react-icons/fi'
+import {PDFDocument, rgb} from 'pdf-lib'
 
 type propTypes = {
   id?: string
@@ -90,7 +91,7 @@ const EditDocumentForm = () => {
     type: string
   }
 
-  const getSchema = (fields: fieldTypes) => {
+  const getSchema = (fields: fieldTypes[]) => {
     let schema = {}
     fields.forEach((field) => {
       if (field.type === 'text' || field.type === 'date') {
@@ -102,7 +103,7 @@ const EditDocumentForm = () => {
 
     return Yup.object().shape(schema)
   }
-
+  
   return (
     <Box sx={layout}>
       <VStack>
@@ -134,18 +135,27 @@ const EditDocumentForm = () => {
                 />
               )
             })}
-          </Form>
-        </Formik>
-      </VStack>
-      <Box width="60%">
-        <Flex justifyContent="space-between">
-          <Box width="50%">
+            <Box width= '100%'>
+            <Flex justifyContent= 'space-between' >
+            <Box width="50%">
             <Progress value={60} />
           </Box>
-          <>
-            <Button rightIcon={<FiSearch />} onClick={onOpen}>
+          <Button rightIcon={<FiSearch />} onClick={onOpen}>
               ตรวจสอบ
             </Button>
+ 
+
+            </Flex>
+            </Box>
+            
+                     </Form>
+        </Formik>
+      </VStack>
+      
+       
+          
+          <>
+            
             <Modal
               isOpen={isOpen}
               onClose={onClose}
@@ -156,7 +166,9 @@ const EditDocumentForm = () => {
               <ModalContent>
                 <ModalHeader>ตรวจสอบความถูกต้อง</ModalHeader>
                 <ModalCloseButton />
-                <ModalBody></ModalBody>
+                <ModalBody>
+                  <iframe id = 'pdf'></iframe>
+                </ModalBody>
 
                 <ModalFooter>
                   <Button onClick={onClose}>Close</Button>
@@ -164,8 +176,8 @@ const EditDocumentForm = () => {
               </ModalContent>
             </Modal>
           </>
-        </Flex>
-      </Box>
+        
+      
     </Box>
   )
 }
