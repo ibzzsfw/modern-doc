@@ -5,7 +5,6 @@ import Prisma from '@utils/prisma'
 
 class GeneratedFile {
   static async create(req: Request, res: Response) {
-    
     const { name, officialName, description, dayLifeSpan, URI } = req.body
     const schema = z.object({
       name: z.string(),
@@ -32,7 +31,6 @@ class GeneratedFile {
   }
 
   static async getAll(req: Request, res: Response) {
-    
     try {
       const files = await Prisma.generatedFile.findMany()
       return res.status(200).json(files)
@@ -42,7 +40,6 @@ class GeneratedFile {
   }
 
   static async addTag(req: Request, res: Response) {
-    
     const { generatedFileId, tagId } = req.body
     const schema = z.object({
       generatedFileId: z.string().uuid(),
@@ -63,7 +60,6 @@ class GeneratedFile {
   }
 
   static async deleteTag(req: Request, res: Response) {
-    
     const { generatedFileId, tagId } = req.params
     const schema = z.object({
       generatedFileId: z.string().uuid(),
@@ -84,7 +80,6 @@ class GeneratedFile {
   }
 
   static async getById(req: Request, res: Response) {
-    
     const { id } = req.params
     const schema = z.string().uuid()
     try {
@@ -118,6 +113,12 @@ class GeneratedFile {
                   officialName: true,
                   description: true,
                   type: true,
+                  FieldChoice: {
+                    select: {
+                      name: true,
+                      officialName: true,
+                    },
+                  },
                 },
               },
             },
@@ -139,6 +140,13 @@ class GeneratedFile {
         }
       )
 
+      let FieldChoice = await async.map(
+        fieldArr,
+        (field: any, callback: any) => {
+          callback(null, field.FieldChoice)
+        }
+      )
+
       let result = {
         id: file.id,
         name: file.name,
@@ -157,7 +165,6 @@ class GeneratedFile {
   }
 
   static async addField(req: Request, res: Response) {
-    
     const { generatedFileId, fieldId } = req.body
     const schema = z.object({
       generatedFileId: z.string().uuid(),
@@ -178,7 +185,6 @@ class GeneratedFile {
   }
 
   static async deleteField(req: Request, res: Response) {
-    
     const { generatedFileId, fieldId } = req.params
     const schema = z.object({
       generatedFileId: z.string().uuid(),

@@ -31,7 +31,7 @@ import { BsPersonCircle } from 'react-icons/bs'
 import { IoChevronDownOutline, IoChevronForwardOutline } from 'react-icons/io5'
 import { MdGroups } from 'react-icons/md'
 import { BiLogOutCircle } from 'react-icons/bi'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useLoginDataStore } from '@stores/LoginDataStore'
 import getRelationshipText from '@utils/getRelationshipText'
 import shallow from 'zustand/shallow'
@@ -177,8 +177,20 @@ const NavbarAvatar = () => {
     width: '24px',
     height: '24px',
   }
-
+  const [x, setX] = useState(0)
   const [isExpand, setIsExpand] = useState(false)
+
+  //set x to height scroll from top
+  useEffect(() => {
+    const handleScroll = () => {
+      setX(window.scrollY)
+      console.log(x)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
 
   const userRaw = useLoginDataStore((state) => state.user, shallow)
   const user = new User(userRaw)

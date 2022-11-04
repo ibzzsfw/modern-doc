@@ -206,7 +206,7 @@ paths:
         '500':
           description: Tag edit failed
 
-  /field:
+  /field/create:
     post:
       tags:
         - Field
@@ -273,6 +273,53 @@ paths:
           description: Field edited
         '500':
           description: Field edit failed
+
+  /field/add-choice:
+    post:
+      tags:
+        - Field
+      summary: Add choice to field
+      operationId: addChoiceToField
+      requestBody:
+        description: Field object that needs to be edited
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                fieldId:
+                  type: string
+                  description: Field's id
+                name: 
+                  type: string
+                  description: Choice's name
+                officialName:
+                  type: string
+                  description: Choice's official name
+      responses:
+        '200':
+          description: Choice added
+        '500':
+          description: Choice add failed
+          
+  /field/delete-choice/{choiceId}:
+    delete:
+      tags:
+        - Field
+      summary: Delete choice from field
+      operationId: deleteChoiceFromField
+      parameters:
+        - name: choiceId
+          in: path
+          description: Choice's id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Choice deleted
+        '500':
+          description: Choice delete failed
 
   /generated-file/create:
     post:

@@ -70,7 +70,8 @@ model FieldChoice {
   id      String @id @default(uuid()) @db.Uuid
   field   Field  @relation(fields: [fieldId], references: [id])
   fieldId String @db.Uuid
-  choice  String
+  name    String
+  officialName  String
 }
 
 model GeneratedFile {
