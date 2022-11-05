@@ -92,7 +92,7 @@ const FamilyInfoBox = ({ data, activeForm, menuActive }: propsType) => {
   )
 
   let deleteModal = (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered onOverlayClick={false}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>ลบสมาชิก</ModalHeader>
