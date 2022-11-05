@@ -13,7 +13,7 @@ type propsType = {
   citizenId?: string
   menu?: any
   disable?: boolean | 'false' | 'true'
-  citizenIdDisable?: boolean | 'false' | 'true'
+  citizenIdDisable?: boolean
   callBack?: () => void
   toastDiscription?: any
   modal?: any
@@ -28,7 +28,6 @@ const FamilyInputform = ({
   citizenId,
   menu,
   disable,
-
   citizenIdDisable,
   toastDiscription,
   callBack,
@@ -39,7 +38,6 @@ const FamilyInputform = ({
 
   const toast = useToast()
 
-  const initToast = useToast()
   let submitButton = {
     height: '40px',
     backgroundColor: 'accent.blue',
@@ -144,7 +142,7 @@ const FamilyInputform = ({
                 <Flex gap="22px" align="center">
                   <Button
                     onClick={() => {
-                      callBack()
+                      if (callBack) callBack()
                     }}
                   >
                     ยกเลิก

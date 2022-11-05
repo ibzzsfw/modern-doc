@@ -20,13 +20,12 @@ import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import { useState } from 'react'
 import { FiSearch } from 'react-icons/fi'
-import {PDFDocument, rgb} from 'pdf-lib'
+import { PDFDocument, rgb } from 'pdf-lib'
 
 type propTypes = {
   id?: string
   fields?: []
 }
-
 
 const EditDocumentForm = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -84,7 +83,7 @@ const EditDocumentForm = () => {
     borderRadius: '8px',
   }
 
-  interface fieldTypes   {
+  interface fieldTypes {
     name: string
     officialName: string
     description: string
@@ -92,7 +91,7 @@ const EditDocumentForm = () => {
   }
 
   const getSchema = (fields: fieldTypes[]) => {
-    let schema = {}
+    let schema :any = {}
     fields.forEach((field) => {
       if (field.type === 'text' || field.type === 'date') {
         schema[field.name] = Yup.string().required('จำเป็นต้องกรอก')
@@ -103,7 +102,7 @@ const EditDocumentForm = () => {
 
     return Yup.object().shape(schema)
   }
-  
+
   return (
     <Box sx={layout}>
       <VStack>
@@ -135,49 +134,41 @@ const EditDocumentForm = () => {
                 />
               )
             })}
-            <Box width= '100%'>
-            <Flex justifyContent= 'space-between' >
-            <Box width="50%">
-            <Progress value={60} />
-          </Box>
-          <Button rightIcon={<FiSearch />} onClick={onOpen}>
-              ตรวจสอบ
-            </Button>
- 
-
-            </Flex>
+            <Box width="100%">
+              <Flex justifyContent="space-between">
+                <Box width="50%">
+                  <Progress value={60} />
+                </Box>
+                <Button rightIcon={<FiSearch />} onClick={onOpen}>
+                  ตรวจสอบ
+                </Button>
+              </Flex>
             </Box>
-            
-                     </Form>
+          </Form>
         </Formik>
       </VStack>
-      
-       
-          
-          <>
-            
-            <Modal
-              isOpen={isOpen}
-              onClose={onClose}
-              closeOnOverlayClick={false}
-              isCentered
-            >
-              <ModalOverlay />
-              <ModalContent>
-                <ModalHeader>ตรวจสอบความถูกต้อง</ModalHeader>
-                <ModalCloseButton />
-                <ModalBody>
-                  <iframe id = 'pdf'></iframe>
-                </ModalBody>
 
-                <ModalFooter>
-                  <Button onClick={onClose}>Close</Button>
-                </ModalFooter>
-              </ModalContent>
-            </Modal>
-          </>
-        
-      
+      <>
+        <Modal
+          isOpen={isOpen}
+          onClose={onClose}
+          closeOnOverlayClick={false}
+          isCentered
+        >
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>ตรวจสอบความถูกต้อง</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              
+            </ModalBody>
+
+            <ModalFooter>
+              <Button onClick={onClose}>Close</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </>
     </Box>
   )
 }

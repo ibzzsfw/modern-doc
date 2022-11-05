@@ -1,9 +1,10 @@
 import {
   Box,
+  Button,
   Flex,
   HStack,
-  Image,
   Icon,
+  Image,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -11,16 +12,15 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  useDisclosure,
   Text,
-  Button,
+  useDisclosure,
 } from '@chakra-ui/react'
-import { useState } from 'react'
-import FamilyInputform from './FamilyInputform'
-import { useFamilyPageStore } from '@stores/FamilyPageStore'
 import MenuProvider from '@components/MenuProvider'
-import { BsThreeDots, BsTrash } from 'react-icons/bs'
+import { useFamilyPageStore } from '@stores/FamilyPageStore'
+import { useState } from 'react'
 import { BiEdit } from 'react-icons/bi'
+import { BsThreeDots, BsTrash } from 'react-icons/bs'
+import FamilyInputform from './FamilyInputform'
 
 interface dataTypes {
   id: number
@@ -35,14 +35,8 @@ type propsType = {
   data?: dataTypes
   activeForm?: boolean | 'true' | 'false'
   menuActive?: boolean
-  disablecitizenId?: boolean | 'false' | 'true'
 }
-const FamilyInfoBox = ({
-  data,
-  activeForm,
-  disablecitizenId,
-  menuActive,
-}: propsType) => {
+const FamilyInfoBox = ({ data, activeForm, menuActive }: propsType) => {
   const [editFamily, setEditFamily] = useState(false)
   const { setPage, mode, setMode } = useFamilyPageStore()
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -154,7 +148,7 @@ const FamilyInfoBox = ({
             lastName={data?.lastName}
             relationship={data?.relationship}
             citizenId={data?.citizenId}
-            citizenIdDisable="true"
+            citizenIdDisable={true}
             callBack={() => {
               setEditFamily(false)
             }}
