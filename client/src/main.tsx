@@ -34,6 +34,7 @@ const colors = {
       white: '#FFFFFF',
       red: '#F31260',
       green: '#17C964',
+      darkgreen: "#13A452",
       gray: '#A3A3A3',
       yellow: '#F5A524',
     },
