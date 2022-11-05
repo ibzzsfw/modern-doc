@@ -1,22 +1,17 @@
 import {
   Box,
-  VStack,
-  Icon,
   Button,
-  Flex,
   Divider,
-  Text,
-  Spacer,
+  Flex,
   HStack,
+  Text,
+  VStack,
 } from '@chakra-ui/react'
-import { Form, Formik } from 'formik'
-import FormInput from '@components/FormInput'
-import ConfirmPassword from '@components/ConfirmPassword'
 import ChangePassword from '@components/ChangePassword'
-import * as Yup from 'yup'
-import { useState, useRef } from 'react'
-import { AiTwotoneCalendar } from 'react-icons/ai'
-import { HiKey } from 'react-icons/hi'
+import ConfirmPassword from '@components/ConfirmPassword'
+import FormInput from '@components/FormInput'
+import { Form, Formik } from 'formik'
+import { useState } from 'react'
 import { FiEdit } from 'react-icons/fi'
 
 const ProfileFormInput = () => {
@@ -318,8 +313,8 @@ const ProfileFormInput = () => {
                 disable={editProfile}
               />
             </Flex>
-            <Box height="40px" textAlign="right" width='100%'>
-              <HStack gap="22px" justifyContent='flex-end'>
+            <Box height="40px" textAlign="right" width="100%">
+              <HStack gap="22px" justifyContent="flex-end">
                 <Button
                   onClick={() => {
                     setEditProfile(true)

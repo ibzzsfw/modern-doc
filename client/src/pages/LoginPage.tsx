@@ -12,10 +12,9 @@ import {
 import Login from '@components/Login'
 import Register from '@components/Register'
 import { useLoginPageStore } from '@stores/LoginPageStore'
-import { useQuery, useMutation } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import shallow from 'zustand/shallow'
-import { useEffect } from 'react'
 
 const LoginPage = () => {
   let fullPageContainer = {
@@ -97,13 +96,11 @@ const LoginPage = () => {
     console.log(`${import.meta.env.VITE_API_ENDPOINT}/test`)
   }
 
-
-  
   return (
     <>
       <Box sx={fullPageContainer}>
         <Flex sx={layout}>
-          <Box sx={logoBox} scrollSnapType=''>
+          <Box sx={logoBox} scrollSnapType="">
             <Image src="/assets/logo.png" margin="34px auto 38px auto" />
             <Text as="h1" sx={logoText}>
               Modern Doc

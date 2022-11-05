@@ -1,34 +1,31 @@
 import {
   Box,
-  Text,
+  Button,
+  Center,
+  Flex,
   Heading,
-  VStack,
-  Progress,
   Modal,
   ModalBody,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
   ModalCloseButton,
+  ModalContent,
   ModalFooter,
-  useDisclosure,
-  Button,
-  Flex,
-  Center,
-  Wrap,
-  Tabs,
-  TabList,
-  TabPanels,
+  ModalHeader,
+  ModalOverlay,
+  Progress,
   Tab,
+  TabList,
   TabPanel,
+  TabPanels,
+  Tabs,
+  Text,
+  useDisclosure,
+  VStack,
 } from '@chakra-ui/react'
 import FormInput from '@components/FormInput'
-import { Formik, Form } from 'formik'
-import * as Yup from 'yup'
+import { Form, Formik } from 'formik'
 import { useState } from 'react'
 import { FiSearch } from 'react-icons/fi'
-import { PDFDocument, rgb } from 'pdf-lib'
-import { roundToNearestMinutes } from 'date-fns/esm'
+import * as Yup from 'yup'
 
 type propTypes = {
   id?: string
@@ -211,10 +208,9 @@ const EditDocumentForm = () => {
           </Center>
         </ModalBody>
         <ModalFooter>
-        <Button variant="solid" colorScheme="blue" onClick={() => {}}>
-              ตกลง
-            </Button>
-          
+          <Button variant="solid" colorScheme="blue" onClick={() => {}}>
+            ตกลง
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>

@@ -1,20 +1,6 @@
-import {
-  Box,
-  Flex,
-  HStack,
-  VStack,
-  Text,
-  Input,
-  IconButton,
-  Icon,
-  background,
-  Button,
-  border,
-  Center,
-} from '@chakra-ui/react'
-import { FiEdit } from 'react-icons/fi'
-import ProfilePicture from '@components/ProfilePicture'
+import { Box, Center, HStack } from '@chakra-ui/react'
 import ProfileFormInput from '@components/ProfileFormInput'
+import ProfilePicture from '@components/ProfilePicture'
 
 const MyProfile = () => {
   const data = {}

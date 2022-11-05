@@ -1,7 +1,7 @@
+import Prisma from '@utils/prisma'
 import async from 'async'
 import { Request, Response } from 'express'
 import { z } from 'zod'
-import Prisma from '@utils/prisma'
 
 class GeneratedFile {
   static async create(req: Request, res: Response) {
@@ -137,13 +137,6 @@ class GeneratedFile {
         file.GeneratedFileField,
         (field: any, callback: any) => {
           callback(null, field.field)
-        }
-      )
-
-      let FieldChoice = await async.map(
-        fieldArr,
-        (field: any, callback: any) => {
-          callback(null, field.FieldChoice)
         }
       )
 

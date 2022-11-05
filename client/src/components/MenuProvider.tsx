@@ -1,28 +1,13 @@
 import {
-  Accordion,
-  AccordionButton,
-  AccordionItem,
-  AccordionPanel,
-  As,
-  Avatar,
   Box,
   Divider,
   Flex,
-  HStack,
-  Icon,
   Popover,
   PopoverBody,
   PopoverContent,
-  PopoverHeader,
   Text,
   useDisclosure,
-  VStack,
 } from '@chakra-ui/react'
-import { Children } from 'react'
-import { BiLogOutCircle } from 'react-icons/bi'
-import { BsPersonCircle } from 'react-icons/bs'
-import { IoChevronDownOutline } from 'react-icons/io5'
-import { MdGroups } from 'react-icons/md'
 import { Link } from 'react-router-dom'
 
 type Menu = {

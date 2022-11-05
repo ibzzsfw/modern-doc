@@ -2,25 +2,20 @@ import {
   Box,
   Button,
   chakra,
-  Flex,
-  Image,
-  Text,
-  VStack,
   Icon,
+  Text,
   useToast,
+  VStack,
 } from '@chakra-ui/react'
 import FormInput from '@components/FormInput'
-import { Form, Formik } from 'formik'
-import * as Yup from 'yup'
-import { useLoginPageStore } from '@stores/LoginPageStore'
-import { AiFillPhone, AiFillLock } from 'react-icons/ai'
-import { useMutation } from '@tanstack/react-query'
-import axios, { Axios, AxiosError, AxiosResponse } from 'axios'
-import { useState } from 'react'
 import User from '@models/User'
 import { useLoginDataStore } from '@stores/LoginDataStore'
-import shallow from 'zustand/shallow'
-import { useEffect } from 'react'
+import { useLoginPageStore } from '@stores/LoginPageStore'
+import { useMutation } from '@tanstack/react-query'
+import axios, { AxiosError } from 'axios'
+import { Form, Formik } from 'formik'
+import { AiFillLock, AiFillPhone } from 'react-icons/ai'
+import * as Yup from 'yup'
 
 const Login = () => {
   let layout = {
