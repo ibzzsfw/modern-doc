@@ -16,6 +16,9 @@ enum FieldType {
   date
   singleSelect
   multipleSelect
+  phoneNumber
+  email
+  age
 }
 
 enum Sex {
