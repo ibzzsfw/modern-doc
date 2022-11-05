@@ -3,27 +3,27 @@ import { persist, PersistOptions } from 'zustand/middleware'
 import User from '@models/User'
 
 type FamilyDataStore = {
-  user : any
+  user: any
   setUser: (value: any) => void
 }
 
 export const useFamilyDataStore = create<FamilyDataStore>((set) => ({
-  user : {
+  user: {
     userId: '',
-  householdId: '',
-  title: '',
-  firstName:'',
-  lastName: '',
-  citizenId: '',
-  phoneNumber:'',
-  sex: '',
-  token: '',
-  relationship: '',
-  profileURI: ''
-},
+    householdId: '',
+    title: '',
+    firstName: '',
+    lastName: '',
+    citizenId: '',
+    phoneNumber: '',
+    sex: '',
+    token: '',
+    relationship: '',
+    profileURI: '',
+  },
   setUser: (user) => {
     set({
       user: user,
     })
-  }
+  },
 }))

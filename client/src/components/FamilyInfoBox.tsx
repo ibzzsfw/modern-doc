@@ -1,5 +1,6 @@
 import {
-  Box, Flex,
+  Box,
+  Flex,
   HStack,
   Image,
   Icon,
@@ -12,7 +13,7 @@ import {
   ModalOverlay,
   useDisclosure,
   Text,
-  Button
+  Button,
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import FamilyInputform from './FamilyInputform'
@@ -20,7 +21,6 @@ import { useFamilyPageStore } from '@stores/FamilyPageStore'
 import MenuProvider from '@components/MenuProvider'
 import { BsThreeDots, BsTrash } from 'react-icons/bs'
 import { BiEdit } from 'react-icons/bi'
-
 
 interface dataTypes {
   id: number
@@ -34,7 +34,7 @@ interface dataTypes {
 type propsType = {
   data?: dataTypes
   activeForm?: boolean | 'true' | 'false'
-  menuActive?: boolean 
+  menuActive?: boolean
   disablecitizenId?: boolean | 'false' | 'true'
 }
 const FamilyInfoBox = ({
@@ -44,7 +44,7 @@ const FamilyInfoBox = ({
   menuActive,
 }: propsType) => {
   const [editFamily, setEditFamily] = useState(false)
-  const {setPage,mode,setMode} = useFamilyPageStore()
+  const { setPage, mode, setMode } = useFamilyPageStore()
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   let boxLayout = {
@@ -97,7 +97,6 @@ const FamilyInfoBox = ({
     </MenuProvider>
   )
 
-
   let deleteModal = (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
@@ -105,73 +104,68 @@ const FamilyInfoBox = ({
         <ModalHeader>ลบสมาชิก</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          คุณต้องการลบสมาชิก <Text as = 'b'>{data?.firstName + ' ' + data?.lastName}</Text> ใช่หรือไม่
+          คุณต้องการลบสมาชิก{' '}
+          <Text as="b">{data?.firstName + ' ' + data?.lastName}</Text>{' '}
+          ใช่หรือไม่
           <br />
-            (เอกสารร่วมจะหายไปด้วย)
+          (เอกสารร่วมจะหายไปด้วย)
         </ModalBody>
         <ModalFooter>
-        <Flex gap="22px">
-              <Button variant="outline" onClick={onClose}>
-                ยกเลิก
-              </Button>
-              <Button
-                variant="solid"
-                colorScheme="red"
-                onClick={() => {
-                  
-                }}
-              >
-                ลบ
-              </Button>
-            </Flex>
+          <Flex gap="22px">
+            <Button variant="outline" onClick={onClose}>
+              ยกเลิก
+            </Button>
+            <Button variant="solid" colorScheme="red" onClick={() => {}}>
+              ลบ
+            </Button>
+          </Flex>
         </ModalFooter>
-        </ModalContent>
+      </ModalContent>
     </Modal>
   )
 
   let addFamilySuccess = {
     title: 'เพิ่มสมาชิกสำเร็จ',
-            status: 'success',
-            duration: 3000,
-          
+    status: 'success',
+    duration: 3000,
   }
 
   let editFamilySuccess = {
     title: 'แก้ไขข้อมูลสมาชิกสำเร็จ',
-            status: 'success',
-            duration: 3000,
-          
+    status: 'success',
+    duration: 3000,
   }
 
-  return mode === 'edit' ? (<Box sx={boxLayout}>
-    <Flex height="100%">
-      <HStack gap="32px">
-        <Image
-          src="https://bit.ly/sage-adebayo"
-          boxSize="206px"
-          borderRadius="8px"
-        />
-        <FamilyInputform
-          menu={menuActive ? menu : null}
-          disable={activeForm || editFamily}
-          id={data?.id}
-          prefix={data?.prefix}
-          firstName={data?.firstName}
-          lastName={data?.lastName}
-          relationship={data?.relationship}
-          citizenId={data?.citizenId}
-          citizenIdDisable= 'true'
-          callBack={() => {
-            setEditFamily(false)
-          }}
-          toastDiscription={editFamilySuccess}
-          modal={deleteModal}
-        />
-      </HStack>
-    </Flex>
-  </Box>
-) :(
-  <Box sx={boxLayout}>
+  return mode === 'edit' ? (
+    <Box sx={boxLayout}>
+      <Flex height="100%">
+        <HStack gap="32px">
+          <Image
+            src="https://bit.ly/sage-adebayo"
+            boxSize="206px"
+            borderRadius="8px"
+          />
+          <FamilyInputform
+            menu={menuActive ? menu : null}
+            disable={activeForm || editFamily}
+            id={data?.id}
+            prefix={data?.prefix}
+            firstName={data?.firstName}
+            lastName={data?.lastName}
+            relationship={data?.relationship}
+            citizenId={data?.citizenId}
+            citizenIdDisable="true"
+            callBack={() => {
+              setEditFamily(false)
+            }}
+            toastDiscription={editFamilySuccess}
+            modal={deleteModal}
+          />
+        </HStack>
+      </Flex>
+    </Box>
+  ) : (
+    <Box sx={boxLayout}>
       <Flex height="100%">
         <HStack gap="32px">
           <Image
@@ -183,24 +177,18 @@ const FamilyInfoBox = ({
             menu={menuActive ? menu : null}
             disable={activeForm}
             citizenIdDisable={false}
-            callBack= {()=>{setMode('edit')
-            setPage(1)}}
-            toastDiscription = {addFamilySuccess}
+            callBack={() => {
+              setMode('edit')
+              setPage(1)
+            }}
+            toastDiscription={addFamilySuccess}
           />
         </HStack>
       </Flex>
     </Box>
-
   )
 }
 
 export default FamilyInfoBox
-
-
-
-
-
-
-
 
 /**  */

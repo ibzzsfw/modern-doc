@@ -15,7 +15,7 @@ import FamilyInfoBox from '@components/FamilyInfoBox'
 import { useFamilyPageStore } from '@stores/FamilyPageStore'
 
 const FamilyPage = () => {
-  const { page, setPage, mode,setMode } = useFamilyPageStore()
+  const { page, setPage, mode, setMode } = useFamilyPageStore()
   const [family, setfamily] = useState([
     {
       id: 1,
@@ -42,7 +42,6 @@ const FamilyPage = () => {
       citizenId: '5 4487 45563 21 4',
     },
   ])
-
 
   let editButton = {
     width: 'auto',
@@ -87,7 +86,11 @@ const FamilyPage = () => {
             {family.map((values, index) => {
               return (
                 <>
-                  <FamilyInfoBox menuActive={true} data={values} activeForm = {false} />
+                  <FamilyInfoBox
+                    menuActive={true}
+                    data={values}
+                    activeForm={false}
+                  />
                 </>
               )
             })}

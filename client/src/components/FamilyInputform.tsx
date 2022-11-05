@@ -1,6 +1,4 @@
-import {
-  Box, Button, Flex, useToast, VStack
-} from '@chakra-ui/react'
+import { Box, Button, Flex, useToast, VStack } from '@chakra-ui/react'
 import FormInput from '@components/FormInput'
 import { useFamilyPageStore } from '@stores/FamilyPageStore'
 import { Form, Formik } from 'formik'
@@ -16,9 +14,9 @@ type propsType = {
   menu?: any
   disable?: boolean | 'false' | 'true'
   citizenIdDisable?: boolean | 'false' | 'true'
-  callBack? : ()=> void
+  callBack?: () => void
   toastDiscription?: any
-  modal? : any
+  modal?: any
 }
 
 const FamilyInputform = ({
@@ -34,12 +32,12 @@ const FamilyInputform = ({
   citizenIdDisable,
   toastDiscription,
   callBack,
-  modal
+  modal,
 }: propsType) => {
+  const { prefix: optionPrefix, relationship: optionrelationship } =
+    useFamilyPageStore()
 
-  const {prefix:optionPrefix,relationship:optionrelationship} = useFamilyPageStore()
-
- const toast =  useToast()
+  const toast = useToast()
 
   const initToast = useToast()
   let submitButton = {
@@ -55,19 +53,17 @@ const FamilyInputform = ({
       backgroundColor: 'hover.white',
     },
   }
-  
 
   const familyschema = Yup.object().shape({
     id: Yup.string(),
     firstName: Yup.string().required('กรุณากรอกชื่อ'),
     lastName: Yup.string().required('กรุณากรอกนามสกุล'),
-    relationship: Yup.mixed().oneOf(optionrelationship).required('กรุณาเลือกความสัมพันธ์'),
+    relationship: Yup.mixed()
+      .oneOf(optionrelationship)
+      .required('กรุณาเลือกความสัมพันธ์'),
     citizenId: Yup.string().required('กรุณากรอกเลขบัตรประชาชน'),
     prefix: Yup.mixed().oneOf(optionPrefix).required('กรุณาเลือกคำนำหน้า'),
   })
-    
-  
-  
 
   return (
     <VStack>
@@ -153,10 +149,7 @@ const FamilyInputform = ({
                   >
                     ยกเลิก
                   </Button>
-                  <Button
-                    sx={submitButton}
-                    type="submit" 
-                  >
+                  <Button sx={submitButton} type="submit">
                     ตกลง
                   </Button>
                 </Flex>
