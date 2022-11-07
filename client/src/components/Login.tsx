@@ -61,13 +61,13 @@ const Login = () => {
     password: Yup.string().required('จำเป็นต้องกรอก'),
   })
 
-  interface loginType {
+  interface loginForm {
     phoneNumber: string
     password: string
   }
 
   const { mutate } = useMutation(
-    async ({ phoneNumber, password }: loginType) => {
+    async ({ phoneNumber, password }: loginForm) => {
       let response = await axios.post(
         `${import.meta.env.VITE_API_ENDPOINT}/user/login`,
         {
@@ -118,7 +118,7 @@ const Login = () => {
     }
   )
 
-  const onLogin = async ({ phoneNumber, password }: loginType) => {
+  const onLogin = async ({ phoneNumber, password }: loginForm) => {
     mutate({ phoneNumber, password })
   }
 

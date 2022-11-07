@@ -8,6 +8,7 @@ import {
   FormControl,
   Button,
   Icon,
+  useToast,
 } from '@chakra-ui/react'
 import { useRegisterStore } from '@stores/RegisterStore'
 import FormInput from '@components/FormInput'
@@ -15,9 +16,12 @@ import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
 import { IoChevronBack, IoChevronForward } from 'react-icons/io5'
 import { AiTwotoneCalendar } from 'react-icons/ai'
+import { useMutation } from '@tanstack/react-query'
+import axios, { AxiosError } from 'axios'
 
 const Register = () => {
   const { page, setPage, title, sex } = useRegisterStore()
+  const toast = useToast()
 
   const registerSchema = Yup.object().shape({
     title: Yup.mixed().oneOf(title),
@@ -38,6 +42,47 @@ const Register = () => {
       .required('จำเป็นต้องกรอก'),
     confirmPassword: Yup.string().required('จำเป็นต้องกรอก'),
   })
+  interface RegisterForm {
+    title: string
+    firstName: string
+    lastName: string
+    sex: string
+    birthDate: Date
+    citizenId: string
+    phoneNumber: string
+    password: string
+    confirmPassword: string
+  }
+
+  const { mutate } = useMutation(
+    async (data: RegisterForm) => {
+      let response = await axios.post(
+        `${import.meta.env.VITE_API_ENDPOINT}/user`,
+        data
+      )
+      return response.data
+    },
+    {
+      onSuccess: (data: any) => {
+        toast({
+          title: 'สมัครสมาชิกสำเร็จ',
+          description: 'กรุณาเข้าสู่ระบบ',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        })
+      },
+      onError: (error: AxiosError) => {
+        toast({
+          title: 'สมัครสมาชิกไม่สำเร็จ',
+          description: error.message,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        })
+      },
+    }
+  )
 
   return (
     <Box>
@@ -61,7 +106,7 @@ const Register = () => {
         }}
         validationSchema={registerSchema}
         onSubmit={(values) => {
-          console.log(values)
+          mutate(values)
         }}
       >
         <Form>

@@ -1,15 +1,20 @@
-import { values } from 'pdf-lib'
 import create from 'zustand'
 import { persist, PersistOptions } from 'zustand/middleware'
 
 type FamilyPageStore = {
   page: number
   setPage: (value: number) => void
-  prefix: ['นาย' | 'นาง' | 'นางสาว' | 'เด็กชาย' | 'เด็กหญิง']
+  prefix: 'นาย' | 'นาง' | 'นางสาว' | 'เด็กชาย' | 'เด็กหญิง'
   setPrefix: (value: 'นาย' | 'นาง' | 'นางสาว' | 'เด็กชาย' | 'เด็กหญิง') => void
-  relationship: [
-    'บิดา' | 'มารดา' | 'พี่' | 'น้อง' | 'อื่นๆ' | 'เจ้าของบ้าน' | 'ผู้อาศัย'
-  ]
+  relationship:
+    | 'บิดา'
+    | 'มารดา'
+    | 'พี่'
+    | 'น้อง'
+    | 'อื่นๆ'
+    | 'เจ้าของบ้าน'
+    | 'ผู้อาศัย'
+
   setRealtionship: (
     value:
       | 'บิดา'
@@ -30,17 +35,9 @@ type FamilyPageStore = {
 export const useFamilyPageStore = create<FamilyPageStore>((set) => ({
   page: 1,
   setPage: (value) => set({ page: value }),
-  prefix: ['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง'],
+  prefix: 'นาย',
   setPrefix: (value) => set({ prefix: value }),
-  relationship: [
-    'บิดา',
-    'มารดา',
-    'พี่',
-    'น้อง',
-    'อื่นๆ',
-    'เจ้าของบ้าน',
-    'ผู้อาศัย',
-  ],
+  relationship: 'เจ้าของบ้าน',
   setRealtionship: (value) => set({ relationship: value }),
   callback: () => {},
   mode: 'edit',
