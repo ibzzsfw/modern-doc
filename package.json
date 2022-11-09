@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "client": "cd client && pnpm install && pnpm dev",
+    "server": "cd server && pnpm install&&pnpm prisma generate && pnpm start",
+    "start": "concurrently \"pnpm run client\" \"pnpm run server\""
+  },
+  "devDependencies": {
+    "concurrently": "^7.5.0"
+  }
+}

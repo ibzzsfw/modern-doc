@@ -1,7 +1,7 @@
 {
-  "name": "TS-backend-template",
+  "name": "backend",
   "version": "1.0.0",
-  "main": "Server.js",
+  "main": "Server.ts",
   "author": "DylDarab <apicha.oap@gmail.com>",
   "license": "MIT",
   "dependencies": {
