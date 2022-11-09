@@ -21,6 +21,8 @@ import {
 } from '@chakra-ui/react'
 import { AiOutlineDelete } from 'react-icons/ai'
 import { useState, useEffect } from 'react'
+import React, { useCallback } from 'react'
+import { useDropzone } from 'react-dropzone'
 
 const UploadFile = () => {
 
@@ -128,7 +130,9 @@ const UploadFile = () => {
                         <Text as='b'>1.2 MB</Text>
                     }
                   </Box> :
-                  <Image src="/assets/upload-cloud.svg" margin="72px 0" />
+                  <Box padding="72px 0">
+                    <Image src="/assets/upload-cloud.svg"/>
+                  </Box>
               }
             </Center>
             <Input placeholder='พิมพ์เพื่อค้นหาเอกสาร' />

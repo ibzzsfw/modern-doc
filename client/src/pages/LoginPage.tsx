@@ -15,6 +15,7 @@ import { useLoginPageStore } from '@stores/LoginPageStore'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import shallow from 'zustand/shallow'
+import { Link } from 'react-router-dom'
 
 const LoginPage = () => {
   let fullPageContainer = {
@@ -98,6 +99,9 @@ const LoginPage = () => {
 
   return (
     <>
+      <Link to="/folder">
+        <Text color='red' fontSize="90px">folder page</Text>
+      </Link>
       <Box sx={fullPageContainer}>
         <Flex sx={layout}>
           <Box sx={logoBox} scrollSnapType="">

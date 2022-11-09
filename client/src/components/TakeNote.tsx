@@ -1,26 +1,17 @@
 import {
-  useDisclosure,
   Button,
   Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
-  Center,
-  Image,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Select,
-  Input,
-  Checkbox,
-  Box,
   Textarea,
-  Text,
-  Spacer,
-  HStack,
+  useDisclosure
 } from '@chakra-ui/react'
-import { AiOutlineDelete } from 'react-icons/ai'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 const TakeNote = () => {
 
@@ -44,7 +35,13 @@ const TakeNote = () => {
           <ModalHeader>สร้างบันทึก</ModalHeader>
           <ModalCloseButton />
           <ModalBody sx={modalBody}>
-            <Select placeholder="ประเภทของบันทึก" onChange={(e) => setNoteType(e.target.value)}>
+            <Select
+              placeholder="ประเภทของบันทึก"
+              onChange={(e) => {
+                setNoteType(e.target.value)
+                setSelectedDocument("")
+              }}
+            >
               <option value="free_note">บันทึกอิสระ</option>
               <option value="file_note">บันทึกในเอกสาร</option>
               <option value="folder_note">บันทึกในแฟ้ม</option>
@@ -57,20 +54,20 @@ const TakeNote = () => {
                   <option value="file3">เอกสาร 3</option>
                 </Select>
                 : noteType == "folder_note" ?
-                  <Select placeholder="เลือกแฟ้ม"  onChange={(e) => setSelectedDocument(e.target.value)}>
+                  <Select placeholder="เลือกแฟ้ม" onChange={(e) => setSelectedDocument(e.target.value)}>
                     <option value="folder1">แฟ้ม 1</option>
                     <option value="folder2">แฟ้ม 2</option>
                     <option value="folder3">แฟ้ม 3</option>
                   </Select>
                   : noteType == "free_note" ?
-                  <Select placeholder="เลือกบันทึก"  onChange={(e) => setSelectedDocument(e.target.value)}>
-                    <option value="new_free_note">บันทึกอิสระใหม่</option>
-                    <option value="free1">บันทึกอิสระ 1</option>
-                    <option value="free2">บันทึกอิสระ 2</option>
-                  </Select>
-                  : null
+                    <Select placeholder="เลือกบันทึก" onChange={(e) => setSelectedDocument(e.target.value)}>
+                      <option value="new_free_note">บันทึกอิสระใหม่</option>
+                      <option value="free1">บันทึกอิสระ 1</option>
+                      <option value="free2">บันทึกอิสระ 2</option>
+                    </Select>
+                    : null
             }
-            {noteType && <Textarea placeholder={selectedDocument!="new_free_note" ? `เนื้อหาเดิมของ ${selectedDocument}` : "เนื้อหาใหม่"} />}
+            {noteType && <Textarea placeholder={selectedDocument != "" ? `เนื้อหาเดิมของ ${selectedDocument}` : "เนื้อหาใหม่"} />}
           </ModalBody>
           <ModalFooter>
             <Button onClick={onClose}>ยกเลิก</Button>
