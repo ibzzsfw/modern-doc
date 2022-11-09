@@ -21,8 +21,6 @@ import {
 } from '@chakra-ui/react'
 import { AiOutlineDelete } from 'react-icons/ai'
 import { useState, useEffect } from 'react'
-import React, { useCallback } from 'react'
-import { useDropzone } from 'react-dropzone'
 
 const UploadFile = () => {
 
@@ -82,6 +80,16 @@ const UploadFile = () => {
     }
   }
 
+  let activeDrop = {
+    display: "flex",
+    justifyContent: "center",
+    padding: "72px 0",
+    width: "100%",
+    _hover: {
+      backgroundColor: "#FDE8E8",
+    }
+  }
+
   return (
     <>
       <Button onClick={onOpen} colorScheme={"red"}>Upload file</Button>
@@ -115,26 +123,6 @@ const UploadFile = () => {
                 {fileType} file
               </Button>
             </HStack>
-            <Center sx={dropFile}>
-              {
-                fileExists ?
-                  <Box
-                    sx={fileExistsBox}
-                    onMouseOver={() => setWannaRemove(true)}
-                    onMouseLeave={() => setWannaRemove(false)}
-                  >
-                    <Text as='b'>{selectedFile}</Text>
-                    {
-                      wannaRemove ?
-                        <AiOutlineDelete color={wannaRemove ? "red" : "gray"} size={24} onClick={() => setFileExists(false)} /> :
-                        <Text as='b'>1.2 MB</Text>
-                    }
-                  </Box> :
-                  <Box padding="72px 0">
-                    <Image src="/assets/upload-cloud.svg"/>
-                  </Box>
-              }
-            </Center>
             <Input placeholder='พิมพ์เพื่อค้นหาเอกสาร' />
             <Select placeholder='เลือกเอกสาร' onChange={(e) => setSelectedFile(e.target.value)}>
               <option value='outsideFile'>เอกสารภายนอก</option>
@@ -144,6 +132,29 @@ const UploadFile = () => {
                 })
               }
             </Select>
+            {
+              fileType != "generate" &&
+              <Center sx={dropFile}>
+                {
+                  fileExists ?
+                    <Box
+                      sx={fileExistsBox}
+                      onMouseOver={() => setWannaRemove(true)}
+                      onMouseLeave={() => setWannaRemove(false)}
+                    >
+                      <Text as='b'>{selectedFile}</Text>
+                      {
+                        wannaRemove ?
+                          <AiOutlineDelete color={wannaRemove ? "red" : "gray"} size={24} onClick={() => setFileExists(false)} /> :
+                          <Text as='b'>1.2 MB</Text>
+                      }
+                    </Box> :
+                    <Box sx={activeDrop}>
+                      <Image src="/assets/upload-cloud.svg" />
+                    </Box>
+                }
+              </Center>
+            }
             {
               selectedFile === 'outsideFile' ?
                 <>
