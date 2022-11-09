@@ -11,6 +11,7 @@ import OTPVerify from './components/OTPVerify'
 import FamilyPage from '@pages/FamilyPage'
 import SearchPage from '@pages/SearchPage'
 import EditDocumentForm from '@components/EditDocumentForm'
+import File from '@pages/File'
 
 const AppRoute = () => {
   return (
@@ -32,7 +33,7 @@ const AppRoute = () => {
             path="/home"
             element={
               <>
-                <PageContainer isProtected>
+                <PageContainer>
                   <Home />
                 </PageContainer>
               </>
@@ -70,6 +71,16 @@ const AppRoute = () => {
             }
           />
           <Route
+            path="/file"
+            element={
+              <>
+                <PageContainer breadcrumb>
+                  <File />
+                </PageContainer>
+              </>
+            }
+          />
+          <Route
             path="/family"
             element={
               <>
@@ -79,7 +90,7 @@ const AppRoute = () => {
               </>
             }
           />
-           <Route
+          <Route
             path="/search"
             element={
               <>

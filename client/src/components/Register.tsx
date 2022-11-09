@@ -47,7 +47,7 @@ const Register = () => {
     firstName: string
     lastName: string
     sex: string
-    birthDate: Date
+    birthDate: string
     citizenId: string
     phoneNumber: string
     password: string

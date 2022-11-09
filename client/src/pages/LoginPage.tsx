@@ -99,9 +99,6 @@ const LoginPage = () => {
 
   return (
     <>
-      <Link to="/folder">
-        <Text color='red' fontSize="90px">folder page</Text>
-      </Link>
       <Box sx={fullPageContainer}>
         <Flex sx={layout}>
           <Box sx={logoBox} scrollSnapType="">

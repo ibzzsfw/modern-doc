@@ -1,4 +1,3 @@
-import { DefaultIcon } from '@chakra-ui/react'
 import Relationship from '@models/Relationship'
 
 const getRelationshipText = (relationship: Relationship):string => {
@@ -15,7 +14,7 @@ const getRelationshipText = (relationship: Relationship):string => {
       return 'พี่น้อง'
     case 'spouse':
       return 'คู่สมรส'
-    case 'other':
+    default:
       return 'อื่นๆ'
   }
 }

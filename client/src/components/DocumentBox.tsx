@@ -7,6 +7,7 @@ import {
   Image,
   Text,
 } from '@chakra-ui/react'
+import { Link } from 'react-router-dom'
 
 type propsType = {
   type: 'generatedFolder' | 'generatedFile' | 'uploadedFile' | 'sharedFile'
@@ -117,6 +118,7 @@ const DocumentBox = ({
   }
 
   return (
+    <Link to='/folder'>
     <Box sx={layout}>
       {colorBar && <Box sx={colorBarStyle}></Box>}
       <Flex gap="30px" alignItems="center">
@@ -145,6 +147,8 @@ const DocumentBox = ({
         </Box>
       )}
     </Box>
+    </Link>
+
   )
 }
 
