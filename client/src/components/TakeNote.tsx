@@ -54,7 +54,7 @@ const TakeNote = () => {
     onClose()
     setNoteType("")
     setSelectedDocumentID("")
-    setSelectedNote({})
+    setSelectedNote(null)
     setNote([])
   }
 
@@ -93,12 +93,12 @@ const TakeNote = () => {
                 }
               </Select>
             }
-            {selectedDocumentID && <Textarea value={(selectedNote) ? { selectedNote.content } : "เนื้อหาใหม่"} />}
+            {selectedDocumentID && <Textarea value={selectedNote ? selectedNote.content : "เนื้อหาใหม่"} />}
             // onChange
           </ModalBody>
           <ModalFooter>
             <Button onClick={initialState}>ยกเลิก</Button>
-            <Button colorScheme='blue' ml="12px" onClick={saveNote}>บันทึก</Button>
+            <Button colorScheme='blue' marginLeft="12px" onClick={saveNote}>บันทึก</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
