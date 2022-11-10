@@ -11,19 +11,56 @@ import {
   Textarea,
   useDisclosure
 } from '@chakra-ui/react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import Note from '@models/Note'
+import NoteController from '@models/NoteController'
 
 const TakeNote = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [noteType, setNoteType] = useState("")
-  const [selectedDocument, setSelectedDocument] = useState("")
+  const [selectedDocumentID, setSelectedDocumentID] = useState("")
+  const [selectedNote, setSelectedNote] = useState<Note | null>(null)
+  const [note, setNote] = useState<Note[]>([])
+  const [selectPlaceholder, setSelectPlaceholder] = useState("")
 
-  let modalBody = {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    rowGap: "24px",
+  useEffect(() => {
+    let notes = NoteController.getNotes(noteType)
+    switch (noteType) {
+      case "file_note":
+        setSelectPlaceholder("เลือกบันทึก")
+        break
+      case "folder_note":
+        setSelectPlaceholder("เลือกแฟ้ม")
+        break
+      case "file_note":
+        setSelectPlaceholder("เลือกเอกสาร")
+        break
+      default:
+        setSelectPlaceholder("")
+        break
+    }
+    setNote(notes);
+  }, [noteType])
+
+  useEffect(() => {
+    if (selectedDocumentID) {
+      let findNote = Note.getNoteData(noteType, selectedDocumentID)
+      setSelectedNote(findNote)
+    }
+  }, [selectedDocumentID])
+
+  const initialState = () => {
+    onClose()
+    setNoteType("")
+    setSelectedDocumentID("")
+    setSelectedNote({})
+    setNote([])
+  }
+
+  const saveNote = () => {
+    Note.postSaveNote()
+    initialState()
   }
 
   return (
@@ -39,7 +76,7 @@ const TakeNote = () => {
               placeholder="ประเภทของบันทึก"
               onChange={(e) => {
                 setNoteType(e.target.value)
-                setSelectedDocument("")
+                setSelectedDocumentID("")
               }}
             >
               <option value="free_note">บันทึกอิสระ</option>
@@ -47,36 +84,33 @@ const TakeNote = () => {
               <option value="folder_note">บันทึกในแฟ้ม</option>
             </Select>
             {
-              noteType == "file_note" ?
-                <Select placeholder="เลือกเอกสาร" onChange={(e) => setSelectedDocument(e.target.value)}>
-                  <option value="file1">เอกสาร 1</option>
-                  <option value="file2">เอกสาร 2</option>
-                  <option value="file3">เอกสาร 3</option>
-                </Select>
-                : noteType == "folder_note" ?
-                  <Select placeholder="เลือกแฟ้ม" onChange={(e) => setSelectedDocument(e.target.value)}>
-                    <option value="folder1">แฟ้ม 1</option>
-                    <option value="folder2">แฟ้ม 2</option>
-                    <option value="folder3">แฟ้ม 3</option>
-                  </Select>
-                  : noteType == "free_note" ?
-                    <Select placeholder="เลือกบันทึก" onChange={(e) => setSelectedDocument(e.target.value)}>
-                      <option value="new_free_note">บันทึกอิสระใหม่</option>
-                      <option value="free1">บันทึกอิสระ 1</option>
-                      <option value="free2">บันทึกอิสระ 2</option>
-                    </Select>
-                    : null
+              noteType != "" &&
+              <Select placeholder={selectPlaceholder} onChange={(e) => setSelectedDocumentID(e.target.value)}>
+                {
+                  note.map((note, index) => {
+                    return <option key={index} value={note.id}>{note.title}</option>
+                  })
+                }
+              </Select>
             }
-            {noteType && <Textarea placeholder={selectedDocument != "" ? `เนื้อหาเดิมของ ${selectedDocument}` : "เนื้อหาใหม่"} />}
+            {selectedDocumentID && <Textarea value={(selectedNote) ? { selectedNote.content } : "เนื้อหาใหม่"} />}
+            // onChange
           </ModalBody>
           <ModalFooter>
-            <Button onClick={onClose}>ยกเลิก</Button>
-            <Button colorScheme='blue' ml="12px">บันทึก</Button>
+            <Button onClick={initialState}>ยกเลิก</Button>
+            <Button colorScheme='blue' ml="12px" onClick={saveNote}>บันทึก</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
     </>
   )
+}
+
+let modalBody = {
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  rowGap: "24px",
 }
 
 export default TakeNote

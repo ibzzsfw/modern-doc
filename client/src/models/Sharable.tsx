@@ -4,3 +4,5 @@ interface Sharable {
   share(): void;
   unshare(): void;
 }
+
+export default Sharable

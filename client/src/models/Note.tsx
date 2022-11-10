@@ -1,3 +1,4 @@
+import Sharable from "@models/Sharable";
 class Note implements Sharable {
 
   id: string;
@@ -5,7 +6,6 @@ class Note implements Sharable {
   content: string;
   dateCreate: Date;
   shareDate?: Date;
-
 
   constructor(id: string, title: string, content: string, dateCreate: Date) {
     this.id = id;
@@ -21,6 +21,14 @@ class Note implements Sharable {
 
   unshare(): void {
     //   TODO: unshare note to family
+  }
+
+  static getNoteData = (type: string, id: string) => {
+    return new Note("1", "title", "content", new Date());
+  }
+
+  static postSaveNote = () => {
+    //
   }
 }
 
