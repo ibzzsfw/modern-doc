@@ -38,58 +38,6 @@ const UploadFile = () => {
     setFileExists(selectedFile != "")
   }, [selectedFile])
 
-  let dropFile = {
-    width: '100%',
-    height: "fit-content",
-    border: "1px",
-    borderColor: "accent.gray",
-    borderRadius: "4px",
-    cursor: "pointer",
-  }
-
-  let modalBody = {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    rowGap: "24px",
-  }
-
-  let expirationSection = {
-    display: "flex",
-    alignItems: "center",
-    columnGap: "16px",
-    width: "100%",
-    height: "40px",
-  }
-
-  let fileExistsBox = {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
-    height: "fit-content",
-    padding: "8px",
-    margin: "8px",
-    border: "1px",
-    borderColor: "accent.gray",
-    backgroundColor: "#F1F3F5",
-    _hover: {
-      // backgroundColor light red
-      backgroundColor: "#FDE8E8",
-      borderColor: "accent.red",
-    }
-  }
-
-  let activeDrop = {
-    display: "flex",
-    justifyContent: "center",
-    padding: "72px 0",
-    width: "100%",
-    _hover: {
-      backgroundColor: "#FDE8E8",
-    }
-  }
-
   return (
     <>
       <Button onClick={onOpen} colorScheme={"red"}>Upload file</Button>
@@ -191,6 +139,58 @@ const UploadFile = () => {
       </Modal>
     </>
   )
+}
+
+let dropFile = {
+  width: '100%',
+  height: "fit-content",
+  border: "1px",
+  borderColor: "accent.gray",
+  borderRadius: "4px",
+  cursor: "pointer",
+}
+
+let modalBody = {
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  rowGap: "24px",
+}
+
+let expirationSection = {
+  display: "flex",
+  alignItems: "center",
+  columnGap: "16px",
+  width: "100%",
+  height: "40px",
+}
+
+let fileExistsBox = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  width: "100%",
+  height: "fit-content",
+  padding: "8px",
+  margin: "8px",
+  border: "1px",
+  borderColor: "accent.gray",
+  backgroundColor: "#F1F3F5",
+  _hover: {
+    // backgroundColor light red
+    backgroundColor: "#FDE8E8",
+    borderColor: "accent.red",
+  }
+}
+
+let activeDrop = {
+  display: "flex",
+  justifyContent: "center",
+  padding: "72px 0",
+  width: "100%",
+  _hover: {
+    backgroundColor: "#FDE8E8",
+  }
 }
 
 export default UploadFile

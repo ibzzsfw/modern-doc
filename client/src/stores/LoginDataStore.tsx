@@ -1,7 +1,5 @@
 import create, { StateCreator } from 'zustand'
 import { persist, PersistOptions } from 'zustand/middleware'
-import Relationship from '@models/Relationship'
-import User from '@models/User'
 
 type LoginDataStore = {
   user: any

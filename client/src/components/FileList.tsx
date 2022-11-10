@@ -22,46 +22,6 @@ type propsType = {
 }
 
 const FileList = ({ files }: propsType) => {
-  let abstractBox = {
-    borderRadius: '6px',
-    backgroundColor: 'background.white',
-    width: 'inherit',
-    height: 'fit-content',
-  }
-
-  let fileList = {
-    width: '648px',
-    flexDirection: 'column',
-    rowGap: '1rem',
-  }
-
-  let simpleBox = {
-    margin: 'auto',
-  }
-
-  let tableBody = {
-    ...abstractBox,
-    overflow: 'hidden',
-    shadow: '0px 1px 2px rgba(0, 0, 0, 0.25)',
-  }
-
-  let tableContent = {
-    width: 'inherit',
-    maxHeight: 'calc(768px - 48px - 80px)',
-    overflowY: 'auto',
-    overflowX: 'hidden',
-  }
-
-  let tableRow = {
-    width: 'inherit',
-    height: '48px',
-    borderBottom: '1px solid',
-    borderColor: 'background.gray',
-    transition: 'all 0.1s',
-    _hover: {
-      backgroundColor: 'lightblue',
-    },
-  }
 
   return (
     <Flex sx={fileList}>
@@ -124,6 +84,47 @@ const FileList = ({ files }: propsType) => {
       </ButtonGroup>
     </Flex>
   )
+}
+
+let abstractBox = {
+  borderRadius: '6px',
+  backgroundColor: 'background.white',
+  width: 'inherit',
+  height: 'fit-content',
+}
+
+let fileList = {
+  width: '648px',
+  flexDirection: 'column',
+  rowGap: '1rem',
+}
+
+let simpleBox = {
+  margin: 'auto',
+}
+
+let tableBody = {
+  ...abstractBox,
+  overflow: 'hidden',
+  shadow: '0px 1px 2px rgba(0, 0, 0, 0.25)',
+}
+
+let tableContent = {
+  width: 'inherit',
+  maxHeight: 'calc(768px - 48px - 80px)',
+  overflowY: 'auto',
+  overflowX: 'hidden',
+}
+
+let tableRow = {
+  width: 'inherit',
+  height: '48px',
+  borderBottom: '1px solid',
+  borderColor: 'background.gray',
+  transition: 'all 0.1s',
+  _hover: {
+    backgroundColor: 'lightblue',
+  },
 }
 
 export default FileList
