@@ -27,7 +27,7 @@ const TakeNote = () => {
   useEffect(() => {
     let notes = NoteController.getNotes(noteType)
     switch (noteType) {
-      case "file_note":
+      case "free_note":
         setSelectPlaceholder("เลือกบันทึก")
         break
       case "folder_note":

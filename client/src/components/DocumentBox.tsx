@@ -40,15 +40,16 @@ const DocumentBox = ({
   let layout = {
     width: '320px',
     boxShadow:
-      '10px 10px 7px -5px rgba(0, 0, 0, 0.1), 0px 10px 10px -5px rgba(0, 0, 0, 0.04)',
+      '5px 5px 3px -2px rgba(0, 0, 0, 0.1)',
     borderRadius: '16px',
     backgroundColor: 'background.white',
     position: 'relative',
     padding: '20px 20px 20px 40px',
-    cursor: 'pointer',
-    transition: 'all 0.1s ease-in-out',
+    transition: 'all 0.2s ease-in-out',
     _hover: {
-      backgroundColor: 'background.gray',
+      cursor: 'pointer',
+      boxShadow: '10px 10px 7px -5px rgba(0, 0, 0, 0.2)',
+      transform: 'translate(-2px, -2px)',
     },
   }
 
@@ -118,16 +119,19 @@ const DocumentBox = ({
   }
 
   return (
-    <Link to='/folder'>
     <Box sx={layout}>
       {colorBar && <Box sx={colorBarStyle}></Box>}
       <Flex gap="30px" alignItems="center">
         {menu}
-        <Image src={getImageUrl()} sx={documentImage} />
-        <Flex flexDirection="column">
-          <Text sx={titleText}>{title}</Text>
-          <Text sx={subText}>{getSubText()}</Text>
-        </Flex>
+        <Link to='/folder'>
+          <Flex gap="30px">
+            <Image src={getImageUrl()} sx={documentImage} />
+            <Flex flexDirection="column">
+              <Text sx={titleText}>{title}</Text>
+              <Text sx={subText}>{getSubText()}</Text>
+            </Flex>
+          </Flex>
+        </Link>
       </Flex>
       {showNote && (
         <Box marginTop="18px">
@@ -147,8 +151,6 @@ const DocumentBox = ({
         </Box>
       )}
     </Box>
-    </Link>
-
   )
 }
 
