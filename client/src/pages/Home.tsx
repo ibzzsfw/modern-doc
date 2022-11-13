@@ -13,19 +13,19 @@ const Home = () => {
       </Center>
       <PopularBar title="รายการยอดฮิต" url="https://google.co.th">
         <PopularBox
-          title="ที่ดิน"
+          title="เอกสารประกอบการสอน"
           image="https://trendwatchers.co/wp-content/uploads/2020/04/1_r_46B-6pUz9L0sq9fVuChA.jpeg"
         />
         <PopularBox
-          title="ที่ดิน"
+          title="การเรียนรู้"
           image="https://trendwatchers.co/wp-content/uploads/2020/04/1_r_46B-6pUz9L0sq9fVuChA.jpeg"
         />
         <PopularBox
-          title="ที่ดิน"
+          title="ฟังเพลง"
           image="https://trendwatchers.co/wp-content/uploads/2020/04/1_r_46B-6pUz9L0sq9fVuChA.jpeg"
         />
         <PopularBox
-          title="ที่ดิน"
+          title="ไลฟ์สไตล์"
           image="https://trendwatchers.co/wp-content/uploads/2020/04/1_r_46B-6pUz9L0sq9fVuChA.jpeg"
         />
         <PopularBox

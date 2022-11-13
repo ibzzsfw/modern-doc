@@ -4,13 +4,12 @@ import NavbarAvatar from '@components/NavbarAvatar'
 
 const Navbar = () => {
   let layout = {
-    width: '100%',
-    margin: 'auto',
+    width: '100vw',
     position: 'fixed',
     top: '0px',
     boxShadow:
       '0px 10px 10px 2px rgba(0, 0, 0, 0.1), 0px 10px 10px -5px rgba(0, 0, 0, 0.04)',
-    zIndex: '10',
+    zIndex: '1',
     marginBottom: '20px',
     backgroundColor: 'background.gray',
   }

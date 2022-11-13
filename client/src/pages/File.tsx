@@ -6,6 +6,7 @@ import { addDays, subDays } from 'date-fns'
 import markdown from 'src/mockData/markdown'
 import UploadFile from '@components/UploadFile'
 import TakeNote from '@components/TakeNote'
+import FileViewer from '@components/FileViewer'
 import { Viewer } from '@react-pdf-viewer/core'
 
 const File = () => {
@@ -32,8 +33,7 @@ const File = () => {
         markdown={markdown}
         status="มีอยู่ในคลัง"
       />
-
-      <Viewer fileUrl="/assets/bro.pdf" />
+      <Viewer fileUrl="/assets/kmutt_general_form.pdf" />
     </Flex>
   )
 }
