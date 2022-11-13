@@ -20,7 +20,7 @@ const DocumentBadge = ({ status }: propTypes) => {
   }
 
   return (
-    <Badge backgroundColor={getColor()} size="sm" color="accent.white">
+    <Badge backgroundColor={getColor()} size="md" color="accent.white">
       {status}
     </Badge>
   )
