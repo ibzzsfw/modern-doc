@@ -9,7 +9,6 @@ import TakeNote from '@components/TakeNote'
 import FileViewer from '@components/FileViewer'
 
 const File = () => {
-
   return (
     <Flex sx={documentView}>
       <Box sx={abstractArea}>
