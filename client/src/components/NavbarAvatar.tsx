@@ -104,7 +104,7 @@ const NavbarAvatar = () => {
         onClick={() => onOpen()}
         src={user.profileURI}
       />
-      <Popover isOpen={isOpen} onClose={onClose} placement="right-end">
+      <Popover isOpen={isOpen} onClose={onClose} placement="bottom-start">
         <PopoverContent sx={menuLayout}>
           <PopoverHeader>
             <HStack justifyContent="space-around">

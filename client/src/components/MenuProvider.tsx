@@ -108,7 +108,7 @@ const MenuProvider = ({
   return (
     <>
       <Box onClick={onOpen}>{children}</Box>
-      <Popover isOpen={isOpen} onClose={onClose} placement="right-end">
+      <Popover isOpen={isOpen} onClose={onClose} placement="bottom-start">
         <PopoverContent sx={menuLayout}>
           <PopoverBody padding="4px">
             <Flex flexDirection="column" gap="2px">
