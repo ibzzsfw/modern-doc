@@ -70,11 +70,11 @@ model Field {
 }
 
 model FieldChoice {
-  id      String @id @default(uuid()) @db.Uuid
-  field   Field  @relation(fields: [fieldId], references: [id])
-  fieldId String @db.Uuid
-  name    String
-  officialName  String
+  id           String @id @default(uuid()) @db.Uuid
+  field        Field  @relation(fields: [fieldId], references: [id])
+  fieldId      String @db.Uuid
+  name         String
+  officialName String
 }
 
 model GeneratedFile {
@@ -121,6 +121,7 @@ model UserUploadedFile {
   uploadedFileId String       @db.Uuid
   URI            String
   isShared       Boolean      @default(false)
+  note           String?
 
   @@unique([userId, uploadedFileId])
 }
@@ -131,9 +132,9 @@ model UserFreeUploadFile {
   userId         String    @db.Uuid
   uploadedDate   DateTime  @default(now())
   expirationDate DateTime?
-  note           String?
   URI            String
   isShared       Boolean   @default(false)
+  note           String?
 }
 
 model Note {
@@ -165,6 +166,7 @@ model FolderUploadedFile {
   uploadedFile   UploadedFile @relation(fields: [uploadedFileId], references: [id])
   uploadedFileId String       @db.Uuid
   amount         Int          @default(1)
+  remark         String?
 
   @@unique([folderId, uploadedFileId])
 }
@@ -176,6 +178,7 @@ model FolderGeneratedFile {
   generatedFile   GeneratedFile @relation(fields: [generatedFileId], references: [id])
   generatedFileId String        @db.Uuid
   amount          Int           @default(1)
+  remark          String?
 
   @@unique([folderId, generatedFileId])
 }
@@ -209,11 +212,12 @@ model GeneratedFileTag {
 }
 
 model UserFolder {
-  id       String @id @default(uuid()) @db.Uuid
-  user     User   @relation(fields: [userId], references: [id])
-  userId   String @db.Uuid
-  folder   Folder @relation(fields: [folderId], references: [id])
-  folderId String @db.Uuid
+  id       String  @id @default(uuid()) @db.Uuid
+  user     User    @relation(fields: [userId], references: [id])
+  userId   String  @db.Uuid
+  folder   Folder  @relation(fields: [folderId], references: [id])
+  folderId String  @db.Uuid
+  note     String?
 
   @@unique([userId, folderId])
 }
@@ -224,6 +228,7 @@ model UserGeneratedFile {
   userId          String        @db.Uuid
   generatedFile   GeneratedFile @relation(fields: [generatedFileId], references: [id])
   generatedFileId String        @db.Uuid
+  note            String?
 
   @@unique([userId, generatedFileId])
 }

@@ -49,6 +49,7 @@ class User {
   }
 
   static addUser = async (req: Request, res: Response) => {
+    console.log(req.body)
     const schema = z.object({
       title: z.string(),
       firstName: z.string(),
@@ -59,11 +60,9 @@ class User {
       phoneNumber: z.string().length(10),
       password: z.string().min(6),
     })
-
     try {
       schema.parse(req.body)
       req.body.sex = getSexMF(req.body.sex)
-
       let hashedPassword = await bcrypt.hash(req.body.password, 10)
       const {
         title,
@@ -87,7 +86,6 @@ class User {
           hashedPassword,
         },
       })
-
       let wantedField = [
         'personal_sex',
         'personal_firstname',

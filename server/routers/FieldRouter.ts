@@ -15,6 +15,7 @@ class UserRouter {
 
   configureRoutes = (): void => {
     this.router.post('/create', this.controller.createField)
+    this.router.post('/create-many', this.controller.createFieldMany)
     this.router.get('/get-all', this.controller.getAllField)
     this.router.put(
       '/edit-official-name',

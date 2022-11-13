@@ -4,6 +4,10 @@ class FieldController {
   createField = async (req: Request, res: Response) => {
     Field.createField(req, res)
   }
+  
+  createFieldMany = async (req: Request, res: Response) => {
+    Field.createFieldMany(req, res)
+  }
 
   getAllField = async (req: Request, res: Response) => {
     Field.getAllField(req, res)

@@ -42,6 +42,40 @@ class Field {
     }
   }
 
+  static async createFieldMany  (req: Request, res: Response) {
+    const { fields } = req.body
+    const schema = z.array(
+      z.object({
+        name: z.string(),
+        officialName: z.string(),
+        description: z.string(),
+        type: z.enum([
+          'text',
+          'number',
+          'date',
+          'singleSelect',
+          'multipleSelect',
+        ]),
+      })
+    )
+    try {
+      schema.parse(fields)
+      const field = await Prisma.field.createMany({
+        data: fields.map((field) => {
+          return {
+            name: field.name,
+            officialName: field.officialName,
+            description: field.description,
+            type: field.type,
+          }
+        }),
+      })
+      return res.status(200).json(field)
+    } catch (err) {
+      return res.status(500).json({ message: err })
+    }
+  }
+
   static async editFieldOfficialName(req: Request, res: Response) {
     let { id, officialName } = req.body
     const schema = z.object({

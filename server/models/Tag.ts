@@ -4,7 +4,6 @@ import Prisma from '@utils/prisma'
 
 class Tag {
   static addTag = async (req: Request, res: Response) => {
-    
     const { name } = req.body
     const schema = z.string()
     try {
@@ -20,8 +19,25 @@ class Tag {
     }
   }
 
+  static addTagMany = async (req: Request, res: Response) => {
+    const { tags } = req.body
+    const schema = z.array(z.string())
+    try {
+      schema.parse(tags)
+      const tag = await Prisma.tag.createMany({
+        data: tags.map((tag) => {
+          return {
+            name: tag,
+          }
+        }),
+      })
+      return res.status(200).json(tag)
+    } catch (err) {
+      return res.status(500).json({ message: err })
+    }
+  }
+
   static getAllTag = async (req: Request, res: Response) => {
-    
     try {
       const tags = await Prisma.tag.findMany()
       return res.status(200).json(tags)
@@ -32,7 +48,7 @@ class Tag {
 
   static getTagByName = async (req: Request, res: Response) => {
     let { name } = req.params
-    
+
     const schema = z.string()
     try {
       schema.parse(name)
@@ -50,7 +66,6 @@ class Tag {
   }
 
   static getTagById = async (req: Request, res: Response) => {
-    
     const { id } = req.params
     const schema = z.string().uuid()
     try {
@@ -68,7 +83,7 @@ class Tag {
 
   static editTagName = async (req: Request, res: Response) => {
     const { id, name } = req.body
-    
+
     const schema = z.object({
       id: z.string().uuid(),
       name: z.string(),

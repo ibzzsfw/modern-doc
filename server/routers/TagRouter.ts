@@ -16,6 +16,7 @@ class UserRouter {
   configureRoutes = (): void => {
     this.router.get('/get-all', this.controller.getAllTag)
     this.router.post('/create', this.controller.createTag)
+    this.router.post('/create-many', this.controller.createTagMany)
     this.router.get('/name/:name', this.controller.getTagByName)
     this.router.get('/id/:id', this.controller.getTagById)
     this.router.put('/edit-name', this.controller.editTagName)
