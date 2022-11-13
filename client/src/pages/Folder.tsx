@@ -9,6 +9,7 @@ import { addDays, subDays } from 'date-fns'
 import markdown from 'src/mockData/markdown'
 import UploadFile from '@components/UploadFile'
 import TakeNote from '@components/TakeNote'
+import FileViewerDrawer from '@components/FileViewerDrawer'
 
 const Folder = () => {
 
@@ -29,6 +30,7 @@ const Folder = () => {
       <Box sx={abstractArea}>
         <UploadFile />
         <TakeNote />
+        <FileViewerDrawer />
       </Box>
       <FolderDetail
         title="เอกสารขจัดขนตูด"
