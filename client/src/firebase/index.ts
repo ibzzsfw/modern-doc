@@ -7,6 +7,11 @@ import {
   uploadBytesResumable,
   getDownloadURL,
 } from 'firebase/storage'
+import {
+  getAuth,
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+} from 'firebase/auth'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBVYNSOxJmmfCmtx1Sd7FLy4Rwxx7Jk3ps',
@@ -34,4 +39,21 @@ const uploadFile = async (path: string, file: any): Promise<string> => {
   return url
 }
 
-export { uploadFile }
+const phoneLogin = async (phoneNumber: string) => {
+  console.log(phoneNumber)
+  const auth = getAuth()
+  const appVerifier = new RecaptchaVerifier('recaptcha-container', {}, auth)
+  const confirmationResult = await signInWithPhoneNumber(
+    auth,
+    phoneNumber,
+    appVerifier
+  )
+  return confirmationResult
+}
+
+const validateOTP = async (otp: string, confirmationResult: any) => {
+  const credential = await confirmationResult.confirm(otp)
+  return credential
+}
+
+export { uploadFile, phoneLogin, validateOTP }

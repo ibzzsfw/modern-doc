@@ -19,6 +19,10 @@ import { AiTwotoneCalendar } from 'react-icons/ai'
 import { useMutation } from '@tanstack/react-query'
 import axios, { AxiosError } from 'axios'
 import UserController from '@models/UserController'
+import { useState } from 'react'
+import { withCountryCode } from '@utils/formatPhoneNumber'
+import { phoneLogin, validateOTP } from '@firebase'
+import OTPVerify from '@components/OTPVerify'
 
 const Register = () => {
   const { page, setPage, title, sex } = useRegisterStore()
@@ -55,26 +59,45 @@ const Register = () => {
     confirmPassword: string
   }
 
-  const { mutate } = useMutation(UserController.register, {
-    onSuccess: (data: any) => {
+  const [confirmationResult, setConfirmationResult] = useState<any>(null)
+  const [registerData, setRegisterData] = useState<RegisterForm | null>(null)
+
+  const { mutate: register } = useMutation(
+    async (registerData: RegisterForm) => UserController.register(registerData),
+    {
+      onSuccess: (data: any) => {
+        toast({
+          title: 'สมัครสมาชิกสำเร็จ',
+          description: 'กรุณาเข้าสู่ระบบ',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        })
+      },
+      onError: (error: AxiosError) => {
+        toast({
+          title: 'สมัครสมาชิกไม่สำเร็จ',
+          description: error.message,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        })
+      },
+    }
+  )
+
+  const verifyPhone = async (phoneNumber: string) => {
+    try {
+      console.log(phoneNumber, withCountryCode(phoneNumber))
+      setConfirmationResult(await phoneLogin(withCountryCode(phoneNumber)))
+    } catch (e) {
       toast({
-        title: 'สมัครสมาชิกสำเร็จ',
-        description: 'กรุณาเข้าสู่ระบบ',
-        status: 'success',
-        duration: 5000,
-        isClosable: true,
-      })
-    },
-    onError: (error: AxiosError) => {
-      toast({
-        title: 'สมัครสมาชิกไม่สำเร็จ',
-        description: error.message,
+        title: 'เบอร์โทรศัพท์ไม่ถูกต้อง',
+        description: 'กรุณากรอกเบอร์โทรศัพท์ใหม่',
         status: 'error',
-        duration: 5000,
-        isClosable: true,
       })
-    },
-  })
+    }
+  }
 
   return (
     <Box>
@@ -98,7 +121,8 @@ const Register = () => {
         }}
         validationSchema={registerSchema}
         onSubmit={(values) => {
-          mutate(values)
+          verifyPhone(values.phoneNumber)
+          setRegisterData(values)
         }}
       >
         <Form>
@@ -204,20 +228,46 @@ const Register = () => {
                 ถัดไป
               </Button>
             ) : (
-              <Button
-                type="submit"
-                variant="solid"
-                backgroundColor="accent.blue"
-                color="accent.white"
-                _hover={{
-                  backgroundColor: 'hover.blue',
-                }}
-                _active={{
-                  backgroundColor: 'hover.blue',
-                }}
-              >
-                ลงทะเบียน
-              </Button>
+              <>
+                <div id="recaptcha-container"></div>
+                {confirmationResult && (
+                  <OTPVerify
+                    phoneNumber="0939465199"
+                    onSubmit={async (otp) => {
+                      try {
+                        await validateOTP(otp, confirmationResult)
+                        if (registerData) {
+                          register(registerData)
+                        }
+                      } catch (e) {
+                        toast({
+                          title: 'สมัครสมาชิกไม่สำเร็จ',
+                          status: 'error',
+                          duration: 5000,
+                          isClosable: true,
+                        })
+                        setTimeout(() => {
+                          window.location.reload()
+                        }, 2000)
+                      }
+                    }}
+                  />
+                )}
+                <Button
+                  type="submit"
+                  variant="solid"
+                  backgroundColor="accent.blue"
+                  color="accent.white"
+                  _hover={{
+                    backgroundColor: 'hover.blue',
+                  }}
+                  _active={{
+                    backgroundColor: 'hover.blue',
+                  }}
+                >
+                  ลงทะเบียน
+                </Button>
+              </>
             )}
           </HStack>
         </Form>

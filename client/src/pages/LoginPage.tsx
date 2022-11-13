@@ -18,7 +18,6 @@ import shallow from 'zustand/shallow'
 import { Link } from 'react-router-dom'
 
 const LoginPage = () => {
-
   const { tabIndex, setTabIndex } = useLoginPageStore(
     (state) => ({
       tabIndex: state.tabIndex,
@@ -26,22 +25,6 @@ const LoginPage = () => {
     }),
     shallow
   )
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['message'],
-    queryFn: async () => {
-      let response = await axios.get(
-        `${import.meta.env.VITE_API_ENDPOINT}/login`
-      )
-      return response.data
-    },
-  })
-
-  console.log('url', `${import.meta.env.VITE_API_ENDPOINT}/test`)
-
-  if (data) {
-    console.log(data)
-    console.log(`${import.meta.env.VITE_API_ENDPOINT}/test`)
-  }
 
   return (
     <>
