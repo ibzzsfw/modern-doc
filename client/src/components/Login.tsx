@@ -16,6 +16,7 @@ import axios, { AxiosError } from 'axios'
 import { Form, Formik } from 'formik'
 import { AiFillLock, AiFillPhone } from 'react-icons/ai'
 import * as Yup from 'yup'
+import UserController from '@models/UserController'
 
 const Login = () => {
   let layout = {
@@ -67,16 +68,7 @@ const Login = () => {
   }
 
   const { mutate } = useMutation(
-    async ({ phoneNumber, password }: loginForm) => {
-      let response = await axios.post(
-        `${import.meta.env.VITE_API_ENDPOINT}/user/login`,
-        {
-          phoneNumber: phoneNumber,
-          password: password,
-        }
-      )
-      return response.data
-    },
+    async ({ phoneNumber, password }: loginForm) => UserController.login({ phoneNumber, password }),
     {
       onSuccess: (data: any) => {
         console.log(data)

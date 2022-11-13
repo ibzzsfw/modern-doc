@@ -22,6 +22,7 @@ type propsType = {
   colorBar?: string
   createdDate?: Date
   showDate?: boolean
+  url?: string
 }
 
 const DocumentBox = ({
@@ -36,6 +37,7 @@ const DocumentBox = ({
   colorBar,
   createdDate,
   showDate,
+  url,
 }: propsType) => {
   let layout = {
     width: '320px',
@@ -44,7 +46,7 @@ const DocumentBox = ({
     borderRadius: '16px',
     backgroundColor: 'background.white',
     position: 'relative',
-    padding: '20px 20px 20px 40px',
+    padding: '20px',
     cursor: 'pointer',
     transition: 'all 0.1s ease-in-out',
     _hover: {
@@ -118,37 +120,36 @@ const DocumentBox = ({
   }
 
   return (
-    <Link to='/folder'>
-    <Box sx={layout}>
-      {colorBar && <Box sx={colorBarStyle}></Box>}
-      <Flex gap="30px" alignItems="center">
-        {menu}
-        <Image src={getImageUrl()} sx={documentImage} />
-        <Flex flexDirection="column">
-          <Text sx={titleText}>{title}</Text>
-          <Text sx={subText}>{getSubText()}</Text>
+    <Link to={url ? url : ''}>
+      <Box sx={layout}>
+        {colorBar && <Box sx={colorBarStyle}></Box>}
+        <Flex gap="30px" alignItems="center">
+          {menu}
+          <Image src={getImageUrl()} sx={documentImage} />
+          <Flex flexDirection="column">
+            <Text sx={titleText}>{title}</Text>
+            <Text sx={subText}>{getSubText()}</Text>
+          </Flex>
         </Flex>
-      </Flex>
-      {showNote && (
-        <Box marginTop="18px">
-          <Editable
-            defaultValue="note"
-            height="80px"
-            border="2px solid"
-            borderColor="#E2E8F0"
-            borderRadius="8px"
-            padding="4px 12px"
-            fontSize="14px"
-            color="accent.gray"
-          >
-            <EditablePreview />
-            <EditableTextarea _focusVisible={{ boxShadow: 'none' }} />
-          </Editable>
-        </Box>
-      )}
-    </Box>
+        {showNote && (
+          <Box marginTop="18px">
+            <Editable
+              defaultValue="note"
+              height="80px"
+              border="2px solid"
+              borderColor="#E2E8F0"
+              borderRadius="8px"
+              padding="4px 12px"
+              fontSize="14px"
+              color="accent.gray"
+            >
+              <EditablePreview />
+              <EditableTextarea _focusVisible={{ boxShadow: 'none' }} />
+            </Editable>
+          </Box>
+        )}
+      </Box>
     </Link>
-
   )
 }
 

@@ -19,7 +19,7 @@ type propsType = {
 const DocumentBar = ({ title, children, url }: propsType) => {
   let layout = {
     padding: '24px 0',
-    gap: '32px',
+    gap: '24px',
     flexDirection: 'column',
     maxWidth: '1280px',
     margin: 'auto',

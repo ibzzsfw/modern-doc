@@ -1,19 +1,6 @@
 import Relationship from '@models/Relationship'
 import getRelationshipText from '@utils/getRelationshipText'
-
-interface UserArg {
-  userId: string
-  householdId: string
-  title: string
-  firstName: string
-  lastName: string
-  citizenId: string
-  phoneNumber: string
-  sex: 'ชาย' | 'หญิง' | ''
-  token: string
-  relationship: Relationship
-  profileURI: string
-}
+import UserType from '@models/UserType'
 class User {
   userId: string
   householdId: string
@@ -27,7 +14,7 @@ class User {
   relationship: Relationship
   profileURI: string
 
-  constructor(arg: UserArg) {
+  constructor(arg: UserType) {
     this.userId = arg.userId
     this.householdId = arg.householdId
     this.title = arg.title
@@ -45,7 +32,7 @@ class User {
     return `${this.title}${this.firstName} ${this.lastName}`
   }
 
-  getRelationshipText() : string {
+  getRelationshipText(): string {
     return getRelationshipText(this.relationship)
   }
 }

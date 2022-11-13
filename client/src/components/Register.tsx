@@ -18,6 +18,7 @@ import { IoChevronBack, IoChevronForward } from 'react-icons/io5'
 import { AiTwotoneCalendar } from 'react-icons/ai'
 import { useMutation } from '@tanstack/react-query'
 import axios, { AxiosError } from 'axios'
+import UserController from '@models/UserController'
 
 const Register = () => {
   const { page, setPage, title, sex } = useRegisterStore()
@@ -54,35 +55,26 @@ const Register = () => {
     confirmPassword: string
   }
 
-  const { mutate } = useMutation(
-    async (data: RegisterForm) => {
-      let response = await axios.post(
-        `${import.meta.env.VITE_API_ENDPOINT}/user`,
-        data
-      )
-      return response.data
+  const { mutate } = useMutation(UserController.register, {
+    onSuccess: (data: any) => {
+      toast({
+        title: 'สมัครสมาชิกสำเร็จ',
+        description: 'กรุณาเข้าสู่ระบบ',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      })
     },
-    {
-      onSuccess: (data: any) => {
-        toast({
-          title: 'สมัครสมาชิกสำเร็จ',
-          description: 'กรุณาเข้าสู่ระบบ',
-          status: 'success',
-          duration: 5000,
-          isClosable: true,
-        })
-      },
-      onError: (error: AxiosError) => {
-        toast({
-          title: 'สมัครสมาชิกไม่สำเร็จ',
-          description: error.message,
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-        })
-      },
-    }
-  )
+    onError: (error: AxiosError) => {
+      toast({
+        title: 'สมัครสมาชิกไม่สำเร็จ',
+        description: error.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      })
+    },
+  })
 
   return (
     <Box>
