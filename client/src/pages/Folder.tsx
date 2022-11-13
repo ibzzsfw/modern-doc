@@ -7,6 +7,7 @@ import markdown from 'src/mockData/markdown'
 import UploadFile from '@components/UploadFile'
 import TakeNote from '@components/TakeNote'
 import { useParams } from 'react-router-dom'
+import FileViewerDrawer from '@components/FileViewerDrawer'
 
 const Folder = () => {
   const { id } = useParams()
@@ -28,6 +29,7 @@ const Folder = () => {
       <Box sx={abstractArea}>
         <UploadFile />
         <TakeNote />
+        <FileViewerDrawer />
       </Box>
       <FolderDetail
         title="เอกสารขจัดขนตูด"

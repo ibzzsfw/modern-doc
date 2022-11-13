@@ -94,7 +94,7 @@ const TakeNote = () => {
               </Select>
             }
             {selectedDocumentID && <Textarea value={selectedNote ? selectedNote.content : "เนื้อหาใหม่"} />}
-            // onChange
+            {/*onChange*/}
           </ModalBody>
           <ModalFooter>
             <Button onClick={initialState}>ยกเลิก</Button>
