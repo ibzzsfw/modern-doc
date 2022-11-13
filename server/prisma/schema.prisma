@@ -96,7 +96,7 @@ model GeneratedFileField {
   generatedFileId String        @db.Uuid
   field           Field         @relation(fields: [fieldId], references: [id])
   fieldId         String        @db.Uuid
-  uploadedFileId  String?       @db.Uuid
+  isRequired      Boolean       @default(false)
 
   @@unique([generatedFileId, fieldId])
 }
@@ -130,6 +130,7 @@ model UserFreeUploadFile {
   id             String    @id @default(uuid()) @db.Uuid
   user           User      @relation(fields: [userId], references: [id])
   userId         String    @db.Uuid
+  officialName   String
   uploadedDate   DateTime  @default(now())
   expirationDate DateTime?
   URI            String

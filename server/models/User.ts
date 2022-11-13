@@ -9,19 +9,19 @@ import Prisma from '@utils/prisma'
 class User {
   static getFieldValue = (field: string, data: any): string => {
     switch (field) {
-      case 'personal_firstname':
+      case 'firstname_personal':
         return data.firstName
-      case 'personal_lastname':
+      case 'lastname_personal':
         return data.lastName
-      case 'personal_citizenId':
+      case 'citizenId_personal':
         return data.citizenId
-      case 'personal_phonenumber':
+      case 'phonenumber_personal':
         return data.phoneNumber
-      case 'personal_title':
+      case 'title_personal':
         return data.title
-      case 'personal_sex':
+      case 'sex_personal':
         return getSexText(data.sex)
-      case 'personal_birthdate':
+      case 'birthdate_personal':
         return data.birthDate
     }
   }
@@ -64,7 +64,7 @@ class User {
       schema.parse(req.body)
       req.body.sex = getSexMF(req.body.sex)
       let hashedPassword = await bcrypt.hash(req.body.password, 10)
-      const {
+      let {
         title,
         firstName,
         lastName,
@@ -73,6 +73,8 @@ class User {
         citizenId,
         phoneNumber,
       } = req.body
+
+      birthDate = new Date(birthDate)
 
       const createUser = await Prisma.user.create({
         data: {
@@ -87,14 +89,15 @@ class User {
         },
       })
       let wantedField = [
-        'personal_sex',
-        'personal_firstname',
-        'personal_phonenumber',
-        'personal_title',
-        'personal_citizenId',
-        'personal_birthdate',
-        'personal_lastname',
+        'sex_personal',
+        'firstname_personal',
+        'phonenumber_personal',
+        'title_personal',
+        'citizenId_personal',
+        'birthdate_personal',
+        'lastname_personal',
       ]
+      console.log(createUser)
       const getFieldId = await Prisma.field.findMany({
         where: {
           name: {
@@ -123,11 +126,12 @@ class User {
 
       res.status(201).json({ message: 'success' })
     } catch (err) {
+      console.log(err)
       res.status(400).json({ message: err })
     }
   }
 
-  static login = async (req: Request, res: Response) => {
+  static checkPhonePassword = async (req: Request, res: Response) => {
     let { phoneNumber, password } = req.body
 
     const schema = z.object({
@@ -142,19 +146,7 @@ class User {
           phoneNumber: phoneNumber,
         },
         select: {
-          id: true,
-          householdId: true,
-          title: true,
-          firstName: true,
-          lastName: true,
-          sex: true,
-          phoneNumber: true,
-          email: true,
           hashedPassword: true,
-          citizenId: true,
-          relationship: true,
-          birthDate: true,
-          profileURI: true,
         },
       })
       if (!getUser) {
@@ -169,6 +161,42 @@ class User {
       )
       if (!isPasswordMatch) {
         return res.status(403).json({ message: 'รหัสผ่านไม่ถูกต้อง' })
+      }
+
+      res.status(200).json(getUser)
+    } catch (err) {
+      res.status(400).json({ message: err })
+    }
+  }
+
+  static login = async (req: Request, res: Response) => {
+    let { phoneNumber } = req.body
+
+    const schema = z.string().length(10)
+
+    try {
+      schema.parse(phoneNumber)
+      const getUser = await Prisma.user.findUnique({
+        where: {
+          phoneNumber: phoneNumber,
+        },
+        select: {
+          id: true,
+          householdId: true,
+          title: true,
+          firstName: true,
+          lastName: true,
+          sex: true,
+          phoneNumber: true,
+          email: true,
+          citizenId: true,
+          relationship: true,
+          birthDate: true,
+          profileURI: true,
+        },
+      })
+      if (!getUser) {
+        return res.status(404).json({ message: 'ไม่พบข้อมูลผู้ใช้งาน' })
       }
       const token = jwt.sign({ id: getUser.id }, process.env.JWT_SECRET, {
         expiresIn: '1d',

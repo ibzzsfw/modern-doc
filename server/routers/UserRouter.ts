@@ -21,6 +21,11 @@ class UserRouter {
       this.controller.checkCitizenIdStatus
     )
 
+    this.router.post(
+      '/check-phone-password',
+      this.controller.checkPhonePassword
+    )
+    
     this.router.post('/login', this.controller.login)
   }
 }
