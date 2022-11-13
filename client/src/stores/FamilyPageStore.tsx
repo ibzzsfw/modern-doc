@@ -4,28 +4,16 @@ import { persist, PersistOptions } from 'zustand/middleware'
 type FamilyPageStore = {
   page: number
   setPage: (value: number) => void
-  prefix: 'นาย' | 'นาง' | 'นางสาว' | 'เด็กชาย' | 'เด็กหญิง'
-  setPrefix: (value: 'นาย' | 'นาง' | 'นางสาว' | 'เด็กชาย' | 'เด็กหญิง') => void
-  relationship:
-    | 'บิดา'
-    | 'มารดา'
-    | 'พี่'
-    | 'น้อง'
-    | 'อื่นๆ'
-    | 'เจ้าของบ้าน'
-    | 'ผู้อาศัย'
-
-  setRealtionship: (
-    value:
-      | 'บิดา'
-      | 'มารดา'
-      | 'พี่'
-      | 'น้อง'
-      | 'อื่นๆ'
-      | 'เจ้าของบ้าน'
-      | 'ผู้อาศัย'
-  ) => void
-  callback: () => void
+  title: ['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง']
+  relationship: [
+    'บิดา',
+    'มารดา',
+    'พี่',
+    'น้อง',
+    'อื่นๆ',
+    'เจ้าของบ้าน',
+    'ผู้อาศัย'
+  ]
   mode: 'add' | 'edit'
   setMode: (value: 'add' | 'edit') => void
   hideChilden: boolean
@@ -35,11 +23,16 @@ type FamilyPageStore = {
 export const useFamilyPageStore = create<FamilyPageStore>((set) => ({
   page: 1,
   setPage: (value) => set({ page: value }),
-  prefix: 'นาย',
-  setPrefix: (value) => set({ prefix: value }),
-  relationship: 'เจ้าของบ้าน',
-  setRealtionship: (value) => set({ relationship: value }),
-  callback: () => {},
+  title: ['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง'],
+  relationship: [
+    'บิดา',
+    'มารดา',
+    'พี่',
+    'น้อง',
+    'อื่นๆ',
+    'เจ้าของบ้าน',
+    'ผู้อาศัย',
+  ],
   mode: 'edit',
   setMode: (value) => set({ mode: value }),
   hideChilden: false,

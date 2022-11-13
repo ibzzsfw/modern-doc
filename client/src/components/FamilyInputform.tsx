@@ -33,7 +33,7 @@ const FamilyInputform = ({
   callBack,
   modal,
 }: propsType) => {
-  const { prefix: optionPrefix, relationship: optionrelationship } =
+  const { title: optionPrefix, relationship: optionrelationship } =
     useFamilyPageStore()
 
   const toast = useToast()
