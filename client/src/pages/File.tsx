@@ -7,22 +7,8 @@ import markdown from 'src/mockData/markdown'
 import UploadFile from '@components/UploadFile'
 import TakeNote from '@components/TakeNote'
 import FileViewer from '@components/FileViewer'
-import { Viewer } from '@react-pdf-viewer/core'
-import { useParams } from 'react-router-dom'
 
 const File = () => {
-  const { id } = useParams()
-
-  let documentView = {
-    justifyContent: 'space-evenly',
-    height: '768px',
-  }
-
-  let abstractArea = {
-    position: 'absolute',
-    top: '0',
-    left: '0',
-  }
 
   return (
     <Flex sx={documentView}>
@@ -39,6 +25,20 @@ const File = () => {
       <FileViewer fileUrl="/assets/kmutt_general_form.pdf" />
     </Flex>
   )
+}
+
+let documentView = {
+  justifyContent: 'space-evenly',
+  height: '768px',
+}
+
+let abstractArea = {
+  display: 'flex',
+  flexDirection: 'column',
+  rowGap: '1rem',
+  position: 'absolute',
+  top: '0',
+  right: '2rem',
 }
 
 export default File
