@@ -15,7 +15,6 @@ interface loginForm {
   phoneNumber: string
   password: string
 }
-
 class UserController {
   static register = async (data: RegisterForm): Promise<any> => {
     let response = await axios.post(

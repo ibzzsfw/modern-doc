@@ -1,7 +1,4 @@
-import {
-  Flex,
-  Box,
-} from '@chakra-ui/react'
+import { Flex, Box } from '@chakra-ui/react'
 import FileList from '@components/FileList'
 import FolderDetail from '@components/FolderDetail'
 import FolderUploadedFile from '@models/FolderUploadedFile'
@@ -9,8 +6,11 @@ import { addDays, subDays } from 'date-fns'
 import markdown from 'src/mockData/markdown'
 import UploadFile from '@components/UploadFile'
 import TakeNote from '@components/TakeNote'
+import { useParams } from 'react-router-dom'
 
 const Folder = () => {
+  const { id } = useParams()
+  console.log(id)
 
   let documentView = {
     justifyContent: 'space-evenly',
@@ -22,7 +22,6 @@ const Folder = () => {
     top: '0',
     left: '0',
   }
-
 
   return (
     <Flex sx={documentView}>

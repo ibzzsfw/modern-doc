@@ -93,6 +93,7 @@ const MyDocument = () => {
       </Flex>
       <DocumentBar title="เอกสารที่แชร์ร่วมกัน">
         <DocumentBox
+          id="6"
           type="sharedFile"
           title="รักษาดินแดน"
           author="Wang Junkai"
@@ -100,6 +101,7 @@ const MyDocument = () => {
           menu={menu}
         />
         <DocumentBox
+          id="6"
           type="sharedFile"
           title="พาร์สปอร์ต"
           author="Yi yangqianxi"
@@ -107,6 +109,7 @@ const MyDocument = () => {
           menu={menu}
         />
         <DocumentBox
+          id="6"
           type="sharedFile"
           title="ทะเบียนบ้าน"
           author="Wang yuan"
@@ -116,6 +119,7 @@ const MyDocument = () => {
       </DocumentBar>
       <DocumentBar title="แฟ้มเอกสารของฉัน">
         <DocumentBox
+          id="6"
           type="generatedFolder"
           title="สมัครงานกับ TechLead"
           amount={9}
@@ -126,6 +130,7 @@ const MyDocument = () => {
           menu={menu}
         />
         <DocumentBox
+          id="6"
           type="generatedFolder"
           title="รักษาดินแดน"
           amount={9}
@@ -133,6 +138,7 @@ const MyDocument = () => {
           menu={menu}
         />
         <DocumentBox
+          id="6"
           type="generatedFolder"
           title="รักษาดินแดน"
           amount={9}
@@ -142,6 +148,7 @@ const MyDocument = () => {
       </DocumentBar>
       <DocumentBar title="ไฟล์ของฉัน">
         <DocumentBox
+          id="6"
           type="uploadedFile"
           title="รักษาดินแดน"
           size={12}
@@ -149,6 +156,7 @@ const MyDocument = () => {
           menu={menu}
         />
         <DocumentBox
+          id="6"
           type="uploadedFile"
           title="รักษาดินแดน"
           size={5.7}
@@ -156,6 +164,7 @@ const MyDocument = () => {
           menu={menu}
         />
         <DocumentBox
+          id="6"
           type="uploadedFile"
           title="รักษาดินแดน"
           size={7}

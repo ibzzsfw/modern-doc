@@ -35,8 +35,9 @@ const Home = () => {
       </PopularBar>
 
       <DocumentBar title="แฟ้มล่าสุด" url="broo">
-        <DocumentBox title="แฟ้มที่ 1" type="generatedFolder" showDate />
+        <DocumentBox id="2" title="แฟ้มที่ 1" type="generatedFolder" showDate />
         <DocumentBox
+          id="1"
           title="แฟ้มที่ 2"
           type="generatedFolder"
           showDate
@@ -44,6 +45,7 @@ const Home = () => {
           colorBar="#abcedf"
         />
         <DocumentBox
+          id="3"
           title="แฟ้มที่ 2"
           type="generatedFolder"
           showDate
@@ -51,6 +53,7 @@ const Home = () => {
           colorBar="#FF9898"
         />
         <DocumentBox
+          id="4"
           title="แฟ้มที่ 2"
           type="generatedFolder"
           showDate
@@ -58,6 +61,7 @@ const Home = () => {
           colorBar="#FF9898"
         />
         <DocumentBox
+          id="5"
           title="แฟ้มที่ 2"
           type="generatedFolder"
           showDate
@@ -65,6 +69,7 @@ const Home = () => {
           colorBar="#FF9898"
         />
         <DocumentBox
+          id="6"
           title="แฟ้มที่ 2"
           type="generatedFolder"
           showDate
@@ -74,8 +79,9 @@ const Home = () => {
       </DocumentBar>
 
       <DocumentBar title="เอกสารล่าสุด" url="broo">
-        <DocumentBox title="แฟ้มที่ 1" type="generatedFile" showDate />
+        <DocumentBox id="7" title="แฟ้มที่ 1" type="generatedFile" showDate />
         <DocumentBox
+          id="6"
           title="แฟ้มที่ 2"
           type="generatedFile"
           showDate
@@ -83,6 +89,7 @@ const Home = () => {
           colorBar="#FF9898"
         />
         <DocumentBox
+          id="6"
           title="แฟ้มที่ 2"
           type="generatedFile"
           showDate
@@ -90,6 +97,7 @@ const Home = () => {
           colorBar="#FF9898"
         />
         <DocumentBox
+          id="6"
           title="แฟ้มที่ 2"
           type="generatedFile"
           showDate
@@ -97,6 +105,7 @@ const Home = () => {
           colorBar="#FF9898"
         />
         <DocumentBox
+          id="6"
           title="แฟ้มที่ 2"
           type="generatedFile"
           showDate
@@ -104,6 +113,7 @@ const Home = () => {
           colorBar="#FF9898"
         />
         <DocumentBox
+          id="6"
           title="แฟ้มที่ 2"
           type="generatedFile"
           showDate

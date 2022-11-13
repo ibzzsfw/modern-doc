@@ -28,11 +28,11 @@ class User {
     this.profileURI = arg.profileURI
   }
 
-  getFullName(): string {
+  public getFullName(): string {
     return `${this.title}${this.firstName} ${this.lastName}`
   }
 
-  getRelationshipText(): string {
+  public getRelationshipText(): string {
     return getRelationshipText(this.relationship)
   }
 }

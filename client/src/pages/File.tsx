@@ -8,8 +8,11 @@ import UploadFile from '@components/UploadFile'
 import TakeNote from '@components/TakeNote'
 import FileViewer from '@components/FileViewer'
 import { Viewer } from '@react-pdf-viewer/core'
+import { useParams } from 'react-router-dom'
 
 const File = () => {
+  const { id } = useParams()
+
   let documentView = {
     justifyContent: 'space-evenly',
     height: '768px',
