@@ -33,7 +33,7 @@ const File = () => {
         markdown={markdown}
         status="มีอยู่ในคลัง"
       />
-      <Viewer fileUrl="/assets/kmutt_general_form.pdf" />
+      <FileViewer fileUrl="/assets/kmutt_general_form.pdf" />
     </Flex>
   )
 }
