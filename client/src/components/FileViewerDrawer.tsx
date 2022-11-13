@@ -21,7 +21,7 @@ type propsType = {
   files: FolderUploadedFile[]
 }
 
-const FileViewerModal = ({ files }: propsType) => {
+const FileViewerDrawer = ({ files }: propsType) => {
 
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [isMyFile, setIsMyFile] = useState(false)
@@ -108,4 +108,4 @@ let highlight = {
   backgroundColor: 'teal.100'
 }
 
-export default FileViewerModal
+export default FileViewerDrawer
