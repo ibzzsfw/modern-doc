@@ -1,7 +1,4 @@
-import {
-  Flex,
-  Box,
-} from '@chakra-ui/react'
+import { Flex, Box } from '@chakra-ui/react'
 import FileList from '@components/FileList'
 import FolderDetail from '@components/FolderDetail'
 import FolderUploadedFile from '@models/FolderUploadedFile'
@@ -9,6 +6,7 @@ import { addDays, subDays } from 'date-fns'
 import markdown from 'src/mockData/markdown'
 import UploadFile from '@components/UploadFile'
 import TakeNote from '@components/TakeNote'
+import { useParams } from 'react-router-dom'
 import FileViewerDrawer from '@components/FileViewerDrawer'
 
 const Folder = ({/*folder */ }) => {

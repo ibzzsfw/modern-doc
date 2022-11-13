@@ -9,6 +9,7 @@ import Folder from '@pages/Folder'
 import Error from '@pages/Error'
 import OTPVerify from './components/OTPVerify'
 import FamilyPage from '@pages/FamilyPage'
+import Test from '@pages/Test'
 import SearchPage from '@pages/SearchPage'
 import EditDocumentForm from '@components/EditDocumentForm'
 import File from '@pages/File'
@@ -61,25 +62,26 @@ const AppRoute = () => {
             }
           />
           <Route
-            path="/folder"
+            path="/folder/:id"
             element={
               <>
-                <PageContainer breadcrumb>
+                <PageContainer >
                   <Folder />
                 </PageContainer>
               </>
             }
           />
           <Route
-            path="/file"
+            path="/file/:id"
             element={
               <>
-                <PageContainer breadcrumb>
+                <PageContainer >
                   <File />
                 </PageContainer>
               </>
             }
           />
+
           <Route
             path="/family"
             element={

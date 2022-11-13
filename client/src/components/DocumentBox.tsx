@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom'
 
 type propsType = {
   type: 'generatedFolder' | 'generatedFile' | 'uploadedFile' | 'sharedFile'
+  id: string
   title: string
   amount?: number
   size?: number
@@ -27,6 +28,7 @@ type propsType = {
 
 const DocumentBox = ({
   type,
+  id,
   title,
   amount,
   size,
@@ -41,8 +43,7 @@ const DocumentBox = ({
 }: propsType) => {
   let layout = {
     width: '320px',
-    boxShadow:
-      '5px 5px 3px -2px rgba(0, 0, 0, 0.1)',
+    boxShadow: '5px 5px 3px -2px rgba(0, 0, 0, 0.1)',
     borderRadius: '16px',
     backgroundColor: 'background.white',
     position: 'relative',
@@ -121,37 +122,54 @@ const DocumentBox = ({
     }
   }
 
+  const getUrl = (): string => {
+    if (type === 'generatedFolder') {
+      return `/folder/${id}`
+    }
+    if (
+      type === 'generatedFile' ||
+      type === 'uploadedFile' ||
+      type === 'sharedFile'
+    ) {
+      return `/file/${id}`
+    }
+    return ''
+  }
+
   return (
-    <Link to={url ? url : ''}>
-      <Box sx={layout}>
-        {colorBar && <Box sx={colorBarStyle}></Box>}
-        <Flex gap="30px" alignItems="center">
-          {menu}
+    <Box sx={layout}>
+      {colorBar && <Box sx={colorBarStyle}></Box>}
+      <Flex gap="30px" alignItems="center">
+        {menu}
+        <Link to={getUrl()}>
           <Image src={getImageUrl()} sx={documentImage} />
-          <Flex flexDirection="column">
+        </Link>
+        <Flex flexDirection="column">
+          <Link to={getUrl()}>
             <Text sx={titleText}>{title}</Text>
             <Text sx={subText}>{getSubText()}</Text>
-          </Flex>
+          </Link>
         </Flex>
-        {showNote && (
-          <Box marginTop="18px">
-            <Editable
-              defaultValue="note"
-              height="80px"
-              border="2px solid"
-              borderColor="#E2E8F0"
-              borderRadius="8px"
-              padding="4px 12px"
-              fontSize="14px"
-              color="accent.gray"
-            >
-              <EditablePreview />
-              <EditableTextarea _focusVisible={{ boxShadow: 'none' }} />
-            </Editable>
-          </Box>
-        )}
-      </Box>
-    </Link>
+      </Flex>
+
+      {showNote && (
+        <Box marginTop="18px">
+          <Editable
+            defaultValue="note"
+            height="80px"
+            border="2px solid"
+            borderColor="#E2E8F0"
+            borderRadius="8px"
+            padding="4px 12px"
+            fontSize="14px"
+            color="accent.gray"
+          >
+            <EditablePreview />
+            <EditableTextarea _focusVisible={{ boxShadow: 'none' }} />
+          </Editable>
+        </Box>
+      )}
+    </Box>
   )
 }
 
