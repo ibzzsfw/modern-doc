@@ -11,26 +11,14 @@ import UploadFile from '@components/UploadFile'
 import TakeNote from '@components/TakeNote'
 import FileViewerDrawer from '@components/FileViewerDrawer'
 
-const Folder = () => {
-
-  let documentView = {
-    justifyContent: 'space-evenly',
-    height: '768px',
-  }
-
-  let abstractArea = {
-    position: 'absolute',
-    top: '0',
-    left: '0',
-  }
-
+const Folder = ({/*folder */ }) => {
 
   return (
     <Flex sx={documentView}>
       <Box sx={abstractArea}>
         <UploadFile />
         <TakeNote />
-        <FileViewerDrawer />
+        <FileViewerDrawer files={mockFile} />
       </Box>
       <FolderDetail
         title="เอกสารขจัดขนตูด"
@@ -38,49 +26,62 @@ const Folder = () => {
         markdown={markdown}
         status="มีอยู่ในคลัง"
       />
-
-      <FileList
-        files={[
-          new FolderUploadedFile(
-            '12',
-            'เอกสารขจัดขนตูด',
-            new Date(),
-            new Date()
-          ),
-          new FolderUploadedFile(
-            '13',
-            'เอกสารขจัดขนตูด2',
-            subDays(new Date(), 3),
-            addDays(new Date(), 3),
-            '',
-            '',
-            3,
-            ''
-          ),
-          new FolderUploadedFile(
-            '14',
-            'เอกสารขจัดขนตูด3',
-            subDays(new Date(), 100),
-            addDays(new Date(), 100),
-            '',
-            '',
-            2,
-            ''
-          ),
-          new FolderUploadedFile(
-            '13',
-            'เอกสารขจัดขนตูด4',
-            subDays(new Date(), 3),
-            addDays(new Date(), 3),
-            '',
-            '',
-            1,
-            null
-          ),
-        ]}
-      />
+      <FileList files={mockFile} />
     </Flex>
   )
 }
+
+let documentView = {
+  justifyContent: 'space-evenly',
+  height: '768px',
+}
+
+let abstractArea = {
+  display: 'flex',
+  flexDirection: 'column',
+  rowGap: '1rem',
+  position: 'absolute',
+  top: '0',
+  right: '2rem',
+}
+
+const mockFile = [
+  new FolderUploadedFile(
+    '12',
+    'เอกสารขจัดขนตูด',
+    new Date(),
+    new Date()
+  ),
+  new FolderUploadedFile(
+    '13',
+    'เอกสารขจัดขนตูด2',
+    subDays(new Date(), 3),
+    addDays(new Date(), 3),
+    '',
+    '',
+    3,
+    ''
+  ),
+  new FolderUploadedFile(
+    '14',
+    'เอกสารขจัดขนตูด3',
+    subDays(new Date(), 100),
+    addDays(new Date(), 100),
+    '',
+    '',
+    2,
+    ''
+  ),
+  new FolderUploadedFile(
+    '13',
+    'เอกสารขจัดขนตูด4',
+    subDays(new Date(), 3),
+    addDays(new Date(), 3),
+    '',
+    '',
+    1,
+    null
+  ),
+]
 
 export default Folder
