@@ -11,13 +11,11 @@ import ChangePassword from '@components/ChangePassword'
 import ConfirmPassword from '@components/ConfirmPassword'
 import FormInput from '@components/FormInput'
 import { Form, Formik } from 'formik'
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import { FiEdit } from 'react-icons/fi'
 
-type propsType = {
-  data?: {}
-}
-const ProfileFormInput = ({data} : propsType) => {
+
+const ProfileFormInput = () => {
   const [info, setInfo] = useState({
     prefix: 'เด็กชาย',
     firstName: 'ใจฟู',

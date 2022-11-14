@@ -1,19 +1,8 @@
 import { Box, Center, HStack } from '@chakra-ui/react'
 import ProfileFormInput from '@components/ProfileFormInput'
 import ProfilePicture from '@components/ProfilePicture'
-import { useEffect,useState } from 'react'
 
 const MyProfile = () => {
-  const [data,setData] = useState({})
-
-  const getLoginData = () => {
-      return {}
-  }
-
-  useEffect(() => {
-    setData(getLoginData())
-  })
-
 
 
   return (

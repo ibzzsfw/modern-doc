@@ -11,7 +11,7 @@ const Home = () => {
       <Center>
         <SearchBox />
       </Center>
-      <PopularBar title="รายการยอดฮิต" url="https://google.co.th">
+      <PopularBar title="รายการยอดฮิต" url=''>
         <PopularBox
           title="เอกสารประกอบการสอน"
           image="https://trendwatchers.co/wp-content/uploads/2020/04/1_r_46B-6pUz9L0sq9fVuChA.jpeg"

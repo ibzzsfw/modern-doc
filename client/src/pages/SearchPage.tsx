@@ -36,11 +36,7 @@ const SearchPage = () => {
     <VStack marginTop="4px">
       <VStack align="start">
         <Center>
-<<<<<<< HEAD
           <SearchBox />
-=======
-          <SearchBox setValue={search} />
->>>>>>> fd0684520c3f74f61533de91b32fc901482d9aa7
           {/* งง ไม่เข้าใจบันทัดบน */}
         </Center> 
       </VStack>
