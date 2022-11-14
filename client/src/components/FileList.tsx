@@ -10,80 +10,122 @@ import {
   Spacer,
 } from '@chakra-ui/react'
 import {
-  AiFillPrinter,
   AiOutlineDownload,
   AiOutlineUpload,
 } from 'react-icons/ai'
 import FolderUploadedFile from '@models/FolderUploadedFile'
 import DocumentBadge from '@components/DocumentBadge'
+import GeneratedFile from '@models/GeneratedFile'
+import UploadedFile from '@models/UploadedFile'
+import { useGeneratedFileStore } from '@stores/GeneratedFile'
+import { useState, useEffect } from 'react'
+import UploadFile from '@components/UploadFile'
 
 type propsType = {
-  files: FolderUploadedFile[]
+  files: any[]
 }
 
 const FileList = ({ files }: propsType) => {
 
-  return (
+  const { generatedFile, setGeneratedFile } = useGeneratedFileStore()
+  const [checkCount, setCheckCount] = useState(0)
+  const [open, setOpen] = useState(false)
+  const [file, setFile] = useState<UploadedFile | null>(null)
+
+  const onChangeCheckbox = (checked: boolean, file: GeneratedFile) => {
+    if (checked) {
+      setGeneratedFile([...generatedFile, file])
+    } else {
+      setGeneratedFile(generatedFile.filter((f) => f.id !== file.id))
+    }
+  }
+
+  const onChangeAllCheckbox = (checked: boolean) => {
+    if (checked) {
+      setGeneratedFile(files.filter((file) => file instanceof GeneratedFile))
+    } else {
+      setGeneratedFile([])
+    }
+  }
+
+  const isSelectedThisFile = (file: GeneratedFile) => {
+    return generatedFile.filter((f) => f.id === file.id).length > 0
+  }
+
+  useEffect(() => setCheckCount(generatedFile.length), [generatedFile])
+
+  useEffect(() => console.table(generatedFile), [generatedFile])
+
+  const countGeneratedFile = () => files.filter((file) => file instanceof GeneratedFile).length
+
+  return (<>
     <Flex sx={fileList}>
       <Box sx={tableBody}>
-        <Grid templateColumns="1fr 3fr 2fr 2fr 1fr" sx={tableRow}>
+        <Grid templateColumns="1fr 3fr 2fr 2fr 1fr 1fr" sx={tableRow}>
           <Box sx={simpleBox}>
-            <Checkbox />
+            <Checkbox
+              checked={generatedFile.length == countGeneratedFile()}
+              onChange={(e) => onChangeAllCheckbox(e.target.checked)}
+            />
           </Box>
           <Box sx={simpleBox}>ชื่อเอกสาร</Box>
           <Box sx={simpleBox}>จำนวน</Box>
           <Box sx={simpleBox}>สถานะ</Box>
+          <Box sx={simpleBox}>หมายเหตุ</Box>
         </Grid>
         <Divider />
         <Box sx={tableContent}>
-          {files.map((file, index) => (
+          {files.map((file) => (
             <>
               <Grid
-                templateColumns="1fr 3fr 2fr 2fr 1fr"
+                templateColumns="1fr 3fr 2fr 2fr 1fr 1fr"
                 sx={tableRow}
-                key={index}
+                key={file.id}
               >
                 <Box sx={simpleBox}>
-                  {file.getStatus() !== 'ไม่มีอยู่ในคลัง' ? (
-                    <Checkbox />
-                  ) : (
-                    <IconButton
-                      aria-label="Search database"
-                      icon={<AiOutlineUpload />}
-                      size="sm"
-                    />
-                  )}
+                  {
+                    (file instanceof GeneratedFile) ?
+                      <Checkbox
+                        checked={isSelectedThisFile(file)}
+                        onChange={(e) => onChangeCheckbox(e.target.checked, file)}
+                      /> :
+                      <IconButton
+                        aria-label="Search database"
+                        icon={<AiOutlineUpload />}
+                        size="sm"
+                        onClick={() => {
+                          setOpen(true)
+                          setFile(file)
+                        }}
+                      />
+                  }
                 </Box>
-                <Box sx={simpleBox}>{file.name}</Box>
-                <Box sx={simpleBox}>{file.amount}</Box>
+                <Box sx={simpleBox}>{file.officialName}</Box>
+                <Box sx={simpleBox}>{'API'}</Box>
                 <Box sx={simpleBox}>
-                  <DocumentBadge status={file.getStatus()} />
+                  {'API'}
+                  {/* <DocumentBadge status={file.getStatus()} /> */}
                 </Box>
+                <Box sx={simpleBox}>{'API'}</Box>
                 <Box sx={simpleBox}>...</Box>
               </Grid>
             </>
           ))}
         </Box>
       </Box>
-      <ButtonGroup color="accent.white">
+      <ButtonGroup>
         <Spacer />
         <Button
-          backgroundColor="accent.blue"
+          colorScheme={'messenger'}
           size="sm"
           rightIcon={<AiOutlineDownload />}
         >
           ดาวน์โหลดแฟ้ม
         </Button>
-        <Button
-          backgroundColor="accent.black"
-          size="sm"
-          rightIcon={<AiFillPrinter />}
-        >
-          พิมพ์แฟ้ม
-        </Button>
       </ButtonGroup>
     </Flex>
-  )
+    <UploadFile open={open} setOpen={e => setOpen(e)} file={file} />
+  </>)
 }
 
 let abstractBox = {

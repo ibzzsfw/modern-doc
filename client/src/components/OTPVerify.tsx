@@ -10,13 +10,22 @@ import {
   VStack,
   HStack,
   Center,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
 } from '@chakra-ui/react'
+import { useState } from 'react'
 
 type propsType = {
-  contact?: string
+  phoneNumber?: string
+  onSubmit(otp: string): void
 }
 
-const OTPVerify = ({ contact }: propsType) => {
+const OTPVerify = ({ phoneNumber, onSubmit }: propsType) => {
   const toast = useToast()
   let shadow = {
     height: '396px',
@@ -27,39 +36,55 @@ const OTPVerify = ({ contact }: propsType) => {
     border: '1px solid accent.lightGray',
   }
 
-  return (
-    <Center>
-      <Box sx={shadow}>
-        <VStack gap="24px" marginTop="32px" >
-          <Heading>OTP Verification</Heading>
-          <HStack>
-            <PinInput autoFocus placeholder="x">
-              <PinInputField />
-              <PinInputField />
-              <PinInputField />
-              <PinInputField />
-              <PinInputField />
-              <PinInputField />
-            </PinInput>
-          </HStack>
+  const [otp, setOtp] = useState('')
 
-          <Text fontSize='sm' textAlign="center" >
-            เราได้ส่งรหัส OTP 6 ตัวไปยังหมายเลขโทรศัพท์{' '}
-            <Text as="b" color="blue">
-              {contact}
-            </Text>{' '}
-            โปรดนำรหัสที่ได้มาใส่ในช่องด้านบน
-          </Text>
-          <Text>
-            <Link as="b" color="blue">
-              คลิกที่นี่
-            </Link>
-            เพื่อส่งรหัส OTP ใหม่
-          </Text>
-          <Button colorScheme="blue">ยืนยัน</Button>
-        </VStack>
-      </Box>
-    </Center>
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
+  return (
+    <Modal isOpen={true} onClose={onClose} isCentered>
+      <ModalOverlay />
+      <ModalCloseButton />
+      <ModalContent padding="24px">
+        <ModalHeader>OTP Verification</ModalHeader>
+        <ModalBody>
+          <VStack gap="24px" marginTop="32px">
+            <HStack>
+              <PinInput
+                autoFocus
+                placeholder=""
+                onChange={(value) => {
+                  setOtp(value)
+                }}
+              >
+                <PinInputField />
+                <PinInputField />
+                <PinInputField />
+                <PinInputField />
+                <PinInputField />
+                <PinInputField />
+              </PinInput>
+            </HStack>
+
+            <Text fontSize="sm" textAlign="center">
+              เราได้ส่งรหัส OTP 6 ตัวไปยังหมายเลขโทรศัพท์{' '}
+              <Text as="b" color="blue">
+                {phoneNumber}
+              </Text>{' '}
+              โปรดนำรหัสที่ได้มาใส่ในช่องด้านบน
+            </Text>
+            <Text>
+              <Link as="b" color="blue">
+                คลิกที่นี่{' '}
+              </Link>
+              เพื่อส่งรหัส OTP ใหม่
+            </Text>
+            <Button colorScheme="blue" onClick={() => onSubmit(otp)}>
+              ยืนยัน
+            </Button>
+          </VStack>
+        </ModalBody>
+      </ModalContent>
+    </Modal>
   )
 }
 

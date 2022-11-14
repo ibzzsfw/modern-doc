@@ -13,6 +13,7 @@ import Test from '@pages/Test'
 import SearchPage from '@pages/SearchPage'
 import EditDocumentForm from '@components/EditDocumentForm'
 import File from '@pages/File'
+import Form from '@pages/Form'
 
 const AppRoute = () => {
   return (
@@ -105,11 +106,12 @@ const AppRoute = () => {
             <Route path=":keyword" element={<SearchPage />} />
           </Route>
           <Route
-            path="/editdoc"
+            // path="/folder/:id/form"
+            path="/form"
             element={
               <>
                 <PageContainer>
-                  <EditDocumentForm />
+                  <Form />
                 </PageContainer>
               </>
             }

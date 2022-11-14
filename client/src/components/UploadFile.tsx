@@ -21,8 +21,15 @@ import {
 } from '@chakra-ui/react'
 import { AiOutlineDelete } from 'react-icons/ai'
 import { useState, useEffect } from 'react'
+import UploadedFile from '@models/UploadedFile'
 
-const UploadFile = () => {
+type propsType = {
+  open: boolean,
+  setOpen: (open: boolean) => void,
+  file: UploadedFile | null,
+}
+
+const UploadFile = ({ open, setOpen, file }: propsType) => {
 
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [fileExists, setFileExists] = useState(false)
@@ -32,16 +39,36 @@ const UploadFile = () => {
   const [wannaRemove, setWannaRemove] = useState(false)
 
   useEffect(() => {
+    if (open) {
+      onOpen()
+    }
+  }, [open])
+
+  useEffect(() => {
     if (selectedFile == "outsideFile") {
       setFileType('outside')
     }
     setFileExists(selectedFile != "")
   }, [selectedFile])
 
+  const closeModal = () => {
+    onClose()
+    setOpen(false)
+  }
+
+  useEffect(() => {
+    if (file) {
+      setFileExists(false)
+      setFileType('upload')
+      setSelectedFile(file.name)
+      setIsExpirable(file.dayLifeSpan > 0)
+    }
+  }, [])
+
   return (
     <>
-      <Button onClick={onOpen} colorScheme={"red"}>Upload file</Button>
-      <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose} size="xl">
+      {/* <Button onClick={onOpen} colorScheme={"red"}>Upload file</Button> */}
+      <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={closeModal} size="xl">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>อัพโหลดเอกสาร</ModalHeader>
@@ -72,8 +99,14 @@ const UploadFile = () => {
               </Button>
             </HStack>
             <Input placeholder='พิมพ์เพื่อค้นหาเอกสาร' />
-            <Select placeholder='เลือกเอกสาร' onChange={(e) => setSelectedFile(e.target.value)}>
+            <Select
+              placeholder='เลือกเอกสาร'
+              onChange={(e) => setSelectedFile(e.target.value)}
+            >
               <option value='outsideFile'>เอกสารภายนอก</option>
+              {
+                file && <option value={file.id} selected>{file.officialName}</option>
+              }
               {
                 [1, 2, 3, 4].map((i) => {
                   return <option value={`system_file_${i}`}>System file {i}</option>
@@ -121,7 +154,7 @@ const UploadFile = () => {
                   </Box>
                 </> :
                 selectedFile !== "" &&
-                <Input variant='filled' value={`${selectedFile} จะหมดอายุในวันที่ ${"31 ธันวาคม 2564"} หากท่านอัพโหลดวันนี้`} isReadOnly />
+                <Input variant='filled' value={`${selectedFile} จะหมดอายุในอีก ${file?.dayLifeSpan} หากท่านอัพโหลดวันนี้`} isReadOnly />
             }
             <Textarea placeholder='บันทึกที่จัดเก็บของเอกสารดังกล่าว หรือเตือนความจำบางอย่างกับเอกสารชุดนี้' />
           </ModalBody>

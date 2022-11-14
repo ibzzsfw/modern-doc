@@ -9,7 +9,6 @@ import TakeNote from '@components/TakeNote'
 import FileViewer from '@components/FileViewer'
 
 const File = () => {
-
   return (
     <Flex sx={documentView}>
       <Box sx={abstractArea}>
@@ -18,7 +17,7 @@ const File = () => {
       </Box>
       <FolderDetail
         title="เอกสารขจัดขนตูด"
-        description="เอกสารขจัดขนตูดนี้มีมาก ไม่สิ ต้องพูดว่ามีต่อดากมากกก"
+        description="lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet "
         markdown={markdown}
         status="มีอยู่ในคลัง"
       />

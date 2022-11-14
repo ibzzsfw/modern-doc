@@ -4,6 +4,7 @@ import {
   chakra,
   Icon,
   Text,
+  useTimeout,
   useToast,
   VStack,
 } from '@chakra-ui/react'
@@ -17,6 +18,11 @@ import { Form, Formik } from 'formik'
 import { AiFillLock, AiFillPhone } from 'react-icons/ai'
 import * as Yup from 'yup'
 import UserController from '@models/UserController'
+import { phoneLogin, validateOTP } from '@firebase'
+import { withCountryCode, withoutCountryCode } from '@utils/formatPhoneNumber'
+import OTPVerify from '@components/OTPVerify'
+import { useState } from 'react'
+import { useTime } from 'framer-motion'
 
 const Login = () => {
   let layout = {
@@ -62,13 +68,17 @@ const Login = () => {
     password: Yup.string().required('จำเป็นต้องกรอก'),
   })
 
-  interface loginForm {
-    phoneNumber: string
-    password: string
-  }
+  const [confirmationResult, setConfirmationResult] = useState<any>(null)
 
-  const { mutate } = useMutation(
-    async ({ phoneNumber, password }: loginForm) => UserController.login({ phoneNumber, password }),
+  const { mutate: onVerifySuccess } = useMutation(
+    async (credential: any) => {
+      console.log(
+        credential,
+        credential.user.phoneNumber,
+        withoutCountryCode(credential.user.phoneNumber)
+      )
+      UserController.login(withoutCountryCode(credential.user.phoneNumber))
+    },
     {
       onSuccess: (data: any) => {
         console.log(data)
@@ -106,13 +116,38 @@ const Login = () => {
           status: 'error',
           duration: 5000,
         })
+        // setTimeout(() => {
+        //   window.location.reload()
+        // }, 2000)
       },
     }
   )
 
-  const onLogin = async ({ phoneNumber, password }: loginForm) => {
-    mutate({ phoneNumber, password })
+  type loginForm = {
+    phoneNumber: string
+    password: string
   }
+  const { mutate: onClickLogin } = useMutation(
+    async ({ phoneNumber, password }: loginForm) =>
+      UserController.checkPhonePassword({ phoneNumber, password }),
+    {
+      onSuccess: async (data: any) => {
+        console.log(data)
+        let phoneNumber = data.phoneNumber
+        console.log(phoneNumber, withCountryCode(phoneNumber))
+        setConfirmationResult(await phoneLogin(withCountryCode(phoneNumber)))
+      },
+      onError: (error: AxiosError) => {
+        console.log(error?.message)
+        toast({
+          title: 'เข้าสู่ระบบไม่สำเร็จ',
+          description: 'กรุณาตรวจสอบเบอร์โทรศัพท์หรือรหัสผ่าน',
+          status: 'error',
+          duration: 5000,
+        })
+      },
+    }
+  )
 
   return (
     <Box sx={layout}>
@@ -123,8 +158,7 @@ const Login = () => {
         }}
         validationSchema={loginSchema}
         onSubmit={(values) => {
-          console.log('ไอห่า')
-          onLogin({
+          onClickLogin({
             phoneNumber: values.phoneNumber,
             password: values.password,
           })
@@ -161,6 +195,7 @@ const Login = () => {
             </FormInput>
           </VStack>
 
+          <div id="recaptcha-container"></div>
           <VStack margin="auto" gap="8px">
             <Button sx={submitButton} type="submit">
               เข้าสู่ระบบ
@@ -178,6 +213,14 @@ const Login = () => {
           </VStack>
         </Form>
       </Formik>
+      {confirmationResult && (
+        <OTPVerify
+          phoneNumber="0939465199"
+          onSubmit={async (otp) => {
+            onVerifySuccess(await validateOTP(otp, confirmationResult))
+          }}
+        />
+      )}
     </Box>
   )
 }

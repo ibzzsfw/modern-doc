@@ -208,7 +208,7 @@ const EditDocumentForm = () => {
           </Center>
         </ModalBody>
         <ModalFooter>
-          <Button variant="solid" colorScheme="blue" onClick={() => {}}>
+          <Button variant="solid" colorScheme="blue" onClick={() => { }}>
             ตกลง
           </Button>
         </ModalFooter>

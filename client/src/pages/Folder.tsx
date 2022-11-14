@@ -2,7 +2,9 @@ import { Flex, Box } from '@chakra-ui/react'
 import FileList from '@components/FileList'
 import FolderDetail from '@components/FolderDetail'
 import FolderUploadedFile from '@models/FolderUploadedFile'
-import { addDays, subDays } from 'date-fns'
+import GeneratedFile from '@models/GeneratedFile'
+import UploadedFile from '@models/UploadedFile'
+import Field from '@models/Field'
 import markdown from 'src/mockData/markdown'
 import UploadFile from '@components/UploadFile'
 import TakeNote from '@components/TakeNote'
@@ -14,7 +16,7 @@ const Folder = ({/*folder */ }) => {
   return (
     <Flex sx={documentView}>
       <Box sx={abstractArea}>
-        <UploadFile />
+        {/* <UploadFile /> */}
         <TakeNote />
         <FileViewerDrawer files={mockFile} />
       </Box>
@@ -44,41 +46,52 @@ let abstractArea = {
 }
 
 const mockFile = [
-  new FolderUploadedFile(
-    '12',
-    'เอกสารขจัดขนตูด',
+  new GeneratedFile(
+    'f1',
     new Date(),
-    new Date()
+    new Date(),
+    'gf1',
+    30,
+    'generatedFile1',
+    [
+      new Field('f1', 'tf', 'textField', 'text'),
+      new Field('f2', 'nf', 'numberField', 'number'),
+      new Field('f3', 'df', 'dateField', 'date'),
+      new Field('f4', 'sf', 'singleSelectField', 'singleSelect'),
+    ]
   ),
-  new FolderUploadedFile(
-    '13',
-    'เอกสารขจัดขนตูด2',
-    subDays(new Date(), 3),
-    addDays(new Date(), 3),
-    '',
-    '',
-    3,
-    ''
+  new UploadedFile(
+    'f2',
+    new Date(),
+    new Date(),
+    'uf1',
+    30,
+    'uploadedFile1',
+    false
   ),
-  new FolderUploadedFile(
-    '14',
-    'เอกสารขจัดขนตูด3',
-    subDays(new Date(), 100),
-    addDays(new Date(), 100),
-    '',
-    '',
-    2,
-    ''
+  new GeneratedFile(
+    'f3',
+    new Date(),
+    new Date(),
+    'gf2',
+    30,
+    'generatedFile2',
+    [
+      new Field('f3', 'df', 'dateField', 'date'),
+      new Field('f4', 'sf', 'singleSelectField', 'singleSelect'),
+      new Field('f5', 'mf', 'multiSelectField', 'multiSelect'),
+      new Field('f6', 'ef', 'emailField', 'email'),
+      new Field('f7', 'pf', 'phoneField', 'phone'),
+    ]
   ),
-  new FolderUploadedFile(
-    '13',
-    'เอกสารขจัดขนตูด4',
-    subDays(new Date(), 3),
-    addDays(new Date(), 3),
-    '',
-    '',
-    1,
-    null
+  new UploadedFile(
+    'f4',
+    new Date(),
+    new Date(),
+    'uf2',
+    30,
+    'uploadedFile2',
+    false
   ),
 ]
 

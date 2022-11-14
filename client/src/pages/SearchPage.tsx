@@ -2,7 +2,7 @@ import {
   Center,
   Checkbox,
   Flex,
-  HStack,
+  Highlight,
   Text,
   VStack
 } from '@chakra-ui/react'
@@ -36,7 +36,11 @@ const SearchPage = () => {
     <VStack marginTop="4px">
       <VStack align="start">
         <Center>
+<<<<<<< HEAD
           <SearchBox />
+=======
+          <SearchBox setValue={search} />
+>>>>>>> fd0684520c3f74f61533de91b32fc901482d9aa7
           {/* งง ไม่เข้าใจบันทัดบน */}
         </Center> 
       </VStack>
@@ -53,7 +57,7 @@ const SearchPage = () => {
               </Text>
             </Checkbox>
             {
-              showFolder ?
+              showFolder &&
               <Flex sx={childrenFlex}>
                 <DocumentBox
                   title="จ้างงานคนพิการ"
@@ -74,7 +78,6 @@ const SearchPage = () => {
                   createdDate={new Date('12/08/2021')}
                 />
               </Flex>
-              : <Text>กดเพื่อแสดงผลการค้นหา</Text>
             }
           </Flex>
 
@@ -90,42 +93,42 @@ const SearchPage = () => {
             </Checkbox>
             {
               showFile ?
-              <Flex sx={childrenFlex}>
-                <DocumentBox
-                  title="หนังสือมอบอำนาจ"
-                  type="generatedFile"
-                  showDate
-                  colorBar="#FF9898"
-                />
-                <DocumentBox
-                  title="เอกสารผู้ดูแลคนพิการ"
-                  type="generatedFile"
-                  showDate
-                  createdDate={new Date('12/08/2021')}
-                />
-                <DocumentBox
-                  title="บัตรคนพิการ"
-                  type="uploadedFile"
-                  showDate
-                  createdDate={new Date('12/08/2021')}
-                  colorBar="#FF9898"
-                />
-                <DocumentBox
-                  title="จ้างงานคนพิการ"
-                  type="generatedFile"
-                  showDate
-                  createdDate={new Date('12/08/2021')}
-                  colorBar="#FF9898"
-                />
-                <DocumentBox
-                  title="ขึ้นทะเบียนคนพิการ"
-                  type="generatedFile"
-                  showDate
-                  createdDate={new Date('12/08/2021')}
-                  colorBar="#FF9898"
-                />
-              </Flex>
-              : <Text>กดเพื่อแสดงผลการค้นหา</Text>
+                <Flex sx={childrenFlex}>
+                  <DocumentBox
+                    title="หนังสือมอบอำนาจ"
+                    type="generatedFile"
+                    showDate
+                    colorBar="#FF9898"
+                  />
+                  <DocumentBox
+                    title="เอกสารผู้ดูแลคนพิการ"
+                    type="generatedFile"
+                    showDate
+                    createdDate={new Date('12/08/2021')}
+                  />
+                  <DocumentBox
+                    title="บัตรคนพิการ"
+                    type="uploadedFile"
+                    showDate
+                    createdDate={new Date('12/08/2021')}
+                    colorBar="#FF9898"
+                  />
+                  <DocumentBox
+                    title="จ้างงานคนพิการ"
+                    type="generatedFile"
+                    showDate
+                    createdDate={new Date('12/08/2021')}
+                    colorBar="#FF9898"
+                  />
+                  <DocumentBox
+                    title="ขึ้นทะเบียนคนพิการ"
+                    type="generatedFile"
+                    showDate
+                    createdDate={new Date('12/08/2021')}
+                    colorBar="#FF9898"
+                  />
+                </Flex>
+                : <Text>กดเพื่อแสดงผลการค้นหา</Text>
             }
           </Flex>
         </VStack>

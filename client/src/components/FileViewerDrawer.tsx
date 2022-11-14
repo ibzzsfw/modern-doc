@@ -18,7 +18,7 @@ import { AiOutlineLeft, AiOutlineRight } from 'react-icons/ai'
 import FolderUploadedFile from '@models/FolderUploadedFile'
 
 type propsType = {
-  files: FolderUploadedFile[]
+  files: any[]
 }
 
 const FileViewerDrawer = ({ files }: propsType) => {
@@ -76,8 +76,8 @@ const FileViewerDrawer = ({ files }: propsType) => {
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader>
-            <Highlight query={['ของคุณ', 'ที่คุณยังไม่เคยสร้าง']} styles={highlight}>
-              {files[currentFileIndex].name + (isMyFile ? 'ของคุณ' : 'ที่คุณยังไม่เคยสร้าง')}
+            <Highlight query={['ของคุณ', 'ตัวอย่าง']} styles={highlight}>
+              {(isMyFile ? '' : 'ตัวอย่าง') + files[currentFileIndex].name + (isMyFile ? 'ของคุณ' : '')}
             </Highlight>
             <Spacer />
             <Button
