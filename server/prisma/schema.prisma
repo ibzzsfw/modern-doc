@@ -122,6 +122,7 @@ model UserUploadedFile {
   URI            String
   isShared       Boolean      @default(false)
   note           String?
+  expirationDate DateTime?
 
   @@unique([userId, uploadedFileId])
 }
