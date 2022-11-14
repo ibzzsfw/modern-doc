@@ -1,7 +1,6 @@
 import Document from '@models/Document'
 import DocumentStatus from '@models/DocumentStatus'
 import { differenceInDays } from 'date-fns'
-
 class FolderUploadedFile implements Document {
   id: string
   name: string

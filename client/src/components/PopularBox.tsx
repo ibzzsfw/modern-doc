@@ -10,7 +10,7 @@ type propsType = {
 const PopularBox = ({ title, image }: propsType) => {
 
   const navigate = useNavigate()
-  const { search, setSearch, setSearchResult, setSearchResultAmount } = useSearchDocumentStore()
+  const { search, setSearch, setSearchResult } = useSearchDocumentStore()
 
   let layout = {
     width: '196px',
@@ -46,7 +46,6 @@ const PopularBox = ({ title, image }: propsType) => {
     setSearch(title)
     let result: any | any[] = [] // API call search(title)
     setSearchResult(result)
-    setSearchResultAmount(result.length)
     navigate(`/search/${title}`)
   }
 

@@ -3,27 +3,28 @@ import { FiSearch } from 'react-icons/fi'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 
+type propsType = {
+  value?: string
+}
 
-const SearchBox = () => {
+const SearchBox = ({ value }: propsType) => {
   const nevigete = useNavigate()
-  const [keyword,setKeyword] = useState('')
-
-
-
+  const [searchValue, setSearchValue] = useState(value || '')
 
   return (
     <HStack>
       <Input
         placeholder="ค้นหา"
         sx={searchBox}
-        onChange={(e) => {setKeyword(e.target.value) }}
+        onChange={(e) => setSearchValue(e.target.value)}
+        value={searchValue}
       />
       <IconButton
         aria-label="ค้นหา"
         icon={<Icon as={FiSearch} color="accent.white" boxSize="20px" />}
-        sx={searchButton} 
+        sx={searchButton}
         onClick={() => {
-          keyword !== '' ? nevigete(`/search/${keyword}`) : ''
+          searchValue !== '' ? nevigete(`/search/${searchValue}`) : ''
         }}
       />
     </HStack>

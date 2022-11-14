@@ -10,10 +10,9 @@ type propsType = {
 
 const PopularBar = ({ title, children, url }: propsType) => {
   let seeAllIcon = {
-    boxShadow:
-      '0px 10px 10px 2px rgba(0, 0, 0, 0.1), 0px 10px 10px -5px rgba(0, 0, 0, 0.04)',
+    boxShadow: '0px 5px 5px 1px rgba(0, 0, 0, 0.1)',
     borderRadius: '8px',
-    backgroundColor: 'background.white',
+    // backgroundColor: 'background.white',
   }
 
   return (
@@ -25,7 +24,7 @@ const PopularBar = ({ title, children, url }: propsType) => {
           </Text>
           {url && (
             <Link to={'/search'}>
-              <Button leftIcon={<Icon as={TiThLargeOutline} />} sx={seeAllIcon}>
+              <Button leftIcon={<Icon as={TiThLargeOutline} />} sx={seeAllIcon} colorScheme='gray'>
                 ดูทั้งหมด
               </Button>
             </Link>

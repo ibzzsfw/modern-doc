@@ -5,8 +5,6 @@ type SearchDocumentStore = {
   setSearch: (value: string) => void,
   searchResult: any | any[],
   setSearchResult: (value: any) => void,
-  searchResultAmount: number,
-  setSearchResultAmount: (value: number) => void,
 }
 
 export const useSearchDocumentStore = create<SearchDocumentStore>((set) => ({
@@ -14,6 +12,4 @@ export const useSearchDocumentStore = create<SearchDocumentStore>((set) => ({
   setSearch: (value) => set({ search: value }),
   searchResult: [],
   setSearchResult: (value) => set({ searchResult: value }),
-  searchResultAmount: 0,
-  setSearchResultAmount: (value) => set({ searchResultAmount: value }),
 }))

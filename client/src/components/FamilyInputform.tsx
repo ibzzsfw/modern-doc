@@ -138,19 +138,17 @@ const FamilyInputform = ({
             {!disable ? (
               <></>
             ) : (
-              <Flex justify="center" width="100%">
-                <Flex gap="22px" align="center">
-                  <Button
-                    onClick={() => {
-                      if (callBack) callBack()
-                    }}
-                  >
-                    ยกเลิก
-                  </Button>
-                  <Button sx={submitButton} type="submit">
-                    ตกลง
-                  </Button>
-                </Flex>
+              <Flex justifyContent='flex-end' alignItems='center' columnGap='1rem' width="100%">
+                <Button
+                  onClick={() => {
+                    if (callBack) callBack()
+                  }}
+                >
+                  ยกเลิก
+                </Button>
+                <Button sx={submitButton} type="submit">
+                  ตกลง
+                </Button>
               </Flex>
             )}
           </VStack>
