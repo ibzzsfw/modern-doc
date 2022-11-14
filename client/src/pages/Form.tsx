@@ -18,7 +18,7 @@ import { useGeneratedFileStore } from "@stores/GeneratedFile"
 const Form = () => {
 
   const { generatedFile, generatedFileField } = useGeneratedFileStore()
-  const [percent, setPercent] = useState<number>(0.40)
+  const [percent, setPercent] = useState<number>(0.31)
 
   console.log(generatedFileField)
 

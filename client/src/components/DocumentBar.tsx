@@ -1,13 +1,9 @@
 import {
+  Button,
   Flex,
-  HStack,
-  Text,
-  VStack,
-  Grid,
-  GridItem,
-  Center,
-  SimpleGrid,
+  Text
 } from '@chakra-ui/react'
+import { AiOutlineDoubleRight } from 'react-icons/ai'
 import { Link } from 'react-router-dom'
 
 type propsType = {
@@ -46,7 +42,9 @@ const DocumentBar = ({ title, children, url }: propsType) => {
           </Text>
           {url && (
             <Link to={url}>
-              <Text>ดูเพิ่มเติม {'>>'}</Text>
+              <Button rightIcon={<AiOutlineDoubleRight />} variant='ghost' colorScheme='gray'>
+                ดูเพิ่มเติม
+              </Button>
             </Link>
           )}
         </Flex>

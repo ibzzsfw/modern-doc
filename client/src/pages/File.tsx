@@ -12,7 +12,7 @@ const File = () => {
   return (
     <Flex sx={documentView}>
       <Box sx={abstractArea}>
-        <UploadFile />
+        {/* <UploadFile /> */}
         <TakeNote />
       </Box>
       <FolderDetail

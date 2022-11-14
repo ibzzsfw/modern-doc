@@ -9,7 +9,7 @@ import {
 import DocumentBox from '@components/DocumentBox'
 import SearchBox from '@components/SearchBox'
 import { useSearchDocumentStore } from '@stores/SearchDocument'
-import {useState } from 'react'
+import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 const SearchPage = () => {
@@ -36,13 +36,9 @@ const SearchPage = () => {
     <VStack marginTop="4px">
       <VStack align="start">
         <Center>
-<<<<<<< HEAD
-          <SearchBox />
-=======
-          <SearchBox setValue={search} />
->>>>>>> fd0684520c3f74f61533de91b32fc901482d9aa7
+          <SearchBox value={search} />
           {/* งง ไม่เข้าใจบันทัดบน */}
-        </Center> 
+        </Center>
       </VStack>
       <Center>
         <VStack align="start">
@@ -60,18 +56,21 @@ const SearchPage = () => {
               showFolder &&
               <Flex sx={childrenFlex}>
                 <DocumentBox
+                  id='1'
                   title="จ้างงานคนพิการ"
                   type="generatedFolder"
                   showDate
                   colorBar="#FF9898"
                 />
                 <DocumentBox
+                  id='2'
                   title="จ้างงานคนพิการ"
                   type="generatedFolder"
                   showDate
                   createdDate={new Date('12/08/2021')}
                 />
                 <DocumentBox
+                  id='3'
                   title="ขึ้นทะเบียนคนพิการ"
                   type="generatedFolder"
                   showDate
@@ -95,18 +94,21 @@ const SearchPage = () => {
               showFile ?
                 <Flex sx={childrenFlex}>
                   <DocumentBox
+                    id='4'
                     title="หนังสือมอบอำนาจ"
                     type="generatedFile"
                     showDate
                     colorBar="#FF9898"
                   />
                   <DocumentBox
+                    id='5'
                     title="เอกสารผู้ดูแลคนพิการ"
                     type="generatedFile"
                     showDate
                     createdDate={new Date('12/08/2021')}
                   />
                   <DocumentBox
+                    id='6'
                     title="บัตรคนพิการ"
                     type="uploadedFile"
                     showDate
@@ -114,6 +116,7 @@ const SearchPage = () => {
                     colorBar="#FF9898"
                   />
                   <DocumentBox
+                    id='7'
                     title="จ้างงานคนพิการ"
                     type="generatedFile"
                     showDate
@@ -121,6 +124,7 @@ const SearchPage = () => {
                     colorBar="#FF9898"
                   />
                   <DocumentBox
+                    id='8'
                     title="ขึ้นทะเบียนคนพิการ"
                     type="generatedFile"
                     showDate

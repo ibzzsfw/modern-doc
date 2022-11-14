@@ -2,19 +2,16 @@ import {
   Box,
   Button,
   Center,
-  useDisclosure,
   VStack,
   Wrap,
 } from '@chakra-ui/react'
-import { AiOutlineUserAdd } from 'react-icons/ai'
-
 import { useState } from 'react'
-
 import FamilyInfoBox from '@components/FamilyInfoBox'
-
+import { AiOutlineUserAdd } from 'react-icons/ai'
 import { useFamilyPageStore } from '@stores/FamilyPageStore'
 
 const FamilyPage = () => {
+  
   const { page, setPage, mode, setMode } = useFamilyPageStore()
   const [family, setfamily] = useState([
     {
@@ -47,32 +44,31 @@ const FamilyPage = () => {
     width: 'auto',
     height: '40px',
     backgroundColor: 'accent.white',
-    color: 'black',
+    // color: 'black',
     right: '0px',
-    variant: 'outline',
-    border: '1px solid',
-    borderColor: '#E2E8F0',
+    // border: '1px solid',
+    // borderColor: '#E2E8F0',
 
-    _hover: {
-      backgroundColor: 'hover.gray',
-      color: 'white',
-    },
-    _active: {
-      backgroundColor: 'hover.white',
-    },
+    // _hover: {
+    //   backgroundColor: 'hover.gray',
+    //   color: 'white',
+    // },
+    // _active: {
+    //   backgroundColor: 'hover.white',
+    // },
   }
 
-  return page == 0 || family.length == 0 ? (
-    <FamilyInfoBox activeForm="true" menuActive={false} />
-  ) : (
+  return (
     <Center>
       <Box width="909px">
         <VStack>
           <Box width="100%" textAlign="right">
             <Button
-              variant="solid"
-              color="accent.blue"
+              disabled={page == 0}
+              variant="outline"
+              // color="accent.blue"
               sx={editButton}
+              colorScheme='gray'
               leftIcon={<AiOutlineUserAdd />}
               onClick={() => {
                 setMode('add')
@@ -83,6 +79,10 @@ const FamilyPage = () => {
             </Button>
           </Box>
           <Wrap spacing="28px">
+            {
+              (page == 0 || family.length == 0) &&
+              <FamilyInfoBox activeForm="true" menuActive={false} />
+            }
             {family.map((values, index) => {
               return (
                 <>
