@@ -37,7 +37,6 @@ const SearchPage = () => {
       <VStack align="start">
         <Center>
           <SearchBox value={search} />
-          {/* งง ไม่เข้าใจบันทัดบน */}
         </Center>
       </VStack>
       <Center>
