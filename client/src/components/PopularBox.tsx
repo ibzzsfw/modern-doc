@@ -47,7 +47,7 @@ const PopularBox = ({ title, image }: propsType) => {
     let result: any | any[] = [] // API call search(title)
     setSearchResult(result)
     setSearchResultAmount(result.length)
-    navigate(`/search`)
+    navigate(`/search/${title}`)
   }
 
   return (

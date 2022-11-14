@@ -9,15 +9,15 @@ import {
 import DocumentBox from '@components/DocumentBox'
 import SearchBox from '@components/SearchBox'
 import { useSearchDocumentStore } from '@stores/SearchDocument'
-import { useEffect, useState } from 'react'
+import {useState } from 'react'
+import { useParams } from 'react-router-dom'
 
 const SearchPage = () => {
-  const state = [1, 2, 3, 4]
 
   const { search, setSearch, searchResult } = useSearchDocumentStore()
   const [showFile, setShowFile] = useState(true)
   const [showFolder, setShowFolder] = useState(true)
-
+  const keyword = useParams()
   let layout = {
     padding: '24px 0',
     gap: '32px',
@@ -31,13 +31,14 @@ const SearchPage = () => {
     gap: '32px',
   }
 
+  console.log(keyword)
   return (
     <VStack marginTop="4px">
       <VStack align="start">
         <Center>
-          <SearchBox setValue={search}/>
+          <SearchBox />
           {/* งง ไม่เข้าใจบันทัดบน */}
-        </Center>
+        </Center> 
       </VStack>
       <Center>
         <VStack align="start">

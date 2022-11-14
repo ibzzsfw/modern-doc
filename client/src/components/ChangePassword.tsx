@@ -43,6 +43,7 @@ const ChangePassword = ({ editProfile,callback }: propsType) => {
         onClose={onClose}
         closeOnOverlayClick={false}
         size="sm"
+        isCentered
       >
         <ModalOverlay />
         <ModalContent justifyContent="center">

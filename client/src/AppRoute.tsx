@@ -65,7 +65,7 @@ const AppRoute = () => {
             path="/folder/:id"
             element={
               <>
-                <PageContainer >
+                <PageContainer>
                   <Folder />
                 </PageContainer>
               </>
@@ -75,7 +75,7 @@ const AppRoute = () => {
             path="/file/:id"
             element={
               <>
-                <PageContainer >
+                <PageContainer>
                   <File />
                 </PageContainer>
               </>
@@ -101,7 +101,9 @@ const AppRoute = () => {
                 </PageContainer>
               </>
             }
-          />
+          >
+            <Route path=":keyword" element={<SearchPage />} />
+          </Route>
           <Route
             path="/editdoc"
             element={

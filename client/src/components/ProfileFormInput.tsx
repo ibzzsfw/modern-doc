@@ -14,7 +14,10 @@ import { Form, Formik } from 'formik'
 import { useState } from 'react'
 import { FiEdit } from 'react-icons/fi'
 
-const ProfileFormInput = () => {
+type propsType = {
+  data?: {}
+}
+const ProfileFormInput = ({data} : propsType) => {
   const [info, setInfo] = useState({
     prefix: 'เด็กชาย',
     firstName: 'ใจฟู',
@@ -78,9 +81,7 @@ const ProfileFormInput = () => {
       backgroundColor: 'hover.white',
     },
   }
-  const editProfileHandler = () => {
-    setEditProfile(!editProfile)
-  }
+
 
   /*const ProfileSchema = Yup.object().shape({
         prefix: Yup.mixed().oneOf(info.prefix),
@@ -314,7 +315,7 @@ const ProfileFormInput = () => {
               />
             </Flex>
             <Box height="40px" textAlign="right" width="100%">
-              <HStack gap="22px" justifyContent="flex-end">
+              <HStack gap="22px" justifyContent="flex-end" display= {editProfile ? 'none' : 'unset'}>
                 <Button
                   onClick={() => {
                     setEditProfile(true)
@@ -323,7 +324,7 @@ const ProfileFormInput = () => {
                   ยกเลิก
                 </Button>
                 <ConfirmPassword
-                  callback={() => {
+                  onClick={() => {
                     setEditProfile(true)
                   }}
                 />

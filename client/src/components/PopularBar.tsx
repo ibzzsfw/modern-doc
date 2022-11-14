@@ -24,7 +24,7 @@ const PopularBar = ({ title, children, url }: propsType) => {
             {title}
           </Text>
           {url && (
-            <Link to={url}>
+            <Link to={'/search'}>
               <Button leftIcon={<Icon as={TiThLargeOutline} />} sx={seeAllIcon}>
                 ดูทั้งหมด
               </Button>

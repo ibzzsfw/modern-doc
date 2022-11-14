@@ -15,16 +15,16 @@ import {
 } from '@chakra-ui/react'
 
 type propsType = {
-  callback?: () => void
+  onClick?: () => void
 }
 
-const ConfirmPassword = ({ callback }: propsType) => {
+const ConfirmPassword = ({ onClick }: propsType) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const toast = useToast()
 
   const submitForm = () => {
-    if (callback) {
-      callback()
+    if (onClick) {
+      onClick()
     }
     onClose()
     toast({
@@ -45,6 +45,7 @@ const ConfirmPassword = ({ callback }: propsType) => {
         onClose={onClose}
         closeOnOverlayClick={false}
         size="sm"
+        isCentered
       >
         <ModalOverlay />
         <ModalContent justifyContent="center">
