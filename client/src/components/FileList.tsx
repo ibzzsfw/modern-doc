@@ -12,6 +12,9 @@ import {
 import {
   AiOutlineDownload,
   AiOutlineUpload,
+  AiFillTag,
+  AiFillClockCircle,
+  AiOutlinePlusCircle
 } from 'react-icons/ai'
 import FolderUploadedFile from '@models/FolderUploadedFile'
 import DocumentBadge from '@components/DocumentBadge'
@@ -20,6 +23,7 @@ import UploadedFile from '@models/UploadedFile'
 import { useGeneratedFileStore } from '@stores/GeneratedFile'
 import { useState, useEffect } from 'react'
 import UploadFile from '@components/UploadFile'
+import { } from 'react-icons/ai'
 
 type propsType = {
   files: any[]
@@ -28,7 +32,6 @@ type propsType = {
 const FileList = ({ files }: propsType) => {
 
   const { generatedFile, setGeneratedFile } = useGeneratedFileStore()
-  const [checkCount, setCheckCount] = useState(0)
   const [open, setOpen] = useState(false)
   const [file, setFile] = useState<UploadedFile | null>(null)
 
@@ -52,8 +55,6 @@ const FileList = ({ files }: propsType) => {
     return generatedFile.filter((f) => f.id === file.id).length > 0
   }
 
-  useEffect(() => setCheckCount(generatedFile.length), [generatedFile])
-
   useEffect(() => console.table(generatedFile), [generatedFile])
 
   const countGeneratedFile = () => files.filter((file) => file instanceof GeneratedFile).length
@@ -61,16 +62,22 @@ const FileList = ({ files }: propsType) => {
   return (<>
     <Flex sx={fileList}>
       <Box sx={tableBody}>
-        <Grid templateColumns="1fr 3fr 2fr 2fr 1fr 1fr" sx={tableRow}>
+        <Grid templateColumns="1fr 3fr 2fr 2fr 1fr 1fr" sx={tableHead}>
           <Box sx={simpleBox}>
             <Checkbox
-              checked={generatedFile.length == countGeneratedFile()}
+              isChecked={generatedFile.length === countGeneratedFile()}
               onChange={(e) => onChangeAllCheckbox(e.target.checked)}
             />
           </Box>
-          <Box sx={simpleBox}>ชื่อเอกสาร</Box>
+          <Box sx={simpleBox}>
+            <AiFillTag />
+            ชื่อเอกสาร
+          </Box>
           <Box sx={simpleBox}>จำนวน</Box>
-          <Box sx={simpleBox}>สถานะ</Box>
+          <Box sx={simpleBox}>
+            <AiFillClockCircle />
+            สถานะ
+          </Box>
           <Box sx={simpleBox}>หมายเหตุ</Box>
         </Grid>
         <Divider />
@@ -79,20 +86,22 @@ const FileList = ({ files }: propsType) => {
             <>
               <Grid
                 templateColumns="1fr 3fr 2fr 2fr 1fr 1fr"
-                sx={tableRow}
+                sx={isSelectedThisFile(file) ? tableRowSelected : tableRow}
                 key={file.id}
               >
                 <Box sx={simpleBox}>
                   {
                     (file instanceof GeneratedFile) ?
                       <Checkbox
-                        checked={isSelectedThisFile(file)}
+                        isChecked={isSelectedThisFile(file)}
                         onChange={(e) => onChangeCheckbox(e.target.checked, file)}
                       /> :
                       <IconButton
                         aria-label="Search database"
                         icon={<AiOutlineUpload />}
                         size="sm"
+                        variant="outline"
+                        colorScheme={'gray'}
                         onClick={() => {
                           setOpen(true)
                           setFile(file)
@@ -143,6 +152,9 @@ let fileList = {
 
 let simpleBox = {
   margin: 'auto',
+  display: 'flex',
+  alignItems: 'center',
+  columnGap: '4px',
 }
 
 let tableBody = {
@@ -165,7 +177,23 @@ let tableRow = {
   borderColor: 'background.gray',
   transition: 'all 0.1s',
   _hover: {
-    backgroundColor: 'lightblue',
+    backgroundColor: 'gray.100',
+  },
+}
+
+let tableRowSelected = {
+  ...tableRow,
+  backgroundColor: 'lightBlue',
+  _hover: {
+    backgroundColor: 'lightBlue',
+  },
+}
+
+let tableHead = {
+  ...tableRow,
+  fontWeight: '500',
+  _hover: {
+    backgroundColor: 'background.white',
   },
 }
 
