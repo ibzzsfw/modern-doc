@@ -13,7 +13,7 @@ import Test from '@pages/Test'
 import SearchPage from '@pages/SearchPage'
 import EditDocumentForm from '@components/EditDocumentForm'
 import File from '@pages/File'
-import Form from '@pages/Form'
+import FormPage from '@pages/FormPage'
 
 const AppRoute = () => {
   return (
@@ -52,7 +52,7 @@ const AppRoute = () => {
               </>
             }
           />
-          <Route
+          {/* <Route
             path="/otpverify"
             element={
               <>
@@ -61,7 +61,7 @@ const AppRoute = () => {
                 </PageContainer>
               </>
             }
-          />
+          /> */}
           <Route
             path="/folder/:id"
             element={
@@ -111,7 +111,7 @@ const AppRoute = () => {
             element={
               <>
                 <PageContainer>
-                  <Form />
+                  <FormPage />
                 </PageContainer>
               </>
             }

@@ -31,8 +31,8 @@ const FolderDetail = ({ title, status, description, markdown }: propsType) => {
   const generateForm = () => {
     let fieldsUnique: Field[] = []
     generatedFile
-    .filter((file) => file instanceof GeneratedFile)
-    .map((file) => fieldsUnique = [...fieldsUnique, ...file.field])
+      .filter((file) => file instanceof GeneratedFile)
+      .map((file) => fieldsUnique = [...fieldsUnique, ...file.field])
     // unique by field id
     fieldsUnique = fieldsUnique.filter((field, index, self) =>
       index === self.findIndex((t) => (
@@ -68,7 +68,7 @@ const FolderDetail = ({ title, status, description, markdown }: propsType) => {
       </Flex>
       <Box sx={noteBox}>{description}</Box>
       <Spacer />
-      <ButtonGroup gap="24px" marginTop="24px">
+      <ButtonGroup gap="24px" marginTop="24px" isDisabled={generatedFile.length == 0}>
         <Button sx={newDocumentBtn} colorScheme='green' onClick={generateForm}>สร้างเอกสารใหม่</Button>
         <Button sx={editDocumentBtn} colorScheme='gray' variant='outline'>แก้ไขเอกสารเดิม</Button>
       </ButtonGroup>

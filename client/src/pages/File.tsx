@@ -21,7 +21,7 @@ const File = () => {
         markdown={markdown}
         status="มีอยู่ในคลัง"
       />
-      <FileViewer fileUrl="/assets/kmutt_general_form.pdf" />
+      <FileViewer fileUrl="/assets/generatedFile1.pdf" />
     </Flex>
   )
 }
