@@ -9,7 +9,7 @@ import markdown from 'src/mockData/markdown'
 import UploadFile from '@components/UploadFile'
 import TakeNote from '@components/TakeNote'
 import FileViewerDrawer from '@components/FileViewerDrawer'
-import { PDFDocument } from 'pdf-lib'
+import { PDFDocument, StandardFonts } from 'pdf-lib'
 import fontkit from '@pdf-lib/fontkit'
 import download from 'downloadjs'
 
@@ -28,15 +28,21 @@ const Folder = ({/*folder */ }) => {
   const fillForm = async (fields: Field[]) => {
 
     const formUrl = '/assets/generatedFile2.pdf'
-    const fontUrl = '/assets/Sarabun-Regular.ttf'
+    // Fetch the PDF with form fields
+    const formBytes = await fetch(formUrl).then(res => res.arrayBuffer())
 
-    const formPdfBytes = await fetch(formUrl).then(res => res.arrayBuffer())
-    const pdfDoc = await PDFDocument.load(formPdfBytes)
+    // Fetch the Sarabun font
+    const fontUrl = '/assets/THSarabunNew.ttf'
+    const fontBytes = await fetch(fontUrl).then((res) => res.arrayBuffer())
+
+    // Load the PDF with form fields
+    const pdfDoc = await PDFDocument.load(formBytes)
+
+    // Embed the font
+    pdfDoc.registerFontkit(fontkit);
+    const sarabunFont = await pdfDoc.embedFont(fontBytes)
+
     const form = pdfDoc.getForm()
-
-    const fontBytes = await fetch(fontUrl).then(res => res.arrayBuffer())
-    pdfDoc.registerFontkit(fontkit)
-    const customFont = await pdfDoc.embedFont(fontBytes)
 
     fields.map((field) => {
       switch (field.type) {
@@ -57,12 +63,17 @@ const Folder = ({/*folder */ }) => {
           form.getCheckBox('option1').check();
           break;
         default:
-          form.getTextField(field.name).setText('' + field.officialName)
+          form.getTextField(field.name).setText('ภาษาไทย' + field.officialName)
           break;
       }
     })
 
-    form.flatten();
+    
+    // **Key Step:** Update the field appearances with the font
+    form.updateFieldAppearances(sarabunFont)
+
+    // Make pdf file simple for user digital read
+    form.flatten()
 
     const pdfBytes = await pdfDoc.save()
     await download(pdfBytes, "pdf-test.pdf", "application/pdf");
@@ -74,13 +85,11 @@ const Folder = ({/*folder */ }) => {
     })
   }
 
-
-
   return (
     <Flex sx={documentView}>
       <Box sx={abstractArea}>
         {/* <UploadFile /> */}
-        <Button onClick={() => fillForm(fieldSet)}>Fill Form</Button>
+        <Button variant={'outline'} onClick={() => fillForm(fieldSet)}>Fill Form</Button>
         <TakeNote />
         <FileViewerDrawer files={mockFile} />
       </Box>
