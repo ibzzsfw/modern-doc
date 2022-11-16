@@ -37,6 +37,7 @@ import getRelationshipText from '@utils/getRelationshipText'
 import shallow from 'zustand/shallow'
 import User from '@models/User'
 import { useNavigate } from 'react-router-dom'
+import UserController from '@models/UserController'
 
 const NavbarAvatar = () => {
   const navigate = useNavigate()
@@ -46,7 +47,7 @@ const NavbarAvatar = () => {
     onOpen: onOpenModal,
     onClose: onCloseModal,
   } = useDisclosure()
-  const [ memberID, setMemberID ] = useState<number | null>(null)
+  const [memberID, setMemberID] = useState<number | null>(null)
   const [members, setmembers] = useState([
     {
       id: 0,
@@ -119,7 +120,9 @@ const NavbarAvatar = () => {
             <Flex flexDirection="column" gap="2px">
               <Flex as="button" sx={menuButton}>
                 <Icon as={BsPersonCircle} />
-                <Text sx={menuText} onClick={() => navigate('/myprofile')}>ข้อมูลส่วนตัว</Text>
+                <Text sx={menuText} onClick={() => navigate('/myprofile')}>
+                  ข้อมูลส่วนตัว
+                </Text>
               </Flex>
               <Accordion allowToggle>
                 <AccordionItem border="none">
@@ -131,60 +134,61 @@ const NavbarAvatar = () => {
                       onClick={() => setIsExpand(!isExpand)}
                     >
                       <Text sx={menuText}>สมาชิกครอบครัว</Text>
-                      {
-                        !isExpand
-                          ? <Icon as={IoChevronForwardOutline} />
-                          : <Icon as={IoChevronDownOutline} />
-                      }
+                      {!isExpand ? (
+                        <Icon as={IoChevronForwardOutline} />
+                      ) : (
+                        <Icon as={IoChevronDownOutline} />
+                      )}
                     </Flex>
                   </AccordionButton>
                   <AccordionPanel padding="0">
                     {members.map((member, index) => {
                       if (member.id > 0) {
                         return (
-                          <Link onClick={() => {
-                            onOpenModal()
-                            setMemberID(member.id)
-                          }}>
+                          <Link
+                            onClick={() => {
+                              onOpenModal()
+                              setMemberID(member.id)
+                            }}
+                          >
                             <Flex as="button" sx={memberList}>
                               <Avatar sx={memberAvatar} src={member.url} />
                               <Text sx={memberNameText}>{member.name}</Text>
                             </Flex>
-                            {
-                              memberID == member.id &&
+                            {memberID == member.id && (
                               <Modal
-                              isOpen={isOpenModal}
-                              onClose={onCloseModal}
-                              isCentered
-                            >
-                              <ModalOverlay />
-                              <ModalContent>
-                                <ModalHeader>สลับสมาชิก</ModalHeader>
-                                <ModalBody>
-                                  <Text>
-                                    ต้องการสลับสามาชิกเป็น{' '}
-                                    <Text as="b">{member.name}</Text> หรือไม่
-                                  </Text>
-                                </ModalBody>
-                                <ModalFooter>
-                                  <Flex gap="22px">
-                                    <Button
-                                      onClick={onCloseModal}
-                                      sx={editButton}
-                                    >
-                                      ยกเลิก
-                                    </Button>
-                                    <Button
-                                      sx={submitButton}
-                                      onClick={onCloseModal}
-                                    >
-                                      สลับ
-                                    </Button>
-                                  </Flex>
-                                </ModalFooter>
-                              </ModalContent>
-                            </Modal>
-                            }
+                                isOpen={isOpenModal}
+                                onClose={onCloseModal}
+                                isCentered
+                              >
+                                <ModalOverlay />
+                                <ModalContent>
+                                  <ModalHeader>สลับสมาชิก</ModalHeader>
+                                  <ModalBody>
+                                    <Text>
+                                      ต้องการสลับสามาชิกเป็น{' '}
+                                      <Text as="b">{member.name}</Text> หรือไม่
+                                    </Text>
+                                  </ModalBody>
+                                  <ModalFooter>
+                                    <Flex gap="22px">
+                                      <Button
+                                        onClick={onCloseModal}
+                                        sx={editButton}
+                                      >
+                                        ยกเลิก
+                                      </Button>
+                                      <Button
+                                        sx={submitButton}
+                                        onClick={onCloseModal}
+                                      >
+                                        สลับ
+                                      </Button>
+                                    </Flex>
+                                  </ModalFooter>
+                                </ModalContent>
+                              </Modal>
+                            )}
                           </Link>
                         )
                       }
@@ -194,13 +198,21 @@ const NavbarAvatar = () => {
               </Accordion>
               <Divider />
               <Box>
-                <Flex as="button" sx={menuButton} onClick={() => navigate('/family')}>
+                <Flex
+                  as="button"
+                  sx={menuButton}
+                  onClick={() => navigate('/family')}
+                >
                   <Icon as={MdGroups} />
                   <Text sx={menuText}>จัดการสมาชิกครอบครัว</Text>
                 </Flex>
               </Box>
               <Divider />
-              <Flex as="button" sx={menuButton}>
+              <Flex
+                as="button"
+                sx={menuButton}
+                onClick={() => UserController.logout()}
+              >
                 <Icon as={BiLogOutCircle} color="accent.red" />
                 <Text sx={menuText} color="accent.red">
                   ออกจากระบบ

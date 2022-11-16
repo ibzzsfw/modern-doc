@@ -72,12 +72,9 @@ const Login = () => {
 
   const { mutate: onVerifySuccess } = useMutation(
     async (credential: any) => {
-      console.log(
-        credential,
-        credential.user.phoneNumber,
+      return UserController.login(
         withoutCountryCode(credential.user.phoneNumber)
       )
-      UserController.login(withoutCountryCode(credential.user.phoneNumber))
     },
     {
       onSuccess: (data: any) => {

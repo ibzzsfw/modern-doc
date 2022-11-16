@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { useLoginDataStore } from '@stores/LoginDataStore'
 interface RegisterForm {
   title: string
   firstName: string
@@ -43,6 +44,26 @@ class UserController {
       }
     )
     return { ...response.data, phoneNumber: phoneNumber }
+  }
+
+  static logout = async () => {
+    useLoginDataStore.setState({
+      user: {
+        userId: '',
+        householdId: '',
+        title: '',
+        firstName: '',
+        lastName: '',
+        citizenId: '',
+        phoneNumber: '',
+        sex: '',
+        token: '',
+        relationship: '',
+        profileURI:
+          'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__480.png',
+      },
+    })
+    window.location.pathname = '/'
   }
 }
 
