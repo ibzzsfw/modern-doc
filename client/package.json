@@ -12,12 +12,14 @@
     "@chakra-ui/react": "^2.3.6",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
+    "@pdf-lib/fontkit": "^1.1.1",
     "@react-pdf-viewer/core": "3.8.0",
     "@react-pdf-viewer/default-layout": "^3.8.0",
     "@tanstack/react-query": "^4.14.1",
     "@tanstack/react-query-devtools": "^4.14.1",
     "axios": "^1.1.3",
     "date-fns": "^2.29.3",
+    "downloadjs": "^1.4.7",
     "firebase": "^9.12.1",
     "formik": "^2.2.9",
     "framer-motion": "^6",
@@ -34,6 +36,7 @@
     "zustand": "^4.1.2"
   },
   "devDependencies": {
+    "@types/download": "^8.0.1",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
     "@vitejs/plugin-react": "^2.1.0",
