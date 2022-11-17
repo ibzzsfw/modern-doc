@@ -13,7 +13,7 @@ const FamilyPage = () => {
 
   const [lockEdit, setLockEdit] = useState(false)
   const [addMember, setAddMember] = useState(false)
-  const lockedit = (id: any) => {
+  const lockedit = (id: string | null) => {
     if (id !== null) {
       setLockEdit(true)
     } else {
@@ -54,7 +54,7 @@ const FamilyPage = () => {
                   data={values}
                   isAdd={false}
                   //get id from child to parent
-                  getId={(id: any) => lockedit(id)}
+                  getId={(id: string | null) => lockedit(id)}
                   //handle for one
                   handleForm={lockEdit}
                 />

@@ -28,7 +28,7 @@ type propsType = {
   data?: any
   isAdd: boolean
   onCancelButtonClick?: () => void
-  getId?: (id: string) => void
+  getId?: (id: string | null) => void
   handleForm?: boolean
 }
 
@@ -37,17 +37,17 @@ const FamilyInfoBox = ({
   isAdd,
   onCancelButtonClick,
   getId,
-  handleForm
+  handleForm,
 }: propsType) => {
   const [isEdit, setEdit] = useState(false)
   const { isOpen, onOpen, onClose } = useDisclosure()
   const toast = useToast()
 
   //------------api---------
-  const addFamily = async (values:any) => {
+  const addFamily = async (values: any) => {
     console.log('add')
   }
-  const editFamily = async (values:any) => {
+  const editFamily = async (values: any) => {
     console.log('edit')
   }
   const deleteFamily = async () => {
@@ -87,7 +87,7 @@ const FamilyInfoBox = ({
             onClick: () => {
               if (!handleForm) {
                 console.log(`edit ${data?.firstName + ' ' + data?.lastName}`)
-                if(getId) getId(data?.id)
+                if (getId) getId(data?.id)
                 setEdit(true)
               }
             },
@@ -175,11 +175,7 @@ const FamilyInfoBox = ({
     <Box sx={boxLayout}>
       <Flex height="100%">
         <HStack gap="32px">
-          <Image
-            src="https://bit.ly/sage-adebayo"
-            boxSize="206px"
-            borderRadius="8px"
-          />
+          <Image src={data?.profileURI} boxSize="206px" borderRadius="8px" />
           {isAdd ? (
             <VStack>
               <Box textAlign="end" width="100%"></Box>
@@ -364,7 +360,7 @@ const FamilyInfoBox = ({
                         <Button
                           onClick={() => {
                             setEdit(false)
-                            getId(null)
+                            if (getId) getId(null)
                           }}
                         >
                           ยกเลิก
