@@ -17,7 +17,7 @@ import { FiEdit } from 'react-icons/fi'
 
 const ProfileFormInput = () => {
   const [info, setInfo] = useState({
-    prefix: 'เด็กชาย',
+    title: 'เด็กชาย',
     firstName: 'ใจฟู',
     lastName: 'ศิลาคงกะพัน',
     sex: 'ชาย',
@@ -40,7 +40,7 @@ const ProfileFormInput = () => {
   const [editProfile, setEditProfile] = useState(true)
 
   const selectOptions = {
-    prefix: ['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง'],
+    title: ['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง'],
     sex: ['ชาย', 'หญิง'],
     subDistrict: ['ดาวคะนอง'],
     district: ['ธนบุรี'],
@@ -66,19 +66,7 @@ const ProfileFormInput = () => {
       backgroundColor: 'hover.white',
     },
   }
-  let submitButton = {
-    height: '40px',
-    backgroundColor: 'accent.blue',
-    color: 'white',
-
-    variant: 'outline',
-    _hover: {
-      backgroundColor: 'hover.blue',
-    },
-    _active: {
-      backgroundColor: 'hover.white',
-    },
-  }
+ 
 
 
   /*const ProfileSchema = Yup.object().shape({
@@ -142,8 +130,8 @@ const ProfileFormInput = () => {
                 label="คำนำหน้า"
                 name="prefix"
                 type="select"
-                options={selectOptions.prefix}
-                placeholder={info.prefix}
+                options={selectOptions.title}
+                placeholder={info.title}
                 showCorrectBorder
                 width="143px"
                 disable={editProfile}

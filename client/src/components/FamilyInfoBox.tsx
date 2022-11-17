@@ -14,32 +14,38 @@ import {
   ModalOverlay,
   Text,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react'
 import MenuProvider from '@components/MenuProvider'
 import { useFamilyPageStore } from '@stores/FamilyPageStore'
-import { useState } from 'react'
+import Axios from 'axios'
+import { useEffect, useState } from 'react'
 import { BiEdit } from 'react-icons/bi'
 import { BsThreeDots, BsTrash } from 'react-icons/bs'
 import FamilyInputform from './FamilyInputform'
 
-interface dataTypes {
-  id: number
-  prefix: string
-  firstName: string
-  lastName: string
-  relationship: string
-  citizenId: string
-}
-
 type propsType = {
-  data?: dataTypes
-  activeForm?: boolean | 'true' | 'false'
-  menuActive?: boolean
+  data?: {
+    id: number
+    title: string
+    firstName: string
+    lastName: string
+    relationship: string
+    citizenId: string
+  }
+  boxMode: 'edit' | 'add'
+  closeBTN?: () => void
 }
-const FamilyInfoBox = ({ data, activeForm, menuActive }: propsType) => {
-  const [editFamily, setEditFamily] = useState(false)
-  const { setPage, mode, setMode } = useFamilyPageStore()
+const FamilyInfoBox = ({ data, boxMode, closeBTN }: propsType) => {
+  const [editMember, setEditMember] = useState(false)
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const toast = useToast()
+
+  const addFamily = async () => {}
+
+  const editFamily = async () => {}
+
+  const deleteFamily = async () => {}
 
   let boxLayout = {
     backgroundColor: 'background.white',
@@ -66,8 +72,7 @@ const FamilyInfoBox = ({ data, activeForm, menuActive }: propsType) => {
             icon: <Icon as={BiEdit} />,
             onClick: () => {
               console.log(`edit ${data?.firstName + ' ' + data?.lastName}`)
-              setMode('edit')
-              setEditFamily(true)
+              setEditMember(true)
             },
           },
         ],
@@ -77,8 +82,7 @@ const FamilyInfoBox = ({ data, activeForm, menuActive }: propsType) => {
             icon: <Icon as={BsTrash} color="accent.red" />,
             onClick: () => {
               console.log(`delete ${data?.firstName + ' ' + data?.lastName}`)
-              console.log('delete in store')
-              onOpen()
+              onOpen() // open delete modal
             },
             style: {
               color: 'accent.red',
@@ -96,12 +100,11 @@ const FamilyInfoBox = ({ data, activeForm, menuActive }: propsType) => {
       isOpen={isOpen}
       onClose={onClose}
       isCentered
-      onOverlayClick={() => {}}
+      closeOnOverlayClick={false}
     >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>ลบสมาชิก</ModalHeader>
-        <ModalCloseButton />
         <ModalBody>
           คุณต้องการลบสมาชิก{' '}
           <Text as="b">{data?.firstName + ' ' + data?.lastName}</Text>{' '}
@@ -114,7 +117,17 @@ const FamilyInfoBox = ({ data, activeForm, menuActive }: propsType) => {
             <Button variant="outline" onClick={onClose}>
               ยกเลิก
             </Button>
-            <Button variant="solid" colorScheme="red" onClick={() => {}}>
+            <Button variant="solid" colorScheme="red" onClick={() => {
+              //delete api
+              deleteFamily()
+              toast({
+                title: 'ลบสมาชิกสำเร็จ',
+                description: `ลบสมาชิก ${data?.firstName + ' ' + data?.lastName} สำเร็จ`,
+                status: 'success',
+                duration: 3000,
+              })
+              onClose()
+            }}>
               ลบ
             </Button>
           </Flex>
@@ -123,7 +136,7 @@ const FamilyInfoBox = ({ data, activeForm, menuActive }: propsType) => {
     </Modal>
   )
 
-  let addFamilySuccess = {
+  const addFamilySuccess = {
     title: 'เพิ่มสมาชิกสำเร็จ',
     status: 'success',
     duration: 3000,
@@ -135,7 +148,7 @@ const FamilyInfoBox = ({ data, activeForm, menuActive }: propsType) => {
     duration: 3000,
   }
 
-  return mode === 'edit' ? (
+  return (
     <Box sx={boxLayout}>
       <Flex height="100%">
         <HStack gap="32px">
@@ -144,44 +157,39 @@ const FamilyInfoBox = ({ data, activeForm, menuActive }: propsType) => {
             boxSize="206px"
             borderRadius="8px"
           />
-          <FamilyInputform
-            menu={menuActive ? menu : null}
-            disable={activeForm || editFamily}
-            id={data?.id}
-            prefix={data?.prefix}
-            firstName={data?.firstName}
-            lastName={data?.lastName}
-            relationship={data?.relationship}
-            citizenId={data?.citizenId}
-            citizenIdDisable={true}
-            callBack={() => {
-              setEditFamily(false)
-            }}
-            toastDiscription={editFamilySuccess}
-            modal={deleteModal}
-          />
-        </HStack>
-      </Flex>
-    </Box>
-  ) : (
-    <Box sx={boxLayout}>
-      <Flex height="100%">
-        <HStack gap="32px">
-          <Image
-            src="https://bit.ly/sage-adebayo"
-            boxSize="206px"
-            borderRadius="8px"
-          />
-          <FamilyInputform
-            menu={menuActive ? menu : null}
-            disable={activeForm}
-            citizenIdDisable={false}
-            callBack={() => {
-              setMode('edit')
-              setPage(1)
-            }}
-            toastDiscription={addFamilySuccess}
-          />
+          {boxMode === 'add' ? (
+            <FamilyInputform
+              disable={false}
+              formikintialValues={{}}
+              citizenIdDisable={false}
+              closeBTN={() => {
+                if (closeBTN) closeBTN()
+              }}
+              APIaction={(values) => {
+                addFamily()
+                //wait api add family
+                toast(addFamilySuccess)
+                if (closeBTN) closeBTN()
+              }}
+            />
+          ) : (
+            <FamilyInputform
+              disable={!editMember}
+              citizenIdDisable={true}
+              closeBTN={() => {
+                setEditMember(false)
+              }}
+              toastDiscription={editFamilySuccess}
+              modal={deleteModal}
+              formikintialValues={data}
+              menu={menu}
+              APIaction={() => {
+                editFamily()
+                toast(editFamilySuccess)
+                setEditMember(false)
+              }}
+            />
+          )}
         </HStack>
       </Flex>
     </Box>
@@ -191,3 +199,56 @@ const FamilyInfoBox = ({ data, activeForm, menuActive }: propsType) => {
 export default FamilyInfoBox
 
 /**  */
+
+/*
+mode === 'edit' ? (
+  <Box sx={boxLayout}>
+    <Flex height="100%">
+      <HStack gap="32px">
+        <Image
+          src="https://bit.ly/sage-adebayo"
+          boxSize="206px"
+          borderRadius="8px"
+        />
+        <FamilyInputform
+          menu={menuActive ? menu : null}
+          disable={activeForm || editFamily}
+          id={data?.id}
+          prefix={data?.prefix}
+          firstName={data?.firstName}
+          lastName={data?.lastName}
+          relationship={data?.relationship}
+          citizenId={data?.citizenId}
+          citizenIdDisable={true}
+          callBack={() => {
+            setEditFamily(false)
+          }}
+          toastDiscription={editFamilySuccess}
+          modal={deleteModal}
+        />
+      </HStack>
+    </Flex>
+  </Box>
+) : (
+  <Box sx={boxLayout}>
+    <Flex height="100%">
+      <HStack gap="32px">
+        <Image
+          src="https://bit.ly/sage-adebayo"
+          boxSize="206px"
+          borderRadius="8px"
+        />
+        <FamilyInputform
+          menu={menuActive ? menu : null}
+          disable={activeForm}
+          citizenIdDisable={false}
+          callBack={() => {
+            setMode('edit')
+            setPage(1)
+          }}
+          toastDiscription={addFamilySuccess}
+        />
+      </HStack>
+    </Flex>
+  </Box>
+)*/

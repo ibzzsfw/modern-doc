@@ -5,40 +5,58 @@ import {
   VStack,
   Wrap,
 } from '@chakra-ui/react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import FamilyInfoBox from '@components/FamilyInfoBox'
 import { AiOutlineUserAdd } from 'react-icons/ai'
-import { useFamilyPageStore } from '@stores/FamilyPageStore'
+import Householder from '@models/Householder'
+import Axios from 'axios'
 
 const FamilyPage = () => {
-  
-  const { page, setPage, mode, setMode } = useFamilyPageStore()
+  let info = [
+    
+  ]
+  const [addMember,setAddMember] = useState(false)
+
+
+
   const [family, setfamily] = useState([
     {
       id: 1,
-      prefix: 'เด็กชาย',
       firstName: 'ใจดี',
       lastName: 'ศิลาคงกะพัน',
       relationship: 'น้อง',
-      citizenId: '1 4487 55284 32 0',
+      citizenId: '1448755284320',
+      title: 'เด็กชาย',
     },
     {
       id: 2,
-      prefix: 'เด็กหญิง',
       firstName: 'ใจโซเซ',
       lastName: 'ศิลาคงกะพัน',
       relationship: 'น้อง',
       citizenId: '1 4487 77554 41 7',
+      title: 'เด็กหญิง',
     },
     {
       id: 3,
-      prefix: 'นาย',
       firstName: 'ใจเกเร',
       lastName: 'ศิลาคงกะพัน',
       relationship: 'พี่',
       citizenId: '5 4487 45563 21 4',
+      title: 'นาย',
     },
   ])
+
+  const getFamily = async () => {
+    // get family from api
+    const res = await Axios.get('/api/family')
+    setfamily(res.data)
+  }
+
+  useEffect(()=>{
+    console.log('getFamily')
+    getFamily()
+
+  })
 
   let editButton = {
     width: 'auto',
@@ -64,32 +82,31 @@ const FamilyPage = () => {
         <VStack>
           <Box width="100%" textAlign="right">
             <Button
-              disabled={page == 0}
+              disabled={addMember}
               variant="outline"
               // color="accent.blue"
               sx={editButton}
               colorScheme='gray'
               leftIcon={<AiOutlineUserAdd />}
               onClick={() => {
-                setMode('add')
-                setPage(0)
+                setAddMember(true)
               }}
+              
             >
               เพิ่มสมาชิก
             </Button>
           </Box>
           <Wrap spacing="28px">
             {
-              (page == 0 || family.length == 0) &&
-              <FamilyInfoBox activeForm="true" menuActive={false} />
+              (addMember || family.length == 0) &&
+              <FamilyInfoBox boxMode= 'add' closeBTN = {()=>{setAddMember(false)}}/>
             }
             {family.map((values, index) => {
               return (
                 <>
                   <FamilyInfoBox
-                    menuActive={true}
                     data={values}
-                    activeForm={false}
+                    boxMode= 'edit'
                   />
                 </>
               )

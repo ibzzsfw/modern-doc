@@ -1,40 +1,29 @@
 import { Box, Button, Flex, useToast, VStack } from '@chakra-ui/react'
 import FormInput from '@components/FormInput'
-import { useFamilyPageStore } from '@stores/FamilyPageStore'
 import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
 
+
 type propsType = {
-  id?: number
-  prefix?: string
-  firstName?: string
-  lastName?: string
-  relationship?: string
-  citizenId?: string
-  menu?: any
-  disable?: boolean | 'false' | 'true'
-  citizenIdDisable?: boolean
-  callBack?: () => void
-  toastDiscription?: any
+  
+  menu?: JSX.Element
+  disable?: boolean
+  citizenIdDisable?: boolean,
+  formikintialValues: any
+  closeBTN?: () => void
   modal?: any
+  APIaction?: (values:any) => any
 }
 
 const FamilyInputform = ({
-  id,
-  prefix,
-  firstName,
-  lastName,
-  relationship,
-  citizenId,
   menu,
   disable,
   citizenIdDisable,
-  toastDiscription,
-  callBack,
+  closeBTN,
   modal,
+  formikintialValues,
+  APIaction
 }: propsType) => {
-  const { title: optionPrefix, relationship: optionrelationship } =
-    useFamilyPageStore()
 
   const toast = useToast()
 
@@ -57,10 +46,18 @@ const FamilyInputform = ({
     firstName: Yup.string().required('กรุณากรอกชื่อ'),
     lastName: Yup.string().required('กรุณากรอกนามสกุล'),
     relationship: Yup.mixed()
-      .oneOf(optionrelationship)
+      .oneOf([
+        'บิดา',
+        'มารดา',
+        'พี่',
+        'น้อง',
+        'อื่นๆ',
+        'เจ้าของบ้าน',
+        'ผู้อาศัย'
+      ])
       .required('กรุณาเลือกความสัมพันธ์'),
     citizenId: Yup.string().required('กรุณากรอกเลขบัตรประชาชน'),
-    prefix: Yup.mixed().oneOf(optionPrefix).required('กรุณาเลือกคำนำหน้า'),
+    title: Yup.mixed().oneOf(['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง']).required('กรุณาเลือกคำนำหน้า'),
   })
 
   return (
@@ -70,16 +67,12 @@ const FamilyInputform = ({
       </Box>
 
       <Formik
-        initialValues={{
-          prefix: prefix || '',
-          firstName: firstName || '',
-          lastName: lastName || '',
-          relationship: relationship || '',
-          citizenId: citizenId || '',
-        }}
+        initialValues={formikintialValues}
         validationSchema={familyschema}
         onSubmit={(values) => {
-          toast(toastDiscription)
+          console.log(values)
+          if(APIaction) APIaction(values)
+          if(closeBTN) closeBTN()
         }}
       >
         <Form>
@@ -87,31 +80,31 @@ const FamilyInputform = ({
             <Flex gap="16px">
               <FormInput
                 label="คำนำหน้า"
-                name="prefix"
+                name="title"
                 type="select"
-                options={optionPrefix}
+                options={['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง']}
                 placeholder="เลือกคำนำหน้า"
-                showCorrectBorder
+                
                 width="139.2px"
-                disable={!disable}
+                disable={disable}
               />
               <FormInput
                 label="ชื่อ"
                 name="firstName"
                 type="text"
                 placeholder="กรอกชื่อ"
-                showCorrectBorder
+                
                 width="219.08px"
-                disable={!disable}
+                disable={disable}
               />
               <FormInput
                 label="นามสกุล"
                 name="lastName"
                 type="text"
                 placeholder="กรอกนามสกุล"
-                showCorrectBorder
+                
                 width="238.45px"
-                disable={!disable}
+                disable={disable}
               />
             </Flex>
             <Flex gap="16px">
@@ -119,29 +112,37 @@ const FamilyInputform = ({
                 label="เกี่ยวข้องเป็น"
                 name="relationship"
                 type="select"
-                options={optionrelationship}
+                options={[
+                  'บิดา',
+                  'มารดา',
+                  'พี่',
+                  'น้อง',
+                  'อื่นๆ',
+                  'เจ้าของบ้าน',
+                  'ผู้อาศัย'
+                ]}
                 placeholder="เลือกความเกี่ยวข้อง"
-                showCorrectBorder
+                
                 width="120px"
-                disable={!disable}
+                disable={disable}
               />
               <FormInput
                 label="เลขบัตรประจำตัวประชาชน"
                 name="citizenId"
                 type="text"
                 placeholder="กรอกเลขบัตรประจำตัวประชาชน"
-                showCorrectBorder
+                
                 width="250px"
                 disable={citizenIdDisable}
               />
             </Flex>
-            {!disable ? (
+            {disable ? (
               <></>
             ) : (
               <Flex justifyContent='flex-end' alignItems='center' columnGap='1rem' width="100%">
                 <Button
                   onClick={() => {
-                    if (callBack) callBack()
+                    if (closeBTN) closeBTN()
                   }}
                 >
                   ยกเลิก
