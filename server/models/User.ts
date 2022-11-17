@@ -7,6 +7,7 @@ import checkCitizenId from '@utils/checkCitizenId'
 import getSexMF from '@utils/getSexEnum'
 import getSexText from '@utils/getSexText'
 import Prisma from '@utils/prisma'
+import async from 'async'
 class User {
   static getFieldValue = (field: string, data: any): string => {
     switch (field) {
@@ -230,6 +231,93 @@ class User {
       }
 
       res.status(200).json(userData)
+    } catch (err) {
+      res.status(400).json({ message: err })
+    }
+  }
+
+  static getFolders = async (req: Request, res: Response) => {
+    let { userId } = req.params
+
+    const schema = z.string()
+
+    try {
+      schema.parse(userId)
+      const folder = await Prisma.userFolder.findMany({
+        where: {
+          userId: userId,
+        },
+        select: {
+          folder: true,
+        },
+      })
+
+      let folderArr = await async.map(folder, (folder: any, callback: any) => {
+        callback(null, folder.folder)
+      })
+
+      res.status(200).json(folderArr)
+    } catch (err) {
+      res.status(400).json({ message: err })
+    }
+  }
+
+  static getFiles = async (req: Request, res: Response) => {
+    let { userId } = req.params
+
+    const schema = z.string()
+
+    try {
+      schema.parse(userId)
+      const generatedFile = await Prisma.userGeneratedFile.findMany({
+        where: {
+          userId: userId,
+        },
+        select: {
+          generatedFile: true,
+        },
+      })
+      const uploadedFile = await Prisma.userUploadedFile.findMany({
+        where: {
+          userId: userId,
+        },
+        select: {
+          uploadedFile: true,
+        },
+      })
+      const freeUploadFile = await Prisma.userFreeUploadFile.findMany({
+        where: {
+          userId: userId,
+        },
+      })
+
+      let generatedFileArr = await async.map(
+        generatedFile,
+        (file: any, callback: any) => {
+          callback(null, file.generatedFile)
+        }
+      )
+
+      let uploadedFileArr = await async.map(
+        uploadedFile,
+        (file: any, callback: any) => {
+          callback(null, file.uploadedFile)
+        }
+      )
+
+      let freeUploadFileArr = await async.map(
+        freeUploadFile,
+        (file: any, callback: any) => {
+          callback(null, file.freeUploadFile)
+        }
+      )
+
+      const files = {
+        generatedFile: generatedFileArr,
+        uploadedFile: uploadedFileArr,
+        freeUploadFile: freeUploadFileArr,
+      }
+      return res.json(files)
     } catch (err) {
       res.status(400).json({ message: err })
     }

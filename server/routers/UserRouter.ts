@@ -25,8 +25,10 @@ class UserRouter {
       '/check-phone-password',
       this.controller.checkPhonePassword
     )
-    
+
     this.router.post('/login', this.controller.login)
+    this.router.get('/get-folders/:userId', this.controller.getFolders)
+    this.router.get('/get-files/:userId', this.controller.getFiles)
   }
 }
 

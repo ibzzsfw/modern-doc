@@ -13,6 +13,12 @@ class UserController {
   login = async (req: Request, res: Response) => {
     User.login(req, res)
   }
+  getFolders = async (req: Request, res: Response) => {
+    User.getFolders(req, res)
+  }
+  getFiles = async (req: Request, res: Response) => {
+    User.getFiles(req, res)
+  }
 }
 
 export default new UserController()
