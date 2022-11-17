@@ -1,4 +1,6 @@
-const getSexText = (sex: 'm' | 'f'): 'ชาย' | 'หญิง' => {
+import { Sex } from '@prisma/client'
+
+const getSexText = (sex: Sex): 'ชาย' | 'หญิง' => {
   switch (sex) {
     case 'm':
       return 'ชาย'

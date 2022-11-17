@@ -57,7 +57,8 @@ const Login = () => {
   }
 
   const toast = useToast()
-  const setLoginData = useLoginDataStore((state) => state.setLoginData)
+  const setUserData = useLoginDataStore((state) => state.setUserData)
+  const setFamilyMembers = useLoginDataStore((state) => state.setFamilyMembers)
   const setTabIndex = useLoginPageStore((state) => state.setTabIndex)
 
   const loginSchema = Yup.object().shape({
@@ -85,9 +86,9 @@ const Login = () => {
           status: 'success',
           duration: 5000,
         })
-        setLoginData(
+        setUserData(
           new User({
-            userId: data.id,
+            id: data.id,
             householdId: data.householdId,
             title: data.title,
             firstName: data.firstName,
@@ -100,7 +101,8 @@ const Login = () => {
             profileURI: data.profileURI,
           })
         )
-
+        console.log(data.familyMembers)
+        setFamilyMembers(data.familyMembers)
         setTimeout(() => {
           window.location.pathname = '/home'
         }, 1500)
@@ -113,9 +115,9 @@ const Login = () => {
           status: 'error',
           duration: 5000,
         })
-        // setTimeout(() => {
-        //   window.location.reload()
-        // }, 2000)
+        setTimeout(() => {
+          window.location.reload()
+        }, 3000)
       },
     }
   )
@@ -142,6 +144,9 @@ const Login = () => {
           status: 'error',
           duration: 5000,
         })
+        setTimeout(() => {
+          window.location.reload()
+        }, 3000)
       },
     }
   )
@@ -155,10 +160,18 @@ const Login = () => {
         }}
         validationSchema={loginSchema}
         onSubmit={(values) => {
-          onClickLogin({
-            phoneNumber: values.phoneNumber,
-            password: values.password,
-          })
+          if (import.meta.env.VITE_USE_OTP_AUTH == 'true') {
+            onClickLogin({
+              phoneNumber: values.phoneNumber,
+              password: values.password,
+            })
+          } else {
+            onVerifySuccess({
+              user: {
+                phoneNumber: values.phoneNumber,
+              },
+            })
+          }
         }}
       >
         <Form>

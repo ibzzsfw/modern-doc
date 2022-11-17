@@ -86,7 +86,7 @@ const FamilyPage = () => {
               variant="outline"
               // color="accent.blue"
               sx={editButton}
-              colorScheme='gray'
+              colorScheme="gray"
               leftIcon={<AiOutlineUserAdd />}
               onClick={() => {
                 setAddMember(true)

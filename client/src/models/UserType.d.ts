@@ -1,5 +1,5 @@
 interface UserType {
-  userId: string
+  id: string
   householdId: string
   title: string
   firstName: string
@@ -7,7 +7,7 @@ interface UserType {
   citizenId: string
   phoneNumber: string
   sex: 'ชาย' | 'หญิง' | ''
-  token: string
+  token: string 
   relationship: Relationship
   profileURI: string
 }

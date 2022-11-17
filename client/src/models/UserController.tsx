@@ -48,20 +48,7 @@ class UserController {
 
   static logout = async () => {
     useLoginDataStore.setState({
-      user: {
-        userId: '',
-        householdId: '',
-        title: '',
-        firstName: '',
-        lastName: '',
-        citizenId: '',
-        phoneNumber: '',
-        sex: '',
-        token: '',
-        relationship: '',
-        profileURI:
-          'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__480.png',
-      },
+      user: {},
     })
     window.location.pathname = '/'
   }
