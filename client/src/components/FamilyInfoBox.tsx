@@ -29,7 +29,7 @@ type propsType = {
   isAdd: boolean
   onCancelButtonClick?: () => void
   getId?: (id: string) => void
-  disabled?: boolean
+  handleForm?: boolean
 }
 
 const FamilyInfoBox = ({
@@ -37,7 +37,7 @@ const FamilyInfoBox = ({
   isAdd,
   onCancelButtonClick,
   getId,
-  disabled,
+  handleForm
 }: propsType) => {
   const [isEdit, setEdit] = useState(false)
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -50,7 +50,7 @@ const FamilyInfoBox = ({
   const editFamily = async (values:any) => {
     console.log('edit')
   }
-  const deleteFamily = async (values:any) => {
+  const deleteFamily = async () => {
     console.log('delete')
   }
 
@@ -85,7 +85,7 @@ const FamilyInfoBox = ({
             title: 'แก้ไขข้อมูลสมาชิก',
             icon: <Icon as={BiEdit} />,
             onClick: () => {
-              if (!disabled) {
+              if (!handleForm) {
                 console.log(`edit ${data?.firstName + ' ' + data?.lastName}`)
                 if(getId) getId(data?.id)
                 setEdit(true)
