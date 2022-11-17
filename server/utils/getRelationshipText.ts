@@ -1,13 +1,6 @@
-const RelationshipText = (
-  relationship:
-    | 'householder'
-    | 'father'
-    | 'mother'
-    | 'children'
-    | 'cousin'
-    | 'spouse'
-    | 'other'
-): string => {
+import { Relationship } from '@prisma/client'
+
+const RelationshipText = (relationship: Relationship): string => {
   switch (relationship) {
     case 'householder':
       return 'เจ้าของแอคเคาท์'

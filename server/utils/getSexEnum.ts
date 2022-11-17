@@ -1,4 +1,6 @@
-const getSexMF = (sex: 'ชาย' | 'หญิง'): 'm' | 'f' => {
+import { Sex } from '@prisma/client'
+
+const getSexMF = (sex: 'ชาย' | 'หญิง'): Sex => {
   switch (sex) {
     case 'ชาย':
       return 'm'

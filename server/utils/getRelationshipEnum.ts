@@ -1,5 +1,8 @@
+import { Relationship } from '@prisma/client'
+
 const getRelationshipEnum = (
   relationship:
+    | string
     | 'เจ้าของแอคเคาท์'
     | 'บิดา'
     | 'มารดา'
@@ -7,7 +10,7 @@ const getRelationshipEnum = (
     | 'พี่น้อง'
     | 'คู่สมรส'
     | 'อื่นๆ'
-): string => {
+): Relationship => {
   switch (relationship) {
     case 'เจ้าของแอคเคาท์':
       return 'householder'
@@ -21,7 +24,7 @@ const getRelationshipEnum = (
       return 'cousin'
     case 'คู่สมรส':
       return 'spouse'
-    case 'อื่นๆ':
+    default:
       return 'other'
   }
 }
