@@ -1,11 +1,9 @@
-import { Box, Button, Flex, useToast, VStack } from '@chakra-ui/react'
+import { Box, Button, Flex, VStack } from '@chakra-ui/react'
 import FormInput from '@components/FormInput'
 import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
 
-
 type propsType = {
-  
   menu?: JSX.Element
   disable?: boolean
   citizenIdDisable?: boolean,
@@ -25,13 +23,12 @@ const FamilyInputform = ({
   APIaction
 }: propsType) => {
 
-  const toast = useToast()
+ 
 
   let submitButton = {
     height: '40px',
     backgroundColor: 'accent.blue',
     color: 'white',
-
     variant: 'outline',
     _hover: {
       backgroundColor: 'hover.blue',

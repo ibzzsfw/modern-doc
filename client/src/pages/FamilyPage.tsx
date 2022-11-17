@@ -8,17 +8,27 @@ import {
 import { useEffect, useState } from 'react'
 import FamilyInfoBox from '@components/FamilyInfoBox'
 import { AiOutlineUserAdd } from 'react-icons/ai'
-import Householder from '@models/Householder'
-import Axios from 'axios'
+import { useLoginDataStore } from '@stores/LoginDataStore'
+import shallow from 'zustand/shallow'
+
 
 const FamilyPage = () => {
-  let info = [
-    
-  ]
+  const familyMembers = useLoginDataStore(
+    (state) => state.familyMembers,
+    shallow
+  )
+
+  
+  
+  const [lockEdit, setLockEdit] = useState(false)
   const [addMember,setAddMember] = useState(false)
-
-
-
+  const lockedit = (id:any) => {
+        if(id !== null){
+          setLockEdit(true)
+        }else{
+          setLockEdit(false)
+        }
+  }
   const [family, setfamily] = useState([
     {
       id: 1,
@@ -46,35 +56,6 @@ const FamilyPage = () => {
     },
   ])
 
-  const getFamily = async () => {
-    // get family from api
-    const res = await Axios.get('/api/family')
-    setfamily(res.data)
-  }
-
-  useEffect(()=>{
-    console.log('getFamily')
-    getFamily()
-
-  })
-
-  let editButton = {
-    width: 'auto',
-    height: '40px',
-    backgroundColor: 'accent.white',
-    // color: 'black',
-    right: '0px',
-    // border: '1px solid',
-    // borderColor: '#E2E8F0',
-
-    // _hover: {
-    //   backgroundColor: 'hover.gray',
-    //   color: 'white',
-    // },
-    // _active: {
-    //   backgroundColor: 'hover.white',
-    // },
-  }
 
   return (
     <Center>
@@ -84,14 +65,12 @@ const FamilyPage = () => {
             <Button
               disabled={addMember}
               variant="outline"
-              // color="accent.blue"
               sx={editButton}
               colorScheme="gray"
               leftIcon={<AiOutlineUserAdd />}
               onClick={() => {
                 setAddMember(true)
               }}
-              
             >
               เพิ่มสมาชิก
             </Button>
@@ -99,16 +78,19 @@ const FamilyPage = () => {
           <Wrap spacing="28px">
             {
               (addMember || family.length == 0) &&
-              <FamilyInfoBox boxMode= 'add' closeBTN = {()=>{setAddMember(false)}}/>
+              <FamilyInfoBox 
+              onCancelButtonClick={()=>{setAddMember(false)}}
+              isAdd = {true}
+              />
             }
-            {family.map((values, index) => {
+            {familyMembers.map((values, index) => {
               return (
-                <>
                   <FamilyInfoBox
                     data={values}
-                    boxMode= 'edit'
+                    isAdd = {false}
+                    getId = {(id:any)=>lockedit(id)}
+                    disabled={lockEdit}
                   />
-                </>
               )
             })}
           </Wrap>
@@ -118,4 +100,13 @@ const FamilyPage = () => {
   )
 }
 
+let editButton = {
+  width: 'auto',
+  height: '40px',
+  backgroundColor: 'accent.white',
+  right: '0px'
+}
+
 export default FamilyPage
+
+
