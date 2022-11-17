@@ -1,9 +1,10 @@
+import getRelationshipText from '@utils/getRelationshipText'
 import bcrypt from 'bcryptjs'
 import { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import { z } from 'zod'
 import checkCitizenId from '@utils/checkCitizenId'
-import getSexMF from '@utils/getSexMF'
+import getSexMF from '@utils/getSexEnum'
 import getSexText from '@utils/getSexText'
 import Prisma from '@utils/prisma'
 class User {
@@ -202,9 +203,33 @@ class User {
         expiresIn: '1d',
       })
 
-      const userData = { ...getUser, sex: getSexText(getUser.sex) }
+      const getFamilyMember = await Prisma.user.findMany({
+        where: {
+          householdId: getUser.householdId,
+          id: {
+            not: getUser.id,
+          },
+        },
+        select: {
+          id: true,
+          title: true,
+          firstName: true,
+          lastName: true,
+          phoneNumber: true,
+          citizenId: true,
+          relationship: true,
+          profileURI: true,
+        },
+      })
 
-      res.status(200).json({ ...userData, token })
+      const userData = {
+        ...getUser,
+        sex: getSexText(getUser.sex),
+        token,
+        familyMembers: getFamilyMember,
+      }
+
+      res.status(200).json(userData)
     } catch (err) {
       res.status(400).json({ message: err })
     }
