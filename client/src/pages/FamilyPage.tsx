@@ -1,18 +1,13 @@
-import {
-  Box,
-  Button,
-  Center,
-  VStack,
-  Wrap,
-} from '@chakra-ui/react'
+import { Box, Button, Center, VStack, Wrap } from '@chakra-ui/react'
 import { useState } from 'react'
 import FamilyInfoBox from '@components/FamilyInfoBox'
 import { AiOutlineUserAdd } from 'react-icons/ai'
 import { useFamilyPageStore } from '@stores/FamilyPageStore'
+import { useLoginDataStore } from '@stores/LoginDataStore'
 
 const FamilyPage = () => {
-  
   const { page, setPage, mode, setMode } = useFamilyPageStore()
+  const { familyMembers } = useLoginDataStore()
   const [family, setfamily] = useState([
     {
       id: 1,
@@ -68,7 +63,7 @@ const FamilyPage = () => {
               variant="outline"
               // color="accent.blue"
               sx={editButton}
-              colorScheme='gray'
+              colorScheme="gray"
               leftIcon={<AiOutlineUserAdd />}
               onClick={() => {
                 setMode('add')
@@ -79,11 +74,10 @@ const FamilyPage = () => {
             </Button>
           </Box>
           <Wrap spacing="28px">
-            {
-              (page == 0 || family.length == 0) &&
+            {(page == 0 || family.length == 0) && (
               <FamilyInfoBox activeForm="true" menuActive={false} />
-            }
-            {family.map((values, index) => {
+            )}
+            {familyMembers.map((values, index) => {
               return (
                 <>
                   <FamilyInfoBox

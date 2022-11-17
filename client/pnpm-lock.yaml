@@ -4,15 +4,18 @@ specifiers:
   '@chakra-ui/react': ^2.3.6
   '@emotion/react': ^11
   '@emotion/styled': ^11
+  '@pdf-lib/fontkit': ^1.1.1
   '@react-pdf-viewer/core': 3.8.0
   '@react-pdf-viewer/default-layout': ^3.8.0
   '@tanstack/react-query': ^4.14.1
   '@tanstack/react-query-devtools': ^4.14.1
+  '@types/download': ^8.0.1
   '@types/react': ^18.0.17
   '@types/react-dom': ^18.0.6
   '@vitejs/plugin-react': ^2.1.0
   axios: ^1.1.3
   date-fns: ^2.29.3
+  downloadjs: ^1.4.7
   firebase: ^9.12.1
   formik: ^2.2.9
   framer-motion: ^6
@@ -36,12 +39,14 @@ dependencies:
   '@chakra-ui/react': 2.3.6_4hjho7kgjymeccyd6tzpeh4pdi
   '@emotion/react': 11.10.4_iapumuv4e6jcjznwuxpf4tt22e
   '@emotion/styled': 11.10.4_g3tud4ene45llglqap74b5kkse
+  '@pdf-lib/fontkit': 1.1.1
   '@react-pdf-viewer/core': 3.8.0_kp5pner2jmznyggalki4owmerm
   '@react-pdf-viewer/default-layout': 3.8.0_kp5pner2jmznyggalki4owmerm
   '@tanstack/react-query': 4.14.1_biqbaboplfbrettd7655fr4n2y
   '@tanstack/react-query-devtools': 4.14.1_mr54dne27lnoplqapf6eiuempu
   axios: 1.1.3
   date-fns: 2.29.3
+  downloadjs: 1.4.7
   firebase: 9.12.1
   formik: 2.2.9_react@18.2.0
   framer-motion: 6.5.1_biqbaboplfbrettd7655fr4n2y
@@ -58,6 +63,7 @@ dependencies:
   zustand: 4.1.2_react@18.2.0
 
 devDependencies:
+  '@types/download': 8.0.1
   '@types/react': 18.0.21
   '@types/react-dom': 18.0.6
   '@vitejs/plugin-react': 2.1.0_vite@3.1.8
@@ -2123,6 +2129,12 @@ packages:
       tslib: 2.4.0
     dev: false
 
+  /@pdf-lib/fontkit/1.1.1:
+    resolution: {integrity: sha512-KjMd7grNapIWS/Dm0gvfHEilSyAmeLvrEGVcqLGi0VYebuqqzTbgF29efCx7tvx+IEbG3zQciRSWl3GkUSvjZg==}
+    dependencies:
+      pako: 1.0.11
+    dev: false
+
   /@pdf-lib/standard-fonts/1.0.0:
     resolution: {integrity: sha512-hU30BK9IUN/su0Mn9VdlVKsWBS6GyhVfqjwl1FjZN4TxP6cCw0jP2w7V3Hf5uX7M0AZJ16vey9yE0ny7Sa59ZA==}
     dependencies:
@@ -2486,6 +2498,26 @@ packages:
       '@types/ms': 0.7.31
     dev: false
 
+  /@types/decompress/4.2.4:
+    resolution: {integrity: sha512-/C8kTMRTNiNuWGl5nEyKbPiMv6HA+0RbEXzFhFBEzASM6+oa4tJro9b8nj7eRlOFfuLdzUU+DS/GPDlvvzMOhA==}
+    dependencies:
+      '@types/node': 18.11.2
+    dev: true
+
+  /@types/download/8.0.1:
+    resolution: {integrity: sha512-t5DjMD6Y1DxjXtEHl7Kt+nQn9rOmVLYD8p4Swrcc5QpgyqyqR2gXTIK6RwwMnNeFJ+ZIiIW789fQKzCrK7AOFA==}
+    dependencies:
+      '@types/decompress': 4.2.4
+      '@types/got': 8.3.6
+      '@types/node': 18.11.2
+    dev: true
+
+  /@types/got/8.3.6:
+    resolution: {integrity: sha512-nvLlj+831dhdm4LR2Ly+HTpdLyBaMynoOr6wpIxS19d/bPeHQxFU5XQ6Gp6ohBpxvCWZM1uHQIC2+ySRH1rGrQ==}
+    dependencies:
+      '@types/node': 18.11.2
+    dev: true
+
   /@types/hast/2.3.4:
     resolution: {integrity: sha512-wLEm0QvaoawEDoTRwzTXp4b4jpwiJDvR5KMnFnVodm3scufTlBOWRD6N1OBf9TZMhjlNsSfcO5V+7AF4+Vy+9g==}
     dependencies:
@@ -2522,7 +2554,6 @@ packages:
 
   /@types/node/18.11.2:
     resolution: {integrity: sha512-BWN3M23gLO2jVG8g/XHIRFWiiV4/GckeFIqbU/C4V3xpoBBWSMk4OZomouN0wCkfQFPqgZikyLr7DOYDysIkkw==}
-    dev: false
 
   /@types/parse-json/4.0.0:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==}
@@ -2918,6 +2949,10 @@ packages:
   /diff/5.1.0:
     resolution: {integrity: sha512-D+mk+qE8VC/PAUrlAU34N+VfXev0ghe5ywmpqrawphmVZc1bEfn56uo9qpyGp1p4xpzOHkSW4ztBd6L7Xx4ACw==}
     engines: {node: '>=0.3.1'}
+    dev: false
+
+  /downloadjs/1.4.7:
+    resolution: {integrity: sha512-LN1gO7+u9xjU5oEScGFKvXhYf7Y/empUIIEAGBs1LzUq/rg5duiDrkuH5A2lQGd5jfMOb9X9usDa2oVXwJ0U/Q==}
     dev: false
 
   /electron-to-chromium/1.4.284:

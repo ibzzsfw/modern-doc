@@ -21,18 +21,10 @@ import { useState } from 'react'
 import { BiEdit } from 'react-icons/bi'
 import { BsThreeDots, BsTrash } from 'react-icons/bs'
 import FamilyInputform from './FamilyInputform'
-
-interface dataTypes {
-  id: number
-  prefix: string
-  firstName: string
-  lastName: string
-  relationship: string
-  citizenId: string
-}
+import UserType from '@models/UserType'
 
 type propsType = {
-  data?: dataTypes
+  data?: UserType
   activeForm?: boolean | 'true' | 'false'
   menuActive?: boolean
 }
@@ -139,16 +131,12 @@ const FamilyInfoBox = ({ data, activeForm, menuActive }: propsType) => {
     <Box sx={boxLayout}>
       <Flex height="100%">
         <HStack gap="32px">
-          <Image
-            src="https://bit.ly/sage-adebayo"
-            boxSize="206px"
-            borderRadius="8px"
-          />
+          <Image src={data?.profileURI} boxSize="206px" borderRadius="8px" />
           <FamilyInputform
             menu={menuActive ? menu : null}
             disable={activeForm || editFamily}
             id={data?.id}
-            prefix={data?.prefix}
+            title={data?.title}
             firstName={data?.firstName}
             lastName={data?.lastName}
             relationship={data?.relationship}
@@ -167,11 +155,8 @@ const FamilyInfoBox = ({ data, activeForm, menuActive }: propsType) => {
     <Box sx={boxLayout}>
       <Flex height="100%">
         <HStack gap="32px">
-          <Image
-            src="https://bit.ly/sage-adebayo"
-            boxSize="206px"
-            borderRadius="8px"
-          />
+          <Image src={data?.profileURI} boxSize="206px" borderRadius="8px" />
+
           <FamilyInputform
             menu={menuActive ? menu : null}
             disable={activeForm}

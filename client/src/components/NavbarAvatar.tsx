@@ -96,8 +96,17 @@ const NavbarAvatar = () => {
     }
   }, [])
 
-  const userRaw = useLoginDataStore((state) => state.user, shallow)
-  const user = new User(userRaw)
+  const userJson = useLoginDataStore((state) => state.user, shallow)
+  const user = userJson ? new User(userJson) : null
+
+  const familyMembers = useLoginDataStore(
+    (state) => state.familyMembers,
+    shallow
+  )
+  
+  console.log(familyMembers)
+
+  if (!user) return null
   return (
     <Box position="relative">
       <Avatar
@@ -142,56 +151,58 @@ const NavbarAvatar = () => {
                     </Flex>
                   </AccordionButton>
                   <AccordionPanel padding="0">
-                    {members.map((member, index) => {
-                      if (member.id > 0) {
-                        return (
-                          <Link
-                            onClick={() => {
-                              onOpenModal()
-                              setMemberID(member.id)
-                            }}
+                    {familyMembers.map((member, index) => {
+                      return (
+                        <Link
+                          onClick={() => {
+                            onOpenModal()
+                            // setMemberID(member.id)
+                          }}
+                        >
+                          <Flex as="button" sx={memberList}>
+                            <Avatar sx={memberAvatar} src={member.profileURI} />
+                            <Text sx={memberNameText}>
+                              {member.firstName} {member.lastName}
+                            </Text>
+                          </Flex>
+
+                          <Modal
+                            isOpen={isOpenModal}
+                            onClose={onCloseModal}
+                            isCentered
                           >
-                            <Flex as="button" sx={memberList}>
-                              <Avatar sx={memberAvatar} src={member.url} />
-                              <Text sx={memberNameText}>{member.name}</Text>
-                            </Flex>
-                            {memberID == member.id && (
-                              <Modal
-                                isOpen={isOpenModal}
-                                onClose={onCloseModal}
-                                isCentered
-                              >
-                                <ModalOverlay />
-                                <ModalContent>
-                                  <ModalHeader>สลับสมาชิก</ModalHeader>
-                                  <ModalBody>
-                                    <Text>
-                                      ต้องการสลับสามาชิกเป็น{' '}
-                                      <Text as="b">{member.name}</Text> หรือไม่
-                                    </Text>
-                                  </ModalBody>
-                                  <ModalFooter>
-                                    <Flex gap="22px">
-                                      <Button
-                                        onClick={onCloseModal}
-                                        sx={editButton}
-                                      >
-                                        ยกเลิก
-                                      </Button>
-                                      <Button
-                                        sx={submitButton}
-                                        onClick={onCloseModal}
-                                      >
-                                        สลับ
-                                      </Button>
-                                    </Flex>
-                                  </ModalFooter>
-                                </ModalContent>
-                              </Modal>
-                            )}
-                          </Link>
-                        )
-                      }
+                            <ModalOverlay />
+                            <ModalContent>
+                              <ModalHeader>สลับสมาชิก</ModalHeader>
+                              <ModalBody>
+                                <Text>
+                                  ต้องการสลับสมาชิกเป็น{' '}
+                                  <Text as="b">
+                                    {member.firstName} {member.lastName}
+                                  </Text>{' '}
+                                  หรือไม่
+                                </Text>
+                              </ModalBody>
+                              <ModalFooter>
+                                <Flex gap="22px">
+                                  <Button
+                                    onClick={onCloseModal}
+                                    sx={editButton}
+                                  >
+                                    ยกเลิก
+                                  </Button>
+                                  <Button
+                                    sx={submitButton}
+                                    onClick={onCloseModal}
+                                  >
+                                    สลับ
+                                  </Button>
+                                </Flex>
+                              </ModalFooter>
+                            </ModalContent>
+                          </Modal>
+                        </Link>
+                      )
                     })}
                   </AccordionPanel>
                 </AccordionItem>

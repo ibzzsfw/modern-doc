@@ -1,21 +1,21 @@
 import Relationship from '@models/Relationship'
 import getRelationshipText from '@utils/getRelationshipText'
 import UserType from '@models/UserType'
-class User {
-  userId: string
-  householdId: string
-  title: string
-  firstName: string
-  lastName: string
-  citizenId: string
-  phoneNumber: string
-  sex: 'ชาย' | 'หญิง' | ''
-  token: string
-  relationship: Relationship
-  profileURI: string
+class User implements UserType {
+  id
+  householdId
+  title
+  firstName
+  lastName
+  citizenId
+  phoneNumber
+  sex
+  token
+  relationship
+  profileURI
 
   constructor(arg: UserType) {
-    this.userId = arg.userId
+    this.id = arg.id
     this.householdId = arg.householdId
     this.title = arg.title
     this.firstName = arg.firstName

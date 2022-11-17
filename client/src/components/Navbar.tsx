@@ -29,7 +29,6 @@ const Navbar = () => {
     <Box sx={layout}>
       <Flex sx={navFlex}>
         <Image src="/assets/ModernDoc.png" height="54px" />
-
         <HStack gap="24px">
           <Link to="/home">
             <Text>หน้าหลัก</Text>

@@ -5,8 +5,8 @@ import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
 
 type propsType = {
-  id?: number
-  prefix?: string
+  id?: string
+  title?: string
   firstName?: string
   lastName?: string
   relationship?: string
@@ -21,7 +21,7 @@ type propsType = {
 
 const FamilyInputform = ({
   id,
-  prefix,
+  title,
   firstName,
   lastName,
   relationship,
@@ -60,7 +60,7 @@ const FamilyInputform = ({
       .oneOf(optionrelationship)
       .required('กรุณาเลือกความสัมพันธ์'),
     citizenId: Yup.string().required('กรุณากรอกเลขบัตรประชาชน'),
-    prefix: Yup.mixed().oneOf(optionPrefix).required('กรุณาเลือกคำนำหน้า'),
+    title: Yup.mixed().oneOf(optionPrefix).required('กรุณาเลือกคำนำหน้า'),
   })
 
   return (
@@ -71,7 +71,7 @@ const FamilyInputform = ({
 
       <Formik
         initialValues={{
-          prefix: prefix || '',
+          title: title || '',
           firstName: firstName || '',
           lastName: lastName || '',
           relationship: relationship || '',
@@ -87,7 +87,7 @@ const FamilyInputform = ({
             <Flex gap="16px">
               <FormInput
                 label="คำนำหน้า"
-                name="prefix"
+                name="title"
                 type="select"
                 options={optionPrefix}
                 placeholder="เลือกคำนำหน้า"
