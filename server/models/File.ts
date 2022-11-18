@@ -96,6 +96,69 @@ class File {
     }
   }
 
+  private static async getLatestFile(type: string, userId: string) {
+    switch (type) {
+      case 'generatedFile':
+        return await Prisma.userGeneratedFile.findMany({
+          where: {
+            userId,
+          },
+          orderBy: {
+            date: 'desc',
+          },
+          take: 3,
+          select: {
+            date: true,
+            generatedFile: {
+              select: {
+                id: true,
+                name: true,
+                officialName: true,
+                description: true,
+              },
+            },
+          },
+        })
+
+      case 'uploadedFile':
+        return await Prisma.userUploadedFile.findMany({
+          where: {
+            userId,
+          },
+          orderBy: {
+            date: 'desc',
+          },
+          take: 3,
+          select: {
+            date: true,
+            uploadedFile: {
+              select: {
+                id: true,
+                name: true,
+                officialName: true,
+                description: true,
+              },
+            },
+          },
+        })
+      default:
+        return await Prisma.userFreeUploadFile.findMany({
+          where: {
+            userId,
+          },
+          orderBy: {
+            date: 'desc',
+          },
+          take: 3,
+          select: {
+            date: true,
+            officialName: true,
+            note: true,
+          },
+        })
+    }
+  }
+
   static async getFileById(req: Request, res: Response) {
     const { id, type } = req.params
     const userId = req.headers['user-id'] as string
@@ -108,6 +171,30 @@ class File {
       schema.parse({ id, type, userId })
       let result = await this.getFile(id, type, userId)
       let formattedResult = await this.formatFile(result, type)
+      res.status(200).json(formattedResult)
+    } catch (err) {
+      return res.status(500).json({ message: err })
+    }
+  }
+
+  static async getLatestFiles(req: Request, res: Response) {
+    const { type } = req.params
+    const userId = req.headers['user-id'] as string
+    const schema = z.object({
+      type: z.enum(fileType),
+      userId: z.string().uuid(),
+    })
+    try {
+      schema.parse({ type, userId })
+      let result = await this.getLatestFile(type, userId)
+      let formattedResult = await async.map(result, (file, callback) => {
+        callback(null, {
+          ...file,
+          ...file[type],
+          [type]: undefined,
+          type: type,
+        })
+      })
       res.status(200).json(formattedResult)
     } catch (err) {
       return res.status(500).json({ message: err })

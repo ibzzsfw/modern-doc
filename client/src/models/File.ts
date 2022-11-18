@@ -10,6 +10,8 @@ class File {
   URI: string = ''
   tags: Tag[] = []
   fields: Field[] = []
+  type?: string
+  date?: Date
 }
 
 export default File

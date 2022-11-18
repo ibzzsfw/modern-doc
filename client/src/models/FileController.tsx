@@ -30,9 +30,22 @@ class FileController {
 
   static async getFileById(id: string, type: string) {
     let response = await axios.get(
-      `${import.meta.env.VITE_API_ENDPOINT}/file/${this.getTypeName(
+      `${import.meta.env.VITE_API_ENDPOINT}/file/get-by-id/${this.getTypeName(
         type
       )}/${id}`,
+      {
+        headers: {
+          'user-id': useLoginDataStore.getState()?.user?.id,
+          token: useLoginDataStore.getState()?.user?.token,
+        },
+      }
+    )
+    return response.data
+  }
+
+  static async getLatestFile() {
+    let response = await axios.get(
+      `${import.meta.env.VITE_API_ENDPOINT}/file/latest-files/generatedFile`,
       {
         headers: {
           'user-id': useLoginDataStore.getState()?.user?.id,

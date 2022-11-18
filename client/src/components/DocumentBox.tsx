@@ -126,12 +126,14 @@ const DocumentBox = ({
     if (type === 'generatedFolder') {
       return `/folder/${id}`
     }
-    if (
-      type === 'generatedFile' ||
-      type === 'uploadedFile' ||
-      type === 'sharedFile'
-    ) {
-      return `/file/${id}`
+    if (type === 'generatedFile') {
+      return `/file/1/${id}`
+    }
+    if (type === 'uploadedFile') {
+      return `/file/2/${id}`
+    }
+    if (type === 'sharedFile') {
+      return `/file/3/${id}`
     }
     return ''
   }
