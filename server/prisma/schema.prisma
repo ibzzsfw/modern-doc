@@ -50,9 +50,9 @@ model User {
   relationship       Relationship         @default(householder)
   birthDate          DateTime?
   profileURI         String?              @default("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__480.png")
-  UserUploadedFile   UserUploadedFile[]
-  UserFreeUploadFile UserFreeUploadFile[]
-  Note               Note[]
+  userUploadedFile   UserUploadedFile[]
+  userFreeUploadFile UserFreeUploadFile[]
+  note               Note[]
   userFolder         UserFolder[]
   userGeneratedFile  UserGeneratedFile[]
   userField          UserField[]
@@ -64,9 +64,9 @@ model Field {
   officialName       String               @unique
   description        String?
   type               FieldType
-  GeneratedFileField GeneratedFileField[]
+  generatedFileField GeneratedFileField[]
   userField          UserField[]
-  FieldChoice        FieldChoice[]
+  fieldChoice        FieldChoice[]
 }
 
 model FieldChoice {
@@ -84,8 +84,8 @@ model GeneratedFile {
   description         String?
   dayLifeSpan         Int                   @default(-1)
   URI                 String
-  GeneratedFileField  GeneratedFileField[]
-  FolderGeneratedFile FolderGeneratedFile[]
+  generatedFileField  GeneratedFileField[]
+  folderGeneratedFile FolderGeneratedFile[]
   generatedFileTag    GeneratedFileTag[]
   userGeneratedFile   UserGeneratedFile[]
 }
@@ -108,8 +108,8 @@ model UploadedFile {
   description        String?
   dayLifeSpan        Int                  @default(-1)
   URI                String
-  UserUploadedFile   UserUploadedFile[]
-  FolderUploadedFile FolderUploadedFile[]
+  userUploadedFile   UserUploadedFile[]
+  folderUploadedFile FolderUploadedFile[]
   uploadedFileTag    UploadedFileTag[]
 }
 
@@ -155,8 +155,8 @@ model Folder {
   officialName        String
   description         String?
   dayLifeSpan         Int                   @default(-1)
-  FolderUploadedFile  FolderUploadedFile[]
-  FolderGeneratedFile FolderGeneratedFile[]
+  folderUploadedFile  FolderUploadedFile[]
+  folderGeneratedFile FolderGeneratedFile[]
   userFolder          UserFolder[]
   FolderTag           FolderTag[]
 }
@@ -190,7 +190,7 @@ model Tag {
   name             String             @unique
   uploadedFileTag  UploadedFileTag[]
   generatedFileTag GeneratedFileTag[]
-  FolderTag        FolderTag[]
+  folderTag        FolderTag[]
 }
 
 model UploadedFileTag {

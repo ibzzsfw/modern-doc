@@ -5,6 +5,7 @@ import TagRouter from '@routers/TagRouter'
 import FieldRouter from '@routers/FieldRouter'
 import GeneratedFileRouter from '@routers/GeneratedFileRouter'
 import MemberRouter from '@routers/MemberRouter'
+import FileRouter from '@routers/FileRouter'
 
 class MasterRouter {
   private router = Router()
@@ -21,6 +22,7 @@ class MasterRouter {
     this.router.use('/field', FieldRouter)
     this.router.use('/generated-file', GeneratedFileRouter)
     this.router.use('/member', MemberRouter)
+    this.router.use('/file', FileRouter)
   }
 
   getRouter = (): Router => {
