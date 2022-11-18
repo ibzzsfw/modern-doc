@@ -31,7 +31,7 @@ type propsType = {
   data?: any
   isAdd: boolean
   onCancelButtonClick?: () => void
-  getId?: (id: string) => void
+  getId?: (id: string | null) => void
   handleForm?: boolean
 }
 
@@ -424,7 +424,7 @@ const FamilyInfoBox = ({
                         <Button
                           onClick={() => {
                             setEdit(false)
-                            getId(null)
+                            if (getId) getId(null)
                           }}
                         >
                           ยกเลิก
