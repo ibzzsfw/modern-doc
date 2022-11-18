@@ -13,6 +13,8 @@ const formatGeneratedFile = async (file: any) => {
     (field: any, callback: any) => {
       callback(null, {
         ...field.field,
+        userField: undefined,
+        userValue: field.field.userField[0] ?? '',
         isRequired: field.isRequired,
       })
     }

@@ -37,6 +37,7 @@
   },
   "devDependencies": {
     "@types/download": "^8.0.1",
+    "@types/downloadjs": "^1.4.3",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
     "@vitejs/plugin-react": "^2.1.0",

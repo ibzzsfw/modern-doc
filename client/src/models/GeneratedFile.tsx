@@ -1,22 +1,30 @@
-import SystemFile from "@models/SystemFile";
-import Field from "@models/Field";
+import SystemFile from '@models/SystemFile'
+import Field from '@models/Field'
+
+type argType = {
+  id: string
+  lastModified: Date
+  lastViewed: Date
+  name: string
+  dayLifeSpan: number
+  officialName: string
+  field: Field[]
+}
 
 class GeneratedFile extends SystemFile {
+  field: Field[] = []
 
-  field: Field[] = [];
-
-  constructor(
-    id: string,
-    lastModified: Date,
-    lastViewed: Date,
-    name: string,
-    dayLifeSpan: number,
-    officialName: string,
-    field: Field[]
-  ) {
-    super(id, lastModified, lastViewed, name, dayLifeSpan, officialName);
-    this.field = field;
+  constructor(arg: argType) {
+    super(
+      arg.id,
+      arg.lastModified,
+      arg.lastViewed,
+      arg.name,
+      arg.dayLifeSpan,
+      arg.officialName
+    )
+    this.field = arg.field
   }
 }
 
-export default GeneratedFile;
+export default GeneratedFile
