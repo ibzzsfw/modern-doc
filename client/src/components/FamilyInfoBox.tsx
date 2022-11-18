@@ -16,7 +16,7 @@ import {
   useToast,
   VStack,
   Input,
-  CloseButton,
+  UseToastOptions,
 } from '@chakra-ui/react'
 import FormInput from '@components/FormInput'
 import MenuProvider from '@components/MenuProvider'
@@ -30,9 +30,9 @@ import * as Yup from 'yup'
 type propsType = {
   data?: any
   isAdd: boolean
-  onCancelButtonClick?: () => void
-  getId?: (id: string | null) => void
-  handleForm?: boolean
+  onCancelButtonClick?: () => void //------cancel button close the form
+  getId?: (id: string | null) => void //------send id to parent for handle form
+  handleForm?: boolean //------handleForm is when click edit button another form will be can't edit
 }
 
 const FamilyInfoBox = ({
@@ -47,7 +47,7 @@ const FamilyInfoBox = ({
   const { isOpen, onOpen, onClose } = useDisclosure()
   const toast = useToast()
 
-  //------------api---------
+  //------------api zone---------
   const addFamily = async (values: any) => {
     console.log('add')
   }
@@ -57,7 +57,7 @@ const FamilyInfoBox = ({
   const deleteFamily = async () => {
     console.log('delete')
   }
-
+  //-----------------------------
   const familyschema = Yup.object().shape({
     id: Yup.string(),
     firstName: Yup.string().required('กรุณากรอกชื่อ'),
@@ -102,8 +102,11 @@ const FamilyInfoBox = ({
             title: 'ลบสมาชิก',
             icon: <Icon as={BsTrash} color="accent.red" />,
             onClick: () => {
-              console.log(`delete ${data?.firstName + ' ' + data?.lastName}`)
-              onOpen() // open delete modal
+              if(!handleForm){
+                console.log(`delete ${data?.firstName + ' ' + data?.lastName}`)
+                onOpen() // open delete modal
+              }
+              
             },
             style: {
               color: 'accent.red',
@@ -144,14 +147,7 @@ const FamilyInfoBox = ({
               onClick={() => {
                 //delete api
                 deleteFamily()
-                toast({
-                  title: 'ลบสมาชิกสำเร็จ',
-                  description: `ลบสมาชิก ${
-                    data?.firstName + ' ' + data?.lastName
-                  } สำเร็จ`,
-                  status: 'success',
-                  duration: 3000,
-                })
+                toast(deleteFamilySuccess)
                 onClose()
               }}
             >
@@ -162,18 +158,28 @@ const FamilyInfoBox = ({
       </ModalContent>
     </Modal>
   )
-
-  const addFamilySuccess = {
+//-----------Toast zone----------------
+  let addFamilySuccess: UseToastOptions = {
     title: 'เพิ่มสมาชิกสำเร็จ',
     status: 'success',
     duration: 3000,
   }
-
-  let editFamilySuccess = {
+  let editFamilySuccess: UseToastOptions = {
     title: 'แก้ไขข้อมูลสมาชิกสำเร็จ',
     status: 'success',
     duration: 3000,
   }
+  let deleteFamilySuccess: UseToastOptions = {
+    
+      title: 'ลบสมาชิกสำเร็จ',
+      description: `ลบสมาชิก ${
+        data?.firstName + ' ' + data?.lastName
+      } สำเร็จ`,
+      status: 'success',
+      duration: 3000,
+    
+  }
+  //-------------------------------------
   let uploadImage = {
     width: '206px',
     height: '206px',
@@ -198,6 +204,7 @@ const FamilyInfoBox = ({
               opacity="0"
               aria-hidden="true"
               accept="image/*"
+              display={!isAdd || !isEdit ? 'block' : 'none'}
               //------display upload image icon when mouse hover on image
               //----- if you know good way to do this please tell me and fix it haha.
               onPointerEnter={(e) => {
@@ -206,6 +213,7 @@ const FamilyInfoBox = ({
               onPointerLeave={(e) => {
                 setmouseOnImage(false)
               }}
+              //-----------------------------------------------------------------------
             />
             {isAdd
               ? mouseOnImage && (
@@ -232,24 +240,31 @@ const FamilyInfoBox = ({
                   />
                 )}
           </Box>
-          {/*<Image
-            src="https://bit.ly/sage-adebayo"
-            boxSize="206px"
-            borderRadius="8px"
-            onClick={() => {
-              console.log('click')
-            }}
-          />*/}
           {isAdd ? (
             <VStack>
               <Box textAlign="end" width="100%"></Box>
 
               <Formik
-                initialValues={{}}
+                initialValues={{
+                  citizenId: '',
+                  firstName: '',
+                  id: '',
+                  lastName: '',
+                  phoneNumber: '',
+                  profileURI: '',
+                  relationship: '',
+                  title: '',
+                }}
                 validationSchema={familyschema}
-                onSubmit={(values) => {
+                onReset={(values) => {
+                  if (onCancelButtonClick) onCancelButtonClick()
+                }}
+                onSubmit={(values,actions) => {
                   console.log(values)
                   addFamily(values)
+                  toast(addFamilySuccess)
+                  if (onCancelButtonClick) onCancelButtonClick()
+                  
                 }}
               >
                 <Form>
@@ -322,9 +337,7 @@ const FamilyInfoBox = ({
                         width="100%"
                       >
                         <Button
-                          onClick={() => {
-                            if (onCancelButtonClick) onCancelButtonClick()
-                          }}
+                          type="reset"
                         >
                           ยกเลิก
                         </Button>
@@ -347,9 +360,18 @@ const FamilyInfoBox = ({
               <Formik
                 initialValues={data}
                 validationSchema={familyschema}
+                onReset={(values, actions) => {
+                  console.log(values)
+                  setEdit(false)
+                  if (getId) getId(null)
+                }}
                 onSubmit={(values) => {
                   console.log(values)
                   editFamily(values)
+                  
+                  toast(editFamilySuccess)
+                  setEdit(false)
+                  if (getId) getId(null)
                 }}
               >
                 <Form>
@@ -421,14 +443,7 @@ const FamilyInfoBox = ({
                         columnGap="1rem"
                         width="100%"
                       >
-                        <Button
-                          onClick={() => {
-                            setEdit(false)
-                            if (getId) getId(null)
-                          }}
-                        >
-                          ยกเลิก
-                        </Button>
+                        <Button type="reset">ยกเลิก</Button>
                         <Button sx={submitButton} type="submit">
                           ตกลง
                         </Button>

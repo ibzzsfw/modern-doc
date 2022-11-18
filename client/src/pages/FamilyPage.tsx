@@ -10,10 +10,11 @@ const FamilyPage = () => {
     (state) => state.familyMembers,
     shallow
   )
-
+  //--------lockedit is a boolean state variable that is used to lock the edit button
   const [lockEdit, setLockEdit] = useState(false)
   const [addMember, setAddMember] = useState(false)
-  const lockedit = (id: string | null) => {
+
+  const lockId = (id: string | null) => {
     if (id !== null) {
       setLockEdit(true)
     } else {
@@ -45,7 +46,7 @@ const FamilyPage = () => {
                 onCancelButtonClick={() => {
                   setAddMember(false)
                 }}
-                isAdd={true}
+                isAdd={addMember}
               />
             )}
             {familyMembers.map((values, index) => {
@@ -53,10 +54,8 @@ const FamilyPage = () => {
                 <FamilyInfoBox
                   data={values}
                   isAdd={false}
-                  //get id from child to parent
-                  getId={(id: string | null) => lockedit(id)}
-                  //handle for one
-                  handleForm={lockEdit}
+                  getId={(id: string | null) => lockId(id)} //get id from child to parent
+                  handleForm={lockEdit}    //handle for one edit form at a time
                 />
               )
             })}
