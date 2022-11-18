@@ -15,6 +15,8 @@ import {
   useDisclosure,
   useToast,
   VStack,
+  Input,
+  CloseButton,
 } from '@chakra-ui/react'
 import FormInput from '@components/FormInput'
 import MenuProvider from '@components/MenuProvider'
@@ -22,6 +24,7 @@ import { Form, Formik } from 'formik'
 import { useState } from 'react'
 import { BiEdit } from 'react-icons/bi'
 import { BsThreeDots, BsTrash } from 'react-icons/bs'
+import { AiOutlineUpload } from 'react-icons/ai'
 import * as Yup from 'yup'
 
 type propsType = {
@@ -37,17 +40,18 @@ const FamilyInfoBox = ({
   isAdd,
   onCancelButtonClick,
   getId,
-  handleForm
+  handleForm,
 }: propsType) => {
   const [isEdit, setEdit] = useState(false)
+  const [mouseOnImage, setmouseOnImage] = useState(false)
   const { isOpen, onOpen, onClose } = useDisclosure()
   const toast = useToast()
 
   //------------api---------
-  const addFamily = async (values:any) => {
+  const addFamily = async (values: any) => {
     console.log('add')
   }
-  const editFamily = async (values:any) => {
+  const editFamily = async (values: any) => {
     console.log('edit')
   }
   const deleteFamily = async () => {
@@ -87,7 +91,7 @@ const FamilyInfoBox = ({
             onClick: () => {
               if (!handleForm) {
                 console.log(`edit ${data?.firstName + ' ' + data?.lastName}`)
-                if(getId) getId(data?.id)
+                if (getId) getId(data?.id)
                 setEdit(true)
               }
             },
@@ -170,16 +174,72 @@ const FamilyInfoBox = ({
     status: 'success',
     duration: 3000,
   }
+  let uploadImage = {
+    width: '206px',
+    height: '206px',
+    position: 'relative',
+  }
 
   return (
     <Box sx={boxLayout}>
       <Flex height="100%">
         <HStack gap="32px">
-          <Image
+          <Box sx={uploadImage}>
+            <Image
+              src="https://bit.ly/sage-adebayo"
+              boxSize="206px"
+              borderRadius="8px"
+              position="absolute"
+            ></Image>
+            <Input
+              type="file"
+              position="absolute"
+              height="100%"
+              opacity="0"
+              aria-hidden="true"
+              accept="image/*"
+              //------display upload image icon when mouse hover on image
+              //----- if you know good way to do this please tell me and fix it haha.
+              onPointerEnter={(e) => {
+                setmouseOnImage(true)
+              }}
+              onPointerLeave={(e) => {
+                setmouseOnImage(false)
+              }}
+            />
+            {isAdd
+              ? mouseOnImage && (
+                  <Icon
+                    as={AiOutlineUpload}
+                    top="71.5px"
+                    left="71.5px"
+                    position="absolute"
+                    boxSize="60px"
+                    color="white"
+                    background="rgba(0, 0, 0, 0.5)"
+                  />
+                )
+              : isEdit &&
+                mouseOnImage && (
+                  <Icon
+                    as={AiOutlineUpload}
+                    top="71.5px"
+                    left="71.5px"
+                    position="absolute"
+                    boxSize="60px"
+                    color="white"
+                    background="rgba(0, 0, 0, 0.5)"
+                  />
+                )}
+          </Box>
+          {/*<Image
             src="https://bit.ly/sage-adebayo"
             boxSize="206px"
             borderRadius="8px"
-          />
+            onClick={() => {
+              console.log('click')
+            }}
+          />*/}
           {isAdd ? (
             <VStack>
               <Box textAlign="end" width="100%"></Box>
@@ -413,6 +473,15 @@ let submitButton = {
   },
 }
 
+let imagehover = {
+  position: 'absolute',
+  _hover: {
+    backgroundColor: 'hover.blue',
+  },
+  _active: {
+    backgroundColor: 'hover.white',
+  },
+}
 export default FamilyInfoBox
 
 /**(
