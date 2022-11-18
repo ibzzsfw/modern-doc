@@ -5,6 +5,7 @@ import {
   HStack,
   Icon,
   Image,
+  Input,
   Modal,
   ModalBody,
   ModalContent,
@@ -14,17 +15,17 @@ import {
   Text,
   useDisclosure,
   useToast,
-  VStack,
-  Input,
   UseToastOptions,
+  VStack,
 } from '@chakra-ui/react'
 import FormInput from '@components/FormInput'
 import MenuProvider from '@components/MenuProvider'
 import { Form, Formik } from 'formik'
+import { useAnimation } from 'framer-motion'
 import { useState } from 'react'
+import { AiOutlineUpload } from 'react-icons/ai'
 import { BiEdit } from 'react-icons/bi'
 import { BsThreeDots, BsTrash } from 'react-icons/bs'
-import { AiOutlineUpload } from 'react-icons/ai'
 import * as Yup from 'yup'
 
 type propsType = {
@@ -46,6 +47,9 @@ const FamilyInfoBox = ({
   const [mouseOnImage, setmouseOnImage] = useState(false)
   const { isOpen, onOpen, onClose } = useDisclosure()
   const toast = useToast()
+  const controls = useAnimation()
+  const startAnimation = () => controls.start('hover')
+  const stopAnimation = () => controls.stop()
 
   //------------api zone---------
   const addFamily = async (values: any) => {
@@ -175,65 +179,49 @@ const FamilyInfoBox = ({
     duration: 3000,
   }
   //-------------------------------------
-  let uploadImage = {
-    width: '206px',
-    height: '206px',
-    position: 'relative',
-  }
 
   return (
     <Box sx={boxLayout}>
       <Flex height="100%">
         <HStack gap="32px">
-          <Box sx={uploadImage}>
+          <Box sx={uploadImagelayout}>
             <Image
               src="https://bit.ly/sage-adebayo"
               boxSize="206px"
               borderRadius="8px"
               position="absolute"
             ></Image>
-            <Input
-              type="file"
-              position="absolute"
-              height="100%"
-              opacity="0"
-              aria-hidden="true"
-              accept="image/*"
-              display={!isAdd || !isEdit ? 'block' : 'none'}
-              //------display upload image icon when mouse hover on image
-              //----- if you know good way to do this please tell me and fix it haha.
-              onPointerEnter={(e) => {
-                setmouseOnImage(true)
-              }}
-              onPointerLeave={(e) => {
-                setmouseOnImage(false)
-              }}
-              //-----------------------------------------------------------------------
-            />
-            {isAdd
-              ? mouseOnImage && (
-                  <Icon
-                    as={AiOutlineUpload}
-                    top="71.5px"
-                    left="71.5px"
-                    position="absolute"
-                    boxSize="60px"
-                    color="white"
-                    background="rgba(0, 0, 0, 0.5)"
-                  />
-                )
-              : isEdit &&
-                mouseOnImage && (
-                  <Icon
-                    as={AiOutlineUpload}
-                    top="71.5px"
-                    left="71.5px"
-                    position="absolute"
-                    boxSize="60px"
-                    color="white"
-                    background="rgba(0, 0, 0, 0.5)"
-                  />
-                )}
+
+            <Box
+              width="206px"
+              height="206px"
+              sx={
+                isAdd
+                  ? backgroundHover
+                  : isEdit
+                  ? backgroundHover
+                  : { opacity: 0 }
+              }
+            >
+              <Input
+                type="file"
+                position="absolute"
+                height="100%"
+                opacity="0"
+                aria-hidden="true"
+                display={isAdd ? 'block' : isEdit ? 'block' : 'none'}
+                accept="image/*"
+              />
+              <Icon
+                as={AiOutlineUpload}
+                top="71.5px"
+                left="71.5px"
+                position="absolute"
+                boxSize="60px"
+                color="white"
+                aria-hidden="true"
+              />
+            </Box>
           </Box>
           {isAdd ? (
             <VStack>
@@ -478,15 +466,27 @@ let submitButton = {
   },
 }
 
-let imagehover = {
-  position: 'absolute',
+let uploadImagelayout = {
+  width: '206px',
+  height: '206px',
+  position: 'relative',
+}
+
+let backgroundHover = {
+  opacity: 0,
   _hover: {
-    backgroundColor: 'hover.blue',
-  },
-  _active: {
-    backgroundColor: 'hover.white',
+    cursor: 'pointer',
+    opacity: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    transform: 'translateY(-2px)',
+    transition: 'all 0.2s ease-in-out',
+    _active: {
+      cursor: 'pointer',
+      backgroundColor: 'hover.white',
+    },
   },
 }
+
 export default FamilyInfoBox
 
 /**(
@@ -621,3 +621,30 @@ export default FamilyInfoBox
               }}
             />
           )} */
+
+/** {isAdd
+              ? mouseOnImage && (
+                  <Icon
+                    as={AiOutlineUpload}
+                    top="71.5px"
+                    left="71.5px"
+                    position="absolute"
+                    boxSize="60px"
+                    color="white"
+                    background="rgba(0, 0, 0, 0.2)"
+                    aria-hidden="true"
+                  />
+                )
+              : isEdit &&
+                mouseOnImage && (
+                  <Icon
+                    as={AiOutlineUpload}
+                    top="71.5px"
+                    left="71.5px"
+                    position="absolute"
+                    boxSize="60px"
+                    color="white"
+                    background="rgba(0, 0, 0, 0.2)"
+                    aria-hidden="true"
+                  />
+                )} */
