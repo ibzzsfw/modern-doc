@@ -102,11 +102,10 @@ const FamilyInfoBox = ({
             title: 'ลบสมาชิก',
             icon: <Icon as={BsTrash} color="accent.red" />,
             onClick: () => {
-              if(!handleForm){
+              if (!handleForm) {
                 console.log(`delete ${data?.firstName + ' ' + data?.lastName}`)
                 onOpen() // open delete modal
               }
-              
             },
             style: {
               color: 'accent.red',
@@ -158,7 +157,7 @@ const FamilyInfoBox = ({
       </ModalContent>
     </Modal>
   )
-//-----------Toast zone----------------
+  //-----------Toast zone----------------
   let addFamilySuccess: UseToastOptions = {
     title: 'เพิ่มสมาชิกสำเร็จ',
     status: 'success',
@@ -170,14 +169,10 @@ const FamilyInfoBox = ({
     duration: 3000,
   }
   let deleteFamilySuccess: UseToastOptions = {
-    
-      title: 'ลบสมาชิกสำเร็จ',
-      description: `ลบสมาชิก ${
-        data?.firstName + ' ' + data?.lastName
-      } สำเร็จ`,
-      status: 'success',
-      duration: 3000,
-    
+    title: 'ลบสมาชิกสำเร็จ',
+    description: `ลบสมาชิก ${data?.firstName + ' ' + data?.lastName} สำเร็จ`,
+    status: 'success',
+    duration: 3000,
   }
   //-------------------------------------
   let uploadImage = {
@@ -259,12 +254,11 @@ const FamilyInfoBox = ({
                 onReset={(values) => {
                   if (onCancelButtonClick) onCancelButtonClick()
                 }}
-                onSubmit={(values,actions) => {
+                onSubmit={(values, actions) => {
                   console.log(values)
                   addFamily(values)
                   toast(addFamilySuccess)
                   if (onCancelButtonClick) onCancelButtonClick()
-                  
                 }}
               >
                 <Form>
@@ -336,11 +330,7 @@ const FamilyInfoBox = ({
                         columnGap="1rem"
                         width="100%"
                       >
-                        <Button
-                          type="reset"
-                        >
-                          ยกเลิก
-                        </Button>
+                        <Button type="reset">ยกเลิก</Button>
                         <Button sx={submitButton} type="submit">
                           ตกลง
                         </Button>
@@ -368,7 +358,7 @@ const FamilyInfoBox = ({
                 onSubmit={(values) => {
                   console.log(values)
                   editFamily(values)
-                  
+
                   toast(editFamilySuccess)
                   setEdit(false)
                   if (getId) getId(null)
