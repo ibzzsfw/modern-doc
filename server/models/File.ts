@@ -36,7 +36,7 @@ class File {
                 },
               },
             },
-            GeneratedFileField: {
+            generatedFileField: {
               select: {
                 isRequired: true,
                 field: {
@@ -54,7 +54,7 @@ class File {
                         rawValue: true,
                       },
                     },
-                    FieldChoice: {
+                    fieldChoice: {
                       select: {
                         name: true,
                         officialName: true,

@@ -9,7 +9,7 @@ const formatGeneratedFile = async (file: any) => {
   )
 
   let fieldArr = await async.map(
-    file.GeneratedFileField,
+    file.generatedFileField,
     (field: any, callback: any) => {
       callback(null, {
         ...field.field,

@@ -105,7 +105,7 @@ class GeneratedFile {
               },
             },
           },
-          GeneratedFileField: {
+          generatedFileField: {
             select: {
               field: {
                 select: {
@@ -113,7 +113,7 @@ class GeneratedFile {
                   officialName: true,
                   description: true,
                   type: true,
-                  FieldChoice: {
+                  fieldChoice: {
                     select: {
                       name: true,
                       officialName: true,
@@ -134,7 +134,7 @@ class GeneratedFile {
       )
 
       let fieldArr = await async.map(
-        file.GeneratedFileField,
+        file.generatedFileField,
         (field: any, callback: any) => {
           callback(null, field.field)
         }
