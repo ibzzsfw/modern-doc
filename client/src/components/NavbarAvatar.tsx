@@ -88,7 +88,6 @@ const NavbarAvatar = () => {
   useEffect(() => {
     const handleScroll = () => {
       setX(window.scrollY)
-      console.log(x)
     }
     window.addEventListener('scroll', handleScroll)
     return () => {
@@ -104,7 +103,6 @@ const NavbarAvatar = () => {
     shallow
   )
   
-  console.log(familyMembers)
 
   if (!user) return null
   return (

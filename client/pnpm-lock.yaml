@@ -10,6 +10,7 @@ specifiers:
   '@tanstack/react-query': ^4.14.1
   '@tanstack/react-query-devtools': ^4.14.1
   '@types/download': ^8.0.1
+  '@types/downloadjs': ^1.4.3
   '@types/react': ^18.0.17
   '@types/react-dom': ^18.0.6
   '@vitejs/plugin-react': ^2.1.0
@@ -64,6 +65,7 @@ dependencies:
 
 devDependencies:
   '@types/download': 8.0.1
+  '@types/downloadjs': 1.4.3
   '@types/react': 18.0.21
   '@types/react-dom': 18.0.6
   '@vitejs/plugin-react': 2.1.0_vite@3.1.8
@@ -2510,6 +2512,10 @@ packages:
       '@types/decompress': 4.2.4
       '@types/got': 8.3.6
       '@types/node': 18.11.2
+    dev: true
+
+  /@types/downloadjs/1.4.3:
+    resolution: {integrity: sha512-MjJepFle/tLtT2/jmDNth6ZnwWzEhm40L+olE5HKR70ISUCfgT55eqreeHldAzFLY2HDUGsn8zgyto8KygN0CA==}
     dev: true
 
   /@types/got/8.3.6:

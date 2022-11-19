@@ -1,8 +1,7 @@
-import SystemFile from "@models/SystemFile";
+import SystemFile from '@models/SystemFile'
 
 class UploadedFile extends SystemFile {
-
-  isShare: boolean = false;
+  isShare: boolean = false
 
   constructor(
     id: string,
@@ -13,9 +12,9 @@ class UploadedFile extends SystemFile {
     officialName: string,
     isShare: boolean
   ) {
-    super(id, lastModified, lastViewed, name, dayLifeSpan, officialName);
-    this.isShare = isShare;
+    super(id, lastModified, lastViewed, name, dayLifeSpan, officialName)
+    this.isShare = isShare
   }
 }
 
-export default UploadedFile;
+export default UploadedFile

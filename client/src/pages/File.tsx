@@ -7,23 +7,53 @@ import markdown from 'src/mockData/markdown'
 import UploadFile from '@components/UploadFile'
 import TakeNote from '@components/TakeNote'
 import FileViewer from '@components/FileViewer'
+import { useParams } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import FileController from '@models/FileController'
+import { useFilePageStore } from '@stores/FilePageStore'
+import shallow from 'zustand/shallow'
+import { useEffect } from 'react'
+import axios from 'axios'
 
 const File = () => {
-  return (
-    <Flex sx={documentView}>
-      <Box sx={abstractArea}>
-        {/* <UploadFile /> */}
-        <TakeNote />
-      </Box>
-      <FolderDetail
-        title="เอกสารขจัดขนตูด"
-        description="lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet "
-        markdown={markdown}
-        status="มีอยู่ในคลัง"
-      />
-      <FileViewer fileUrl="/assets/generatedFile1.pdf" />
-    </Flex>
+  const { id, type } = useParams<{ id: string; type: string }>()
+
+  const { file, setFile } = useFilePageStore((state) => {
+    return {
+      file: state.file,
+      setFile: state.setFile,
+    }
+  }, shallow)
+
+  const { data, isLoading, error } = useQuery(
+    ['getFileById', id, type],
+    async () => {
+      if (id !== undefined && type !== undefined) {
+        return await FileController.getFileById(id, type)
+      }
+    }
   )
+
+  if (data) {
+    setFile(data)
+  }
+
+  if (file.URI != '')
+    return (
+      <Flex sx={documentView}>
+        <Box sx={abstractArea}>
+          {/* <UploadFile /> */}
+          <TakeNote />
+        </Box>
+        <FolderDetail
+          title={file.officialName}
+          description={''}
+          markdown={file.description}
+          status="มีอยู่ในคลัง"
+        />
+        <FileViewer fileUrl={file.URI} />
+      </Flex>
+    )
 }
 
 let documentView = {

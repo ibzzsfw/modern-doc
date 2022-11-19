@@ -9,7 +9,19 @@ type propsType = {
 const FileViewer = ({ fileUrl }: propsType) => {
   const defaultLayoutPluginInstance = defaultLayoutPlugin()
 
-  return <Viewer fileUrl={fileUrl} plugins={[defaultLayoutPluginInstance]} />
+  return (
+    <Viewer
+      fileUrl={fileUrl}
+      plugins={[defaultLayoutPluginInstance]}
+      httpHeaders={{
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods':
+          'GET, PUT, POST, DELETE, HEAD, OPTIONS, PATCH, PROPFIND, PROPPATCH, MKCOL, COPY, MOVE, LOCK',
+        'Access-Control-Allow-Credentials': 'true',
+        'Access-Control-Expose-Headers': '*',
+      }}
+    />
+  )
 }
 
 export default FileViewer

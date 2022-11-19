@@ -72,8 +72,15 @@ const AppRoute = () => {
               </>
             }
           />
+
+          {/**
+           *  use type to determine which type of File to render
+           * type = 1 => generatedFile
+           * type = 2 => uploadedFile
+           * type = 3 => userFreeUploadFile
+           */}
           <Route
-            path="/file/:id"
+            path="/file/:type/:id"
             element={
               <>
                 <PageContainer>
