@@ -7,6 +7,9 @@ class FolderController {
   getLatestFolder = async (req: Request, res: Response) => {
     Folder.getLatestFolder(req, res)
   }
+  searchByName = async (req: Request, res: Response) => {
+    Folder.searchByName(req, res)
+  }
 }
 
 export default new FolderController()

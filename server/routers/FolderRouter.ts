@@ -16,6 +16,7 @@ class FolderRouter {
   configureRoutes = (): void => {
     this.router.get('/get-by-id/:id', this.controller.getFolderById)
     this.router.get('/latest-folders', this.controller.getLatestFolder)
+    this.router.get('/search-by-name/:name', this.controller.searchByName)
   }
 }
 
