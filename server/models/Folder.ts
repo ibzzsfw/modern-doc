@@ -2,8 +2,6 @@ import Prisma from '@utils/prisma'
 import async from 'async'
 import { Request, Response } from 'express'
 import { z } from 'zod'
-import formatGeneratedFile from '@utils/formatGeneratedFile'
-import formatUploadedFile from '@utils/formatUploadedFile'
 
 class Folder {
   static async getFolderById(req: Request, res: Response) {
@@ -16,100 +14,34 @@ class Folder {
 
     try {
       schema.parse({ id, userId })
-      const folder = await Prisma.folder.findUnique({
-        where: {
-          id,
-        },
-        select: {
-          id: true,
-          name: true,
-          officialName: true,
-          description: true,
-          dayLifeSpan: true,
-          folderGeneratedFile: {
-            select: {
-              generatedFile: {
-                select: {
-                  id: true,
-                  name: true,
-                  officialName: true,
-                  description: true,
-                  dayLifeSpan: true,
-                  URI: true,
-                  generatedFileTag: {
-                    select: {
-                      tag: {
-                        select: {
-                          id: true,
-                          name: true,
-                        },
-                      },
-                    },
-                  },
-                  generatedFileField: {
-                    select: {
-                      isRequired: true,
-                      field: {
-                        select: {
-                          name: true,
-                          officialName: true,
-                          description: true,
-                          type: true,
-                          userField: {
-                            where: {
-                              userId: userId,
-                            },
-                            select: {
-                              id: true,
-                              rawValue: true,
-                            },
-                          },
-                          fieldChoice: {
-                            select: {
-                              name: true,
-                              officialName: true,
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-          folderUploadedFile: {
-            select: {
-              uploadedFile: {
-                select: {
-                  id: true,
-                  name: true,
-                  officialName: true,
-                  description: true,
-                  dayLifeSpan: true,
-                  URI: true,
-                  userUploadedFile: {
-                    where: {
-                      userId: userId,
-                    },
-                  },
-                  uploadedFileTag: {
-                    select: {
-                      tag: {
-                        select: {
-                          id: true,
-                          name: true,
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      })
-      res.json(folder)
+      const folder = await Prisma.$queryRaw`
+        SELECT "Folder".*,"UserFolder"."note","UserFolder"."date" 
+        FROM "Folder" 
+        LEFT JOIN "UserFolder" ON "Folder"."id" = "UserFolder"."folderId"
+        WHERE "Folder"."id" = ${id}::uuid AND "UserFolder"."userId" = ${userId}::uuid
+      `
+
+      const generateFile = await Prisma.$queryRaw`
+        SELECT "GeneratedFile".*,"FolderGeneratedFile"."amount","FolderGeneratedFile"."remark",
+        "UserGeneratedFile"."note","UserGeneratedFile"."date",
+        array(SELECT json_agg("Field".*) FROM "GeneratedFileField" 
+        LEFT JOIN "GeneratedFile" ON "GeneratedFileField"."generatedFileId" = "GeneratedFile"."id"
+        LEFT JOIN "Field" ON "Field"."id" = "GeneratedFileField"."fieldId") AS "fields"
+        FROM "FolderGeneratedFile"
+        LEFT JOIN "GeneratedFile" ON "FolderGeneratedFile"."generatedFileId" = "GeneratedFile"."id"
+        LEFT JOIN "UserGeneratedFile" ON "GeneratedFile"."id" = "UserGeneratedFile"."generatedFileId"
+        WHERE "FolderGeneratedFile"."folderId" = ${id}::uuid 
+      `
+
+      const uploadFile = await Prisma.$queryRaw`
+        SELECT "UploadedFile".*,"UserUploadedFile"."note","UserUploadedFile"."date"
+        FROM "FolderUploadedFile"
+        LEFT JOIN "UploadedFile" ON "FolderUploadedFile"."uploadedFileId" = "UploadedFile"."id"
+        LEFT JOIN "UserUploadedFile" ON "UploadedFile"."id" = "UserUploadedFile"."uploadedFileId"
+        WHERE "FolderUploadedFile"."folderId" = ${id}::uuid AND "UserUploadedFile"."userId" = ${userId}::uuid
+      `
+
+      res.json({ ...folder[0], generateFile, uploadFile })
     } catch (err) {
       res.status(400).json(err)
     }

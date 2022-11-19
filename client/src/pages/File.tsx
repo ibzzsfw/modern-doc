@@ -36,6 +36,7 @@ const File = () => {
 
   if (data) {
     setFile(data)
+    console.log(data)
   }
 
   if (file.URI != '')

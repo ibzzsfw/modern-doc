@@ -14,58 +14,43 @@ const fileType = [
 class File {
   private static async getFile(id: string, type: string, userId: string) {
     switch (type) {
-      case 'generatedFile':
-        return await Prisma.generatedFile.findUnique({
-          where: {
-            id,
-          },
-          select: {
-            id: true,
-            name: true,
-            officialName: true,
-            description: true,
-            dayLifeSpan: true,
-            URI: true,
-            generatedFileTag: {
-              select: {
-                tag: {
-                  select: {
-                    id: true,
-                    name: true,
-                  },
-                },
-              },
-            },
-            generatedFileField: {
-              select: {
-                isRequired: true,
-                field: {
-                  select: {
-                    name: true,
-                    officialName: true,
-                    description: true,
-                    type: true,
-                    userField: {
-                      where: {
-                        userId: userId,
-                      },
-                      select: {
-                        id: true,
-                        rawValue: true,
-                      },
-                    },
-                    fieldChoice: {
-                      select: {
-                        name: true,
-                        officialName: true,
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        })
+      case 'generatedFile': {
+        return await Prisma.$queryRaw`
+        SELECT *,
+        array(
+          SELECT (json_build_object(
+              'id', "Tag"."id",
+              'name', "Tag"."name"
+            ))
+              FROM "GeneratedFileTag"
+              LEFT JOIN "Tag" ON "Tag"."id" = "GeneratedFileTag"."tagId"
+           	  WHERE "GeneratedFileTag"."generatedFileId" = ${id}::uuid
+           ) AS "tags",
+        array(
+          SELECT json_build_object(
+            'id', "Field"."id",
+            'name', "Field"."name",
+            'type', "Field"."type",
+            'description', "Field"."description",
+            'officialName', "Field"."officialName",
+            'isRequired', "GeneratedFileField"."isRequired",
+            'userValue', "UserField"."rawValue",
+            'date', "UserField"."date",
+            'fieldChoice',(SELECT json_agg(json_build_object(
+              'name', "FieldChoice"."name",
+              'officialName', "FieldChoice"."officialName"
+            ))
+              FROM "FieldChoice"
+           	  WHERE "FieldChoice"."fieldId" = "Field"."id"
+           )
+          )
+          FROM "GeneratedFileField" 
+          LEFT JOIN "Field" ON "Field"."id" = "GeneratedFileField"."fieldId"
+          LEFT JOIN "UserField" ON "UserField"."fieldId" = "Field"."id" 
+          WHERE "GeneratedFileField"."generatedFileId" = "GeneratedFile"."id"
+        ) AS "fields" FROM "GeneratedFile" WHERE id = ${id}::uuid
+        `
+      }
       case 'uploadedFile':
         return await Prisma.uploadedFile.findUnique({
           where: {
@@ -170,8 +155,7 @@ class File {
     try {
       schema.parse({ id, type, userId })
       let result = await this.getFile(id, type, userId)
-      let formattedResult = await this.formatFile(result, type)
-      res.status(200).json(formattedResult)
+      res.status(200).json(result[0])
     } catch (err) {
       return res.status(500).json({ message: err })
     }
