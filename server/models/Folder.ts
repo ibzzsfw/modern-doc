@@ -46,6 +46,26 @@ class Folder {
       res.status(400).json(err)
     }
   }
+
+  static async getLatestFolder(req: Request, res: Response) {
+    const userId = req.headers['user-id'] as string
+    const schema = z.string().uuid()
+
+    try {
+      schema.parse(userId)
+      const folder = await Prisma.$queryRaw`
+        SELECT "Folder".*,"UserFolder"."note","UserFolder"."date" 
+        FROM "UserFolder"
+        LEFT JOIN "Folder" ON "UserFolder"."folderId" = "Folder"."id"
+        WHERE "UserFolder"."userId" = ${userId}::uuid
+        ORDER BY "UserFolder"."date" DESC
+        LIMIT 3
+      `
+      res.json(folder)
+    } catch (err) {
+      res.status(400).json(err)
+    }
+  }
 }
 
 export default Folder

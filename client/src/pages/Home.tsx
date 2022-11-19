@@ -6,6 +6,7 @@ import SearchBox from '@components/SearchBox'
 import { VStack, Center } from '@chakra-ui/react'
 import { useQuery } from '@tanstack/react-query'
 import FileController from '@models/FileController'
+import FolderController from '@models/FolderController'
 import { useLoginDataStore } from '@stores/LoginDataStore'
 import File from '@models/File'
 
@@ -18,134 +19,72 @@ const Home = () => {
     error: latestFilesError,
   } = useQuery(['latestFiles', user?.id], FileController.getLatestFile)
 
-  console.log(latestFiles)
+  const {
+    data: latestFolder,
+    isLoading: latestFolderLoading,
+    error: latestFolderError,
+  } = useQuery(['latestFolder', user?.id], FolderController.getLatestFolder)
 
-  return (
-    <VStack marginTop="4px">
-      <Center>
-        <SearchBox />
-      </Center>
-      <PopularBar title="รายการยอดฮิต" url="">
-        <PopularBox
-          title="เอกสารประกอบการสอน"
-          image="https://trendwatchers.co/wp-content/uploads/2020/04/1_r_46B-6pUz9L0sq9fVuChA.jpeg"
-        />
-        <PopularBox
-          title="การเรียนรู้"
-          image="https://trendwatchers.co/wp-content/uploads/2020/04/1_r_46B-6pUz9L0sq9fVuChA.jpeg"
-        />
-        <PopularBox
-          title="ฟังเพลง"
-          image="https://trendwatchers.co/wp-content/uploads/2020/04/1_r_46B-6pUz9L0sq9fVuChA.jpeg"
-        />
-        <PopularBox
-          title="ไลฟ์สไตล์"
-          image="https://trendwatchers.co/wp-content/uploads/2020/04/1_r_46B-6pUz9L0sq9fVuChA.jpeg"
-        />
-        <PopularBox
-          title="ที่ดิน"
-          image="https://trendwatchers.co/wp-content/uploads/2020/04/1_r_46B-6pUz9L0sq9fVuChA.jpeg"
-        />
-      </PopularBar>
+  console.log('folder',user?.id,latestFolder)
 
-      <DocumentBar title="แฟ้มล่าสุด" url="broo">
-        <DocumentBox id="2" title="แฟ้มที่ 1" type="generatedFolder" showDate />
-        <DocumentBox
-          id="1"
-          title="แฟ้มที่ 2"
-          type="generatedFolder"
-          showDate
-          createdDate={new Date('12/08/2021')}
-          colorBar="#abcedf"
-        />
-        <DocumentBox
-          id="3"
-          title="แฟ้มที่ 2"
-          type="generatedFolder"
-          showDate
-          createdDate={new Date('12/08/2021')}
-          colorBar="#FF9898"
-        />
-        <DocumentBox
-          id="4"
-          title="แฟ้มที่ 2"
-          type="generatedFolder"
-          showDate
-          createdDate={new Date('12/08/2021')}
-          colorBar="#FF9898"
-        />
-        <DocumentBox
-          id="5"
-          title="แฟ้มที่ 2"
-          type="generatedFolder"
-          showDate
-          createdDate={new Date('12/08/2021')}
-          colorBar="#FF9898"
-        />
-        <DocumentBox
-          id="6"
-          title="แฟ้มที่ 2"
-          type="generatedFolder"
-          showDate
-          createdDate={new Date('12/08/2021')}
-          colorBar="#FF9898"
-        />
-      </DocumentBar>
+  if (latestFilesLoading || latestFolderLoading) return <div>Loading...</div>
 
-      <DocumentBar title="เอกสารล่าสุด" url="broo">
-        {latestFiles?.map((file: any) => (
-          <DocumentBox
-            id={file.id}
-            title={file.officialName}
-            type={file.type ?? 'generatedFile'}
-            showDate
-            createdDate={new Date(file.date)}
+  if (latestFilesError || latestFolderError) return <div>Error</div>
+
+  if (latestFiles && latestFolder)
+    return (
+      <VStack marginTop="4px">
+        <Center>
+          <SearchBox />
+        </Center>
+        <PopularBar title="รายการยอดฮิต" url="">
+          <PopularBox
+            title="เอกสารประกอบการสอน"
+            image="https://trendwatchers.co/wp-content/uploads/2020/04/1_r_46B-6pUz9L0sq9fVuChA.jpeg"
           />
-        ))}
-        {/* <DocumentBox id="7" title="แฟ้มที่ 1" type="generatedFile" showDate />
-        <DocumentBox
-          id="6"
-          title="แฟ้มที่ 2"
-          type="generatedFile"
-          showDate
-          createdDate={new Date('12/08/2021')}
-          colorBar="#FF9898"
-        />
-        <DocumentBox
-          id="6"
-          title="แฟ้มที่ 2"
-          type="generatedFile"
-          showDate
-          createdDate={new Date('12/08/2021')}
-          colorBar="#FF9898"
-        />
-        <DocumentBox
-          id="6"
-          title="แฟ้มที่ 2"
-          type="generatedFile"
-          showDate
-          createdDate={new Date('12/08/2021')}
-          colorBar="#FF9898"
-        />
-        <DocumentBox
-          id="6"
-          title="แฟ้มที่ 2"
-          type="generatedFile"
-          showDate
-          createdDate={new Date('12/08/2021')}
-          colorBar="#FF9898"
-        />
-        <DocumentBox
-          id="6"
-          title="แฟ้มที่ 2"
-          type="generatedFile"
-          showDate
-          createdDate={new Date('12/08/2021')}
-          colorBar="#FF9898"
-        /> */}
-      </DocumentBar>
-    </VStack>
-  )
+          <PopularBox
+            title="การเรียนรู้"
+            image="https://trendwatchers.co/wp-content/uploads/2020/04/1_r_46B-6pUz9L0sq9fVuChA.jpeg"
+          />
+          <PopularBox
+            title="ฟังเพลง"
+            image="https://trendwatchers.co/wp-content/uploads/2020/04/1_r_46B-6pUz9L0sq9fVuChA.jpeg"
+          />
+          <PopularBox
+            title="ไลฟ์สไตล์"
+            image="https://trendwatchers.co/wp-content/uploads/2020/04/1_r_46B-6pUz9L0sq9fVuChA.jpeg"
+          />
+          <PopularBox
+            title="ที่ดิน"
+            image="https://trendwatchers.co/wp-content/uploads/2020/04/1_r_46B-6pUz9L0sq9fVuChA.jpeg"
+          />
+        </PopularBar>
+
+        <DocumentBar title="แฟ้มล่าสุด" url="broo">
+          {latestFolder.map((folder: any) => (
+            <DocumentBox
+              id={folder.id}
+              title={folder.officialName}
+              type="generatedFolder"
+              createdDate={folder.date}
+              showDate
+            />
+          ))}
+        </DocumentBar>
+
+        <DocumentBar title="เอกสารล่าสุด" url="broo">
+          {latestFiles?.map((file: any) => (
+            <DocumentBox
+              id={file.id}
+              title={file.officialName}
+              type={file.type ?? 'generatedFile'}
+              showDate
+              createdDate={new Date(file.date)}
+            />
+          ))}
+        </DocumentBar>
+      </VStack>
+    )
 }
 
 export default Home
