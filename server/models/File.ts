@@ -8,7 +8,7 @@ import formatUploadedFile from '@utils/formatUploadedFile'
 const fileType = [
   'generatedFile',
   'uploadedFile',
-  'UserFreeUploadFile',
+  'userFreeUploadFile',
 ] as const
 
 class File {
@@ -51,18 +51,32 @@ class File {
         ) AS "fields" FROM "GeneratedFile" WHERE id = ${id}::uuid
         `
       }
-      case 'uploadedFile':
-        return await Prisma.uploadedFile.findUnique({
-          where: {
-            id,
-          },
-        })
-      case 'UserFreeUploadFile':
-        return await Prisma.userFreeUploadFile.findUnique({
-          where: {
-            id,
-          },
-        })
+      case 'uploadedFile': {
+        return await Prisma.$queryRaw`
+          SELECT "UploadedFile".*, "UserUploadedFile"."URI" as "userURI",
+          "UserUploadedFile"."date",
+          "UserUploadedFile"."expirationDate",
+          array(
+          SELECT (json_build_object(
+              'id', "Tag"."id",
+              'name', "Tag"."name"
+            ))
+              FROM "UploadedFileTag"
+              LEFT JOIN "Tag" ON "Tag"."id" = "UploadedFileTag"."tagId"
+           	  WHERE "UploadedFileTag"."uploadedFileId" = ${id}::uuid
+           ) AS "tags"
+          FROM "UploadedFile" 
+          LEFT JOIN "UserUploadedFile" 
+          ON "UserUploadedFile"."uploadedFileId" = "UploadedFile"."id"
+          WHERE "UploadedFile"."id" = ${id}::uuid
+        `
+      }
+      case 'userFreeUploadFile': {
+        return await Prisma.$queryRaw`
+            SELECT * FROM "UserFreeUploadFile"
+            WHERE "id" = ${id}::uuid
+          `
+      }
       default:
         return null
     }
@@ -74,7 +88,7 @@ class File {
         return await formatGeneratedFile(file)
       case 'uploadedFile':
         return await formatUploadedFile(file)
-      case 'UserFreeUploadFile':
+      case 'userFreeUploadFile':
         return file
       default:
         return null
