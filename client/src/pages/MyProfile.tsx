@@ -1,29 +1,19 @@
 import { Box, Center, HStack } from '@chakra-ui/react'
 import ProfileFormInput from '@components/ProfileFormInput'
 import ProfilePicture from '@components/ProfilePicture'
-import { useState, useEffect } from 'react'
-import User from '@models/User'
-import Axios from 'axios'
+import { useLoginDataStore } from '@stores/LoginDataStore'
 
 const MyProfile = () => {
-  var personal_info: User
+  const profile = useLoginDataStore((state) => state.user)
 
-  useEffect(() => {
-    console.log('getProfile')
-    //get personal info from api
-   
-    /*Axios.get<User>('api/user').then(res=>{
-      personal_info = res.data
-      console.log(personal_info)
-    })*/
-  })
+  console.log(profile)
 
   return (
     <Box sx={myprofileLayout}>
       <Center>
         <HStack gap="138px">
-          <ProfilePicture url={personal_info.profileURI} />
-          <ProfileFormInput />
+          <ProfilePicture url={profile?.profileURI} />
+          <ProfileFormInput data={profile} />
         </HStack>
       </Center>
     </Box>

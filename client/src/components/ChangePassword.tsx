@@ -1,7 +1,8 @@
 import { Button, Flex } from '@chakra-ui/react'
-import FormInput from './FormInput'
+import FormInput from '@components/FormInput'
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
+
 import {
   Modal,
   ModalOverlay,
@@ -15,15 +16,35 @@ import {
 } from '@chakra-ui/react'
 import { HiKey } from 'react-icons/hi'
 
-type propsType = {
-  editProfile: boolean
-  callback?: ()=>{}
-}
-
-
-const ChangePassword = ({ editProfile,callback }: propsType) => {
+const ChangePassword = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const toast = useToast()
+
+  const ChangePasswordSchema = Yup.object().shape({
+    oldPassword: Yup.string().required('กรุณากรอกรหัสผ่านเดิม'),
+    newPassword: Yup.string().required('กรุณากรอกรหัสผ่านใหม่'),
+    confirmPassword: Yup.string().required('กรุณากรอกรหัสผ่านใหม่อีกครั้ง'),
+  })
+//-------------api change password----------------
+  const setNewPassword = async (values: any) => {
+    console.log('api process')
+    if (values.newPassword == values.confirmPassword) {
+      console.log(values.newPassword)
+      console.log(values.confirmPassword)
+      toast({
+        title: 'เปลี่ยนรหัสผ่านสำเร็จ',
+        status: 'success',
+        duration: 5000,
+      })
+      onClose()
+    } else {
+      toast({
+        title: 'เปลี่ยนรหัสผ่านไม่สำเร็จ',
+        status: 'error',
+        duration: 5000,
+      })
+    }
+  }
 
   return (
     <>
@@ -49,71 +70,59 @@ const ChangePassword = ({ editProfile,callback }: propsType) => {
         <ModalContent justifyContent="center">
           <ModalHeader>เปลี่ยนรหัสผ่านใหม่</ModalHeader>
           <Formik
-              initialValues={{
-                password: '',
-                newPassword: '',
-                confirmPassword: '',
-              }}
-              onSubmit={(values) => {
-                if (values.newPassword == values.confirmPassword) {
-                  console.log(values.newPassword)
-                  console.log(values.confirmPassword)
-                  toast({
-                    title: 'เปลี่ยนรหัสผ่านสำเร็จ',
-                    status: 'success',
-                    duration: 5000,
-                   
-                  }) 
-                  onClose()
-                }else{
-                  toast({
-                    title: 'เปลี่ยนรหัสผ่านไม่สำเร็จ',
-                    status: 'error',
-                    duration: 5000,
-                  })
-
-                }
-              }}
-            >
-              <Form>
-          <ModalBody>
-           
+            initialValues={{
+              oldPassword: '',
+              newPassword: '',
+              confirmPassword: '',
+            }}
+            validationSchema={ChangePasswordSchema}
+            onReset={(values) => {
+              onClose()
+            }}
+            onSubmit={(values) => {
+              //-----------------api process-----------------
+              setNewPassword(values)
+            }}
+          >
+            <Form>
+              <ModalBody>
                 <FormInput
                   label="รหัสผ่านยืนยัน"
-                  name="password"
+                  name="oldPassword"
                   type="password"
                   placeholder="กรอกรหัสผ่านเพื่อยืนยัน"
-                  showCorrectBorder
                 />
                 <FormInput
                   label="รหัสผ่านใหม่"
-                  name="newpassword"
+                  name="newPassword"
                   type="password"
                   placeholder="รหัสผ่านใหม่"
-                  showCorrectBorder
                 />
                 <FormInput
                   label="ยืนยันรหัสผ่านใหม่"
-                  name="newpasswordconfirm"
+                  name="confirmPassword"
                   type="password"
                   placeholder="ยืนยันรหัสผ่านใหม่"
-                  showCorrectBorder
                 />
-            
-          </ModalBody>
+              </ModalBody>
 
-          <ModalFooter justifyContent="center">
-            <Flex gap="22px">
-              <Button variant="outline" onClick={onClose}>
-                ยกเลิก
-              </Button>
-              <Button variant="solid" colorScheme="blue" type="submit" name='submit'>
-                ตกลง
-              </Button>
-            </Flex>
-          </ModalFooter>
-          </Form>
-            </Formik>
+              <ModalFooter justifyContent="center">
+                <Flex gap="22px">
+                  <Button variant="outline" type="reset">
+                    ยกเลิก
+                  </Button>
+                  <Button
+                    variant="solid"
+                    colorScheme="blue"
+                    type="submit"
+                    
+                  >
+                    ตกลง
+                  </Button>
+                </Flex>
+              </ModalFooter>
+            </Form>
+          </Formik>
         </ModalContent>
       </Modal>
     </>

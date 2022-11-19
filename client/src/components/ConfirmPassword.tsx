@@ -1,5 +1,5 @@
 import { Button, Flex } from '@chakra-ui/react'
-import FormInput from './FormInput'
+import FormInput from '@components/FormInput'
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import {
@@ -9,37 +9,31 @@ import {
   ModalHeader,
   ModalFooter,
   ModalBody,
-  ModalCloseButton,
-  useDisclosure,
   useToast,
+  useDisclosure
 } from '@chakra-ui/react'
-
-type propsType = {
-  onClick?: () => void
+import { IoSpeedometerOutline } from 'react-icons/io5'
+import { useMyProfileStore } from '@stores/MyProfilePageStore'
+type porpTypes = {
+  isOpen?: boolean
+  toggleModal?: (values: boolean) => boolean
 }
 
-const ConfirmPassword = ({ onClick }: propsType) => {
-  const { isOpen, onOpen, onClose } = useDisclosure()
+const ConfirmPassword = ({  toggleModal }: porpTypes) => {
   const toast = useToast()
-
+  const {isOpen, onOpen, onClose} = useDisclosure()
   const submitForm = () => {
-    if (onClick) {
-      onClick()
-    }
-    onClose()
+    console.log('api process')
     toast({
       title: 'แก้ไขข้อมูลส่วนตัวสำเร็จ',
       status: 'success',
       duration: 5000,
     })
+    onClose()
   }
 
   return (
     <>
-      <Button onClick={onOpen} colorScheme="blue">
-        ตกลง
-      </Button>
-
       <Modal
         isOpen={isOpen}
         onClose={onClose}
@@ -49,38 +43,41 @@ const ConfirmPassword = ({ onClick }: propsType) => {
       >
         <ModalOverlay />
         <ModalContent justifyContent="center">
-          <ModalHeader>ยืนยันการแก้ไขข้อมูล</ModalHeader>
-          <ModalBody>
-            <Formik
-              initialValues={{
-                password: '',
-              }}
-              onSubmit={(values) => {
-                console.log(values)
-              }}
-            >
-              <Form>
+          <Formik
+            initialValues={{
+              password: '',
+            }}
+            onReset={(values) => {
+              console.log(values)
+              onClose()
+            }}
+            onSubmit={(values) => {
+              console.log(values)
+              submitForm()
+            }}
+          >
+            <Form>
+              <ModalHeader>ยืนยันการแก้ไขข้อมูล</ModalHeader>
+              <ModalBody>
                 <FormInput
                   label="รหัสผ่านยืนยัน"
                   name="password"
                   type="password"
                   placeholder="กรอกรหัสผ่านเพื่อยืนยัน"
-                  showCorrectBorder
                 />
-              </Form>
-            </Formik>
-          </ModalBody>
-
-          <ModalFooter justifyContent="center">
-            <Flex gap="22px">
-              <Button variant="outline" onClick={onClose}>
-                ยกเลิก
-              </Button>
-              <Button variant="solid" colorScheme="blue" onClick={submitForm}>
-                ตกลง
-              </Button>
-            </Flex>
-          </ModalFooter>
+              </ModalBody>
+              <ModalFooter justifyContent="center">
+                <Flex gap="22px">
+                  <Button variant="outline" type="reset">
+                    ยกเลิก
+                  </Button>
+                  <Button variant="solid" colorScheme="blue" type="submit">
+                    ตกลง
+                  </Button>
+                </Flex>
+              </ModalFooter>
+            </Form>
+          </Formik>
         </ModalContent>
       </Modal>
     </>

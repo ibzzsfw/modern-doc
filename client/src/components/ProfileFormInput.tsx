@@ -6,16 +6,29 @@ import {
   HStack,
   Text,
   VStack,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  useToast,
+  useDisclosure,
 } from '@chakra-ui/react'
 import ChangePassword from '@components/ChangePassword'
-import ConfirmPassword from '@components/ConfirmPassword'
 import FormInput from '@components/FormInput'
+import UserType from '@models/UserType'
 import { Form, Formik } from 'formik'
-import { useState,useEffect } from 'react'
+import { useState } from 'react'
 import { FiEdit } from 'react-icons/fi'
+import { useMyProfileStore } from '@stores/MyProfilePageStore'
+import { updateCurrentUser } from 'firebase/auth'
 
+type propTypes = {
+  data: UserType | null
+}
 
-const ProfileFormInput = () => {
+const ProfileFormInput = ({ data }: propTypes) => {
   const [info, setInfo] = useState({
     title: 'เด็กชาย',
     firstName: 'ใจฟู',
@@ -37,7 +50,8 @@ const ProfileFormInput = () => {
     province: 'กรุงเทพมหานคร',
     postalCode: '10600',
   })
-  const [editProfile, setEditProfile] = useState(true)
+  const { isEdit, setEdit } = useMyProfileStore()
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const selectOptions = {
     title: ['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง'],
@@ -47,30 +61,298 @@ const ProfileFormInput = () => {
     province: ['กรุงเทพมหานคร'],
     postalCode: ['10600'],
   }
+//------------confirm password and call update api
+  const handleform = (values) => {
 
-  let editButton = {
-    width: 'auto',
-    height: '40px',
-    backgroundColor: 'accent.white',
-    color: 'black',
-    right: '0px',
-    variant: 'outline',
-    border: '1px solid',
-    borderColor: '#E2E8F0',
-
-    _hover: {
-      backgroundColor: 'hover.gray',
-      color: 'white',
-    },
-    _active: {
-      backgroundColor: 'hover.white',
-    },
   }
+//---------------handale values for wait to confirm password
+  const updateProfile = (values) => {
+
+  }
+
+  const confirmPasswordModal = (
+    <>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        closeOnOverlayClick={false}
+        size="sm"
+        isCentered
+      >
+        <ModalOverlay />
+
+        <ModalContent justifyContent="center">
+          <ModalHeader>ยืนยันการแก้ไขข้อมูล</ModalHeader>
+          <Formik
+            initialValues={{
+              password: '',
+            }}
+            onReset={(values) => {
+              console.log(values)
+              onClose()
+            }}
+            onSubmit={(values, actions) => {
+              console.log(values)
+              updateUser(values)
+            }}
+          >
+            <Form>
+              <ModalBody>
+                <FormInput
+                  label="รหัสผ่านยืนยัน"
+                  name="password"
+                  type="password"
+                  placeholder="กรอกรหัสผ่านเพื่อยืนยัน"
+                />
+              </ModalBody>
+
+              <ModalFooter justifyContent="center">
+                <Flex gap="22px">
+                  <Button variant="outline" type="reset">
+                    ยกเลิก
+                  </Button>
+                  <Button variant="solid" colorScheme="blue" type="submit">
+                    ตกลง
+                  </Button>
+                </Flex>
+              </ModalFooter>
+            </Form>
+          </Formik>
+        </ModalContent>
+      </Modal>
+    </>
+  )
+
  
+  return (
+    <VStack>
+      <Box width="100%" textAlign="right" height="40px">
+        <Button
+          variant="outline"
+          visibility={isEdit ? 'hidden' : 'visible'}
+          leftIcon={<FiEdit />}
+          onClick={() => {
+            setEdit(true)
+          }}
+        >
+          แก้ไขข้อมูลส่วนตัว
+        </Button>
+      </Box>
+      <Text as="b" width="100%">
+        ข้อมูลส่วนตัว
+      </Text>
+      <Divider />
+
+      <Formik
+        initialValues={info}
+        onReset={(values) => {
+          setEdit(false)
+        }}
+        onSubmit={(values) => {
+          console.log(values)
+          //--------------------do something for handle value
+          //----------next Open modal for confirm password
+          handleform(values)
+          onOpen()
+        }}
+      >
+        <Form>
+          <VStack align="flex-start">
+            <FormInput
+              label="เลขบัตรประจำตัวประชาชน"
+              name="citizenId"
+              type="text"
+              placeholder="กรอกเลขบัตรประจำตัวประชาชน"
+              width="208px"
+              disable
+            />
+            <Flex gap="16px">
+              <FormInput
+                label="คำนำหน้า"
+                name="title"
+                type="select"
+                options={['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง']}
+                placeholder="เลือกคำนำหน้า"
+                width="143px"
+                disable={!isEdit}
+              />
+              <FormInput
+                label="ชื่อ"
+                name="firstName"
+                type="text"
+                placeholder="กรอกชื่อไม่ต้องระบุคำนำหน้า"
+                width="208px"
+                disable={!isEdit}
+              />
+              <FormInput
+                label="นามสกุล"
+                name="lastName"
+                type="text"
+                placeholder="กรอกนามสกุล"
+                width="226px"
+                disable={!isEdit}
+              />
+            </Flex>
+            <Flex gap="16px">
+              <FormInput
+                label="เพศ"
+                name="sex"
+                type="select"
+                placeholder="--เลือกเพศ--"
+                options={selectOptions.sex}
+                width="111px"
+                disable={!isEdit}
+              />
+              <FormInput
+                label="วัน/เดือน/ปีเกิด"
+                name="birthDate"
+                type="date"
+                placeholder="XX/XX/XXXX"
+                width="214px"
+                disable={!isEdit}
+              />
+              <FormInput
+                label="หมายเลขโทรศัพท์"
+                name="phoneNumber"
+                type="text"
+                placeholder="08XXXXXXXX"
+                width="252px"
+                disable={!isEdit}
+              />
+            </Flex>
+
+            <Flex gap="16px" alignItems="flex-end">
+              <FormInput
+                label="E-mail ที่ใช้ในการสมัคร"
+                name="email"
+                type="email"
+                placeholder="example@moderndoc.angel.com"
+                width="238px"
+                disable={!isEdit}
+              />
+              {!isEdit && <ChangePassword />}
+            </Flex>
+            <Text as="b">ที่อยู่ตามทะเบียนบ้าน</Text>
+            <Divider />
+            <Flex gap="16px">
+              <FormInput
+                label="บ้านเลขที่"
+                name="้houseNumber"
+                type="text"
+                placeholder="กรอกบ้านเลขที่"
+                width="121px"
+                disable={!isEdit}
+              />
+              <FormInput
+                label="หมู่บ้าน"
+                name="villageName"
+                type="text"
+                placeholder="กรอกหมู่บ้าน"
+                width="213px"
+                disable={!isEdit}
+              />
+              <FormInput
+                label="หมู่ที่"
+                name="swineNumber"
+                type="text"
+                placeholder="กรอกหมู่ที่"
+                width="67px"
+                disable={!isEdit}
+              />
+              <FormInput
+                label="ตรอก"
+                name="alley"
+                type="text"
+                placeholder="กรอกนามสกุล"
+                width="160px"
+                disable={!isEdit}
+              />
+            </Flex>
+            <Flex gap="16px">
+              <FormInput
+                label="ซอย"
+                name="lane"
+                type="text"
+                placeholder="กรอกซอย"
+                width="153px"
+                disable={!isEdit}
+              />
+              <FormInput
+                label="ถนน"
+                name="road"
+                type="text"
+                placeholder="กรอกถนน"
+                width="232px"
+                disable={!isEdit}
+              />
+              <FormInput
+                label="ตำบล/แขวง"
+                name="subDistrict"
+                type="select"
+                options={selectOptions.subDistrict}
+                placeholder="กรอกตำบล/แขวง"
+                width="192px"
+                disable={!isEdit}
+              />
+            </Flex>
+            <Flex gap="16px">
+              <FormInput
+                label="อำเภอ/เขต"
+                name="district"
+                type="select"
+                options={selectOptions.district}
+                placeholder="กรอกอำเภอ/เขต"
+                width="209px"
+                disable={!isEdit}
+              />
+              <FormInput
+                label="จังหวัด"
+                name="province"
+                type="select"
+                options={selectOptions.province}
+                placeholder="กรอกจังหวัด"
+                width="222px"
+                disable={!isEdit}
+              />
+              <FormInput
+                label="รหัสไปรษณีย์"
+                name="postalCode"
+                type="select"
+                options={selectOptions.postalCode}
+                placeholder="กรอกรหัสไปรษณีย์"
+                width="146px"
+                disable={!isEdit}
+              />
+            </Flex>
+            <Box height="40px" textAlign="right" width="100%">
+              <HStack
+                gap="22px"
+                justifyContent="flex-end"
+                display={isEdit ? 'unset' : 'none'}
+              >
+                <Button type="reset">ยกเลิก</Button>
+                <Button type="submit" colorScheme="blue">
+                  ตกลง
+                </Button>
+              </HStack>
+            </Box>
+          </VStack>
+          {confirmPasswordModal}
+        </Form>
+      </Formik>
+    </VStack>
+  )
+}
 
 
-  /*const ProfileSchema = Yup.object().shape({
-        prefix: Yup.mixed().oneOf(info.prefix),
+export default ProfileFormInput
+
+
+
+
+
+ /*const ProfileSchema = Yup.object().shape({
+        title: Yup.mixed().oneOf(['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง']),
         firstName: Yup.string().required('จำเป็นต้องกรอก'),
         lastName: Yup.string().required('จำเป็นต้องกรอก'),
         sex: Yup.mixed().oneOf(sex).required('จำเป็นต้องกรอก'),
@@ -89,238 +371,3 @@ const ProfileFormInput = () => {
         confirmPassword: Yup.string().required('จำเป็นต้องกรอก'),
       })
     */
-  return (
-    <VStack>
-      <Box width="100%" textAlign="right" height="40px">
-        <Button
-          sx={editButton}
-          visibility={!editProfile ? 'hidden' : 'visible'}
-          leftIcon={<FiEdit />}
-          onClick={() => {
-            setEditProfile(false)
-          }}
-        >
-          แก้ไขข้อมูลส่วนตัว
-        </Button>
-      </Box>
-      <Text as="b" width="100%">
-        ข้อมูลส่วนตัว
-      </Text>
-      <Divider />
-
-      <Formik
-        initialValues={info}
-        onSubmit={(values) => {
-          console.log(values)
-        }}
-      >
-        <Form>
-          <VStack align="flex-start">
-            <FormInput
-              label="เลขบัตรประจำตัวประชาชน"
-              name="citicenId"
-              type="text"
-              placeholder={info.citizenId}
-              showCorrectBorder
-              width="208px"
-              disable
-            />
-            <Flex gap="16px">
-              <FormInput
-                label="คำนำหน้า"
-                name="prefix"
-                type="select"
-                options={selectOptions.title}
-                placeholder={info.title}
-                showCorrectBorder
-                width="143px"
-                disable={editProfile}
-              />
-              <FormInput
-                label="ชื่อ"
-                name="firstName"
-                type="text"
-                placeholder="กรอกชื่อไม่ต้องระบุคำนำหน้า"
-                showCorrectBorder
-                width="208px"
-                disable={editProfile}
-              />
-              <FormInput
-                label="นามสกุล"
-                name="lastName"
-                type="text"
-                placeholder="กรอกนามสกุล"
-                showCorrectBorder
-                width="226px"
-                disable={editProfile}
-              />
-            </Flex>
-            <Flex gap="16px">
-              <FormInput
-                label="เพศ"
-                name="sex"
-                type="select"
-                placeholder="--เลือกเพศ--"
-                options={selectOptions.sex}
-                showCorrectBorder
-                width="111px"
-                disable={editProfile}
-              />
-              <FormInput
-                label="วัน/เดือน/ปีเกิด"
-                name="birthDate"
-                type="date"
-                placeholder="XX/XX/XXXX"
-                showCorrectBorder
-                width="214px"
-                disable={editProfile}
-              />
-              <FormInput
-                label="หมายเลขโทรศัพท์"
-                name="phoneNumber"
-                type="text"
-                placeholder="08XXXXXXXX"
-                showCorrectBorder
-                width="252px"
-                disable={editProfile}
-              />
-            </Flex>
-
-            <Flex gap="16px" alignItems="flex-end">
-              <FormInput
-                label="E-mail ที่ใช้ในการสมัคร"
-                name="email"
-                type="email"
-                placeholder="example@moderndoc.angel.com"
-                showCorrectBorder
-                width="238px"
-                disable={editProfile}
-              />
-              <ChangePassword editProfile={editProfile} />
-            </Flex>
-            <Text as="b">ที่อยู่ตามทะเบียนบ้าน</Text>
-            <Divider />
-            <Flex gap="16px">
-              <FormInput
-                label="บ้านเลขที่"
-                name="้houseNumber"
-                type="text"
-                placeholder="กรอกบ้านเลขที่"
-                showCorrectBorder
-                width="121px"
-                disable={editProfile}
-              />
-              <FormInput
-                label="หมู่บ้าน"
-                name="villageName"
-                type="text"
-                placeholder="กรอกหมู่บ้าน"
-                showCorrectBorder
-                width="213px"
-                disable={editProfile}
-              />
-              <FormInput
-                label="หมู่ที่"
-                name="swineNumber"
-                type="text"
-                placeholder="กรอกหมู่ที่"
-                showCorrectBorder
-                width="67px"
-                disable={editProfile}
-              />
-              <FormInput
-                label="ตรอก"
-                name="alley"
-                type="text"
-                placeholder="กรอกนามสกุล"
-                showCorrectBorder
-                width="160px"
-                disable={editProfile}
-              />
-            </Flex>
-            <Flex gap="16px">
-              <FormInput
-                label="ซอย"
-                name="lane"
-                type="text"
-                placeholder="กรอกซอย"
-                showCorrectBorder
-                width="153px"
-                disable={editProfile}
-              />
-              <FormInput
-                label="ถนน"
-                name="road"
-                type="text"
-                placeholder="กรอกถนน"
-                showCorrectBorder
-                width="232px"
-                disable={editProfile}
-              />
-              <FormInput
-                label="ตำบล/แขวง"
-                name="subDistrict"
-                type="select"
-                options={selectOptions.subDistrict}
-                placeholder="กรอกตำบล/แขวง"
-                showCorrectBorder
-                width="192px"
-                disable={editProfile}
-              />
-            </Flex>
-            <Flex gap="16px">
-              <FormInput
-                label="อำเภอ/เขต"
-                name="district"
-                type="select"
-                options={selectOptions.district}
-                placeholder="กรอกอำเภอ/เขต"
-                showCorrectBorder
-                width="209px"
-                disable={editProfile}
-              />
-              <FormInput
-                label="จังหวัด"
-                name="province"
-                type="select"
-                options={selectOptions.province}
-                placeholder="กรอกจังหวัด"
-                showCorrectBorder
-                width="222px"
-                disable={editProfile}
-              />
-              <FormInput
-                label="รหัสไปรษณีย์"
-                name="postalCode"
-                type="select"
-                options={selectOptions.postalCode}
-                placeholder="กรอกรหัสไปรษณีย์"
-                showCorrectBorder
-                width="146px"
-                disable={editProfile}
-              />
-            </Flex>
-            <Box height="40px" textAlign="right" width="100%">
-              <HStack gap="22px" justifyContent="flex-end" display= {editProfile ? 'none' : 'unset'}>
-                <Button
-                  onClick={() => {
-                    setEditProfile(true)
-                  }}
-                >
-                  ยกเลิก
-                </Button>
-                <ConfirmPassword
-                  onClick={() => {
-                    setEditProfile(true)
-                  }}
-                />
-              </HStack>
-            </Box>
-          </VStack>
-        </Form>
-      </Formik>
-    </VStack>
-  )
-}
-
-export default ProfileFormInput
