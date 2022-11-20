@@ -57,12 +57,71 @@ const FileList = ({ files }: propsType) => {
     return generatedFile.filter((f) => f.id === file.id).length > 0
   }
 
-
-
   useEffect(() => console.table(generatedFile), [generatedFile])
 
   const countGeneratedFile = () =>
     files.filter((file) => file instanceof GeneratedFile).length
+
+  const menuOptionFix = [
+    {
+      title: 'ดูตัวอย่าง',
+      icon: <Icon as={RiFileSearchLine} />,
+      onClick: () => {
+        ///----------function see example
+      },
+    },
+    {
+      title: 'นำเข้าจากสมาชิก',
+      icon: <Icon as={HiArrowDownRight} />,
+      onClick: () => {
+        //-------- function import from member
+      },
+    },
+  ]
+
+  const menuGenerateFile = (
+    <MenuProvider
+      left="690px"
+      top="36px"
+      menusList={[
+        [
+          {
+            title: 'สร้างเอกสาร',
+            icon: <Icon as={AiOutlinePlus} />,
+            onClick: () => {
+              //---------function generate file
+            },
+          },
+        ],
+        menuOptionFix,
+      ]}
+    >
+      <Icon as={BsThreeDots} sx={threeDot} boxSize="18px" />
+    </MenuProvider>
+  )
+
+  const menuUploadFile = (
+    <MenuProvider
+      left="690px"
+      top="36px"
+      menusList={[
+        [
+          {
+            title: 'อัพโหลดไฟล์ใหม่',
+            icon: <Icon as={GrUpload} />,
+            onClick: () => {
+              //---------function upload file if you want you can delete this because have button upload file
+              setOpen(true)
+              setFile(file)
+            },
+          },
+        ],
+        menuOptionFix,
+      ]}
+    >
+      <Icon as={BsThreeDots} sx={threeDot} boxSize="18px" />
+    </MenuProvider>
+  )
 
   return (
     <>
@@ -125,7 +184,9 @@ const FileList = ({ files }: propsType) => {
                   </Box>
                   <Box sx={simpleBox}>{'API'}</Box>
                   <Box sx={simpleBox}>
-                    {(file instanceof GeneratedFile) ? menuGenerateFile : menuUploadFile}
+                    {file instanceof GeneratedFile
+                      ? menuGenerateFile
+                      : menuUploadFile}
                   </Box>
                 </Grid>
               </>
@@ -215,61 +276,3 @@ let threeDot = {
 }
 
 export default FileList
-
-let menuGenerateFile = (
-  <MenuProvider
-    left="690px"
-    top="36px"
-    menusList={[
-      [],
-      [
-        {
-          title: 'สร้างเอกสาร',
-          icon: <Icon as={AiOutlinePlus} />,
-          onClick: () => {},
-        },
-        {
-          title: 'ดูตัวอย่าง',
-          icon: <Icon as={RiFileSearchLine} />,
-          onClick: () => {},
-        },
-        {
-          title: 'นำเข้าจากสมาชิก',
-          icon: <Icon as={HiArrowDownRight} />,
-          onClick: () => {},
-        },
-      ],
-    ]}
-  >
-    <Icon as={BsThreeDots} sx={threeDot} boxSize="18px" />
-  </MenuProvider>
-)
-
-let menuUploadFile = (
-  <MenuProvider
-    left="690px"
-    top="36px"
-    menusList={[
-      [
-        {
-          title: 'อัพโหลดไฟล์ใหม่',
-          icon: <Icon as={GrUpload} />,
-          onClick: () => {},
-        },
-
-        {
-          title: 'ดูตัวอย่าง',
-          icon: <Icon as={RiFileSearchLine} />,
-          onClick: () => {},
-        },
-        {
-          title: 'นำเข้าจากสมาชิก',
-          icon: <Icon as={HiArrowDownRight} />,
-          onClick: () => {},
-        },
-      ],
-    ]}
-  >
-    <Icon as={BsThreeDots} sx={threeDot} boxSize="18px" />
-  </MenuProvider>
-)
