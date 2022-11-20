@@ -6,31 +6,33 @@ import {
   Divider,
   Flex,
   Grid,
+  Icon,
   IconButton,
   Spacer,
 } from '@chakra-ui/react'
-import {
-  AiOutlineDownload,
-  AiOutlineUpload,
-  AiFillTag,
-  AiFillClockCircle,
-  AiOutlinePlusCircle
-} from 'react-icons/ai'
-import FolderUploadedFile from '@models/FolderUploadedFile'
-import DocumentBadge from '@components/DocumentBadge'
+import MenuProvider from '@components/MenuProvider'
+import UploadFile from '@components/UploadFile'
 import GeneratedFile from '@models/GeneratedFile'
 import UploadedFile from '@models/UploadedFile'
 import { useGeneratedFileStore } from '@stores/GeneratedFile'
-import { useState, useEffect } from 'react'
-import UploadFile from '@components/UploadFile'
-import { } from 'react-icons/ai'
+import { useEffect, useState } from 'react'
+import {
+  AiFillClockCircle,
+  AiFillTag,
+  AiOutlineDownload,
+  AiOutlinePlus,
+  AiOutlineUpload,
+} from 'react-icons/ai'
+import { BsThreeDots } from 'react-icons/bs'
+import { GrUpload } from 'react-icons/gr'
+import { HiArrowDownRight } from 'react-icons/hi2'
+import { RiFileSearchLine } from 'react-icons/ri'
 
 type propsType = {
   files: any[]
 }
 
 const FileList = ({ files }: propsType) => {
-
   const { generatedFile, setGeneratedFile } = useGeneratedFileStore()
   const [open, setOpen] = useState(false)
   const [file, setFile] = useState<UploadedFile | null>(null)
@@ -55,47 +57,53 @@ const FileList = ({ files }: propsType) => {
     return generatedFile.filter((f) => f.id === file.id).length > 0
   }
 
+
+
   useEffect(() => console.table(generatedFile), [generatedFile])
 
-  const countGeneratedFile = () => files.filter((file) => file instanceof GeneratedFile).length
+  const countGeneratedFile = () =>
+    files.filter((file) => file instanceof GeneratedFile).length
 
-  return (<>
-    <Flex sx={fileList}>
-      <Box sx={tableBody}>
-        <Grid templateColumns="1fr 3fr 2fr 2fr 1fr 1fr" sx={tableHead}>
-          <Box sx={simpleBox}>
-            <Checkbox
-              isChecked={generatedFile.length === countGeneratedFile()}
-              onChange={(e) => onChangeAllCheckbox(e.target.checked)}
-            />
-          </Box>
-          <Box sx={simpleBox}>
-            <AiFillTag />
-            ชื่อเอกสาร
-          </Box>
-          <Box sx={simpleBox}>จำนวน</Box>
-          <Box sx={simpleBox}>
-            <AiFillClockCircle />
-            สถานะ
-          </Box>
-          <Box sx={simpleBox}>หมายเหตุ</Box>
-        </Grid>
-        <Divider />
-        <Box sx={tableContent}>
-          {files.map((file) => (
-            <>
-              <Grid
-                templateColumns="1fr 3fr 2fr 2fr 1fr 1fr"
-                sx={isSelectedThisFile(file) ? tableRowSelected : tableRow}
-                key={file.id}
-              >
-                <Box sx={simpleBox}>
-                  {
-                    (file instanceof GeneratedFile) ?
+  return (
+    <>
+      <Flex sx={fileList}>
+        <Box sx={tableBody}>
+          <Grid templateColumns="1fr 3fr 2fr 2fr 1fr 1fr" sx={tableHead}>
+            <Box sx={simpleBox}>
+              <Checkbox
+                isChecked={generatedFile.length === countGeneratedFile()}
+                onChange={(e) => onChangeAllCheckbox(e.target.checked)}
+              />
+            </Box>
+            <Box sx={simpleBox}>
+              <AiFillTag />
+              ชื่อเอกสาร
+            </Box>
+            <Box sx={simpleBox}>จำนวน</Box>
+            <Box sx={simpleBox}>
+              <AiFillClockCircle />
+              สถานะ
+            </Box>
+            <Box sx={simpleBox}>หมายเหตุ</Box>
+          </Grid>
+          <Divider />
+          <Box sx={tableContent}>
+            {files.map((file) => (
+              <>
+                <Grid
+                  templateColumns="1fr 3fr 2fr 2fr 1fr 1fr"
+                  sx={isSelectedThisFile(file) ? tableRowSelected : tableRow}
+                  key={file.id}
+                >
+                  <Box sx={simpleBox}>
+                    {file instanceof GeneratedFile ? (
                       <Checkbox
                         isChecked={isSelectedThisFile(file)}
-                        onChange={(e) => onChangeCheckbox(e.target.checked, file)}
-                      /> :
+                        onChange={(e) =>
+                          onChangeCheckbox(e.target.checked, file)
+                        }
+                      />
+                    ) : (
                       <IconButton
                         aria-label="Search database"
                         icon={<AiOutlineUpload />}
@@ -107,34 +115,37 @@ const FileList = ({ files }: propsType) => {
                           setFile(file)
                         }}
                       />
-                  }
-                </Box>
-                <Box sx={simpleBox}>{file.officialName}</Box>
-                <Box sx={simpleBox}>{'API'}</Box>
-                <Box sx={simpleBox}>
-                  {'API'}
-                  {/* <DocumentBadge status={file.getStatus()} /> */}
-                </Box>
-                <Box sx={simpleBox}>{'API'}</Box>
-                <Box sx={simpleBox}>...</Box>
-              </Grid>
-            </>
-          ))}
+                    )}
+                  </Box>
+                  <Box sx={simpleBox}>{file.officialName}</Box>
+                  <Box sx={simpleBox}>{'API'}</Box>
+                  <Box sx={simpleBox}>
+                    {'API'}
+                    {/* <DocumentBadge status={file.getStatus()} /> */}
+                  </Box>
+                  <Box sx={simpleBox}>{'API'}</Box>
+                  <Box sx={simpleBox}>
+                    {(file instanceof GeneratedFile) ? menuGenerateFile : menuUploadFile}
+                  </Box>
+                </Grid>
+              </>
+            ))}
+          </Box>
         </Box>
-      </Box>
-      <ButtonGroup>
-        <Spacer />
-        <Button
-          colorScheme={'messenger'}
-          size="sm"
-          rightIcon={<AiOutlineDownload />}
-        >
-          ดาวน์โหลดแฟ้ม
-        </Button>
-      </ButtonGroup>
-    </Flex>
-    <UploadFile open={open} setOpen={e => setOpen(e)} file={file} />
-  </>)
+        <ButtonGroup>
+          <Spacer />
+          <Button
+            colorScheme={'messenger'}
+            size="sm"
+            rightIcon={<AiOutlineDownload />}
+          >
+            ดาวน์โหลดแฟ้ม
+          </Button>
+        </ButtonGroup>
+      </Flex>
+      <UploadFile open={open} setOpen={(e) => setOpen(e)} file={file} />
+    </>
+  )
 }
 
 let abstractBox = {
@@ -197,4 +208,68 @@ let tableHead = {
   },
 }
 
+let threeDot = {
+  top: '10px',
+  right: '20px',
+  color: 'accent.black',
+}
+
 export default FileList
+
+let menuGenerateFile = (
+  <MenuProvider
+    left="690px"
+    top="36px"
+    menusList={[
+      [],
+      [
+        {
+          title: 'สร้างเอกสาร',
+          icon: <Icon as={AiOutlinePlus} />,
+          onClick: () => {},
+        },
+        {
+          title: 'ดูตัวอย่าง',
+          icon: <Icon as={RiFileSearchLine} />,
+          onClick: () => {},
+        },
+        {
+          title: 'นำเข้าจากสมาชิก',
+          icon: <Icon as={HiArrowDownRight} />,
+          onClick: () => {},
+        },
+      ],
+    ]}
+  >
+    <Icon as={BsThreeDots} sx={threeDot} boxSize="18px" />
+  </MenuProvider>
+)
+
+let menuUploadFile = (
+  <MenuProvider
+    left="690px"
+    top="36px"
+    menusList={[
+      [
+        {
+          title: 'อัพโหลดไฟล์ใหม่',
+          icon: <Icon as={GrUpload} />,
+          onClick: () => {},
+        },
+
+        {
+          title: 'ดูตัวอย่าง',
+          icon: <Icon as={RiFileSearchLine} />,
+          onClick: () => {},
+        },
+        {
+          title: 'นำเข้าจากสมาชิก',
+          icon: <Icon as={HiArrowDownRight} />,
+          onClick: () => {},
+        },
+      ],
+    ]}
+  >
+    <Icon as={BsThreeDots} sx={threeDot} boxSize="18px" />
+  </MenuProvider>
+)
