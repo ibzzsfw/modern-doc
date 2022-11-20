@@ -62,67 +62,44 @@ const FileList = ({ files }: propsType) => {
   const countGeneratedFile = () =>
     files.filter((file) => file instanceof GeneratedFile).length
 
-  const menuOptionFix = [
-    {
-      title: 'ดูตัวอย่าง',
-      icon: <Icon as={RiFileSearchLine} />,
-      onClick: () => {
-        ///----------function see example
+  const [menuOption, setmenuOption] = useState([
+    [
+      {
+        title: 'สร้างเอกสาร',
+        icon: <Icon as={AiOutlinePlus} />,
+        onClick: () => {
+          //---------function generate file
+        },
       },
-    },
-    {
-      title: 'นำเข้าจากสมาชิก',
-      icon: <Icon as={HiArrowDownRight} />,
-      onClick: () => {
-        //-------- function import from member
+      {
+        title: 'อัพโหลดไฟล์ใหม่',
+        icon: <Icon as={GrUpload} />,
+        onClick: () => {
+          //---------function upload file if you want you can delete this because have button upload file
+          setOpen(true)
+          setFile(file)
+        },
       },
-    },
-  ]
-
-  const menuGenerateFile = (
-    <MenuProvider
-      left="690px"
-      top="36px"
-      menusList={[
-        [
-          {
-            title: 'สร้างเอกสาร',
-            icon: <Icon as={AiOutlinePlus} />,
-            onClick: () => {
-              //---------function generate file
-            },
-          },
-        ],
-        menuOptionFix,
-      ]}
-    >
-      <Icon as={BsThreeDots} sx={threeDot} boxSize="18px" />
-    </MenuProvider>
-  )
-
-  const menuUploadFile = (
-    <MenuProvider
-      left="690px"
-      top="36px"
-      menusList={[
-        [
-          {
-            title: 'อัพโหลดไฟล์ใหม่',
-            icon: <Icon as={GrUpload} />,
-            onClick: () => {
-              //---------function upload file if you want you can delete this because have button upload file
-              setOpen(true)
-              setFile(file)
-            },
-          },
-        ],
-        menuOptionFix,
-      ]}
-    >
-      <Icon as={BsThreeDots} sx={threeDot} boxSize="18px" />
-    </MenuProvider>
-  )
-
+    ],
+    [
+      {
+        title: 'ดูตัวอย่าง',
+        icon: <Icon as={RiFileSearchLine} />,
+        onClick: () => {
+          ///----------function see example
+        },
+      },
+      {
+        title: 'นำเข้าจากสมาชิก',
+        icon: <Icon as={HiArrowDownRight} />,
+        onClick: () => {
+          //-------- function import from member
+        },
+      },
+    ],
+  ])
+  
+ 
   return (
     <>
       <Flex sx={fileList}>
@@ -184,9 +161,20 @@ const FileList = ({ files }: propsType) => {
                   </Box>
                   <Box sx={simpleBox}>{'API'}</Box>
                   <Box sx={simpleBox}>
-                    {file instanceof GeneratedFile
-                      ? menuGenerateFile
-                      : menuUploadFile}
+                    <Box position="absolute">
+                      <MenuProvider
+                        left="0px"
+                        top="20px"
+                        menusList={[
+                          file instanceof GeneratedFile
+                            ? [menuOption[0][0]]
+                            : [menuOption[0][1]],
+                          menuOption[1],
+                        ]}
+                      >
+                        <Icon as={BsThreeDots} sx={threeDot} boxSize="18px" />
+                      </MenuProvider>
+                    </Box>
                   </Box>
                 </Grid>
               </>
@@ -220,6 +208,7 @@ let fileList = {
   width: '648px',
   flexDirection: 'column',
   rowGap: '1rem',
+  position: 'relative',
 }
 
 let simpleBox = {
@@ -231,12 +220,14 @@ let simpleBox = {
 
 let tableBody = {
   ...abstractBox,
+
   overflow: 'hidden',
   shadow: '0px 1px 2px rgba(0, 0, 0, 0.25)',
 }
 
 let tableContent = {
   width: 'inherit',
+
   maxHeight: 'calc(768px - 48px - 80px)',
   overflowY: 'auto',
   overflowX: 'hidden',
@@ -270,9 +261,11 @@ let tableHead = {
 }
 
 let threeDot = {
-  top: '10px',
-  right: '20px',
+  position: 'absolute',
   color: 'accent.black',
+  _hover: {
+    color: 'accent.gray',
+  },
 }
 
 export default FileList
