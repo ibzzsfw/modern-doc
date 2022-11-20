@@ -78,7 +78,7 @@ class Folder {
     try {
       schema.parse({ name, userId })
       const folder = await Prisma.$queryRaw`
-        SELECT DISTINCT "Folder".* FROM "Folder"
+        SELECT DISTINCT "Folder".*,'generatedFolder' AS "type" FROM "Folder"
         LEFT JOIN "FolderTag" ON "Folder"."id" = "FolderTag"."folderId"
         LEFT JOIN "Tag" ON "FolderTag"."tagId" = "Tag"."id"
         WHERE ("Folder"."officialName" ILIKE ${`%${name}%`} OR "Folder"."description" ILIKE ${`%${name}%`}

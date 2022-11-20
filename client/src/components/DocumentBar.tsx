@@ -32,7 +32,7 @@ const DocumentBar = ({ title, children, url }: propsType) => {
   return (
     <>
       <Flex sx={layout}>
-        <Flex width="100%" justifyContent="space-between">
+        <Flex width="100%" justifyContent="space-between" alignItems='center'>
           <Text
             fontSize="18px"
             fontWeight="bold"

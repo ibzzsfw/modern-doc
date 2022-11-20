@@ -198,6 +198,36 @@ class File {
       return res.status(500).json({ message: err })
     }
   }
+
+  static async searchByName(req: Request, res: Response) {
+    const { name } = req.params
+    const userId = req.headers['user-id'] as string
+    const schema = z.object({
+      name: z.string(),
+      userId: z.string().uuid(),
+    })
+
+    try {
+      schema.parse({ name, userId })
+      const file = await Prisma.$queryRaw`
+        SELECT "GeneratedFile".*, 'generatedFile' as "type" FROM "GeneratedFile"
+        LEFT JOIN "GeneratedFileTag" ON "GeneratedFileTag"."generatedFileId" = "GeneratedFile"."id"
+        LEFT JOIN "Tag" ON "Tag"."id" = "GeneratedFileTag"."tagId"
+        WHERE "GeneratedFile"."name" ILIKE ${`%${name}%`} OR "Tag"."name" ILIKE ${`%${name}%`}
+        UNION
+        SELECT "UploadedFile".*, 'uploadedFile' as "type" FROM "UploadedFile"
+        LEFT JOIN "UploadedFileTag" ON "UploadedFileTag"."uploadedFileId" = "UploadedFile"."id"
+        LEFT JOIN "Tag" ON "Tag"."id" = "UploadedFileTag"."tagId"
+        WHERE "UploadedFile"."name" ILIKE ${`%${name}%`} OR "Tag"."name" ILIKE ${`%${name}%`}
+        UNION
+        SELECT "UserFreeUploadFile"."id","UserFreeUploadFile"."officialName",null as "name","UserFreeUploadFile"."URI",null as "description",null as "dayLifeSpan",'userFreeUploadFile' as "type" FROM "UserFreeUploadFile"
+        WHERE "UserFreeUploadFile"."officialName" ILIKE ${`%${name}%`} AND "UserFreeUploadFile"."userId" = ${userId}::uuid
+      `
+      res.status(200).json(file)
+    } catch (err) {
+      res.status(400).json(err)
+    }
+  }
 }
 
 export default File
