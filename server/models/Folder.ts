@@ -46,6 +46,50 @@ class Folder {
       res.status(400).json(err)
     }
   }
+
+  static async getLatestFolder(req: Request, res: Response) {
+    const userId = req.headers['user-id'] as string
+    const schema = z.string().uuid()
+
+    try {
+      schema.parse(userId)
+      const folder = await Prisma.$queryRaw`
+        SELECT "Folder".*,"UserFolder"."note","UserFolder"."date" 
+        FROM "UserFolder"
+        LEFT JOIN "Folder" ON "UserFolder"."folderId" = "Folder"."id"
+        WHERE "UserFolder"."userId" = ${userId}::uuid
+        ORDER BY "UserFolder"."date" DESC
+        LIMIT 3
+      `
+      res.json(folder)
+    } catch (err) {
+      res.status(400).json(err)
+    }
+  }
+
+  static async searchByName(req: Request, res: Response) {
+    const { name } = req.params
+    const userId = req.headers['user-id'] as string
+    const schema = z.object({
+      name: z.string(),
+      userId: z.string().uuid(),
+    })
+
+    try {
+      schema.parse({ name, userId })
+      const folder = await Prisma.$queryRaw`
+        SELECT DISTINCT "Folder".* FROM "Folder"
+        LEFT JOIN "FolderTag" ON "Folder"."id" = "FolderTag"."folderId"
+        LEFT JOIN "Tag" ON "FolderTag"."tagId" = "Tag"."id"
+        WHERE ("Folder"."officialName" ILIKE ${`%${name}%`} OR "Folder"."description" ILIKE ${`%${name}%`}
+        OR "Tag"."name" ILIKE ${`%${name}%`})
+        LIMIT 9
+      `
+      res.json(folder)
+    } catch (err) {
+      res.status(400).json(err)
+    }
+  }
 }
 
 export default Folder
