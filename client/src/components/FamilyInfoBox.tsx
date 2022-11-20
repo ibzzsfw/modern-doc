@@ -186,10 +186,11 @@ const FamilyInfoBox = ({
         <HStack gap="32px">
           <Box sx={uploadImagelayout}>
             <Image
-              src="https://bit.ly/sage-adebayo"
+              src={data?.profileURI}
               boxSize="206px"
               borderRadius="8px"
               position="absolute"
+               fallbackSrc="https://via.placeholder.com/365x365" 
             ></Image>
 
             <Box
