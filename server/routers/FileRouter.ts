@@ -16,6 +16,7 @@ class FileRouter {
   configureRoutes = (): void => {
     this.router.get('/get-by-id/:type/:id', this.controller.getFileById)
     this.router.get('/latest-files/:type', this.controller.getLatestFiles)
+    this.router.get('/search-by-name/:name', this.controller.searchByName)
   }
 }
 

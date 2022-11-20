@@ -7,6 +7,9 @@ class FileController {
   getLatestFiles = async (req: Request, res: Response) => {
     File.getLatestFiles(req, res)
   }
+  searchByName = async (req: Request, res: Response) => {
+    File.searchByName(req, res)
+  }
 }
 
 export default new FileController()
