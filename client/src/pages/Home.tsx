@@ -44,8 +44,10 @@ const Home = () => {
           <SearchBox
           
           onSearchClick={(values)=>{
-            setSearch(values)
-            nevigete(`/search/${values}`)   
+            if(values !== ''){
+              setSearch(values)
+            nevigete(`/search/${values}`)
+            }   
           }}/>
         </Center>
         <PopularBar title="รายการยอดฮิต" url={'search'} >
