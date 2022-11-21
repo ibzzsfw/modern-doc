@@ -1,13 +1,13 @@
 import create from 'zustand'
 
-type SearchDocumentStore = {
+type SearchBoxStore = {
   search: string,
   setSearch: (value: string) => void,
   searchResult: any | any[],
   setSearchResult: (value: any) => void,
 }
 
-export const useSearchDocumentStore = create<SearchDocumentStore>((set) => ({
+export const useSearchBoxStore = create<SearchBoxStore>((set) => ({
   search: '',
   setSearch: (value) => set({ search: value }),
   searchResult: [],

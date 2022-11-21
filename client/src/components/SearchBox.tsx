@@ -1,15 +1,15 @@
 import { HStack, Icon, IconButton, Input } from '@chakra-ui/react'
 import { FiSearch } from 'react-icons/fi'
-import { useParams, useNavigate } from 'react-router-dom'
-import { useEffect, useState } from 'react'
-
+import {useState } from 'react'
 type propsType = {
+  page? : string
   value?: string
+  onSearchClick?: (params : string)=>void
 }
 
-const SearchBox = ({ value }: propsType) => {
-  const nevigete = useNavigate()
+const SearchBox = ({ value , page, onSearchClick }: propsType) => {
   const [searchValue, setSearchValue] = useState(value || '')
+
 
   return (
     <HStack>
@@ -24,7 +24,8 @@ const SearchBox = ({ value }: propsType) => {
         icon={<Icon as={FiSearch} color="accent.white" boxSize="20px" />}
         sx={searchButton}
         onClick={() => {
-          searchValue !== '' ? nevigete(`/search/${searchValue}`) : ''
+          //searchValue !== '' ? nevigete(`/${page}/${searchValue}`) : ''
+          searchValue !== '' ? onSearchClick && onSearchClick(searchValue) : ''
         }}
       />
     </HStack>
@@ -40,10 +41,10 @@ let searchBox = {
 let searchButton = {
   backgroundColor: 'accent.blue',
   _hover: {
-    backgroundColor: 'hover.blue',
+    backgroundColor: 'hover.darkblue',
   },
   _active: {
-    backgroundColor: 'hover.blue',
+    backgroundColor: 'hover.white',
   },
 }
 

@@ -89,7 +89,9 @@ const MyDocument = () => {
             คลังเก็บเอกสารที่สร้างจากเว็บไซต์และเอกสารที่อัปโหลด
           </Text>
         </Flex>
-        <SearchBox />
+        <SearchBox onSearchClick={(params)=>{
+            
+        }}/>
       </Flex>
       <DocumentBar title="เอกสารที่แชร์ร่วมกัน">
         <DocumentBox

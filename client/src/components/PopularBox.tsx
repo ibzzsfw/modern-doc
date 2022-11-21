@@ -1,6 +1,6 @@
 import { Box, Flex, Text, VStack } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom'
-import { useSearchDocumentStore } from '@stores/SearchDocument'
+import { useSearchBoxStore } from '@stores/SearchBoxStore'
 
 type propsType = {
   title: string
@@ -10,7 +10,7 @@ type propsType = {
 const PopularBox = ({ title, image }: propsType) => {
 
   const navigate = useNavigate()
-  const { search, setSearch, setSearchResult } = useSearchDocumentStore()
+  const { search, setSearch, setSearchResult } = useSearchBoxStore()
 
   let layout = {
     width: '196px',

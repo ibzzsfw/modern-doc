@@ -8,10 +8,16 @@ import { useQuery } from '@tanstack/react-query'
 import FileController from '@models/FileController'
 import FolderController from '@models/FolderController'
 import { useLoginDataStore } from '@stores/LoginDataStore'
+import {useSearchBoxStore} from '@stores/SearchBoxStore'
+import {  useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 import File from '@models/File'
 
 const Home = () => {
   const user = useLoginDataStore.getState().user
+  const nevigete = useNavigate()
+  const { search, setSearch, setSearchResult } = useSearchBoxStore()
+  const [searchValue,setSearchValue] = useState('')
 
   const {
     data: latestFiles,
@@ -35,9 +41,14 @@ const Home = () => {
     return (
       <VStack marginTop="4px">
         <Center>
-          <SearchBox />
+          <SearchBox
+          
+          onSearchClick={(values)=>{
+            setSearch(values)
+            nevigete(`/search/${values}`)   
+          }}/>
         </Center>
-        <PopularBar title="รายการยอดฮิต" url="">
+        <PopularBar title="รายการยอดฮิต" url={'search'} >
           <PopularBox
             title="เอกสารประกอบการสอน"
             image="https://trendwatchers.co/wp-content/uploads/2020/04/1_r_46B-6pUz9L0sq9fVuChA.jpeg"

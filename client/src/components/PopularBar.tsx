@@ -1,6 +1,7 @@
 import { HStack, VStack, Text, Button, Icon, Flex } from '@chakra-ui/react'
 import { TiThLargeOutline } from 'react-icons/ti'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { useSearchBoxStore } from '@stores/SearchBoxStore'
 
 type propsType = {
   title: string
@@ -9,6 +10,8 @@ type propsType = {
 }
 
 const PopularBar = ({ title, children, url }: propsType) => {
+  const { setSearch } = useSearchBoxStore()
+  const navigate = useNavigate()
   let seeAllIcon = {
     boxShadow: '0px 5px 5px 1px rgba(0, 0, 0, 0.1)',
     borderRadius: '8px',
@@ -17,17 +20,23 @@ const PopularBar = ({ title, children, url }: propsType) => {
 
   return (
     <>
-      <VStack width="100%" gap="16px" padding='24px 0'>
+      <VStack width="100%" gap="16px" padding="24px 0">
         <Flex justifyContent={'space-between'} width="100%" alignItems="center">
           <Text fontSize="20px" fontWeight="bold">
             {title}
           </Text>
           {url && (
-            <Link to={'/search'}>
-              <Button leftIcon={<Icon as={TiThLargeOutline} />} sx={seeAllIcon} colorScheme='gray'>
-                ดูทั้งหมด
-              </Button>
-            </Link>
+            <Button
+              leftIcon={<Icon as={TiThLargeOutline} />}
+              sx={seeAllIcon}
+              colorScheme="gray"
+              onClick={()=>{
+                setSearch('')
+                navigate(`/search`)
+              }}
+            >
+              ดูทั้งหมด
+            </Button>
           )}
         </Flex>
         <Flex justifyContent={'space-between'} width="100%">
