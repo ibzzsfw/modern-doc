@@ -25,7 +25,7 @@ const SearchBox = ({ value , page, onSearchClick }: propsType) => {
         sx={searchButton}
         onClick={() => {
           //searchValue !== '' ? nevigete(`/${page}/${searchValue}`) : ''
-          searchValue !== '' ? onSearchClick && onSearchClick(searchValue) : ''
+          onSearchClick && onSearchClick(searchValue)
         }}
       />
     </HStack>
