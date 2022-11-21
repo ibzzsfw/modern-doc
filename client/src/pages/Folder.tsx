@@ -12,12 +12,17 @@ import FileViewerDrawer from '@components/FileViewerDrawer'
 import { PDFDocument, StandardFonts } from 'pdf-lib'
 import fontkit from '@pdf-lib/fontkit'
 import download from 'downloadjs'
+// import { useGeneratedFileStore } from '@stores/GeneratedFile'
+import { useState } from 'react'
 
 const Folder = ({/*folder */ }) => {
 
+  // const { filledGeneratedFile, setFilledGeneratedFile } = useGeneratedFileStore()
+  const [filledGeneratedFile, setFilledGeneratedFile] = useState<Uint8Array[]>([])
+
   const fieldSet: Field[] = [
-    // new Field('f1', 'tf', 'textField', 'text'),
-    // new Field('f2', 'nf', 'numberField', 'number'),
+    new Field('f1', 'tf', 'textField', 'text'),
+    new Field('f2', 'nf', 'numberField', 'number'),
     new Field('f3', 'df', 'dateField', 'date'),
     new Field('f4', 'sf', 'singleSelectField', 'singleSelect'),
     new Field('f5', 'mf', 'multiSelectField', 'multiSelect'),
@@ -25,9 +30,31 @@ const Folder = ({/*folder */ }) => {
     new Field('f7', 'pf', 'phoneField', 'phone'),
   ]
 
-  const fillForm = async (fields: Field[]) => {
+  const fileSet: object[] = [
+    {
+      fileUrl: '/assets/generatedFile1.pdf',
+      field: [
+        new Field('f1', 'tf', 'textField', 'text'),
+        new Field('f2', 'nf', 'numberField', 'number'),
+        new Field('f3', 'df', 'dateField', 'date'),
+      ]
+    },
+    {
+      fileUrl: '/assets/generatedFile2.pdf',
+      field: [
+        new Field('f4', 'sf', 'singleSelectField', 'singleSelect'),
+        new Field('f5', 'mf', 'multiSelectField', 'multiSelect'),
+        new Field('f6', 'ef', 'emailField', 'email'),
+        new Field('f7', 'pf', 'phoneField', 'phone'),
+      ]
+    }
+  ]
 
-    const formUrl = '/assets/generatedFile2.pdf'
+  const fillForm = async (schema: object) => {
+
+    console.log('fillForm', schema)
+
+    const formUrl: string = schema.fileUrl
     // Fetch the PDF with form fields
     const formBytes = await fetch(formUrl).then(res => res.arrayBuffer())
 
@@ -44,31 +71,31 @@ const Folder = ({/*folder */ }) => {
 
     const form = pdfDoc.getForm()
 
-    fields.map((field) => {
-      switch (field.type) {
-        case 'text':
-          form.getTextField(field.name).setText('Suppakorn')
-          // form.setFont(customFont)
-          break;
-        case 'number':
-          form.getTextField(field.name).setText('123')
-          break;
-        case 'date':
-          form.getTextField(field.name).setText('2021-01-01')
-          break;
-        case 'singleSelect':
-          form.getRadioGroup(field.name).select('3');
-          break;
-        case 'multiSelect':
-          form.getCheckBox('option1').check();
-          break;
-        default:
-          form.getTextField(field.name).setText('ภาษาไทย' + field.officialName)
-          break;
+    schema.field.map((field: Field) => {
+      if (form.getFieldMaybe(field.name)) {
+        switch (field.type) {
+          case 'text':
+            form.getTextField(field.name).setText('Suppakorn')
+            break;
+          case 'number':
+            form.getTextField(field.name).setText('123')
+            break;
+          case 'date':
+            form.getTextField(field.name).setText('2021-01-01')
+            break;
+          case 'singleSelect':
+            form.getRadioGroup(field.name).select(formUrl == '/assets/generatedFile2.pdf' ? '3' : '0');
+            break;
+          case 'multiSelect':
+            form.getCheckBox('option1').check();
+            break;
+          default:
+            form.getTextField(field.name).setText('ภาษาไทย ' + field.officialName)
+            break;
+        }
       }
     })
 
-    
     // **Key Step:** Update the field appearances with the font
     form.updateFieldAppearances(sarabunFont)
 
@@ -76,12 +103,23 @@ const Folder = ({/*folder */ }) => {
     form.flatten()
 
     const pdfBytes = await pdfDoc.save()
-    await download(pdfBytes, "pdf-test.pdf", "application/pdf");
+    // await download(pdfBytes, "pdf-test.pdf", "application/pdf");
+    setFilledGeneratedFile([...filledGeneratedFile, pdfBytes])
 
-    console.log({
-      fields: fields,
-      form: formUrl,
-      pdfBytes: pdfBytes
+    // console.log({
+    //   fields: fields,
+    //   form: formUrl,
+    //   pdfBytes: pdfBytes
+    // })
+  }
+
+  const testFillMultiForm = () => {
+    setFilledGeneratedFile([])
+    fileSet.map((schema) => {
+      fillForm(schema)
+    })
+    filledGeneratedFile.map((file, index) => {
+      download(file, `pdf-test-${index}.pdf`, "application/pdf");
     })
   }
 
@@ -89,7 +127,7 @@ const Folder = ({/*folder */ }) => {
     <Flex sx={documentView}>
       <Box sx={abstractArea}>
         {/* <UploadFile /> */}
-        <Button variant={'outline'} onClick={() => fillForm(fieldSet)}>Fill Form</Button>
+        <Button variant={'outline'} onClick={() => testFillMultiForm()}>Fill Form</Button>
         <TakeNote />
         <FileViewerDrawer files={mockFile} />
       </Box>
