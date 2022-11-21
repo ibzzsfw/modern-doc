@@ -261,6 +261,8 @@ let tableHead = {
 }
 
 let threeDot = {
+  top: '-5px',
+  right: '-5px',
   position: 'absolute',
   color: 'accent.black',
   _hover: {
