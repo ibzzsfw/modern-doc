@@ -143,11 +143,13 @@ const Folder = ({/*folder */ }) => {
 }
 
 let documentView = {
-  justifyContent: 'space-evenly',
+  
+    justifyContent: 'space-evenly',
   height: '768px',
 }
 
 let abstractArea = {
+  'zIndex': 1,
   display: 'flex',
   flexDirection: 'column',
   rowGap: '1rem',
