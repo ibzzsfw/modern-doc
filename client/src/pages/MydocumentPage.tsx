@@ -8,16 +8,76 @@ import {
   IconButton,
   Icon,
 } from '@chakra-ui/react'
-import { FiSearch } from 'react-icons/fi'
 import SearchBox from '@components/SearchBox'
+import { useSearchBoxStore } from '@stores/SearchBoxStore'
 import DocumentBox from '@components/DocumentBox'
 import DocumentBar from '@components/DocumentBar'
 import MenuProvider from '@components/MenuProvider'
 import { BsThreeDots, BsTrash } from 'react-icons/bs'
 import { GrDocumentText, GrDownload } from 'react-icons/gr'
 import { AiFillPrinter, AiOutlineEdit } from 'react-icons/ai'
+import { useState, useEffect } from 'react'
 
 const MyDocument = () => {
+  //const { search, setSearch } = useSearchBoxStore()
+  const [search, setSearch] = useState('')
+  const [shareFile, setShareFile] = useState([
+    {
+      id: '6',
+      type: 'sharedFile',
+      title: 'รักษาดินแดน',
+      author: 'Wang Junkai',
+    },
+    {
+      id: '6',
+      type: 'sharedFile',
+      title: 'พาร์สปอร์ต',
+      author: 'Yi yangqianxi',
+    },
+    { id: '6', type: 'sharedFile', title: 'ทะเบียนบ้าน', author: 'Wang yuan' },
+  ])
+  const [myFile, setMyFile] = useState([{
+    id: '6',
+    type: 'uploadedFile',
+    title: 'รักษาดินแดน',
+    amount: 9,
+    size: 1.2,
+  },{
+    id: '6',
+    type: 'uploadedFile',
+    title: 'รักษาดินแดน',
+    amount: 9,
+    size: 6,
+  },{
+    id: '6',
+    type: 'uploadedFile',
+    title: 'รักษาดินแดน',
+    amount: 9,
+    size: 527
+  }])
+  const [myFolder, setMyFolder] = useState([
+    {
+      id: '6',
+      type: 'generatedFolder',
+      title: 'สมัครงานกับ TechLead',
+      amount: 9,
+      image:
+        'https://cdn.sanity.io/images/xeonec4d/production/fc4aef437fe8753e30757498e7baceb016de4c6c-300x250.png?w=1000',
+    },
+    {
+      id: '6',
+      type: 'generatedFolder',
+      title: 'รักษาดินแดน',
+      amount: 9,
+    },
+    {
+      id: '6',
+      type: 'generatedFolder',
+      title: 'รักษาดินแดน',
+      amount: 9,
+    },
+  ])
+
   let layout = {
     backgroundColor: 'background.gray',
     color: 'accent.black',
@@ -89,93 +149,67 @@ const MyDocument = () => {
             คลังเก็บเอกสารที่สร้างจากเว็บไซต์และเอกสารที่อัปโหลด
           </Text>
         </Flex>
-        <SearchBox onSearchClick={(params)=>{
-            
-        }}/>
+        <SearchBox
+          value={search}
+          onSearchClick={(params) => {
+            console.log('search', params)
+            setSearch(params)
+          }}
+        />
       </Flex>
       <DocumentBar title="เอกสารที่แชร์ร่วมกัน">
-        <DocumentBox
-          id="6"
-          type="sharedFile"
-          title="รักษาดินแดน"
-          author="Wang Junkai"
-          showNote
-          menu={menu}
-        />
-        <DocumentBox
-          id="6"
-          type="sharedFile"
-          title="พาร์สปอร์ต"
-          author="Yi yangqianxi"
-          showNote
-          menu={menu}
-        />
-        <DocumentBox
-          id="6"
-          type="sharedFile"
-          title="ทะเบียนบ้าน"
-          author="Wang yuan"
-          showNote
-          menu={menu}
-        />
+        {shareFile
+          .filter((file) => file.title.toLowerCase().includes(search))
+          .map((file: any) => {
+            return (
+              <DocumentBox
+                id={file.id}
+                type={file.type}
+                title={file.title}
+                author={file.author}
+                showNote
+                menu={menu}
+              />
+            )
+          })}
       </DocumentBar>
       <DocumentBar title="แฟ้มเอกสารของฉัน">
-        <DocumentBox
-          id="6"
-          type="generatedFolder"
-          title="สมัครงานกับ TechLead"
-          amount={9}
-          image={
-            'https://cdn.sanity.io/images/xeonec4d/production/fc4aef437fe8753e30757498e7baceb016de4c6c-300x250.png?w=1000'
-          }
-          showNote
-          menu={menu}
-        />
-        <DocumentBox
-          id="6"
-          type="generatedFolder"
-          title="รักษาดินแดน"
-          amount={9}
-          showNote
-          menu={menu}
-        />
-        <DocumentBox
-          id="6"
-          type="generatedFolder"
-          title="รักษาดินแดน"
-          amount={9}
-          showNote
-          menu={menu}
-        />
+        {myFolder
+          .filter((file) => file.title.toLowerCase().includes(search))
+          .map((file: any) => {
+            return (
+              <DocumentBox
+                id={file.id}
+                type={file.type}
+                title={file.title}
+                image={file.image}
+                amount={file.amount}
+                showNote
+                menu={menu}
+              />
+            )
+          })}
       </DocumentBar>
       <DocumentBar title="ไฟล์ของฉัน">
-        <DocumentBox
-          id="6"
-          type="uploadedFile"
-          title="รักษาดินแดน"
-          size={12}
-          showNote
-          menu={menu}
-        />
-        <DocumentBox
-          id="6"
-          type="uploadedFile"
-          title="รักษาดินแดน"
-          size={5.7}
-          showNote
-          menu={menu}
-        />
-        <DocumentBox
-          id="6"
-          type="uploadedFile"
-          title="รักษาดินแดน"
-          size={7}
-          showNote
-          menu={menu}
-        />
+        {myFile.filter((file) => file.title.toLowerCase().includes(search)).map((file: any) => {
+          return (
+            <DocumentBox
+              id={file.id}
+              type={file.type}
+              title={file.title}
+              image={file.image}
+              amount={file.amount}
+              showNote
+              size={file.size}
+              menu={menu}
+            />
+          )
+        })}
       </DocumentBar>
     </Box>
   )
 }
 
 export default MyDocument
+
+
