@@ -82,19 +82,6 @@ class File {
     }
   }
 
-  private static async formatFile(file: any, type: string) {
-    switch (type) {
-      case 'generatedFile':
-        return await formatGeneratedFile(file)
-      case 'uploadedFile':
-        return await formatUploadedFile(file)
-      case 'userFreeUploadFile':
-        return file
-      default:
-        return null
-    }
-  }
-
   private static async getLatestFile(type: string, userId: string) {
     switch (type) {
       case 'generatedFile':

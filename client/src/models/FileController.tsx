@@ -40,6 +40,8 @@ class FileController {
         },
       }
     )
+
+    console.log('file',response.data)
     return response.data
   }
 

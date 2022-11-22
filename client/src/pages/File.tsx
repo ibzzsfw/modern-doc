@@ -14,6 +14,7 @@ import { useFilePageStore } from '@stores/FilePageStore'
 import shallow from 'zustand/shallow'
 import { useEffect } from 'react'
 import axios from 'axios'
+import BlankPdf from '../../public/assets/blank.pdf'
 
 const File = () => {
   const { id, type } = useParams<{ id: string; type: string }>()
@@ -39,7 +40,7 @@ const File = () => {
     console.log(data)
   }
 
-  if (file.URI != '')
+  if (data)
     return (
       <Flex sx={documentView}>
         <Box sx={abstractArea}>
@@ -52,7 +53,11 @@ const File = () => {
           markdown={file.description}
           status="มีอยู่ในคลัง"
         />
-        <FileViewer fileUrl={file.URI} />
+        {file.URI ? (
+          <FileViewer fileUrl={file.URI} />
+        ) : (
+          <FileViewer fileUrl={BlankPdf} />
+        )}
       </Flex>
     )
 }
