@@ -8,6 +8,7 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { Link } from 'react-router-dom'
+import getFilePath from '@utils/getFilePath'
 
 type propsType = {
   type: 'generatedFolder' | 'generatedFile' | 'uploadedFile' | 'sharedFile'

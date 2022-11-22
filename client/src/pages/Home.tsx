@@ -8,16 +8,16 @@ import { useQuery } from '@tanstack/react-query'
 import FileController from '@models/FileController'
 import FolderController from '@models/FolderController'
 import { useLoginDataStore } from '@stores/LoginDataStore'
-import {useSearchBoxStore} from '@stores/SearchBoxStore'
-import {  useNavigate } from 'react-router-dom'
+import { useSearchBoxStore } from '@stores/SearchBoxStore'
+import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import File from '@models/File'
 
 const Home = () => {
   const user = useLoginDataStore.getState().user
-  const nevigete = useNavigate()
+  const navigate = useNavigate()
   const { search, setSearch, setSearchResult } = useSearchBoxStore()
-  const [searchValue,setSearchValue] = useState('')
+  const [searchValue, setSearchValue] = useState('')
 
   const {
     data: latestFiles,
@@ -31,7 +31,7 @@ const Home = () => {
     error: latestFolderError,
   } = useQuery(['latestFolder', user?.id], FolderController.getLatestFolder)
 
-  console.log('folder',user?.id,latestFolder)
+  console.log('folder', user?.id, latestFolder)
 
   if (latestFilesLoading || latestFolderLoading) return <div>Loading...</div>
 
@@ -42,15 +42,15 @@ const Home = () => {
       <VStack marginTop="4px">
         <Center>
           <SearchBox
-          
-          onSearchClick={(values)=>{
-            if(values !== ''){
-              setSearch(values)
-            nevigete(`/search/${values}`)
-            }   
-          }}/>
+            onSearchClick={(values) => {
+              if (values !== '') {
+                setSearch(values)
+                navigate(`/search`)
+              }
+            }}
+          />
         </Center>
-        <PopularBar title="รายการยอดฮิต" url={'search'} >
+        <PopularBar title="รายการยอดฮิต" url={'search'}>
           <PopularBox
             title="เอกสารประกอบการสอน"
             image="https://trendwatchers.co/wp-content/uploads/2020/04/1_r_46B-6pUz9L0sq9fVuChA.jpeg"

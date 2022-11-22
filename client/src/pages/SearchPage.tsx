@@ -10,52 +10,52 @@ import DocumentBox from '@components/DocumentBox'
 import SearchBox from '@components/SearchBox'
 import { useSearchBoxStore } from '@stores/SearchBoxStore'
 import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import FolderController from '@models/FolderController'
+import FileController from '@models/FileController'
 
 const SearchPage = () => {
   const { search, setSearch, searchResult } = useSearchBoxStore()
   const [showFile, setShowFile] = useState(true)
   const [showFolder, setShowFolder] = useState(true)
-  const keyword = useParams()
   const [files, setfiles] = useState([
     {
-      id:"4",
-      title:"หนังสือมอบอำนาจ",
-      type:"generatedFile",
-      colorBar:"#FF9898"
-      
-    }
-    ,
-    {id:"5",
-    title:"เอกสารผู้ดูแลคนพิการ",
-    type:"generatedFile",
-    showDate:true,
-    createdDate:new Date('12/08/2021')}
-    ,
-    {
-    id:"6",
-    title:"บัตรคนพิการ",
-    type:"uploadedFile",
-    showDate:true,
-    createdDate:new Date('12/08/2021'),
-    colorBar:"#FF9898"}
-    ,
-    
-    {id:"7",
-    title:"จ้างงานคนพิการ",
-    type:"generatedFile",
-    showDate:true,
-    createdDate: new Date('12/08/2021'),
-    colorBar:"#FF9898"
+      id: '4',
+      title: 'หนังสือมอบอำนาจ',
+      type: 'generatedFile',
+      colorBar: '#FF9898',
     },
     {
-    id:"8",
-    title:"ขึ้นทะเบียนคนพิการ",
-    type:"generatedFile",
-    showDate:true,
-    createdDate:new Date('12/08/2021'),
-    colorBar:"#FF9898"
-    }
+      id: '5',
+      title: 'เอกสารผู้ดูแลคนพิการ',
+      type: 'generatedFile',
+      showDate: true,
+      createdDate: new Date('12/08/2021'),
+    },
+    {
+      id: '6',
+      title: 'บัตรคนพิการ',
+      type: 'uploadedFile',
+      showDate: true,
+      createdDate: new Date('12/08/2021'),
+      colorBar: '#FF9898',
+    },
+    {
+      id: '7',
+      title: 'จ้างงานคนพิการ',
+      type: 'generatedFile',
+      showDate: true,
+      createdDate: new Date('12/08/2021'),
+      colorBar: '#FF9898',
+    },
+    {
+      id: '8',
+      title: 'ขึ้นทะเบียนคนพิการ',
+      type: 'generatedFile',
+      showDate: true,
+      createdDate: new Date('12/08/2021'),
+      colorBar: '#FF9898',
+    },
   ])
   const [folders, setFolders] = useState([
     {
@@ -66,8 +66,19 @@ const SearchPage = () => {
     },
   ])
 
+  const { data: folderResult, refetch: refetchFolder } = useQuery(
+    ['searchFolder', search],
+    () => FolderController.search(search)
+  )
+
+  const { data: fileResult, refetch: refetchFile } = useQuery(
+    ['searchFile', search],
+    () => FileController.search(search)
+  )
+
   useEffect(() => {
-    //------------- fetch data from server ----------------
+    refetchFile()
+    refetchFolder()
     console.log('fetch by search', search)
   }, [search])
 
@@ -98,16 +109,16 @@ const SearchPage = () => {
                 ผลการค้นหาแฟ้ม
               </Text>
             </Checkbox>
-            {showFolder ? (
+            {showFolder && folderResult ? (
               <Flex sx={childrenFlex}>
-                {folders.map((folder: any) => {
+                {folderResult.map((folder: any) => {
                   return (
                     <DocumentBox
-                      id= {folder.id}
-                      title= {folder.title}
-                      type= {folder.type}
-                      showDate = {folder.showDate}
-                      colorBar = {folder.colorBar}
+                      id={folder.id}
+                      title={folder.officialName}
+                      type={folder.type}
+                      showDate={folder.showDate}
+                      colorBar={folder.colorBar}
                     />
                   )
                 })}
@@ -130,17 +141,19 @@ const SearchPage = () => {
                 ผลการค้นหาเอกสาร
               </Text>
             </Checkbox>
-            {showFile ? (
+            {showFile && fileResult ? (
               <Flex sx={childrenFlex}>
-               {files.map((file: any) => {
-                return <DocumentBox
-                id={file.id}
-                title= {file.title}
-                type={file.type}
-                showDate = {file.showDate}
-                colorBar= {file.colorBar}
-                />
-               })}
+                {fileResult.map((file: any) => {
+                  return (
+                    <DocumentBox
+                      id={file.id}
+                      title={file.officialName}
+                      type={file.type}
+                      showDate={file.showDate}
+                      colorBar={file.colorBar}
+                    />
+                  )
+                })}
               </Flex>
             ) : (
               <Text>กดเพื่อแสดงผลการค้นหาเอกสาร</Text>
@@ -166,8 +179,3 @@ let childrenFlex = {
   justifyContent: 'flex-start',
   gap: '32px',
 }
-
-
-
-
-

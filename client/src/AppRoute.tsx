@@ -109,9 +109,7 @@ const AppRoute = () => {
                 </PageContainer>
               </>
             }
-          >
-            <Route path=":keyword" element={<SearchPage />} />
-          </Route>
+          />
           <Route
             // path="/folder/:id/form"
             path="/form"

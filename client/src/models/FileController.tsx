@@ -56,6 +56,18 @@ class FileController {
     return response.data
   }
 
+  static async search(name: any) {
+    let response = await axios.get(
+      `${import.meta.env.VITE_API_ENDPOINT}/file/search/${name}`,
+      {
+        headers: {
+          'user-id': useLoginDataStore.getState()?.user?.id,
+          token: useLoginDataStore.getState()?.user?.token,
+        },
+      }
+    )
+    return response.data
+  }
 }
 
 export default FileController
