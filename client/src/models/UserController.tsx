@@ -46,9 +46,19 @@ class UserController {
     return { ...response.data, phoneNumber: phoneNumber }
   }
 
+  static switchMember = async (userId: string) => {
+    let response = await axios.post(
+      `${import.meta.env.VITE_API_ENDPOINT}/user/switch-member`,
+      {
+        userId: userId,
+      }
+    )
+    return response.data
+  }
+
   static logout = async () => {
     useLoginDataStore.setState({
-      user: {},
+      user: null,
     })
     window.location.pathname = '/'
   }

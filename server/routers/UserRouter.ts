@@ -27,6 +27,7 @@ class UserRouter {
     )
 
     this.router.post('/login', this.controller.login)
+    this.router.post('/switch-member', this.controller.switchMember)
     this.router.get('/get-folders/:userId', this.controller.getFolders)
     this.router.get('/get-files/:userId', this.controller.getFiles)
   }

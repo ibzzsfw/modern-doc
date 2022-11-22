@@ -104,7 +104,7 @@ const DocumentBox = ({
   const getSubText = () => {
     if (showDate) {
       if (createdDate) {
-        return `สร้างเมื่อ ${createdDate.toLocaleDateString('en-GB')}`
+        return `สร้างเมื่อ ${new Date(createdDate).toLocaleDateString('en-GB')}`
       }
       return 'ยังไม่ได้สร้าง'
     }

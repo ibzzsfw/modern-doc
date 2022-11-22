@@ -322,6 +322,67 @@ class User {
       res.status(400).json({ message: err })
     }
   }
+
+  static switchMember = async (req: Request, res: Response) => {
+    let { userId } = req.body
+
+    const schema = z.string().uuid()
+
+    try {
+      schema.parse(userId)
+      const getUser = await Prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+        select: {
+          id: true,
+          householdId: true,
+          title: true,
+          firstName: true,
+          lastName: true,
+          sex: true,
+          phoneNumber: true,
+          email: true,
+          citizenId: true,
+          relationship: true,
+          birthDate: true,
+          profileURI: true,
+        },
+      })
+      if (!getUser) {
+        return res.status(404).json({ message: 'ไม่พบข้อมูลผู้ใช้งาน' })
+      }
+
+      const getFamilyMember = await Prisma.user.findMany({
+        where: {
+          householdId: getUser.householdId,
+          id: {
+            not: getUser.id,
+          },
+        },
+        select: {
+          id: true,
+          title: true,
+          firstName: true,
+          lastName: true,
+          phoneNumber: true,
+          citizenId: true,
+          relationship: true,
+          profileURI: true,
+        },
+      })
+
+      const userData = {
+        ...getUser,
+        sex: getSexText(getUser.sex),
+        familyMembers: getFamilyMember,
+      }
+
+      res.status(200).json(userData)
+    } catch (err) {
+      res.status(400).json({ message: err })
+    }
+  }
 }
 
 export default User

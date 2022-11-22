@@ -38,6 +38,7 @@ import shallow from 'zustand/shallow'
 import User from '@models/User'
 import { useNavigate } from 'react-router-dom'
 import UserController from '@models/UserController'
+import { useMutation } from '@tanstack/react-query'
 
 const NavbarAvatar = () => {
   const navigate = useNavigate()
@@ -47,62 +48,48 @@ const NavbarAvatar = () => {
     onOpen: onOpenModal,
     onClose: onCloseModal,
   } = useDisclosure()
-  const [memberID, setMemberID] = useState<number | null>(null)
-  const [members, setmembers] = useState([
-    {
-      id: 0,
-      name: 'ใจฟู ศิลาคงกะพัน',
-      relation: 'เจ้าของบัญชี',
-      url: 'https://djj.georgia.gov/sites/djj.georgia.gov/files/styles/square/public/2020-04/john_edwards2.jpg?h=0ca7a621&itok=JwTUG3Ja',
-    },
-    {
-      id: 1,
-      name: 'ใจโซเซ ศิลาคงกะพัน',
-      relation: 'น้อง',
-      url: 'https://blogs-images.forbes.com/natalierobehmed/files/2017/08/x-1-1200x800.jpg',
-    },
-    {
-      id: 2,
-      name: 'ใจดี ศิลาคงกะพัน',
-      relation: 'น้อง',
-      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Ajay_Actor.jpg/640px-Ajay_Actor.jpg',
-    },
-    {
-      id: 3,
-      name: 'ใจเกเร ศิลาคงกะพัน',
-      relation: 'พี่',
-      url: 'https://s.isanook.com/jo/0/rp/r/w300/ya0xa0m1w0/aHR0cHM6Ly9qb294LWNtcy1pbWFnZS0xMjUxMzE2MTYxLmZpbGUubXlxY2xvdWQuY29tLzIwMjEvMDkvMjgvMGIzZmQ5ZGQtMTYxMi00ZmZiLTk5YjQtMzA2MWJkODI1MzA3LmpwZy8xMDAw.jpg',
-    },
-  ])
-  const [owner, setOwner] = useState({
-    id: 1,
-    name: 'ใจโซเซ ศิลาคงกะพัน',
-    relation: 'เจ้าของบัญชี',
-    url: 'https://djj.georgia.gov/sites/djj.georgia.gov/files/styles/square/public/2020-04/john_edwards2.jpg?h=0ca7a621&itok=JwTUG3Ja',
-  })
 
-  const [x, setX] = useState(0)
   const [isExpand, setIsExpand] = useState(false)
 
-  //set x to height scroll from top
-  useEffect(() => {
-    const handleScroll = () => {
-      setX(window.scrollY)
-    }
-    window.addEventListener('scroll', handleScroll)
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [])
-
   const userJson = useLoginDataStore((state) => state.user, shallow)
+  const setUserData = useLoginDataStore((state) => state.setUserData, shallow)
+  const setFamilyMembers = useLoginDataStore(
+    (state) => state.setFamilyMembers,
+    shallow
+  )
+
   const user = userJson ? new User(userJson) : null
 
   const familyMembers = useLoginDataStore(
     (state) => state.familyMembers,
     shallow
   )
-  
+
+  const { mutate: switchMember } = useMutation(
+    async (id: string) => UserController.switchMember(id),
+    {
+      onSuccess: (data) => {
+        console.log(data)
+        setUserData(
+          new User({
+            id: data.id,
+            householdId: data.householdId,
+            title: data.title,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            citizenId: data.citizenId,
+            phoneNumber: data.phoneNumber,
+            sex: data.sex,
+            token: data.token,
+            relationship: data.relationship,
+            profileURI: data.profileURI,
+          })
+        )
+        setFamilyMembers(data.familyMembers)
+        window.location.pathname = '/home'
+      },
+    }
+  )
 
   if (!user) return null
   return (
@@ -191,7 +178,7 @@ const NavbarAvatar = () => {
                                   </Button>
                                   <Button
                                     sx={submitButton}
-                                    onClick={onCloseModal}
+                                    onClick={() => switchMember(member.id)}
                                   >
                                     สลับ
                                   </Button>

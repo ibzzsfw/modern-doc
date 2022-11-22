@@ -19,6 +19,9 @@ class UserController {
   getFiles = async (req: Request, res: Response) => {
     User.getFiles(req, res)
   }
+  switchMember = async (req: Request, res: Response) => {
+    User.switchMember(req, res)
+  }
 }
 
 export default new UserController()
