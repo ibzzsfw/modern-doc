@@ -14,198 +14,192 @@ import fontkit from '@pdf-lib/fontkit'
 import download from 'downloadjs'
 // import { useGeneratedFileStore } from '@stores/GeneratedFile'
 import { useState } from 'react'
+import FolderController from '@models/FolderController'
+import { useQuery } from '@tanstack/react-query'
+import { useLoginDataStore } from '@stores/LoginDataStore'
+import shallow from 'zustand/shallow'
+import User from '@models/User'
+import { useParams } from 'react-router-dom'
+import { useEffect } from 'react'
 
-const Folder = ({/*folder */ }) => {
+const Folder = (
+  {
+    /*folder */
+  }
+) => {
+  const { id } = useParams<{ id: string }>()
+
+  const [generateFileList, setGenerateFileList] = useState<any[]>([])
+  const [uploadedFileList, setUploadedFileList] = useState<any[]>([])
+
+  const { data: folderData } = useQuery(
+    ['getFolderById', id],
+    async () => await FolderController.getFolderById(id),
+    {
+      onSuccess: async (data) => {
+        let generateFile: any[] = []
+        let uploadedFile: any[] = []
+        data.generateFile.map((file: any) => generateFile.push(file))
+        data.uploadedFile.map((file: any) => uploadedFile.push(file))
+
+        setGenerateFileList(generateFile)
+        setUploadedFileList(uploadedFile)
+      },
+    }
+  )
+
+  let documentView = {
+    justifyContent: 'space-evenly',
+    height: '768px',
+  }
+
+  let abstractArea = {
+    zIndex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    rowGap: '1rem',
+    position: 'absolute',
+    top: '0',
+    right: '2rem',
+  }
 
   // const { filledGeneratedFile, setFilledGeneratedFile } = useGeneratedFileStore()
-  const [filledGeneratedFile, setFilledGeneratedFile] = useState<Uint8Array[]>([])
+  const [filledGeneratedFile, setFilledGeneratedFile] = useState<Uint8Array[]>(
+    []
+  )
 
-  const fieldSet: Field[] = [
-    new Field('f1', 'tf', 'textField', 'text'),
-    new Field('f2', 'nf', 'numberField', 'number'),
-    new Field('f3', 'df', 'dateField', 'date'),
-    new Field('f4', 'sf', 'singleSelectField', 'singleSelect'),
-    new Field('f5', 'mf', 'multiSelectField', 'multiSelect'),
-    new Field('f6', 'ef', 'emailField', 'email'),
-    new Field('f7', 'pf', 'phoneField', 'phone'),
-  ]
+  // const fileSet: object[] = [
+  //   {
+  //     fileUrl: '/assets/generatedFile1.pdf',
+  //     field: [
+  //       new Field('f1', 'tf', 'textField', 'text'),
+  //       new Field('f2', 'nf', 'numberField', 'number'),
+  //       new Field('f3', 'df', 'dateField', 'date'),
+  //     ],
+  //   },
+  //   {
+  //     fileUrl: '/assets/generatedFile2.pdf',
+  //     field: [
+  //       new Field('f4', 'sf', 'singleSelectField', 'singleSelect'),
+  //       new Field('f5', 'mf', 'multiSelectField', 'multiSelect'),
+  //       new Field('f6', 'ef', 'emailField', 'email'),
+  //       new Field('f7', 'pf', 'phoneField', 'phone'),
+  //     ],
+  //   },
+  // ]
 
-  const fileSet: object[] = [
-    {
-      fileUrl: '/assets/generatedFile1.pdf',
-      field: [
-        new Field('f1', 'tf', 'textField', 'text'),
-        new Field('f2', 'nf', 'numberField', 'number'),
-        new Field('f3', 'df', 'dateField', 'date'),
-      ]
-    },
-    {
-      fileUrl: '/assets/generatedFile2.pdf',
-      field: [
-        new Field('f4', 'sf', 'singleSelectField', 'singleSelect'),
-        new Field('f5', 'mf', 'multiSelectField', 'multiSelect'),
-        new Field('f6', 'ef', 'emailField', 'email'),
-        new Field('f7', 'pf', 'phoneField', 'phone'),
-      ]
-    }
-  ]
+  // const fillForm = async (schema: object) => {
+  //   console.log('fillForm', schema)
 
-  const fillForm = async (schema: object) => {
+  //   const formUrl: string = schema.fileUrl
+  //   // Fetch the PDF with form fields
+  //   const formBytes = await fetch(formUrl).then((res) => res.arrayBuffer())
 
-    console.log('fillForm', schema)
+  //   // Fetch the Sarabun font
+  //   const fontUrl = '/assets/THSarabunNew.ttf'
+  //   const fontBytes = await fetch(fontUrl).then((res) => res.arrayBuffer())
 
-    const formUrl: string = schema.fileUrl
-    // Fetch the PDF with form fields
-    const formBytes = await fetch(formUrl).then(res => res.arrayBuffer())
+  //   // Load the PDF with form fields
+  //   const pdfDoc = await PDFDocument.load(formBytes)
 
-    // Fetch the Sarabun font
-    const fontUrl = '/assets/THSarabunNew.ttf'
-    const fontBytes = await fetch(fontUrl).then((res) => res.arrayBuffer())
+  //   // Embed the font
+  //   pdfDoc.registerFontkit(fontkit)
+  //   const sarabunFont = await pdfDoc.embedFont(fontBytes)
 
-    // Load the PDF with form fields
-    const pdfDoc = await PDFDocument.load(formBytes)
+  //   const form = pdfDoc.getForm()
 
-    // Embed the font
-    pdfDoc.registerFontkit(fontkit);
-    const sarabunFont = await pdfDoc.embedFont(fontBytes)
+  //   schema.field.map((field: Field) => {
+  //     if (form.getFieldMaybe(field.name)) {
+  //       switch (field.type) {
+  //         case 'text':
+  //           form.getTextField(field.name).setText('Suppakorn')
+  //           break
+  //         case 'number':
+  //           form.getTextField(field.name).setText('123')
+  //           break
+  //         case 'date':
+  //           form.getTextField(field.name).setText('2021-01-01')
+  //           break
+  //         case 'singleSelect':
+  //           form
+  //             .getRadioGroup(field.name)
+  //             .select(formUrl == '/assets/generatedFile2.pdf' ? '3' : '0')
+  //           break
+  //         case 'multiSelect':
+  //           form.getCheckBox('option1').check()
+  //           break
+  //         default:
+  //           form
+  //             .getTextField(field.name)
+  //             .setText('ภาษาไทย ' + field.officialName)
+  //           break
+  //       }
+  //     }
+  //   })
 
-    const form = pdfDoc.getForm()
+  //   // **Key Step:** Update the field appearances with the font
+  //   form.updateFieldAppearances(sarabunFont)
 
-    schema.field.map((field: Field) => {
-      if (form.getFieldMaybe(field.name)) {
-        switch (field.type) {
-          case 'text':
-            form.getTextField(field.name).setText('Suppakorn')
-            break;
-          case 'number':
-            form.getTextField(field.name).setText('123')
-            break;
-          case 'date':
-            form.getTextField(field.name).setText('2021-01-01')
-            break;
-          case 'singleSelect':
-            form.getRadioGroup(field.name).select(formUrl == '/assets/generatedFile2.pdf' ? '3' : '0');
-            break;
-          case 'multiSelect':
-            form.getCheckBox('option1').check();
-            break;
-          default:
-            form.getTextField(field.name).setText('ภาษาไทย ' + field.officialName)
-            break;
-        }
-      }
-    })
+  //   // Make pdf file simple for user digital read
+  //   form.flatten()
 
-    // **Key Step:** Update the field appearances with the font
-    form.updateFieldAppearances(sarabunFont)
+  //   const pdfBytes = await pdfDoc.save()
+  //   // await download(pdfBytes, "pdf-test.pdf", "application/pdf");
+  //   setFilledGeneratedFile([...filledGeneratedFile, pdfBytes])
 
-    // Make pdf file simple for user digital read
-    form.flatten()
-
-    const pdfBytes = await pdfDoc.save()
-    // await download(pdfBytes, "pdf-test.pdf", "application/pdf");
-    setFilledGeneratedFile([...filledGeneratedFile, pdfBytes])
-
-    // console.log({
-    //   fields: fields,
-    //   form: formUrl,
-    //   pdfBytes: pdfBytes
-    // })
-  }
+  //   // console.log({
+  //   //   fields: fields,
+  //   //   form: formUrl,
+  //   //   pdfBytes: pdfBytes
+  //   // })
+  // }
 
   const testFillMultiForm = () => {
     setFilledGeneratedFile([])
-    fileSet.map((schema) => {
-      fillForm(schema)
-    })
-    filledGeneratedFile.map((file, index) => {
-      download(file, `pdf-test-${index}.pdf`, "application/pdf");
-    })
+    // fileSet.map((schema) => {
+    //   fillForm(schema)
+    // })
+    // filledGeneratedFile.map((file, index) => {
+    //   download(file, `pdf-test-${index}.pdf`, 'application/pdf')
+    // })
   }
 
-  return (
-    <Flex sx={documentView}>
-      <Box sx={abstractArea}>
-        {/* <UploadFile /> */}
-        <Button variant={'outline'} onClick={() => testFillMultiForm()}>Fill Form</Button>
-        <TakeNote />
-        <FileViewerDrawer files={mockFile} />
-      </Box>
-      <FolderDetail
-        title="เอกสารขจัดขนตูด"
-        description="เอกสารขจัดขนตูดนี้มีมาก ไม่สิ ต้องพูดว่ามีต่อดากมากกก"
-        markdown={markdown}
-        status="มีอยู่ในคลัง"
-      />
-      <FileList files={mockFile} />
-    </Flex>
-  )
+  let adam = new User({
+    id: '1',
+    householdId: '1',
+    title: 'นาย',
+    firstName: 'นาย',
+    lastName: 'นาย',
+    citizenId: 'นาย',
+    phoneNumber: 'นาย',
+    sex: 'ชาย',
+    token: 'นาย',
+    relationship: 'นาย',
+    profileURI: 'นาย',
+  })
+  console.log('adam', adam, adam instanceof User)
+  console.log('fileList', generateFileList, uploadedFileList)
+
+  if (folderData && generateFileList && uploadedFileList) {
+    return (
+      <Flex sx={documentView}>
+        <Box sx={abstractArea}>
+          {/* <UploadFile /> */}
+          {/* <Button variant={'outline'} onClick={() => testFillMultiForm()}>
+            Fill Form
+          </Button>
+          <TakeNote /> */}
+          {/* <FileViewerDrawer files={mockFile} /> */}
+        </Box>
+        <FolderDetail
+          title={folderData.officialName}
+          description={folderData.note}
+          markdown={folderData.description}
+          status="มีอยู่ในคลัง"
+        />
+        <FileList files={folderData.file} />
+      </Flex>
+    )
+  }
 }
-
-let documentView = {
-  
-    justifyContent: 'space-evenly',
-  height: '768px',
-}
-
-let abstractArea = {
-  'zIndex': 1,
-  display: 'flex',
-  flexDirection: 'column',
-  rowGap: '1rem',
-  position: 'absolute',
-  top: '0',
-  right: '2rem',
-}
-
-const mockFile = [
-  new GeneratedFile(
-    'f1',
-    new Date(),
-    new Date(),
-    'gf1',
-    30,
-    'generatedFile1',
-    [
-      new Field('f1', 'tf', 'textField', 'text'),
-      new Field('f2', 'nf', 'numberField', 'number'),
-      new Field('f3', 'df', 'dateField', 'date'),
-      new Field('f4', 'sf', 'singleSelectField', 'singleSelect'),
-    ]
-  ),
-  new UploadedFile(
-    'f2',
-    new Date(),
-    new Date(),
-    'uf1',
-    30,
-    'uploadedFile1',
-    false
-  ),
-  new GeneratedFile(
-    'f3',
-    new Date(),
-    new Date(),
-    'gf2',
-    30,
-    'generatedFile2',
-    [
-      new Field('f3', 'df', 'dateField', 'date'),
-      new Field('f4', 'sf', 'singleSelectField', 'singleSelect'),
-      new Field('f5', 'mf', 'multiSelectField', 'multiSelect'),
-      new Field('f6', 'ef', 'emailField', 'email'),
-      new Field('f7', 'pf', 'phoneField', 'phone'),
-    ]
-  ),
-  new UploadedFile(
-    'f4',
-    new Date(),
-    new Date(),
-    'uf2',
-    30,
-    'uploadedFile2',
-    false
-  ),
-]
-
 export default Folder
