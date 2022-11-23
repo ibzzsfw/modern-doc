@@ -15,18 +15,30 @@ class Folder {
     try {
       schema.parse({ id, userId })
       const folder = await Prisma.$queryRaw`
-        SELECT "Folder".*,"UserFolder"."note","UserFolder"."date" 
+        SELECT "Folder".*
         FROM "Folder" 
-        LEFT JOIN "UserFolder" ON "Folder"."id" = "UserFolder"."folderId"
-        WHERE "Folder"."id" = ${id}::uuid AND "UserFolder"."userId" = ${userId}::uuid
+        WHERE "Folder"."id" = ${id}::uuid
       `
 
+      let userFolder = await Prisma.$queryRaw`
+        SELECT "UserFolder"."note","UserFolder"."date"
+        FROM "UserFolder"
+        WHERE "UserFolder"."folderId" = ${id}::uuid AND "UserFolder"."userId" = ${userId}::uuid
+      `
+
+      if ((userFolder = []))
+        userFolder[0] = {
+          note: null,
+          date: null,
+        }
+
       const generateFile = await Prisma.$queryRaw`
-        SELECT "GeneratedFile".*,"FolderGeneratedFile"."amount","FolderGeneratedFile"."remark",
-        "UserGeneratedFile"."note","UserGeneratedFile"."date",
-        array(SELECT json_agg("Field".*) FROM "GeneratedFileField" 
-        LEFT JOIN "GeneratedFile" ON "GeneratedFileField"."generatedFileId" = "GeneratedFile"."id"
-        LEFT JOIN "Field" ON "Field"."id" = "GeneratedFileField"."fieldId") AS "fields"
+        SELECT "GeneratedFile"."id","GeneratedFile"."officialName"
+        ,"FolderGeneratedFile"."amount","FolderGeneratedFile"."remark",
+        "UserGeneratedFile"."note","UserGeneratedFile"."date"
+        -- ,array(SELECT json_agg("Field".*) FROM "GeneratedFileField" 
+        -- LEFT JOIN "GeneratedFile" ON "GeneratedFileField"."generatedFileId" = "GeneratedFile"."id"
+        -- LEFT JOIN "Field" ON "Field"."id" = "GeneratedFileField"."fieldId") AS "fields"
         FROM "FolderGeneratedFile"
         LEFT JOIN "GeneratedFile" ON "FolderGeneratedFile"."generatedFileId" = "GeneratedFile"."id"
         LEFT JOIN "UserGeneratedFile" ON "GeneratedFile"."id" = "UserGeneratedFile"."generatedFileId"
@@ -34,14 +46,16 @@ class Folder {
       `
 
       const uploadFile = await Prisma.$queryRaw`
-        SELECT "UploadedFile".*,"UserUploadedFile"."note","UserUploadedFile"."date"
+        SELECT "UploadedFile"."id","UploadedFile"."officialName",
+        "UserUploadedFile"."note","UserUploadedFile"."date","FolderUploadedFile"."amount",
+        "FolderUploadedFile"."remark","UserUploadedFile"."URI"
         FROM "FolderUploadedFile"
         LEFT JOIN "UploadedFile" ON "FolderUploadedFile"."uploadedFileId" = "UploadedFile"."id"
         LEFT JOIN "UserUploadedFile" ON "UploadedFile"."id" = "UserUploadedFile"."uploadedFileId"
         WHERE "FolderUploadedFile"."folderId" = ${id}::uuid AND "UserUploadedFile"."userId" = ${userId}::uuid
       `
 
-      res.json({ ...folder[0], generateFile, uploadFile })
+      res.json({ ...folder[0], ...userFolder[0], generateFile, uploadFile })
     } catch (err) {
       res.status(400).json(err)
     }
