@@ -7,6 +7,7 @@ import {
   Input,
   IconButton,
   Icon,
+  useDisclosure,
 } from '@chakra-ui/react'
 import SearchBox from '@components/SearchBox'
 import { useSearchBoxStore } from '@stores/SearchBoxStore'
@@ -17,10 +18,16 @@ import { BsThreeDots, BsTrash } from 'react-icons/bs'
 import { GrDocumentText, GrDownload } from 'react-icons/gr'
 import { AiFillPrinter, AiOutlineEdit } from 'react-icons/ai'
 import { useState, useEffect } from 'react'
+import DocumentBlankBox from '@components/DocumentBlankBox'
+import TakeNote from '@components/TakeNote'
+import { AiFillPlusCircle } from 'react-icons/ai'
+import {BsShareFill} from 'react-icons/bs'
+
 
 const MyDocument = () => {
   //const { search, setSearch } = useSearchBoxStore()
   const [search, setSearch] = useState('')
+  const {onToggle} = useDisclosure()
   const [shareFile, setShareFile] = useState([
     {
       id: '6',
@@ -90,6 +97,7 @@ const MyDocument = () => {
     right: '20px',
     color: 'accent.black',
   }
+  const [note,setNote] = useState([])
 
   let menu = (
     <MenuProvider
@@ -157,7 +165,16 @@ const MyDocument = () => {
           }}
         />
       </Flex>
-      <DocumentBar title="เอกสารที่แชร์ร่วมกัน">
+      <DocumentBar title="บันทึกเตือนความจำของฉัน">
+        
+        <>
+         <TakeNote customButton={ <DocumentBlankBox icon={AiFillPlusCircle} size = {"80px"} color = {'gray.500'}
+          onClick = {()=>{
+            
+          }}
+         />} />
+             
+          
         {shareFile
           .filter((file) => file.title.toLowerCase().includes(search))
           .map((file: any) => {
@@ -172,6 +189,32 @@ const MyDocument = () => {
               />
             )
           })}
+        </>
+       
+        
+        
+      </DocumentBar>
+      <DocumentBar title="เอกสารที่แชร์ร่วมกัน">
+        <>
+          <DocumentBlankBox icon={BsShareFill} 
+          size = {"70px"} color = {'#D1B1F0'}onClick = {()=>{}}/>
+          {shareFile
+          .filter((file) => file.title.toLowerCase().includes(search))
+          .map((file: any) => {
+            return (
+              <DocumentBox
+                id={file.id}
+                type={file.type}
+                title={file.title}
+                author={file.author}
+                showNote
+                menu={menu}
+              />
+            )
+          })}
+        
+        </>
+       
       </DocumentBar>
       <DocumentBar title="แฟ้มเอกสารของฉัน">
         {myFolder
@@ -204,7 +247,9 @@ const MyDocument = () => {
               menu={menu}
             />
           )
-        })}
+        }) 
+        }
+      
       </DocumentBar>
     </Box>
   )

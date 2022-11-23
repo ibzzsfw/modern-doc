@@ -24,7 +24,6 @@ const SearchBox = ({ value , page, onSearchClick }: propsType) => {
         icon={<Icon as={FiSearch} color="accent.white" boxSize="20px" />}
         sx={searchButton}
         onClick={() => {
-          //searchValue !== '' ? nevigete(`/${page}/${searchValue}`) : ''
           onSearchClick && onSearchClick(searchValue)
         }}
       />

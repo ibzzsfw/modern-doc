@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Modal,
   ModalBody,
@@ -15,7 +16,11 @@ import { useEffect, useState } from 'react'
 import Note from '@models/Note'
 import NoteController from '@models/NoteController'
 
-const TakeNote = () => {
+type propsTypes = {
+  customButton? : JSX.Element
+} 
+
+const TakeNote = ({customButton} : propsTypes) => {
 
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [noteType, setNoteType] = useState("")
@@ -65,7 +70,8 @@ const TakeNote = () => {
 
   return (
     <>
-      <Button onClick={onOpen} colorScheme={"blue"}>Take note</Button>
+     {customButton ?<Box as = 'button' onClick={onOpen}>{customButton}</Box> :<Button onClick={onOpen} colorScheme={"blue"}>Take note</Button>}
+     
       <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent>
