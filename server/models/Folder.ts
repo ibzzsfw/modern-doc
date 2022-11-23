@@ -32,10 +32,11 @@ class Folder {
           date: null,
         }
 
-      const generateFile = await Prisma.$queryRaw`
+      const file = await Prisma.$queryRaw`
         SELECT "GeneratedFile"."id","GeneratedFile"."officialName"
         ,"FolderGeneratedFile"."amount","FolderGeneratedFile"."remark",
-        "UserGeneratedFile"."note","UserGeneratedFile"."date"
+        "UserGeneratedFile"."note","UserGeneratedFile"."date",'generatedFile' AS "type",
+        '' AS "URI", NULL AS "expirationDate"
         -- ,array(SELECT json_agg("Field".*) FROM "GeneratedFileField" 
         -- LEFT JOIN "GeneratedFile" ON "GeneratedFileField"."generatedFileId" = "GeneratedFile"."id"
         -- LEFT JOIN "Field" ON "Field"."id" = "GeneratedFileField"."fieldId") AS "fields"
@@ -43,19 +44,23 @@ class Folder {
         LEFT JOIN "GeneratedFile" ON "FolderGeneratedFile"."generatedFileId" = "GeneratedFile"."id"
         LEFT JOIN "UserGeneratedFile" ON "GeneratedFile"."id" = "UserGeneratedFile"."generatedFileId"
         WHERE "FolderGeneratedFile"."folderId" = ${id}::uuid 
-      `
-
-      const uploadFile = await Prisma.$queryRaw`
+        UNION
         SELECT "UploadedFile"."id","UploadedFile"."officialName",
-        "UserUploadedFile"."note","UserUploadedFile"."date","FolderUploadedFile"."amount",
-        "FolderUploadedFile"."remark","UserUploadedFile"."URI"
+        "FolderUploadedFile"."amount","FolderUploadedFile"."remark",
+        "UserUploadedFile"."note","UserUploadedFile"."date"
+        ,'uploadedFile' AS "type",
+        "UserUploadedFile"."URI","UserUploadedFile"."expirationDate"
         FROM "FolderUploadedFile"
         LEFT JOIN "UploadedFile" ON "FolderUploadedFile"."uploadedFileId" = "UploadedFile"."id"
         LEFT JOIN "UserUploadedFile" ON "UploadedFile"."id" = "UserUploadedFile"."uploadedFileId"
         WHERE "FolderUploadedFile"."folderId" = ${id}::uuid AND "UserUploadedFile"."userId" = ${userId}::uuid
       `
 
-      res.json({ ...folder[0], ...userFolder[0], generateFile, uploadFile })
+      res.json({
+        ...folder[0],
+        ...userFolder[0],
+        file,
+      })
     } catch (err) {
       res.status(400).json(err)
     }

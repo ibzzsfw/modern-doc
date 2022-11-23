@@ -14,7 +14,7 @@ const DocumentBadge = ({ status }: propTypes) => {
         return 'accent.green'
       case 'ใกล้หมดอายุ':
         return 'accent.yellow'
-      case 'ไม่มีอยู่ในคลัง':
+      default:
         return 'accent.gray'
     }
   }

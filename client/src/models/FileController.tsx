@@ -33,7 +33,7 @@ class FileController {
       `${import.meta.env.VITE_API_ENDPOINT}/file/get-by-id/${this.getTypeName(
         type
       )}/${id}`,
-      {
+      { 
         headers: {
           'user-id': useLoginDataStore.getState()?.user?.id,
           token: useLoginDataStore.getState()?.user?.token,

@@ -13,7 +13,7 @@ import {
 import MenuProvider from '@components/MenuProvider'
 import UploadFile from '@components/UploadFile'
 import GeneratedFile from '@models/GeneratedFile'
-import UploadedFile from '@models/UploadedFile'
+// import UploadedFile from '@models/UploadedFile'
 import { useGeneratedFileStore } from '@stores/GeneratedFile'
 import { useEffect, useState } from 'react'
 import {
@@ -27,6 +27,8 @@ import { BsThreeDots } from 'react-icons/bs'
 import { GrUpload } from 'react-icons/gr'
 import { HiArrowDownRight } from 'react-icons/hi2'
 import { RiFileSearchLine } from 'react-icons/ri'
+import DocumentBadge from '@components/DocumentBadge'
+import UploadedFile from '@models/dyl/UploadedFile'
 
 type propsType = {
   files: any[]
@@ -60,7 +62,7 @@ const FileList = ({ files }: propsType) => {
   useEffect(() => console.table(generatedFile), [generatedFile])
 
   const countGeneratedFile = () =>
-    files.filter((file) => file instanceof GeneratedFile).length
+    files.filter((file) => file.type == 'generatedFile').length
 
   const [menuOption, setmenuOption] = useState([
     [
@@ -98,8 +100,7 @@ const FileList = ({ files }: propsType) => {
       },
     ],
   ])
-  
- 
+
   return (
     <>
       <Flex sx={fileList}>
@@ -124,61 +125,64 @@ const FileList = ({ files }: propsType) => {
           </Grid>
           <Divider />
           <Box sx={tableContent}>
-            {files.map((file) => (
-              <>
-                <Grid
-                  templateColumns="1fr 3fr 2fr 2fr 1fr 1fr"
-                  sx={isSelectedThisFile(file) ? tableRowSelected : tableRow}
-                  key={file.id}
-                >
-                  <Box sx={simpleBox}>
-                    {file instanceof GeneratedFile ? (
-                      <Checkbox
-                        isChecked={isSelectedThisFile(file)}
-                        onChange={(e) =>
-                          onChangeCheckbox(e.target.checked, file)
-                        }
-                      />
-                    ) : (
-                      <IconButton
-                        aria-label="Search database"
-                        icon={<AiOutlineUpload />}
-                        size="sm"
-                        variant="outline"
-                        colorScheme={'gray'}
-                        onClick={() => {
-                          setOpen(true)
-                          setFile(file)
-                        }}
-                      />
-                    )}
-                  </Box>
-                  <Box sx={simpleBox}>{file.officialName}</Box>
-                  <Box sx={simpleBox}>{'API'}</Box>
-                  <Box sx={simpleBox}>
-                    {'API'}
-                    {/* <DocumentBadge status={file.getStatus()} /> */}
-                  </Box>
-                  <Box sx={simpleBox}>{'API'}</Box>
-                  <Box sx={simpleBox}>
-                    <Box position="absolute">
-                      <MenuProvider
-                        left="0px"
-                        top="20px"
-                        menusList={[
-                          file instanceof GeneratedFile
-                            ? [menuOption[0][0]]
-                            : [menuOption[0][1]],
-                          menuOption[1],
-                        ]}
-                      >
-                        <Icon as={BsThreeDots} sx={threeDot} boxSize="18px" />
-                      </MenuProvider>
+            {files.map((file) => {
+              file = new UploadedFile(file)
+              return (
+                <>
+                  <Grid
+                    templateColumns="1fr 3fr 2fr 2fr 1fr 1fr"
+                    sx={isSelectedThisFile(file) ? tableRowSelected : tableRow}
+                    key={file.id}
+                  >
+                    <Box sx={simpleBox}>
+                      {file.type == 'generatedFile' ? (
+                        <Checkbox
+                          isChecked={isSelectedThisFile(file)}
+                          onChange={(e) =>
+                            onChangeCheckbox(e.target.checked, file)
+                          }
+                        />
+                      ) : (
+                        <IconButton
+                          aria-label="Search database"
+                          icon={<AiOutlineUpload />}
+                          size="sm"
+                          variant="outline"
+                          colorScheme={'gray'}
+                          onClick={() => {
+                            setOpen(true)
+                            setFile(file)
+                          }}
+                        />
+                      )}
                     </Box>
-                  </Box>
-                </Grid>
-              </>
-            ))}
+                    <Box sx={simpleBox}>{file.officialName}</Box>
+                    <Box sx={simpleBox}>{file.amount}</Box>
+                    <Box sx={simpleBox}>
+                      {/* {'API'} */}
+                      <DocumentBadge status={file.getStatus()} />
+                    </Box>
+                    <Box sx={simpleBox}>{file.remark}</Box>
+                    <Box sx={simpleBox}>
+                      <Box position="absolute">
+                        <MenuProvider
+                          left="0px"
+                          top="20px"
+                          menusList={[
+                            file.type == 'generatedFile'
+                              ? [menuOption[0][0]]
+                              : [menuOption[0][1]],
+                            menuOption[1],
+                          ]}
+                        >
+                          <Icon as={BsThreeDots} sx={threeDot} boxSize="18px" />
+                        </MenuProvider>
+                      </Box>
+                    </Box>
+                  </Grid>
+                </>
+              )
+            })}
           </Box>
         </Box>
         <ButtonGroup>
