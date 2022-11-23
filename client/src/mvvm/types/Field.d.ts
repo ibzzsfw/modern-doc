@@ -8,11 +8,11 @@ enum FieldList {
 
 interface FieldTypes {
   id: string;
-  name: string;
-  type: FieldList;
-  officialName: string;
-  description: string;
-  value: string;
+  name?: string;
+  type?: FieldList;
+  officialName?: string;
+  description?: string;
+  value?: string;
 }
 
 export default FieldTypes;

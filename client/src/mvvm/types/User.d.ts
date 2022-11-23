@@ -1,8 +1,4 @@
-enum Sex {
-  M = 'ชาย',
-  F = 'หญิง',
-  X = 'ไม่ระบุ'
-}
+type Sex = 'ชาย' | 'หญิง' | 'ไม่ระบุ';
 
 interface UserType {
   id: string;
