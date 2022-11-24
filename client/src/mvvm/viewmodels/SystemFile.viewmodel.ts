@@ -5,14 +5,14 @@ import FileViewModel from "./Files.viewmodel";
 class SystemFileViewModel extends FileViewModel implements SystemFileType, Sharable {
   name
   dayLifeSpan
-  tag
+  tagId
   shareData: Date = new Date();
 
   constructor(arg: SystemFileType) {
     super(arg);
     this.name = arg.name;
     this.dayLifeSpan = arg.dayLifeSpan;
-    this.tag = arg.tag
+    this.tagId = arg.tagId
   }
 
   share = () => {

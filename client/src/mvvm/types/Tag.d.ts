@@ -1,6 +1,6 @@
 interface TagType {
   id: string;
-  name: string;
+  name?: string;
 }
 
 export default TagType;

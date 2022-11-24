@@ -39,6 +39,9 @@
       "@firebase": [
         "src/firebase/index"
       ],
+      "@mvvm": [
+        "src/mvvm/*"
+      ],
     }
   },
   "include": [

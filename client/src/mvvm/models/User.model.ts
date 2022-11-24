@@ -1,18 +1,18 @@
 import create from 'zustand'
 import UserViewModel from '../viewmodels/User.viewmodel'
 
-interface UserModel {
+interface IUserModel {
   user: UserViewModel | null,
   family: UserViewModel[],
   setUser: (user: UserViewModel) => void,
   setFamily: (family: UserViewModel[]) => void,
 }
 
-const useUserModel = create<UserModel>((set) => ({
+const UserModel = create<IUserModel>((set) => ({
   user: null,
   family: [],
   setUser: (user: UserViewModel) => set({ user }),
   setFamily: (family: UserViewModel[]) => set({ family }),
 }))
 
-export default useUserModel;
+export default UserModel;

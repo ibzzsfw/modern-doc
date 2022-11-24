@@ -2,7 +2,7 @@ import UserType from '../types/User';
 
 class UserViewModel implements UserType {
   id
-  housrId
+  houseId
   title
   firstName
   lastName
@@ -14,7 +14,7 @@ class UserViewModel implements UserType {
 
   constructor(arg: UserType) {
     this.id = arg.id;
-    this.housrId = arg.housrId;
+    this.houseId = arg.houseId;
     this.title = arg.title;
     this.firstName = arg.firstName;
     this.lastName = arg.lastName;

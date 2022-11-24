@@ -4,14 +4,14 @@ class FolderViewModel implements FolderType {
   name
   file
   note
-  tag
+  tagId
   dateCreated
 
   constructor(arg: FolderType) {
     this.name = arg.name;
     this.file = arg.file;
     this.note = arg.note;
-    this.tag = arg.tag;
+    this.tagId = arg.tagId;
     this.dateCreated = arg.dateCreated;
   }
 }

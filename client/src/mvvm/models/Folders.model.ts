@@ -1,14 +1,14 @@
 import create from "zustand/react";
 import FolderViewModel from "../viewmodels/Folder.viewmodel";
 
-interface FolderModel {
+interface IFolderModel {
   folder: FolderViewModel[],
   setFolder: (folder: FolderViewModel[]) => void,
 }
 
-const useFolderModel = create<FolderModel>((set) => ({
+const FolderModel = create<IFolderModel>((set) => ({
   folder: [],
   setFolder: (folder: FolderViewModel[]) => set({ folder }),
 }))
 
-export default useFolderModel;
+export default FolderModel;
