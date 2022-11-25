@@ -3,7 +3,7 @@ import GenerateFilesViewModel from "../viewmodels/GenerateFiles.viewmodel";
 import UploadFileViewModel from "../viewmodels/UploadFile.viewmodel";
 import FreeUploadFileViewModel from "../viewmodels/FreeUploadFile.viewmodel";
 
-interface GeneratedFilesModel {
+interface IFileModel {
   generatedFiles: GenerateFilesViewModel[],
   uploadFile: UploadFileViewModel[],
   freeUploadFile: FreeUploadFileViewModel[],
@@ -12,7 +12,7 @@ interface GeneratedFilesModel {
   setFreeUploadFile: (freeUploadFile: FreeUploadFileViewModel[]) => void,
 }
 
-const useGeneratedFilesModel = create<GeneratedFilesModel>((set) => ({
+const FileModel = create<IFileModel>((set) => ({
   generatedFiles: [],
   uploadFile: [],
   freeUploadFile: [],
@@ -21,4 +21,4 @@ const useGeneratedFilesModel = create<GeneratedFilesModel>((set) => ({
   setFreeUploadFile: (freeUploadFile: FreeUploadFileViewModel[]) => set({ freeUploadFile }),
 }))
 
-export default useGeneratedFilesModel;
+export default FileModel;

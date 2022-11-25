@@ -2,17 +2,19 @@ import UploadFileViewModel from "../viewmodels/UploadFile.viewmodel";
 import GenerateFileViewModel from "../viewmodels/GenerateFiles.viewmodel";
 import TagViewModel from "../viewmodels/Tag.viewmodel";
 
+
 type fileDetails = {
-  file: UploadFileViewModel | GenerateFileViewModel;
+  fileId: string[];
   amount: number;
-  remarks: string;
+  remark: string;
 }
 
 interface FolderType {
-  file: fileDetails[];
-  note: string;
-  tag: TagViewModel[];
-  dateCreated: string;
+  name?: string;
+  file?: fileDetails[];
+  note?: string;
+  tagId?: string[];
+  dateCreated?: string;
 }
 
 export default FolderType;

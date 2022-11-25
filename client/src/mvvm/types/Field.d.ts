@@ -1,18 +1,19 @@
-enum FieldList {
-  Text = 'text',
-  Number = 'number',
-  Date = 'date',
-  SingleSelect = 'singleSelect',
-  MultipleSelect = 'multipleSelect',
-}
+type FieldList = 'text'
+  | 'number'
+  | 'date'
+  | 'singleSelect'
+  | 'multipleSelect'
+  | 'phoneNumber'
+  | 'email'
+  | 'age'
 
-interface FieldTypes {
+interface FieldType {
   id: string;
-  name: string;
-  type: FieldList;
-  officialName: string;
-  description: string;
-  value: string;
+  name?: string;
+  type?: FieldList;
+  officialName?: string;
+  description?: string;
+  value?: string;
 }
 
-export default FieldTypes;
+export default FieldType;

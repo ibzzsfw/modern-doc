@@ -1,13 +1,13 @@
-import FreeUploadFileType from "src/mvvm/types/FreeUploadFile";
+import FreeUploadedFileType from "../types/FreeUploadedFile";
 import FileViewModel from "./Files.viewmodel";
 
-class FreeUploadFileViewModel extends FileViewModel implements FreeUploadFileType {
+class FreeUploadedFileViewModel extends FileViewModel implements FreeUploadedFileType {
   dateExpired;
 
-  constructor(arg: FreeUploadFileType) {
+  constructor(arg: FreeUploadedFileType) {
     super(arg);
     this.dateExpired = arg.dateExpired;
   }
 }
 
-export default FreeUploadFileViewModel;
+export default FreeUploadedFileViewModel;

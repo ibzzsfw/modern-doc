@@ -1,14 +1,14 @@
 import create from "zustand/react";
 import NoteViewModel from "../viewmodels/Note.viewmodel";
 
-interface NoteModel {
+interface INoteModel {
   note: NoteViewModel[],
   setNote: (note: NoteViewModel[]) => void,
 }
 
-const useNoteModel = create<NoteModel>((set) => ({
+const NoteModel = create<INoteModel>((set) => ({
   note: [],
   setNote: (note: NoteViewModel[]) => set({ note }),
 }))
 
-export default useNoteModel;
+export default NoteModel;

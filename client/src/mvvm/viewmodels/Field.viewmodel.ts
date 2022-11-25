@@ -1,6 +1,6 @@
-import FieldTypes from "../types/Field";
+import FieldType from "../types/Field";
 
-class FieldViewModel implements FieldTypes {
+abstract class FieldViewModel implements FieldType {
   id
   name
   type
@@ -8,7 +8,7 @@ class FieldViewModel implements FieldTypes {
   description
   value
 
-  constructor(arg: FieldTypes) {
+  constructor(arg: FieldType) {
     this.id = arg.id;
     this.name = arg.name;
     this.type = arg.type;
@@ -16,6 +16,11 @@ class FieldViewModel implements FieldTypes {
     this.description = arg.description;
     this.value = arg.value;
   }
+
+  abstract validate: () => object;
+
+  abstract iniialValue: () => string | number | Date | string[];
+
 }
 
 export default FieldViewModel;

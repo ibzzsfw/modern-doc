@@ -1,8 +1,7 @@
 import FilesType from "../types/File";
 import DocumentViewModel from "./Document.viewmodel";
 
-class FileViewModel extends DocumentViewModel implements FilesType {
-
+abstract class FileViewModel extends DocumentViewModel implements FilesType {
   officialName;
   lastModified;
 

@@ -1,12 +1,12 @@
-import GenerateFileType from "../types/GenerateFile";
+import GenerateFileType from "../types/GeneratedFile";
 import SystemFileViewModel from "./SystemFile.viewmodel";
 
 class GenerateFileViewModel extends SystemFileViewModel implements GenerateFileType {
-  field
+  fieldId
 
   constructor(arg: GenerateFileType) {
     super(arg);
-    this.field = arg.field;
+    this.fieldId = arg.fieldId;
   }
 }
 
