@@ -1,18 +1,17 @@
-import {
-  Button,
-  Flex,
-  Text
-} from '@chakra-ui/react'
+import { Button, Flex, Text } from '@chakra-ui/react'
 import { AiOutlineDoubleRight } from 'react-icons/ai'
-import { Link } from 'react-router-dom'
 
 type propsType = {
   title: string
   children?: JSX.Element | JSX.Element[]
-  url?: string
+  onAddonButtonClick?: () => void
 }
 
-const DocumentBar = ({ title, children, url }: propsType) => {
+const DocumentBar = ({
+  title,
+  children,
+  onAddonButtonClick,
+}: propsType) => {
   let layout = {
     padding: '24px 0',
     gap: '24px',
@@ -32,7 +31,7 @@ const DocumentBar = ({ title, children, url }: propsType) => {
   return (
     <>
       <Flex sx={layout}>
-        <Flex width="100%" justifyContent="space-between" alignItems='center'>
+        <Flex width="100%" justifyContent="space-between" alignItems="center">
           <Text
             fontSize="18px"
             fontWeight="bold"
@@ -40,13 +39,19 @@ const DocumentBar = ({ title, children, url }: propsType) => {
           >
             {title}
           </Text>
-          {url && (
-            <Link to={url}>
-              <Button rightIcon={<AiOutlineDoubleRight />} variant='ghost' colorScheme='gray'>
-                ดูเพิ่มเติม
-              </Button>
-            </Link>
+          {onAddonButtonClick && (
+            <Button
+            rightIcon={<AiOutlineDoubleRight />}
+            variant="ghost"
+            colorScheme="gray"
+            onClick={() => {
+              onAddonButtonClick && onAddonButtonClick()
+            }}
+          >
+            ดูเพิ่มเติม
+          </Button>
           )}
+          
         </Flex>
         <Flex sx={childrenFlex}>{children}</Flex>
       </Flex>

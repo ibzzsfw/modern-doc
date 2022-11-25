@@ -10,42 +10,43 @@ import {
   ModalOverlay,
   Select,
   Textarea,
-  useDisclosure
+  useDisclosure,
+  FormLabel,
+  FormControl,
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import Note from '@models/Note'
 import NoteController from '@models/NoteController'
 
 type propsTypes = {
-  customButton? : JSX.Element
-} 
+  customButton?: JSX.Element
+}
 
-const TakeNote = ({customButton} : propsTypes) => {
-
+const TakeNote = ({ customButton }: propsTypes) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const [noteType, setNoteType] = useState("")
-  const [selectedDocumentID, setSelectedDocumentID] = useState("")
+  const [noteType, setNoteType] = useState('')
+  const [selectedDocumentID, setSelectedDocumentID] = useState('')
   const [selectedNote, setSelectedNote] = useState<Note | null>(null)
   const [note, setNote] = useState<Note[]>([])
-  const [selectPlaceholder, setSelectPlaceholder] = useState("")
+  const [selectPlaceholder, setSelectPlaceholder] = useState('')
 
   useEffect(() => {
     let notes = NoteController.getNotes(noteType)
     switch (noteType) {
-      case "free_note":
-        setSelectPlaceholder("เลือกบันทึก")
+      case 'free_note':
+        setSelectPlaceholder('เลือกบันทึก')
         break
-      case "folder_note":
-        setSelectPlaceholder("เลือกแฟ้ม")
+      case 'folder_note':
+        setSelectPlaceholder('เลือกแฟ้ม')
         break
-      case "file_note":
-        setSelectPlaceholder("เลือกเอกสาร")
+      case 'file_note':
+        setSelectPlaceholder('เลือกเอกสาร')
         break
       default:
-        setSelectPlaceholder("")
+        setSelectPlaceholder('')
         break
     }
-    setNote(notes);
+    setNote(notes)
   }, [noteType])
 
   useEffect(() => {
@@ -57,8 +58,8 @@ const TakeNote = ({customButton} : propsTypes) => {
 
   const initialState = () => {
     onClose()
-    setNoteType("")
-    setSelectedDocumentID("")
+    setNoteType('')
+    setSelectedDocumentID('')
     setSelectedNote(null)
     setNote([])
   }
@@ -70,41 +71,72 @@ const TakeNote = ({customButton} : propsTypes) => {
 
   return (
     <>
-     {customButton ?<Box as = 'button' onClick={onOpen}>{customButton}</Box> :<Button onClick={onOpen} colorScheme={"blue"}>Take note</Button>}
-     
-      <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose} size="xl">
+      {customButton ? (
+        <Box as="button" onClick={onOpen}>
+          {customButton}
+        </Box>
+      ) : (
+        <Button onClick={onOpen} colorScheme={'blue'}>
+          Take note
+        </Button>
+      )}
+
+      <Modal
+        closeOnOverlayClick={false}
+        isOpen={isOpen}
+        onClose={onClose}
+        size="xl"
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>สร้างบันทึก</ModalHeader>
           <ModalCloseButton />
           <ModalBody sx={modalBody}>
+            <FormControl>
+              <FormLabel>ประเภทเอกสาร</FormLabel>
             <Select
               placeholder="ประเภทของบันทึก"
               onChange={(e) => {
                 setNoteType(e.target.value)
-                setSelectedDocumentID("")
+                setSelectedDocumentID('')
               }}
             >
               <option value="free_note">บันทึกอิสระ</option>
               <option value="file_note">บันทึกในเอกสาร</option>
               <option value="folder_note">บันทึกในแฟ้ม</option>
             </Select>
-            {
-              noteType != "" &&
-              <Select placeholder={selectPlaceholder} onChange={(e) => setSelectedDocumentID(e.target.value)}>
-                {
-                  note.map((note, index) => {
-                    return <option key={index} value={note.id}>{note.title}</option>
-                  })
-                }
-              </Select>
-            }
-            {selectedDocumentID && <Textarea value={selectedNote ? selectedNote.content : "เนื้อหาใหม่"} />}
+            {noteType != '' && (<>
+              <FormLabel>ชื่อเอกสาร</FormLabel>
+              <Select
+                placeholder={selectPlaceholder}
+                onChange={(e) => setSelectedDocumentID(e.target.value)}
+              >
+                {note.map((note, index) => {
+                  return (
+                    <option key={index} value={note.id}>
+                      {note.title}
+                    </option>
+                  )
+                })}
+              </Select></>
+              
+            )}
+            {selectedDocumentID && (<>
+              <FormLabel>บันทึกเตือนความจำ</FormLabel>
+              <Textarea
+                value={selectedNote ? selectedNote.content : 'เนื้อหาใหม่'}
+              />
+            </>
+             
+            )}
             {/*onChange*/}
+            </FormControl>
           </ModalBody>
           <ModalFooter>
             <Button onClick={initialState}>ยกเลิก</Button>
-            <Button colorScheme='blue' marginLeft="12px" onClick={saveNote}>บันทึก</Button>
+            <Button colorScheme="blue" marginLeft="12px" onClick={saveNote}>
+              บันทึก
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -113,10 +145,10 @@ const TakeNote = ({customButton} : propsTypes) => {
 }
 
 let modalBody = {
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  rowGap: "24px",
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  rowGap: '24px',
 }
 
 export default TakeNote

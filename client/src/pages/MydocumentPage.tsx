@@ -21,13 +21,13 @@ import { useState, useEffect } from 'react'
 import DocumentBlankBox from '@components/DocumentBlankBox'
 import TakeNote from '@components/TakeNote'
 import { AiFillPlusCircle } from 'react-icons/ai'
-import {BsShareFill} from 'react-icons/bs'
-
+import { BsShareFill } from 'react-icons/bs'
+import ShareModal from '@components/ShareModal'
 
 const MyDocument = () => {
   //const { search, setSearch } = useSearchBoxStore()
   const [search, setSearch] = useState('')
-  const {onToggle} = useDisclosure()
+  const { onToggle } = useDisclosure()
   const [shareFile, setShareFile] = useState([
     {
       id: '6',
@@ -43,25 +43,29 @@ const MyDocument = () => {
     },
     { id: '6', type: 'sharedFile', title: 'ทะเบียนบ้าน', author: 'Wang yuan' },
   ])
-  const [myFile, setMyFile] = useState([{
-    id: '6',
-    type: 'uploadedFile',
-    title: 'รักษาดินแดน',
-    amount: 9,
-    size: 1.2,
-  },{
-    id: '6',
-    type: 'uploadedFile',
-    title: 'รักษาดินแดน',
-    amount: 9,
-    size: 6,
-  },{
-    id: '6',
-    type: 'uploadedFile',
-    title: 'รักษาดินแดน',
-    amount: 9,
-    size: 527
-  }])
+  const [myFile, setMyFile] = useState([
+    {
+      id: '6',
+      type: 'uploadedFile',
+      title: 'รักษาดินแดน',
+      amount: 9,
+      size: 1.2,
+    },
+    {
+      id: '6',
+      type: 'uploadedFile',
+      title: 'รักษาดินแดน',
+      amount: 9,
+      size: 6,
+    },
+    {
+      id: '6',
+      type: 'uploadedFile',
+      title: 'รักษาดินแดน',
+      amount: 9,
+      size: 527,
+    },
+  ])
   const [myFolder, setMyFolder] = useState([
     {
       id: '6',
@@ -97,7 +101,7 @@ const MyDocument = () => {
     right: '20px',
     color: 'accent.black',
   }
-  const [note,setNote] = useState([])
+  const [note, setNote] = useState([])
 
   let menu = (
     <MenuProvider
@@ -166,55 +170,61 @@ const MyDocument = () => {
         />
       </Flex>
       <DocumentBar title="บันทึกเตือนความจำของฉัน">
-        
         <>
-         <TakeNote customButton={ <DocumentBlankBox icon={AiFillPlusCircle} size = {"80px"} color = {'gray.500'}
-          onClick = {()=>{
-            
-          }}
-         />} />
-             
-          
-        {shareFile
-          .filter((file) => file.title.toLowerCase().includes(search))
-          .map((file: any) => {
-            return (
-              <DocumentBox
-                id={file.id}
-                type={file.type}
-                title={file.title}
-                author={file.author}
-                showNote
-                menu={menu}
+          <TakeNote
+            customButton={
+              <DocumentBlankBox
+                icon={AiFillPlusCircle}
+                size={'80px'}
+                color={'gray.500'}
               />
-            )
-          })}
+            }
+          />
+
+          {shareFile
+            .filter((file) => file.title.toLowerCase().includes(search))
+            .map((file: any) => {
+              return (
+                <DocumentBox
+                  id={file.id}
+                  type={file.type}
+                  title={file.title}
+                  author={file.author}
+                  showNote
+                  menu={menu}
+                />
+              )
+            })}
         </>
-       
-        
-        
       </DocumentBar>
       <DocumentBar title="เอกสารที่แชร์ร่วมกัน">
         <>
-          <DocumentBlankBox icon={BsShareFill} 
-          size = {"70px"} color = {'#D1B1F0'}onClick = {()=>{}}/>
-          {shareFile
-          .filter((file) => file.title.toLowerCase().includes(search))
-          .map((file: any) => {
-            return (
-              <DocumentBox
-                id={file.id}
-                type={file.type}
-                title={file.title}
-                author={file.author}
-                showNote
-                menu={menu}
+          <ShareModal
+            customButton={
+              <DocumentBlankBox
+                icon={BsShareFill}
+                size={'70px'}
+                color={'#D1B1F0'}
+                onClick={() => {}}
               />
-            )
-          })}
-        
+            }
+          />
+
+          {shareFile
+            .filter((file) => file.title.toLowerCase().includes(search))
+            .map((file: any) => {
+              return (
+                <DocumentBox
+                  id={file.id}
+                  type={file.type}
+                  title={file.title}
+                  author={file.author}
+                  showNote
+                  menu={menu}
+                />
+              )
+            })}
         </>
-       
       </DocumentBar>
       <DocumentBar title="แฟ้มเอกสารของฉัน">
         {myFolder
@@ -234,27 +244,25 @@ const MyDocument = () => {
           })}
       </DocumentBar>
       <DocumentBar title="ไฟล์ของฉัน">
-        {myFile.filter((file) => file.title.toLowerCase().includes(search)).map((file: any) => {
-          return (
-            <DocumentBox
-              id={file.id}
-              type={file.type}
-              title={file.title}
-              image={file.image}
-              amount={file.amount}
-              showNote
-              size={file.size}
-              menu={menu}
-            />
-          )
-        }) 
-        }
-      
+        {myFile
+          .filter((file) => file.title.toLowerCase().includes(search))
+          .map((file: any) => {
+            return (
+              <DocumentBox
+                id={file.id}
+                type={file.type}
+                title={file.title}
+                image={file.image}
+                amount={file.amount}
+                showNote
+                size={file.size}
+                menu={menu}
+              />
+            )
+          })}
       </DocumentBar>
     </Box>
   )
 }
 
 export default MyDocument
-
-

@@ -73,11 +73,11 @@ const Home = () => {
           />
         </PopularBar>
 
-        <DocumentBar title="แฟ้มล่าสุด" url="broo">
+        <DocumentBar title="แฟ้มล่าสุด" onAddonButtonClick={()=>{}}>
           {latestFolder.map((folder: any) => (
             <DocumentBox
               id={folder.id}
-              title={folder.officialName}
+              title={folder.officialName} 
               type="generatedFolder"
               createdDate={folder.date}
               showDate
@@ -85,7 +85,7 @@ const Home = () => {
           ))}
         </DocumentBar>
 
-        <DocumentBar title="เอกสารล่าสุด" url="broo">
+        <DocumentBar title="เอกสารล่าสุด" onAddonButtonClick={()=>{}}>
           {latestFiles?.map((file: any) => (
             <DocumentBox
               id={file.id}
