@@ -8,9 +8,9 @@ import {
   IconButton,
   Icon,
   useDisclosure,
+  Divider,
 } from '@chakra-ui/react'
 import SearchBox from '@components/SearchBox'
-import { useSearchBoxStore } from '@stores/SearchBoxStore'
 import DocumentBox from '@components/DocumentBox'
 import DocumentBar from '@components/DocumentBar'
 import MenuProvider from '@components/MenuProvider'
@@ -23,10 +23,14 @@ import TakeNote from '@components/TakeNote'
 import { AiFillPlusCircle } from 'react-icons/ai'
 import { BsShareFill } from 'react-icons/bs'
 import ShareModal from '@components/ShareModal'
+import { useNavigate } from 'react-router-dom'
+
 
 const MyDocument = () => {
   //const { search, setSearch } = useSearchBoxStore()
   const [search, setSearch] = useState('')
+  const navigate = useNavigate()
+  
   const { onToggle } = useDisclosure()
   const [shareFile, setShareFile] = useState([
     {
@@ -146,8 +150,9 @@ const MyDocument = () => {
     </MenuProvider>
   )
 
-  return (
+  return  (
     <Box sx={layout}>
+     
       <Flex
         alignItems="center"
         justifyContent="space-between"
@@ -169,7 +174,7 @@ const MyDocument = () => {
           }}
         />
       </Flex>
-      <DocumentBar title="บันทึกเตือนความจำของฉัน">
+      <DocumentBar title="บันทึกเตือนความจำของฉัน" onAddonButtonClick={()=>{navigate('/alldocument/note')}}>
         <>
           <TakeNote
             customButton={
@@ -197,7 +202,8 @@ const MyDocument = () => {
             })}
         </>
       </DocumentBar>
-      <DocumentBar title="เอกสารที่แชร์ร่วมกัน">
+      <Divider size = '10px'  />
+      <DocumentBar title="เอกสารที่แชร์ร่วมกัน" onAddonButtonClick={()=>{navigate('/alldocument/sharefile')}}>
         <>
           <ShareModal
             customButton={
@@ -226,7 +232,7 @@ const MyDocument = () => {
             })}
         </>
       </DocumentBar>
-      <DocumentBar title="แฟ้มเอกสารของฉัน">
+      <DocumentBar title="แฟ้มเอกสารของฉัน" onAddonButtonClick={()=>{navigate('/alldocument/folder')}}>
         {myFolder
           .filter((file) => file.title.toLowerCase().includes(search))
           .map((file: any) => {
@@ -243,7 +249,7 @@ const MyDocument = () => {
             )
           })}
       </DocumentBar>
-      <DocumentBar title="ไฟล์ของฉัน">
+      <DocumentBar title="ไฟล์ของฉัน" onAddonButtonClick={()=>{navigate('/alldocument/file')}}>
         {myFile
           .filter((file) => file.title.toLowerCase().includes(search))
           .map((file: any) => {
@@ -263,6 +269,10 @@ const MyDocument = () => {
       </DocumentBar>
     </Box>
   )
+
+
 }
 
+
 export default MyDocument
+
