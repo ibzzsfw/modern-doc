@@ -3,8 +3,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import LoginPage from '@pages/LoginPage'
 import MyProfile from '@pages/MyProfile'
 import PageContainer from '@components/PageContainer'
-import Home from '@pages/Home'
-import MyDocument from '@pages/MyDocumentPage'
+import HomePage from '@pages/HomePage'
+import MyDocumentPage from '@pages/MyDocumentPage'
 import Folder from '@pages/Folder'
 import Error from '@pages/Error'
 import OTPVerify from './components/OTPVerify'
@@ -14,6 +14,7 @@ import SearchPage from '@pages/SearchPage'
 import EditDocumentForm from '@components/EditDocumentForm'
 import File from '@pages/File'
 import FormPage from '@pages/FormPage'
+import AllDocumentPage from '@pages/AllDocumentPage'
 
 const AppRoute = () => {
   return (
@@ -25,18 +26,29 @@ const AppRoute = () => {
             path="/mydocument"
             element={
               <>
-                <PageContainer breadcrumb>
-                  <MyDocument />
+                <PageContainer breadcrumb >
+                  <MyDocumentPage />
                 </PageContainer>
               </>
             }
           />
           <Route
+            path="/alldocument/:category"
+            element={
+              <>
+                <PageContainer >
+                  <AllDocumentPage />
+                </PageContainer>
+              </>
+            }
+          />
+
+          <Route
             path="/home"
             element={
               <>
-                <PageContainer>
-                  <Home />
+                <PageContainer breadcrumb>
+                  <HomePage />
                 </PageContainer>
               </>
             }
