@@ -1,4 +1,4 @@
-import { Icon, Button, Box, Flex, Select, VStack ,Fade} from '@chakra-ui/react'
+import { Icon, Button, Box, Flex, Select, VStack, Fade } from '@chakra-ui/react'
 import { useParams } from 'react-router-dom'
 import TableList from '@components/TableList'
 import TableListItem from '@components/TableListItem'
@@ -11,12 +11,13 @@ import SearchBox from '@components/SearchBox'
 import { AiOutlineMenu, AiOutlineAppstore } from 'react-icons/ai'
 import DocumentBar from '@components/DocumentBar'
 import DocumentBox from '@components/DocumentBox'
-import {useSearchBoxStore} from '@stores/SearchBoxStore'
+import { useSearchBoxStore } from '@stores/SearchBoxStore'
 
 const AllDocumentPage = () => {
   const { category } = useParams<{ category: string }>()
   const [toggleView, setToggleView] = useState(true)
   const [search, setSearch] = useState('')
+  const [order, setOrder] = useState('')
   const [documents, setDocuments] = useState([
     {
       id: '6',
@@ -40,12 +41,10 @@ const AllDocumentPage = () => {
     },
   ])
 
-  
-
   let menu = (
     <MenuProvider
-      left= {toggleView ? '108px' : '-80px'}
-      top= {toggleView ? '36px' : '20px'}
+      left={toggleView ? '108px' : '-80px'}
+      top={toggleView ? '36px' : '20px'}
       menusList={[
         [
           {
@@ -81,43 +80,57 @@ const AllDocumentPage = () => {
         ],
       ]}
     >
-      <Icon as={BsThreeDots} sx={toggleView ? menuBlock : menuList} boxSize="18px" />
+      <Icon
+        as={BsThreeDots}
+        sx={toggleView ? menuBlock : menuList}
+        boxSize="18px"
+      />
     </MenuProvider>
   )
+
+  const sorting = (option: String) => {
+    let sorted: any = [...documents]
+    switch (option) {
+      case 'ASC':
+        sorted = [...documents].sort((a, b) =>
+          a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1
+        )
+        setDocuments(sorted)
+        break
+      case 'DESC':
+        sorted = [...documents].sort((a, b) =>
+          a.title.toLowerCase() < b.title.toLowerCase() ? 1 : -1
+        )
+        setDocuments(sorted)
+        break
+    }
+    console.log(sorted)
+  }
 
   return (
     <>
       <VStack>
         <Flex width="100%" justifyContent="space-between">
-          <SearchBox value= {search} onSearchClick={(params) => {
+          <SearchBox
+            value={search}
+            onSearchClick={(params) => {
               setSearch(params)
-          }} />
+            }}
+          />
 
           <Flex gap="10px">
             <Select
               placeholder="เรียงลำดับ"
               variant="flushed"
               onChange={(e) => {
-                switch(e.target.value){
-                  case 'option1':
-                    console.info('sort')
-                    setDocuments(documents.sort((a : any,b : any)=> {return a.title - b.title}))
-                  case 'option2':
-                    console.info('reverse')
-                    documents.reverse()
-                    break
-                  default:
-                    console.log(e.target.value)
-                    break
-                }
+                sorting(e.target.value)
               }}
             >
-              <option value="option1">min - max</option>
-              <option value="option2">max - min</option>
-              <option value="option3">Option 3</option>
+              <option value="ASC">ASC</option>
+              <option value="DESC">DSC</option>
             </Select>
             <Button
-              rightIcon={toggleView ? <AiOutlineAppstore /> : <AiOutlineMenu /> }
+              rightIcon={toggleView ? <AiOutlineAppstore /> : <AiOutlineMenu />}
               variant="ghost"
               onClick={() => {
                 setToggleView(!toggleView)
@@ -129,38 +142,37 @@ const AllDocumentPage = () => {
         </Flex>
         {toggleView ? (
           <DocumentBar title={category}>
-            
-              {documents
-                .filter((file) => file.title.toLowerCase().includes(search))
-                .map((file: any) => {
-                  return (
-                    <DocumentBox
-                      id={file.id}
-                      type={file.type}
-                      title={file.title}
-                      author={file.author}
-                      showNote
-                      menu={menu}
-                    />
-                  )
-                })}
-            
+            {documents
+              .filter((file) => file.title.toLowerCase().includes(search))
+              .map((file: any) => {
+                return (
+                  <DocumentBox
+                    id={file.id}
+                    type={file.type}
+                    title={file.title}
+                    author={file.author}
+                    showNote
+                    menu={menu}
+                  />
+                )
+              })}
           </DocumentBar>
         ) : (
           <TableList title={category}>
-            {documents.filter((file) => file.title.toLowerCase().includes(search))
-                .map((file: any) => {
-                  return (
-                    <TableListItem
-                      id={file.id}
-                      type={file.type}
-                      title={file.title}
-                      author={file.author}
-                      showNote
-                      menu={menu}
-                    />
-                  )
-                })}
+            {documents
+              .filter((file) => file.title.toLowerCase().includes(search))
+              .map((file: any) => {
+                return (
+                  <TableListItem
+                    id={file.id}
+                    type={file.type}
+                    title={file.title}
+                    author={file.author}
+                    showNote
+                    menu={menu}
+                  />
+                )
+              })}
           </TableList>
         )}
       </VStack>
@@ -174,7 +186,6 @@ let menuList = {
   right: '0px',
   color: 'accent.black',
 }
-
 
 let menuBlock = {
   position: 'absolute',
