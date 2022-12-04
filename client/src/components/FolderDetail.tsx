@@ -41,10 +41,8 @@ const FolderDetail = ({ title, status, description, markdown }: propsType) => {
     navigate('/form')
   }
 
-  const [isExpand, setIsExpand] = useState(false)
-
   let detailsBox = {
-    width: isExpand ? '100%' : '520px',
+    width: '520px',
     flexDirection: 'column',
     rowGap: '1rem',
     height: '768px',
@@ -68,8 +66,10 @@ const FolderDetail = ({ title, status, description, markdown }: propsType) => {
 
   let markdownBox = {
     maxHeight: '400px',
-    whiteSpace: 'nowrap',
-    overflow: isExpand ? 'scroll' : 'hidden',
+    overflowY: 'scroll',
+    overflowWrap: 'break-word',
+    whiteSpaec: 'initial',
+    wordWrap: 'break-word',
     textOverflow: 'ellipsis',
   }
 
@@ -107,16 +107,14 @@ const FolderDetail = ({ title, status, description, markdown }: propsType) => {
           <Markdown value={markdown} />
         </Box>
         <Box textAlign="end">
-          <Button
+          {/* <Button
             size="sm"
             borderColor="accent.blue"
             variant="outline"
             rightIcon={!isExpand ? <AiOutlineDoubleRight /> : undefined}
             leftIcon={isExpand ? <AiOutlineDoubleLeft /> : undefined}
             onClick={() => setIsExpand(!isExpand)}
-          >
-            {isExpand ? 'ย่อลง' : 'อ่านเพิ่มเติม'}
-          </Button>
+          ></Button> */}
         </Box>
       </Flex>
       <Box sx={noteBox}>{description}</Box>

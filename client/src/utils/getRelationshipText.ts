@@ -1,6 +1,7 @@
 import Relationship from '@models/Relationship'
 
-const getRelationshipText = (relationship: Relationship):string => {
+const getRelationshipText = (relationship: Relationship): string => {
+  console.log(relationship)
   switch (relationship) {
     case 'householder':
       return 'เจ้าของบัญชี'

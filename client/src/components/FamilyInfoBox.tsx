@@ -27,6 +27,8 @@ import { AiOutlineUpload } from 'react-icons/ai'
 import { BiEdit } from 'react-icons/bi'
 import { BsThreeDots, BsTrash } from 'react-icons/bs'
 import * as Yup from 'yup'
+import MemberController from '@models/MemberController'
+import getRelationshipText from '@utils/getRelationshipText'
 
 type propsType = {
   data?: any
@@ -56,7 +58,7 @@ const FamilyInfoBox = ({
     console.log('add')
   }
   const editFamily = async (values: any) => {
-    console.log('edit')
+    MemberController.editMember(data.id, values)
   }
   const deleteFamily = async () => {
     console.log('delete')
@@ -68,13 +70,14 @@ const FamilyInfoBox = ({
     lastName: Yup.string().required('กรุณากรอกนามสกุล'),
     relationship: Yup.mixed()
       .oneOf([
+        'เจ้าของบัญชี',
         'บิดา',
         'มารดา',
-        'พี่',
-        'น้อง',
-        'อื่นๆ',
+        'ลูก',
+        'พี่น้อง',
         'เจ้าของบ้าน',
-        'ผู้อาศัย',
+        'คู่สมรส',
+        'อื่นๆ',
       ])
       .required('กรุณาเลือกความสัมพันธ์'),
     citizenId: Yup.string().required('กรุณากรอกเลขบัตรประชาชน'),
@@ -95,8 +98,18 @@ const FamilyInfoBox = ({
             onClick: () => {
               if (!handleForm) {
                 console.log(`edit ${data?.firstName + ' ' + data?.lastName}`)
-                if (getId) getId(data?.id)
-                setEdit(true)
+                if (data?.relationship !== 'householder') {
+                  if (getId) getId(data?.id)
+                  setEdit(true)
+                } else {
+                  toast({
+                    title: 'ไม่สามารถแก้ไขข้อมูลได้',
+                    description: 'คุณไม่สามารถแก้ไขข้อมูลเจ้าของบัญชีได้',
+                    status: 'error',
+                    duration: 9000,
+                    isClosable: true,
+                  })
+                }
               }
             },
           },
@@ -190,7 +203,7 @@ const FamilyInfoBox = ({
               boxSize="206px"
               borderRadius="8px"
               position="absolute"
-               fallbackSrc="https://via.placeholder.com/365x365" 
+              fallbackSrc="https://via.placeholder.com/365x365"
             ></Image>
 
             <Box
@@ -291,13 +304,14 @@ const FamilyInfoBox = ({
                         name="relationship"
                         type="select"
                         options={[
+                          'เจ้าของบัญชี',
                           'บิดา',
                           'มารดา',
-                          'พี่',
-                          'น้อง',
-                          'อื่นๆ',
+                          'ลูก',
+                          'พี่น้อง',
                           'เจ้าของบ้าน',
-                          'ผู้อาศัย',
+                          'คู่สมรส',
+                          'อื่นๆ',
                         ]}
                         placeholder="เลือกความเกี่ยวข้อง"
                         width="120px"
@@ -337,7 +351,10 @@ const FamilyInfoBox = ({
               </Box>
 
               <Formik
-                initialValues={data}
+                initialValues={{
+                  ...data,
+                  relationship: getRelationshipText(data?.relationship),
+                }}
                 validationSchema={familyschema}
                 onReset={(values, actions) => {
                   console.log(values)
@@ -394,13 +411,14 @@ const FamilyInfoBox = ({
                         name="relationship"
                         type="select"
                         options={[
+                          'เจ้าของบัญชี',
                           'บิดา',
                           'มารดา',
-                          'พี่',
-                          'น้อง',
-                          'อื่นๆ',
+                          'ลูก',
+                          'พี่น้อง',
                           'เจ้าของบ้าน',
-                          'ผู้อาศัย',
+                          'คู่สมรส',
+                          'อื่นๆ',
                         ]}
                         placeholder="เลือกความเกี่ยวข้อง"
                         width="120px"

@@ -101,6 +101,8 @@ const FileList = ({ files }: propsType) => {
     ],
   ])
 
+  console.log('files', files)
+
   return (
     <>
       <Flex sx={fileList}>
@@ -196,7 +198,7 @@ const FileList = ({ files }: propsType) => {
           </Button>
         </ButtonGroup>
       </Flex>
-      <UploadFile open={open} setOpen={(e) => setOpen(e)} file={file} />
+      {/* <UploadFile open={open} setOpen={(e) => setOpen(e)} file={file} /> */}
     </>
   )
 }

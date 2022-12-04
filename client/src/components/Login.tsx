@@ -23,6 +23,7 @@ import { withCountryCode, withoutCountryCode } from '@utils/formatPhoneNumber'
 import OTPVerify from '@components/OTPVerify'
 import { useState } from 'react'
 import { useTime } from 'framer-motion'
+import getRelationshipText from '@utils/getRelationshipText'
 
 const Login = () => {
   let layout = {
@@ -101,7 +102,7 @@ const Login = () => {
             profileURI: data.profileURI,
           })
         )
-        console.log(data.familyMembers)
+
         setFamilyMembers(data.familyMembers)
         setTimeout(() => {
           window.location.pathname = '/home'

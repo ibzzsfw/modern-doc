@@ -14,8 +14,9 @@ class UserRouter {
   }
 
   configureRoutes = (): void => {
+    this.router.get('/', this.controller.getAllMembers)
     this.router.post('/', this.controller.addMember)
-    this.router.post('/:id', this.controller.editMember)
+    this.router.put('/:id', this.controller.editMember)
     this.router.delete('/:id', this.controller.deleteMember)
   }
 }
