@@ -11,35 +11,57 @@ import GeneratedDocumentBadge from '@components/DocumentBadge'
 import { AiOutlineDoubleLeft, AiOutlineDoubleRight } from 'react-icons/ai'
 import Status from '@models/DocumentStatus'
 import Markdown from 'marked-react'
-import { useGeneratedFileStore } from '@stores/GeneratedFile'
+import { useFilePageStore } from '@stores/FilePageStore'
 import GeneratedFile from '@models/GeneratedFile'
 import Field from '@models/Field'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import shallow from 'zustand/shallow'
+import { useFormPageStore } from '@stores/FormPageStore'
 
 type propsType = {
   title: string
   status: Status
   description: string
   markdown: string
+  type?: 'generatedFile' | 'uploadedFile' | 'freeUploadFile' | 'folder' | string
 }
 
-const FolderDetail = ({ title, status, description, markdown }: propsType) => {
+const FolderDetail = ({
+  title,
+  status,
+  description,
+  markdown,
+  type = 'uploadedFile',
+}: propsType) => {
   const navigate = useNavigate()
-  const { generatedFile, setGeneratedFileField } = useGeneratedFileStore()
 
-  const generateForm = () => {
-    let fieldsUnique: Field[] = []
-    generatedFile
-      .filter((file) => file instanceof GeneratedFile)
-      .map((file) => (fieldsUnique = [...fieldsUnique, ...file.field]))
-    // unique by field id
-    fieldsUnique = fieldsUnique.filter(
-      (field, index, self) => index === self.findIndex((t) => t.id === field.id)
-    )
-    setGeneratedFileField(fieldsUnique)
-    navigate('/form')
-  }
+  const { file, setFile } = useFilePageStore((state) => {
+    return {
+      file: state.file,
+      setFile: state.setFile,
+    }
+  }, shallow)
+
+  const { setField, setDocument } = useFormPageStore((state) => {
+    return {
+      setField: state.setField,
+      setDocument: state.setDocument,
+    }
+  }, shallow)
+
+  // const generateForm = () => {
+  //   let fieldsUnique: Field[] = []
+  //   generatedFile
+  //     .filter((file) => file instanceof GeneratedFile)
+  //     .map((file) => (fieldsUnique = [...fieldsUnique, ...file.field]))
+  //   // unique by field id
+  //   fieldsUnique = fieldsUnique.filter(
+  //     (field, index, self) => index === self.findIndex((t) => t.id === field.id)
+  //   )
+  //   setGeneratedFileField(fieldsUnique)
+  //   navigate('/form')
+  // }
 
   let detailsBox = {
     width: '520px',
@@ -118,19 +140,38 @@ const FolderDetail = ({ title, status, description, markdown }: propsType) => {
         </Box>
       </Flex>
       <Box sx={noteBox}>{description}</Box>
-      <Spacer />
-      <ButtonGroup
-        gap="24px"
-        marginTop="24px"
-        isDisabled={generatedFile.length == 0}
-      >
-        <Button sx={newDocumentBtn} colorScheme="green" onClick={generateForm}>
-          สร้างเอกสารใหม่
-        </Button>
-        <Button sx={editDocumentBtn} colorScheme="gray" variant="outline">
-          แก้ไขเอกสารเดิม
-        </Button>
-      </ButtonGroup>
+      {type === 'generatedFile' ? (
+        <ButtonGroup
+          gap="24px"
+          marginTop="24px"
+          isDisabled={file.fields.length === 0}
+        >
+          <Button
+            sx={newDocumentBtn}
+            colorScheme="green"
+            onClick={() => {
+              setField(file.fields)
+              setDocument(file)
+              navigate('/form')
+            }}
+          >
+            สร้างเอกสารใหม่
+          </Button>
+          <Button sx={editDocumentBtn} colorScheme="gray" variant="outline">
+            แก้ไขเอกสารเดิม
+          </Button>
+        </ButtonGroup>
+      ) : null}
+      {type === 'folder' ? (
+        <ButtonGroup gap="24px" marginTop="24px" isDisabled={true}>
+          <Button sx={newDocumentBtn} colorScheme="green" onClick={() => {}}>
+            สร้างเอกสารใหม่
+          </Button>
+          <Button sx={editDocumentBtn} colorScheme="gray" variant="outline">
+            แก้ไขเอกสารเดิม
+          </Button>
+        </ButtonGroup>
+      ) : null}
     </Flex>
   )
 }

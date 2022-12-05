@@ -14,25 +14,25 @@ import {
   Checkbox,
   Radio,
   RadioGroup,
-  Stack
+  Stack,
 } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
-import { useGeneratedFileStore } from "@stores/GeneratedFile"
-import Fields from "@models/Field"
-import { Field, Form, Formik, useFormik } from 'formik';
-import * as Yup from 'yup';
-import { connectStorageEmulator } from 'firebase/storage';
+import { useFormPageStore } from '@stores/FormPageStore'
+import { useGeneratedFileStore } from '@stores/GeneratedFile'
+import Fields from '@models/Field'
+import { Field, Form, Formik, useFormik } from 'formik'
+import * as Yup from 'yup'
+import { connectStorageEmulator } from 'firebase/storage'
 
 const FormPage = () => {
+  const { document, field } = useFormPageStore()
 
-  const { generatedFile, generatedFileField } = useGeneratedFileStore()
   const [percent, setPercent] = useState<number>(0.31)
 
   const initialValuesExraction = () => {
-
     const initialValues: { [key: string]: any | any[] } = {}
 
-    generatedFileField.map((field: Fields) => {
+    field.map((field: Fields) => {
       switch (field.type) {
         case 'number':
           initialValues[field.name] = 0
@@ -53,10 +53,9 @@ const FormPage = () => {
   }
 
   const validationSchemaExraction = () => {
-
     const validationSchema: { [key: string]: any } = {}
 
-    generatedFileField.map((field: Fields) => {
+    field.map((field: Fields) => {
       switch (field.type) {
         case 'text':
           validationSchema[field.name] = Yup.string().required('จำเป็นต้องกรอก')
@@ -68,18 +67,26 @@ const FormPage = () => {
           validationSchema[field.name] = Yup.date().required('จำเป็นต้องกรอก')
           break
         case 'phone':
-          validationSchema[field.name] = Yup.string().required('จำเป็นต้องกรอก')
+          validationSchema[field.name] = Yup.string()
+            .required('จำเป็นต้องกรอก')
             .matches(/^[0-9]+$/, 'กรุณากรอกเฉพาะตัวเลข')
             .length(10, 'เบอร์โทรศัพท์จำเป็นต้องมี 10 หลัก')
           break
         case 'email':
-          validationSchema[field.name] = Yup.string().required('จำเป็นต้องกรอก')
-            .matches(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, 'กรุณากรอกอีเมลให้ถูกต้อง')
+          validationSchema[field.name] = Yup.string()
+            .required('จำเป็นต้องกรอก')
+            .matches(
+              /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+              'กรุณากรอกอีเมลให้ถูกต้อง'
+            )
           break
         case 'singleSelect':
-          validationSchema[field.name] = Yup.string().required('เลือก 1 ตัวเลือก')
+          validationSchema[field.name] =
+            Yup.string().required('เลือก 1 ตัวเลือก')
         case 'multiSelect':
-          validationSchema[field.name] = Yup.array().required('เลือกอย่างน้อย 1 ตัวเลือก')
+          validationSchema[field.name] = Yup.array().required(
+            'เลือกอย่างน้อย 1 ตัวเลือก'
+          )
           break
         default:
           break
@@ -87,7 +94,6 @@ const FormPage = () => {
     })
 
     return validationSchema
-
   }
 
   // const formik = useFormik({
@@ -98,7 +104,7 @@ const FormPage = () => {
   //   },
   // });
 
-  console.log(generatedFileField)
+  console.log(field)
 
   let formLayout = {
     display: 'flex',
@@ -160,77 +166,76 @@ const FormPage = () => {
   }
 
   const renderField = (field: Fields) => {
-
     switch (field.type) {
-      case "text":
+      case 'text':
         return (
           // <Field name={field.name}>
           //   {({ f, form }: any) => (
-              <FormControl
-                id={field.id}
-                // isInvalid={form.errors.name && form.touched.name}
-              >
-                <FormLabel >{field.officialName}</FormLabel>
-                <Input placeholder='text' type='text' />
-              </FormControl>
-            // )}
+          <FormControl
+            id={field.id}
+            // isInvalid={form.errors.name && form.touched.name}
+          >
+            <FormLabel>{field.officialName}</FormLabel>
+            <Input placeholder="text" type="text" />
+          </FormControl>
+          // )}
           // </Field>
         )
-      case "number":
+      case 'number':
         return (
           <FormControl id={field.id} isRequired>
             <FormLabel>{field.officialName}</FormLabel>
-            <Input placeholder='number' type='number' />
+            <Input placeholder="number" type="number" />
           </FormControl>
         )
-      case "date":
+      case 'date':
         return (
-          <FormControl id={field.id} >
+          <FormControl id={field.id}>
             <FormLabel>{field.officialName}</FormLabel>
-            <Input placeholder='date' type='date' />
+            <Input placeholder="date" type="date" />
           </FormControl>
         )
-      case "email":
+      case 'email':
         return (
-          <FormControl id={field.id} >
+          <FormControl id={field.id}>
             <FormLabel>{field.officialName}</FormLabel>
-            <Input placeholder='email' type='email' />
+            <Input placeholder="email" type="email" />
           </FormControl>
         )
-      case "phone":
+      case 'phone':
         return (
-          <FormControl id={field.id} >
+          <FormControl id={field.id}>
             <FormLabel>{field.officialName}</FormLabel>
-            <Input placeholder='phone' type='tel' />
+            <Input placeholder="phone" type="tel" />
           </FormControl>
         )
-      case "singleSelect":
+      case 'singleSelect':
         return (
-          <FormControl id={field.id} >
+          <FormControl id={field.id}>
             <FormLabel>{field.officialName}</FormLabel>
-            <RadioGroup placeholder='singleSelect'>
+            <RadioGroup placeholder="singleSelect">
               {/* TODO: getFieldOption(field.id) */}
-              <Flex flexWrap={'wrap'} gap='1rem'>
-                <Radio value='1'>First</Radio>
-                <Radio value='2'>Second</Radio>
-                <Radio value='3'>Third</Radio>
-                <Radio value='4'>Fourth</Radio>
-                <Radio value='5'>Fifth</Radio>
-                <Radio value='6'>Sixth</Radio>
+              <Flex flexWrap={'wrap'} gap="1rem">
+                <Radio value="1">First</Radio>
+                <Radio value="2">Second</Radio>
+                <Radio value="3">Third</Radio>
+                <Radio value="4">Fourth</Radio>
+                <Radio value="5">Fifth</Radio>
+                <Radio value="6">Sixth</Radio>
               </Flex>
             </RadioGroup>
           </FormControl>
         )
-      case "multiSelect":
+      case 'multiSelect':
         return (
-          <FormControl id={field.id} >
+          <FormControl id={field.id}>
             <FormLabel>{field.officialName}</FormLabel>
             <CheckboxGroup>
-              <Flex flexWrap={'wrap'} gap='1rem'>
+              <Flex flexWrap={'wrap'} gap="1rem">
                 {/* TODO: getFieldOption(field.id) */}
-                <Checkbox value='option1'>option1</Checkbox>
-                <Checkbox value='option2'>option2</Checkbox>
-                <Checkbox value='option3'>option3</Checkbox>
+                <Checkbox value="option1">option1</Checkbox>
+                <Checkbox value="option2">option2</Checkbox>
+                <Checkbox value="option3">option3</Checkbox>
               </Flex>
             </CheckboxGroup>
           </FormControl>
@@ -240,11 +245,12 @@ const FormPage = () => {
     }
   }
 
-  if (generatedFile.length == 0) {
-
+  if (field.length == 0) {
     return (
       <Box sx={formLayout}>
-        <Heading as='h2' size='lg'>No such file was selected</Heading>
+        <Heading as="h2" size="lg">
+          No such file was selected
+        </Heading>
       </Box>
     )
   }
@@ -260,29 +266,35 @@ const FormPage = () => {
       >
         {() => (
           <Form> */}
-            <Flex sx={topSection}>
-              <Box>
-                <Heading as='h2' size='lg'>ข้อมูลที่จำเป็น</Heading>
-                <Text as='p'>ข้อมูลเหล่านี้จะถูกนำไปบันทึกในเอกสารที่ระบบจะสร้างขึ้น</Text>
-                <Text as='p' color='gray'>ท่านสามารถตรวจสอบข้อมูลอีกครั้งเมื่อกรอกข้อมูลที่จำเป็นครบถ้วน</Text>
-              </Box>
-              <Flex sx={formBox}>
-                {generatedFileField.map((field) => renderField(field))}
-              </Flex>
-            </Flex>
-            <Flex sx={buttomSection}>
-              <Flex sx={progressSection}>
-                <Text>ความคืบหน้า</Text> {/* why error bro */}
-                <Flex sx={progress}>
-                  <Box sx={a} />
-                  <Box sx={b} />
-                </Flex>
-                <Text as='b'>{`${100 * percent} %`}</Text> {/* why error bro */}
-              </Flex>
-              <Button type='submit' colorScheme="green" >ตรวจสอบ</Button>
-            </Flex>
-          {/* </Form> */}
-        {/* )} */}
+      <Flex sx={topSection}>
+        <Box>
+          <Heading as="h2" size="lg">
+            ข้อมูลที่จำเป็น
+          </Heading>
+          <Text as="p">
+            ข้อมูลเหล่านี้จะถูกนำไปบันทึกในเอกสารที่ระบบจะสร้างขึ้น
+          </Text>
+          <Text as="p" color="gray">
+            ท่านสามารถตรวจสอบข้อมูลอีกครั้งเมื่อกรอกข้อมูลที่จำเป็นครบถ้วน
+          </Text>
+        </Box>
+        <Flex sx={formBox}>{field.map((field) => renderField(field))}</Flex>
+      </Flex>
+      <Flex sx={buttomSection}>
+        <Flex sx={progressSection}>
+          <Text>ความคืบหน้า</Text> {/* why error bro */}
+          <Flex sx={progress}>
+            <Box sx={a} />
+            <Box sx={b} />
+          </Flex>
+          <Text as="b">{`${100 * percent} %`}</Text> {/* why error bro */}
+        </Flex>
+        <Button type="submit" colorScheme="green">
+          ตรวจสอบ
+        </Button>
+      </Flex>
+      {/* </Form> */}
+      {/* )} */}
       {/* </Formik> */}
     </Box>
   )

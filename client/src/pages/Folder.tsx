@@ -1,6 +1,6 @@
 import { Flex, Box, Button } from '@chakra-ui/react'
 import FileList from '@components/FileList'
-import FolderDetail from '@components/FolderDetail'
+import FolderDetail from '@components/DocumentDetail'
 import FolderUploadedFile from '@models/FolderUploadedFile'
 import GeneratedFile from '@models/GeneratedFile'
 import UploadedFile from '@models/UploadedFile'
