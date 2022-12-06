@@ -5,6 +5,36 @@ import getRelationshipEnum from '@utils/getRelationshipEnum'
 import Prisma from '@utils/prisma'
 
 class Member {
+  static getAllMembers = async (req: Request, res: Response) => {
+    const householdId = req.headers['household-id'] as string
+    const userId = req.headers['user-id'] as string
+    const schema = z.string().uuid()
+    try {
+      schema.parse(householdId)
+      const members = await Prisma.user.findMany({
+        where: {
+          householdId: householdId,
+          id: {
+            not: userId,
+          },
+        },
+        select: {
+          id: true,
+          title: true,
+          firstName: true,
+          lastName: true,
+          phoneNumber: true,
+          citizenId: true,
+          relationship: true,
+          profileURI: true,
+        },
+      })
+      res.status(200).json(members)
+    } catch (err) {
+      res.status(400).json(err)
+    }
+  }
+
   static addMember = async (req: Request, res: Response) => {
     const { householdId, title, firstName, lastName, citizenId, relationship } =
       req.body
@@ -48,7 +78,7 @@ class Member {
       firstName: z.string(),
       lastName: z.string(),
       relationship: z.string(),
-      profileURI: z.string().url(),
+      profileURI: z.string(),
     })
 
     try {

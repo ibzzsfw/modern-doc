@@ -1,6 +1,6 @@
 import { Flex, Box } from '@chakra-ui/react'
 import FileList from '@components/FileList'
-import FolderDetail from '@components/FolderDetail'
+import DocumentDetail from '@components/DocumentDetail'
 import FolderUploadedFile from '@models/FolderUploadedFile'
 import { addDays, subDays } from 'date-fns'
 import markdown from 'src/mockData/markdown'
@@ -11,6 +11,7 @@ import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import FileController from '@models/FileController'
 import { useFilePageStore } from '@stores/FilePageStore'
+import { useFormPageStore } from '@stores/FormPageStore'
 import shallow from 'zustand/shallow'
 import { useEffect } from 'react'
 import axios from 'axios'
@@ -47,11 +48,12 @@ const File = () => {
           {/* <UploadFile /> */}
           <TakeNote />
         </Box>
-        <FolderDetail
+        <DocumentDetail
           title={file.officialName}
           description={''}
           markdown={file.description}
           status="มีอยู่ในคลัง"
+          type={file.type}
         />
         {file.URI ? (
           <FileViewer fileUrl={file.URI} />

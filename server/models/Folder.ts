@@ -53,7 +53,8 @@ class Folder {
         FROM "FolderUploadedFile"
         LEFT JOIN "UploadedFile" ON "FolderUploadedFile"."uploadedFileId" = "UploadedFile"."id"
         LEFT JOIN "UserUploadedFile" ON "UploadedFile"."id" = "UserUploadedFile"."uploadedFileId"
-        WHERE "FolderUploadedFile"."folderId" = ${id}::uuid AND "UserUploadedFile"."userId" = ${userId}::uuid
+        WHERE "FolderUploadedFile"."folderId" = ${id}::uuid 
+        AND ("UserUploadedFile"."userId" = ${userId}::uuid OR "UserUploadedFile"."userId" IS NULL)
       `
 
       res.json({
