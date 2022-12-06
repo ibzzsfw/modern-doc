@@ -1,4 +1,23 @@
-import { Icon, Button, Box, Flex, Select, VStack, Fade } from '@chakra-ui/react'
+import {
+  Icon,
+  Button,
+  Box,
+  Flex,
+  Select,
+  VStack,
+  IconButton,
+  Divider,
+  ButtonGroup,
+  HStack,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuItemOption,
+  MenuGroup,
+  MenuOptionGroup,
+  MenuDivider,
+} from '@chakra-ui/react'
 import { useParams } from 'react-router-dom'
 import TableList from '@components/TableList'
 import TableListItem from '@components/TableListItem'
@@ -11,13 +30,13 @@ import SearchBox from '@components/SearchBox'
 import { AiOutlineMenu, AiOutlineAppstore } from 'react-icons/ai'
 import DocumentBar from '@components/DocumentBar'
 import DocumentBox from '@components/DocumentBox'
-import { useSearchBoxStore } from '@stores/SearchBoxStore'
+import Frame from '@components/Frame'
+import { IoChevronDownOutline, IoChevronForwardOutline } from 'react-icons/io5'
 
 const AllDocumentPage = () => {
   const { category } = useParams<{ category: string }>()
-  const [toggleView, setToggleView] = useState(true)
+  const [view, setView] = useState<'box' | 'table'>('box')
   const [search, setSearch] = useState('')
-  const [order, setOrder] = useState('')
   const [documents, setDocuments] = useState([
     {
       id: '6',
@@ -43,8 +62,8 @@ const AllDocumentPage = () => {
 
   let menu = (
     <MenuProvider
-      left={toggleView ? '108px' : '-80px'}
-      top={toggleView ? '36px' : '20px'}
+      // left={toggleView ? '108px' : '-80px'}
+      // top={toggleView ? '36px' : '20px'}
       menusList={[
         [
           {
@@ -82,13 +101,13 @@ const AllDocumentPage = () => {
     >
       <Icon
         as={BsThreeDots}
-        sx={toggleView ? menuBlock : menuList}
+        sx={view === 'box' ? menuBlock : menuList}
         boxSize="18px"
       />
     </MenuProvider>
   )
 
-  const sorting = (option: String) => {
+  const sorting = (option: String | String[]) => {
     let sorted: any = [...documents]
     switch (option) {
       case 'ASC':
@@ -109,7 +128,7 @@ const AllDocumentPage = () => {
 
   return (
     <>
-      <VStack>
+      <VStack gap="30px">
         <Flex width="100%" justifyContent="space-between">
           <SearchBox
             value={search}
@@ -119,62 +138,78 @@ const AllDocumentPage = () => {
           />
 
           <Flex gap="10px">
-            <Select
-              placeholder="เรียงลำดับ"
-              variant="flushed"
-              onChange={(e) => {
-                sorting(e.target.value)
-              }}
-            >
-              <option value="ASC">ASC</option>
-              <option value="DESC">DSC</option>
-            </Select>
-            <Button
-              rightIcon={toggleView ? <AiOutlineAppstore /> : <AiOutlineMenu />}
-              variant="ghost"
-              onClick={() => {
-                setToggleView(!toggleView)
-              }}
-            >
-              มุมมอง
-            </Button>
+            <Menu closeOnSelect={false}>
+              <MenuButton
+                as={Button}
+                variant="outline"
+                rightIcon={<IoChevronDownOutline />}
+              >
+                เรียงลำดับ
+              </MenuButton>
+              <MenuList minWidth="240px">
+                <MenuOptionGroup
+                  defaultValue=""
+                  title="Order"
+                  type="radio"
+                  onChange={(value) => {
+                    sorting(value)
+                  }}
+                >
+                  <MenuItemOption value="ASC">Ascending</MenuItemOption>
+                  <MenuItemOption value="DESC">Descending</MenuItemOption>
+                </MenuOptionGroup>
+                <MenuDivider />
+                <MenuOptionGroup title="Country" type="checkbox">
+                  <MenuItemOption value="email">Email</MenuItemOption>
+                  <MenuItemOption value="phone">Phone</MenuItemOption>
+                  <MenuItemOption value="country">Country</MenuItemOption>
+                </MenuOptionGroup>
+              </MenuList>
+            </Menu>
+
+            <ButtonGroup isAttached variant="outline">
+              <IconButton
+                isActive={view == 'box'}
+                aria-label="Box view"
+                icon={<AiOutlineAppstore />}
+                onClick={() => setView('box')}
+              />
+
+              <IconButton
+                isActive={view == 'table'}
+                aria-label="Grid view"
+                icon={<AiOutlineMenu />}
+                onClick={() => setView('table')}
+              />
+            </ButtonGroup>
           </Flex>
         </Flex>
-        {toggleView ? (
-          <DocumentBar title={category}>
-            {documents
-              .filter((file) => file.title.toLowerCase().includes(search))
-              .map((file: any) => {
-                return (
-                  <DocumentBox
-                    id={file.id}
-                    type={file.type}
-                    title={file.title}
-                    author={file.author}
-                    showNote
-                    menu={menu}
-                  />
-                )
-              })}
-          </DocumentBar>
-        ) : (
-          <TableList title={category}>
-            {documents
-              .filter((file) => file.title.toLowerCase().includes(search))
-              .map((file: any) => {
-                return (
-                  <TableListItem
-                    id={file.id}
-                    type={file.type}
-                    title={file.title}
-                    author={file.author}
-                    showNote
-                    menu={menu}
-                  />
-                )
-              })}
-          </TableList>
-        )}
+
+        <Frame view={view} title={category}>
+          {documents
+            .filter((file) => file.title.toLowerCase().includes(search))
+            .map((file: any) => {
+              return view === 'box' ? (
+                <DocumentBox
+                  id={file.id}
+                  type={file.type}
+                  title={file.title}
+                  author={file.author}
+                  showNote
+                  menu={menu}
+                />
+              ) : (
+                <TableListItem
+                  id={file.id}
+                  type={file.type}
+                  title={file.title}
+                  author={file.author}
+                  showNote
+                  menu={menu}
+                />
+              )
+            })}
+        </Frame>
       </VStack>
     </>
   )
