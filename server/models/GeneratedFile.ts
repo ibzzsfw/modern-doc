@@ -106,21 +106,24 @@ class GeneratedFile {
             },
           },
           generatedFileField: {
-            select: {
-              field: {
-                select: {
-                  name: true,
-                  officialName: true,
-                  description: true,
-                  type: true,
-                  fieldChoice: {
-                    select: {
-                      name: true,
-                      officialName: true,
-                    },
-                  },
-                },
-              },
+            // select: {
+            //   field: {
+            //     select: {
+            //       name: true,
+            //       officialName: true,
+            //       description: true,
+            //       type: true,
+            //       fieldChoice: {
+            //         select: {
+            //           name: true,
+            //           officialName: true,
+            //         },
+            //       },
+            //     },
+            //   },
+            // },
+            where: {
+              generatedFileId: id,
             },
           },
         },

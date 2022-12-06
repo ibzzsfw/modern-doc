@@ -18,7 +18,7 @@ class File {
         return await Prisma.$queryRaw`
         SELECT *,
         array(
-          SELECT (json_build_object(
+          SELECT DISTINCT (jsonb_build_object(
               'id', "Tag"."id",
               'name', "Tag"."name"
             ))
@@ -27,8 +27,9 @@ class File {
            	  WHERE "GeneratedFileTag"."generatedFileId" = ${id}::uuid
            ) AS "tags",
         array(
-          SELECT json_build_object(
+          SELECT DISTINCT jsonb_build_object(
             'id', "Field"."id",
+            'generatedFileId', "GeneratedFileField"."generatedFileId",
             'name', "Field"."name",
             'type', "Field"."type",
             'description', "Field"."description",
@@ -46,8 +47,9 @@ class File {
           )
           FROM "GeneratedFileField" 
           LEFT JOIN "Field" ON "Field"."id" = "GeneratedFileField"."fieldId"
-          LEFT JOIN "UserField" ON "UserField"."fieldId" = "Field"."id" 
-          WHERE "GeneratedFileField"."generatedFileId" = "GeneratedFile"."id"
+          LEFT JOIN "UserField" ON "UserField"."fieldId" = "Field"."id"
+          WHERE "GeneratedFileField"."generatedFileId" = ${id}::uuid
+          AND ("UserField"."userId" = ${userId}::uuid OR "UserField"."userId" IS NULL)
         ) AS "fields" FROM "GeneratedFile" WHERE id = ${id}::uuid
         `
       }
