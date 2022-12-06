@@ -20,6 +20,7 @@ import { useState, useEffect } from 'react'
 import { useFormPageStore } from '@stores/FormPageStore'
 import { useGeneratedFileStore } from '@stores/GeneratedFile'
 import Fields from '@models/Field'
+import FormInput from '@components/FormInput'
 import { Field, Form, Formik, useFormik } from 'formik'
 import * as Yup from 'yup'
 import { connectStorageEmulator } from 'firebase/storage'
@@ -48,7 +49,7 @@ const FormPage = () => {
           break
       }
     })
-
+    console.log('initialValues', initialValues)
     return initialValues
   }
 
@@ -169,45 +170,54 @@ const FormPage = () => {
     switch (field.type) {
       case 'text':
         return (
-          // <Field name={field.name}>
-          //   {({ f, form }: any) => (
-          <FormControl
-            id={field.id}
-            // isInvalid={form.errors.name && form.touched.name}
-          >
-            <FormLabel>{field.officialName}</FormLabel>
-            <Input placeholder="text" type="text" />
-          </FormControl>
-          // )}
-          // </Field>
+          <FormInput
+            label={field.officialName}
+            name={field.name}
+            placeholder="number"
+            type="text"
+          />
         )
       case 'number':
+        // return (
+        //   <FormControl id={field.id} isRequired>
+        //     <FormLabel>{field.officialName}</FormLabel>
+        //     <Input placeholder="number" type="number" />
+        //   </FormControl>
+        // )
         return (
-          <FormControl id={field.id} isRequired>
-            <FormLabel>{field.officialName}</FormLabel>
-            <Input placeholder="number" type="number" />
-          </FormControl>
+          <FormInput
+            label={field.officialName}
+            name={field.name}
+            placeholder="number"
+            type="number"
+          />
         )
       case 'date':
         return (
-          <FormControl id={field.id}>
-            <FormLabel>{field.officialName}</FormLabel>
-            <Input placeholder="date" type="date" />
-          </FormControl>
+          <FormInput
+            label={field.officialName}
+            name={field.name}
+            placeholder="number"
+            type="date"
+          />
         )
       case 'email':
         return (
-          <FormControl id={field.id}>
-            <FormLabel>{field.officialName}</FormLabel>
-            <Input placeholder="email" type="email" />
-          </FormControl>
+          <FormInput
+            label={field.officialName}
+            name={field.name}
+            placeholder="number"
+            type="text"
+          />
         )
       case 'phone':
         return (
-          <FormControl id={field.id}>
-            <FormLabel>{field.officialName}</FormLabel>
-            <Input placeholder="phone" type="tel" />
-          </FormControl>
+          <FormInput
+            label={field.officialName}
+            name={field.name}
+            placeholder="number"
+            type="text"
+          />
         )
       case 'singleSelect':
         return (
@@ -257,7 +267,7 @@ const FormPage = () => {
 
   return (
     <Box sx={formLayout}>
-      {/* <Formik
+      <Formik
         initialValues={initialValuesExraction()}
         validationSchema={Yup.object(validationSchemaExraction())}
         onSubmit={(values) => {
@@ -265,37 +275,39 @@ const FormPage = () => {
         }}
       >
         {() => (
-          <Form> */}
-      <Flex sx={topSection}>
-        <Box>
-          <Heading as="h2" size="lg">
-            ข้อมูลที่จำเป็น
-          </Heading>
-          <Text as="p">
-            ข้อมูลเหล่านี้จะถูกนำไปบันทึกในเอกสารที่ระบบจะสร้างขึ้น
-          </Text>
-          <Text as="p" color="gray">
-            ท่านสามารถตรวจสอบข้อมูลอีกครั้งเมื่อกรอกข้อมูลที่จำเป็นครบถ้วน
-          </Text>
-        </Box>
-        <Flex sx={formBox}>{field.map((field) => renderField(field))}</Flex>
-      </Flex>
-      <Flex sx={buttomSection}>
-        <Flex sx={progressSection}>
-          <Text>ความคืบหน้า</Text> {/* why error bro */}
-          <Flex sx={progress}>
-            <Box sx={a} />
-            <Box sx={b} />
-          </Flex>
-          <Text as="b">{`${100 * percent} %`}</Text> {/* why error bro */}
-        </Flex>
-        <Button type="submit" colorScheme="green">
-          ตรวจสอบ
-        </Button>
-      </Flex>
-      {/* </Form> */}
-      {/* )} */}
-      {/* </Formik> */}
+          <Form>
+            <Flex sx={topSection}>
+              <Box>
+                <Heading as="h2" size="lg">
+                  ข้อมูลที่จำเป็น
+                </Heading>
+                <Text as="p">
+                  ข้อมูลเหล่านี้จะถูกนำไปบันทึกในเอกสารที่ระบบจะสร้างขึ้น
+                </Text>
+                <Text as="p" color="gray">
+                  ท่านสามารถตรวจสอบข้อมูลอีกครั้งเมื่อกรอกข้อมูลที่จำเป็นครบถ้วน
+                </Text>
+              </Box>
+              <Flex sx={formBox}>
+                {field.map((field) => renderField(field))}
+              </Flex>
+            </Flex>
+            <Flex sx={buttomSection}>
+              <Flex sx={progressSection}>
+                <Text>ความคืบหน้า</Text> {/* why error bro */}
+                <Flex sx={progress}>
+                  <Box sx={a} />
+                  <Box sx={b} />
+                </Flex>
+                <Text as="b">{`${100 * percent} %`}</Text> {/* why error bro */}
+              </Flex>
+              <Button type="submit" colorScheme="green">
+                ตรวจสอบ
+              </Button>
+            </Flex>
+          </Form>
+        )}
+      </Formik>
     </Box>
   )
 }
