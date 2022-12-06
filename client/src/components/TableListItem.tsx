@@ -1,14 +1,4 @@
-import {
-  Box,
-  Text,
-  Flex,
-  Icon,
-  Heading,
-  Image,
-  HStack,
-  VStack,
-  Badge
-} from '@chakra-ui/react'
+import { Badge, Box, Flex, HStack, Image, Text } from '@chakra-ui/react'
 
 type propsType = {
   type: 'generatedFolder' | 'generatedFile' | 'uploadedFile' | 'sharedFile'
@@ -98,20 +88,28 @@ const TableListItem = ({
   }
 
   return (
-    <Box sx={boxLayout} alignItems="center" padding= '20px'>
-      <Flex justifyContent="space-between" alignItems="center" width= '100%' height = '100%'>
-        <HStack>
-          <Image src={getImageUrl() || '/assets/shared_logo.png' }  sx={documentImage} />
-          <VStack >
+    <Box sx={boxLayout} alignItems="center" padding="20px">
+      <Flex
+        justifyContent="space-between"
+        alignItems="center"
+        width="100%"
+        height="100%"
+      >
+        <HStack gap="10px">
+          <Image
+            src={getImageUrl() || '/assets/shared_logo.png'}
+            sx={documentImage}
+          />
+          <Flex direction="column" maxWidth="250px">
             <Text sx={titleText}>{title || 'มอบอำนาจ'}</Text>
-            <Text sx={subText}>{getSubText() || 'เอกสาร' } </Text>
-          </VStack>
+            <Text sx={subText}>{getSubText() || 'เอกสาร'} </Text>
+          </Flex>
         </HStack>
-        <Badge colorScheme= 'blue' fontSize= '16px'  >แก้ไขล่าสุด 2 ชั่วโมงที่แล้ว</Badge>
-        
-        <Box position= 'relative'>
-        {menu}
-        </Box>
+        <Badge colorScheme="blue" fontSize="16px">
+          แก้ไขล่าสุด 2 ชั่วโมงที่แล้ว
+        </Badge>
+
+        <Box position="relative">{menu}</Box>
       </Flex>
     </Box>
   )

@@ -467,6 +467,7 @@ let boxLayout = {
   width: '909px',
 }
 let threeDot = {
+  cursor : 'pointer',
   position: 'absolute',
   top: '10px',
   right: '20px',
