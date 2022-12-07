@@ -1,25 +1,26 @@
 import { HStack, Icon, IconButton, Input } from '@chakra-ui/react'
 import { FiSearch } from 'react-icons/fi'
-import {useState } from 'react'
+import { useState } from 'react'
 type propsType = {
-  page? : string
+  page?: string
   value?: string
-  onSearchClick?: (params : string)=>void
+  onSearchClick?: (params: string) => void
 }
 
-const SearchBox = ({ value , page, onSearchClick }: propsType) => {
+const SearchBox = ({ value, page, onSearchClick }: propsType) => {
   const [searchValue, setSearchValue] = useState(value || '')
-
 
   return (
     <HStack>
       <Input
+        data-testid="input-search"
         placeholder="ค้นหา"
         sx={searchBox}
         onChange={(e) => setSearchValue(e.target.value)}
         value={searchValue}
       />
       <IconButton
+        data-testid="search-button"
         aria-label="ค้นหา"
         icon={<Icon as={FiSearch} color="accent.white" boxSize="20px" />}
         sx={searchButton}

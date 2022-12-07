@@ -45,7 +45,13 @@
     }
   },
   "include": [
-    "src"
+    "src",
+    "jest.config.js"
+  ],
+  "types": [
+    "node",
+    "jest",
+    "@testing-library/jest-dom"
   ],
   "references": [
     {
