@@ -12,7 +12,7 @@ describe('SearchBox', () => {
     expect(screen.getByTestId('input-search')).toHaveValue('test')
   })
 
-  it('should render placeholder', () => {
+  it('should call onSearchClick when click button', () => {
     const onSearchClick = jest.fn()
     render(<SearchBox onSearchClick={onSearchClick} />)
     fireEvent.click(screen.getByTestId('search-button'))
