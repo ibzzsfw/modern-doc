@@ -109,9 +109,9 @@ const SearchPage = () => {
                 ผลการค้นหาแฟ้ม
               </Text>
             </Checkbox>
-            {showFolder && folderResult ? (
+            {showFolder ? (
               <Flex sx={childrenFlex}>
-                {folderResult.map((folder: any) => {
+                {folderResult != null ? folderResult.map((folder: any) => {
                   return (
                     <DocumentBox
                       id={folder.id}
@@ -121,7 +121,7 @@ const SearchPage = () => {
                       colorBar={folder.colorBar}
                     />
                   )
-                })}
+                }): (<Text>ไม่พบแฟ้ม</Text>)}
               </Flex>
             ) : (
               <Text>กดเพื่อแสดงผลการค้นหาแฟ้ม</Text>
@@ -141,9 +141,9 @@ const SearchPage = () => {
                 ผลการค้นหาเอกสาร
               </Text>
             </Checkbox>
-            {showFile && fileResult ? (
+            {showFile  ? (
               <Flex sx={childrenFlex}>
-                {fileResult.map((file: any) => {
+                {fileResult != null ? fileResult.map((file: any) => {
                   return (
                     <DocumentBox
                       id={file.id}
@@ -153,7 +153,7 @@ const SearchPage = () => {
                       colorBar={file.colorBar}
                     />
                   )
-                })}
+                }): <Text>ไม่พบเอกสาร</Text>}
               </Flex>
             ) : (
               <Text>กดเพื่อแสดงผลการค้นหาเอกสาร</Text>
@@ -164,6 +164,8 @@ const SearchPage = () => {
     </VStack>
   )
 }
+
+
 
 export default SearchPage
 
