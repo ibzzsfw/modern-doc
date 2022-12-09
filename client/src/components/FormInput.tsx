@@ -24,6 +24,7 @@ type propsType = {
   options?: string[]
   format?: string
   width?: string
+  optionsValue?: string[]
 }
 
 const FormInput = ({
@@ -39,6 +40,7 @@ const FormInput = ({
   options,
   format,
   width,
+  optionsValue,
 }: propsType) => {
   const renderErrorMessage = (msg: any) => {
     return (
@@ -81,8 +83,10 @@ const FormInput = ({
               }}
               {...field}
             >
-              {options?.map((option) => (
-                <option value={option}>{option}</option>
+              {options?.map((option, index) => (
+                <option value={optionsValue ? optionsValue[index] : option}>
+                  {option}
+                </option>
               ))}
             </Select>
           )}

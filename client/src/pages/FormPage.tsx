@@ -62,12 +62,16 @@ const FormPage = () => {
           validationSchema[field.name] = Yup.string().required('จำเป็นต้องกรอก')
           break
         case 'number':
-          validationSchema[field.name] = Yup.number().required('จำเป็นต้องกรอก')
+          validationSchema[field.name] = Yup.number().required(
+            'จำเป็นต้องกรอกตัวเลข'
+          )
           break
         case 'date':
-          validationSchema[field.name] = Yup.date().required('จำเป็นต้องกรอก')
+          validationSchema[field.name] = Yup.date().required(
+            'จำเป็นต้องกรอกวันที่'
+          )
           break
-        case 'phone':
+        case 'phoneNumber':
           validationSchema[field.name] = Yup.string()
             .required('จำเป็นต้องกรอก')
             .matches(/^[0-9]+$/, 'กรุณากรอกเฉพาะตัวเลข')
@@ -82,8 +86,10 @@ const FormPage = () => {
             )
           break
         case 'singleSelect':
-          validationSchema[field.name] =
-            Yup.string().required('เลือก 1 ตัวเลือก')
+          validationSchema[field.name] = Yup.string()
+            .oneOf(field.fieldChoice.map((choice) => choice.name))
+            .required('เลือก 1 ตัวเลือก')
+          break
         case 'multiSelect':
           validationSchema[field.name] = Yup.array().required(
             'เลือกอย่างน้อย 1 ตัวเลือก'
@@ -173,23 +179,19 @@ const FormPage = () => {
           <FormInput
             label={field.officialName}
             name={field.name}
-            placeholder="number"
+            placeholder="string"
             type="text"
+            showCorrectBorder
           />
         )
       case 'number':
-        // return (
-        //   <FormControl id={field.id} isRequired>
-        //     <FormLabel>{field.officialName}</FormLabel>
-        //     <Input placeholder="number" type="number" />
-        //   </FormControl>
-        // )
         return (
           <FormInput
             label={field.officialName}
             name={field.name}
             placeholder="number"
             type="number"
+            showCorrectBorder
           />
         )
       case 'date':
@@ -197,8 +199,9 @@ const FormPage = () => {
           <FormInput
             label={field.officialName}
             name={field.name}
-            placeholder="number"
+            placeholder="date"
             type="date"
+            showCorrectBorder
           />
         )
       case 'email':
@@ -206,47 +209,43 @@ const FormPage = () => {
           <FormInput
             label={field.officialName}
             name={field.name}
-            placeholder="number"
+            placeholder="email"
             type="text"
+            showCorrectBorder
           />
         )
-      case 'phone':
+      case 'phoneNumber':
         return (
           <FormInput
             label={field.officialName}
             name={field.name}
-            placeholder="number"
+            placeholder="0800000000"
             type="text"
+            showCorrectBorder
           />
         )
-      case 'singleSelect':
+      case 'singleSelect': {
+        console.log(field.fieldChoice)
         return (
-          <FormControl id={field.id}>
-            <FormLabel>{field.officialName}</FormLabel>
-            <RadioGroup placeholder="singleSelect">
-              {/* TODO: getFieldOption(field.id) */}
-              <Flex flexWrap={'wrap'} gap="1rem">
-                <Radio value="1">First</Radio>
-                <Radio value="2">Second</Radio>
-                <Radio value="3">Third</Radio>
-                <Radio value="4">Fourth</Radio>
-                <Radio value="5">Fifth</Radio>
-                <Radio value="6">Sixth</Radio>
-              </Flex>
-            </RadioGroup>
-          </FormControl>
+          <FormInput
+            label={field.officialName}
+            name={field.name}
+            type="select"
+            showCorrectBorder
+            placeholder="Select option"
+            options={field.fieldChoice.map((choice) => choice.officialName)}
+            optionsValue={field.fieldChoice.map((choice) => choice.name)}
+          />
         )
+      }
       case 'multiSelect':
         return (
           <FormControl id={field.id}>
             <FormLabel>{field.officialName}</FormLabel>
             <CheckboxGroup>
-              <Flex flexWrap={'wrap'} gap="1rem">
-                {/* TODO: getFieldOption(field.id) */}
-                <Checkbox value="option1">option1</Checkbox>
-                <Checkbox value="option2">option2</Checkbox>
-                <Checkbox value="option3">option3</Checkbox>
-              </Flex>
+              {field.fieldChoice.map((choice) => (
+                <Checkbox value={choice.name}>{choice.officialName}</Checkbox>
+              ))}
             </CheckboxGroup>
           </FormControl>
         )
@@ -271,42 +270,40 @@ const FormPage = () => {
         initialValues={initialValuesExraction()}
         validationSchema={Yup.object(validationSchemaExraction())}
         onSubmit={(values) => {
+          console.log('values')
           console.table(values)
         }}
       >
-        {() => (
-          <Form>
-            <Flex sx={topSection}>
-              <Box>
-                <Heading as="h2" size="lg">
-                  ข้อมูลที่จำเป็น
-                </Heading>
-                <Text as="p">
-                  ข้อมูลเหล่านี้จะถูกนำไปบันทึกในเอกสารที่ระบบจะสร้างขึ้น
-                </Text>
-                <Text as="p" color="gray">
-                  ท่านสามารถตรวจสอบข้อมูลอีกครั้งเมื่อกรอกข้อมูลที่จำเป็นครบถ้วน
-                </Text>
-              </Box>
-              <Flex sx={formBox}>
-                {field.map((field) => renderField(field))}
+        <Form>
+          <Flex sx={topSection}>
+            <Box>
+              <Heading as="h2" size="lg">
+                ข้อมูลที่จำเป็น
+              </Heading>
+              <Text as="p">
+                ข้อมูลเหล่านี้จะถูกนำไปบันทึกในเอกสารที่ระบบจะสร้างขึ้น
+              </Text>
+              <Text as="p" color="gray">
+                ท่านสามารถตรวจสอบข้อมูลอีกครั้งเมื่อกรอกข้อมูลที่จำเป็นครบถ้วน
+              </Text>
+            </Box>
+
+            <Flex sx={formBox}>{field.map((field) => renderField(field))}</Flex>
+          </Flex>
+          <Flex sx={buttomSection}>
+            <Flex sx={progressSection}>
+              <Text>ความคืบหน้า</Text>
+              <Flex sx={progress}>
+                <Box sx={a} />
+                <Box sx={b} />
               </Flex>
+              <Text as="b">{`${100 * percent} %`}</Text> {/* why error bro */}
             </Flex>
-            <Flex sx={buttomSection}>
-              <Flex sx={progressSection}>
-                <Text>ความคืบหน้า</Text> {/* why error bro */}
-                <Flex sx={progress}>
-                  <Box sx={a} />
-                  <Box sx={b} />
-                </Flex>
-                <Text as="b">{`${100 * percent} %`}</Text> {/* why error bro */}
-              </Flex>
-              <Button type="submit" colorScheme="green">
-                ตรวจสอบ
-              </Button>
-            </Flex>
-          </Form>
-        )}
+            <Button type="submit" colorScheme="green">
+              ตรวจสอบ
+            </Button>
+          </Flex>
+        </Form>
       </Formik>
     </Box>
   )
