@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { useLoginDataStore } from '@stores/LoginDataStore'
+import Field from '@models/Field'
 interface RegisterForm {
   title: string
   firstName: string
@@ -33,7 +34,7 @@ class FileController {
       `${import.meta.env.VITE_API_ENDPOINT}/file/get-by-id/${this.getTypeName(
         type
       )}/${id}`,
-      { 
+      {
         headers: {
           'user-id': useLoginDataStore.getState()?.user?.id,
           token: useLoginDataStore.getState()?.user?.token,
@@ -41,7 +42,7 @@ class FileController {
       }
     )
 
-    console.log('file',response.data)
+    console.log('file', response.data)
     return response.data
   }
 
@@ -65,6 +66,21 @@ class FileController {
         headers: {
           'user-id': useLoginDataStore.getState()?.user?.id,
           token: useLoginDataStore.getState()?.user?.token,
+        },
+      }
+    )
+    return response.data
+  }
+
+  static async saveGeneratedFile(fileId: string | undefined, fields: Field[]) {
+    let response = await axios.post(
+      `${import.meta.env.VITE_API_ENDPOINT}/file/save-generated-file/${fileId}`,
+      {
+        fields: fields,
+      },
+      {
+        headers: {
+          'user-id': useLoginDataStore.getState()?.user?.id,
         },
       }
     )

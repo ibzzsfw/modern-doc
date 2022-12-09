@@ -217,6 +217,55 @@ class File {
       res.status(400).json(err)
     }
   }
+
+  static async saveGenerateFile(req: Request, res: Response) {
+    const { fileId } = req.params
+    const { fields } = req.body as {
+      fields: {
+        id: string
+        name: string
+        userValue: string
+      }[]
+    }
+    const userId = req.headers['user-id'] as string
+    const schema = z.object({
+      fields: z.array(
+        z.object({
+          id: z.string().uuid(),
+          name: z.string(),
+          userValue: z.string(),
+        })
+      ),
+      fileId: z.string().uuid(),
+      userId: z.string().uuid(),
+    })
+
+    try {
+      schema.parse({ fields, fileId, userId })
+      const updateUserGeneratedFile = await Prisma.$queryRaw`
+        INSERT INTO "UserGeneratedFile" ( "id","userId", "generatedFileId", "date")
+        VALUES ((SELECT gen_random_uuid()),${userId}::uuid, ${fileId}::uuid, ${new Date()})
+        ON CONFLICT ("userId", "generatedFileId") DO UPDATE SET "date" = ${new Date()}
+      `
+      console.log(fields)
+      const promise = await async.map(fields, async (field) => {
+        const { name, userValue } = field
+        const updateField = await Prisma.$queryRaw`
+          INSERT INTO "UserField" ("id","userId","fieldId","rawValue","date")
+          VALUES (
+          (SELECT gen_random_uuid())
+          ,
+          ${userId}::uuid, ${field.id}::uuid, ${userValue}, ${new Date()})
+          ON CONFLICT ("userId", "fieldId") DO UPDATE SET "rawValue" = ${userValue}, "date" = ${new Date()}
+        `
+        return updateField
+      })
+      await Promise.all(promise)
+      res.status(200).json({ message: 'success' })
+    } catch (err) {
+      res.status(400).json(err)
+    }
+  }
 }
 
 export default File

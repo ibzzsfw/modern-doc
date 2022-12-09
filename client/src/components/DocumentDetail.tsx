@@ -43,10 +43,11 @@ const FolderDetail = ({
     }
   }, shallow)
 
-  const { setField, setDocument } = useFormPageStore((state) => {
+  const { setField, setDocument, setType } = useFormPageStore((state) => {
     return {
       setField: state.setField,
       setDocument: state.setDocument,
+      setType: state.setType,
     }
   }, shallow)
 
@@ -116,6 +117,15 @@ const FolderDetail = ({
     width: '232px',
   }
 
+  const keepField = [
+    'firstname_personal',
+    'lastname_personal',
+    'sex_personal',
+    'birthdate_personal',
+    'citizenId_personal',
+    'email_personal',
+  ]
+
   return (
     <Flex sx={detailsBox}>
       <Flex sx={descriptionBox}>
@@ -150,14 +160,35 @@ const FolderDetail = ({
             sx={newDocumentBtn}
             colorScheme="green"
             onClick={() => {
-              setField(file.fields)
+              setField(
+                file.fields.map((field) => {
+                  if (keepField.includes(field.name)) field.userValue = ''
+                  return field
+                })
+              )
+              console.log(
+                'myman',
+                file.fields.map((field) => {
+                  if (!keepField.includes(field.name)) field.userValue = ''
+                  return field
+                })
+              )
               setDocument(file)
               navigate('/form')
             }}
           >
             สร้างเอกสารใหม่
           </Button>
-          <Button sx={editDocumentBtn} colorScheme="gray" variant="outline">
+          <Button
+            sx={editDocumentBtn}
+            colorScheme="gray"
+            variant="outline"
+            onClick={() => {
+              setField(file.fields)
+              setDocument(file)
+              navigate('/form')
+            }}
+          >
             แก้ไขเอกสารเดิม
           </Button>
         </ButtonGroup>

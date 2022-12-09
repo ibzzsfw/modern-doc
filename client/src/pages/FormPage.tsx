@@ -34,6 +34,7 @@ import download from 'downloadjs'
 import { PDFDocument } from 'pdf-lib'
 import fontkit from '@pdf-lib/fontkit'
 import { useNavigate } from 'react-router-dom'
+import FileController from '@models/FileController'
 
 const FormPage = () => {
   const { document, field } = useFormPageStore()
@@ -46,6 +47,10 @@ const FormPage = () => {
     const initialValues: { [key: string]: any | any[] } = {}
 
     field.map((field: Fields) => {
+      if (field.userValue) {
+        initialValues[field.name] = field.userValue
+        return
+      }
       switch (field.type) {
         case 'number':
           initialValues[field.name] = '0'
@@ -143,7 +148,7 @@ const FormPage = () => {
   //   },
   // });
 
-  console.log(field)
+  console.log('field', field)
 
   let formLayout = {
     display: 'flex',
@@ -389,7 +394,6 @@ const FormPage = () => {
         initialValues={initialValuesExraction()}
         validationSchema={Yup.object(validationSchemaExraction())}
         onSubmit={(values) => {
-          // fillForm(values)
           onOpen()
           setFormValues(values)
           console.table(values)
@@ -437,6 +441,13 @@ const FormPage = () => {
             onSubmit={async (values) => {
               fillForm(values).then(() => {
                 onClose()
+                FileController.saveGeneratedFile(
+                  document?.id,
+                  field.map((f, index) => ({
+                    ...f,
+                    userValue: values[f.name],
+                  }))
+                )
                 navigate(-1)
               })
             }}
