@@ -26,6 +26,10 @@ class File {
               LEFT JOIN "Tag" ON "Tag"."id" = "GeneratedFileTag"."tagId"
            	  WHERE "GeneratedFileTag"."generatedFileId" = ${id}::uuid
            ) AS "tags",
+        (
+          SELECT date FROM "UserGeneratedFile" WHERE "UserGeneratedFile"."generatedFileId" = ${id}::uuid
+          AND "UserGeneratedFile"."userId" = ${userId}::uuid
+        ) AS "date",
         array(
           SELECT DISTINCT jsonb_build_object(
             'id', "Field"."id",

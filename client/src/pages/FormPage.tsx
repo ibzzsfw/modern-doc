@@ -81,46 +81,45 @@ const FormPage = () => {
     field.map((field: Fields) => {
       switch (field.type) {
         case 'text':
-          addRequired(field, (validationSchema[field.name] = Yup.string()))
+          validationSchema[field.name] = addRequired(field, Yup.string())
           break
         case 'text':
-          addRequired(
+          validationSchema[field.name] = addRequired(
             field,
-            (validationSchema[field.name] = Yup.string()
+            Yup.string()
               .matches(/^[0-9]+$/, 'กรุณากรอกเฉพาะตัวเลข')
-              .required('จำเป็นต้องกรอกตัวเลข'))
+              .required('จำเป็นต้องกรอกตัวเลข')
           )
+
           break
         case 'date':
-          addRequired(
+          validationSchema[field.name] = addRequired(
             field,
-            (validationSchema[field.name] = Yup.date().required(
-              'จำเป็นต้องกรอกวันที่'
-            ))
+            Yup.date().required('จำเป็นต้องกรอกวันที่')
           )
           break
         case 'phoneNumber':
-          addRequired(
+          validationSchema[field.name] = addRequired(
             field,
-            (validationSchema[field.name] = Yup.string()
+            Yup.string()
               .required('จำเป็นต้องกรอก')
               .matches(/^[0-9]+$/, 'กรุณากรอกเฉพาะตัวเลข')
-              .length(10, 'เบอร์โทรศัพท์จำเป็นต้องมี 10 หลัก'))
+              .length(10, 'เบอร์โทรศัพท์จำเป็นต้องมี 10 หลัก')
           )
           break
         case 'email':
-          addRequired(
+          validationSchema[field.name] = addRequired(
             field,
-            (validationSchema[field.name] = Yup.string()
+            Yup.string()
               .required('จำเป็นต้องกรอก')
               .matches(
                 /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
                 'กรุณากรอกอีเมลให้ถูกต้อง'
-              ))
+              )
           )
           break
         case 'singleSelect':
-          addRequired(
+          validationSchema[field.name] = addRequired(
             field,
             (validationSchema[field.name] = Yup.string()
               .oneOf(field.fieldChoice.map((choice) => choice.name))

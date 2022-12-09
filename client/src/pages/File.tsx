@@ -52,7 +52,7 @@ const File = () => {
           title={file.officialName}
           description={''}
           markdown={file.description}
-          status="มีอยู่ในคลัง"
+          status={file.date ? 'มีอยู่ในคลัง' : 'ไม่มีอยู่ในคลัง'}
           type={file.type}
         />
         {file.URI ? (
