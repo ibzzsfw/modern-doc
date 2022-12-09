@@ -11,9 +11,13 @@ type argType = {
     | 'multipleSelect'
     | 'phoneNumber'
     | 'email'
-  fieldChoice: string[]
+  fieldChoice: {
+    name: string
+    officialName: string
+  }[]
   description?: string
   example?: string
+  isRequired?: boolean
   userValue?: string
 }
 
@@ -24,8 +28,12 @@ class Field {
   type: string = ''
   description?: string
   example?: string
+  isRequired?: boolean = false
   userValue?: string = ''
-  fieldChoice: string[] = []
+  fieldChoice: {
+    name: string
+    officialName: string
+  }[] = []
 
   constructor(arg: argType) {
     this.id = arg.id
@@ -34,6 +42,7 @@ class Field {
     this.type = arg.type
     this.description = arg.description
     this.example = arg.example
+    this.isRequired = arg.isRequired
     this.userValue = arg.userValue
     this.fieldChoice = arg.fieldChoice
   }

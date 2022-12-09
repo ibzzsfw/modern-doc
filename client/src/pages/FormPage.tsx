@@ -24,6 +24,9 @@ import FormInput from '@components/FormInput'
 import { Field, Form, Formik, useFormik } from 'formik'
 import * as Yup from 'yup'
 import { connectStorageEmulator } from 'firebase/storage'
+import download from 'downloadjs'
+import { PDFDocument } from 'pdf-lib'
+import fontkit from '@pdf-lib/fontkit'
 
 const FormPage = () => {
   const { document, field } = useFormPageStore()
@@ -36,7 +39,7 @@ const FormPage = () => {
     field.map((field: Fields) => {
       switch (field.type) {
         case 'number':
-          initialValues[field.name] = 0
+          initialValues[field.name] = '0'
           break
         case 'date':
           initialValues[field.name] = new Date()
@@ -53,37 +56,63 @@ const FormPage = () => {
     return initialValues
   }
 
+  const addRequired = (field: Fields, YupSchema: any) => {
+    if (field.isRequired) return YupSchema.required('จำเป็นต้องกรอก')
+    return YupSchema
+  }
+
   const validationSchemaExraction = () => {
     const validationSchema: { [key: string]: any } = {}
 
     field.map((field: Fields) => {
       switch (field.type) {
         case 'text':
-          validationSchema[field.name] = Yup.string().required('จำเป็นต้องกรอก')
+          addRequired(field, (validationSchema[field.name] = Yup.string()))
           break
-        case 'number':
-          validationSchema[field.name] = Yup.number().required('จำเป็นต้องกรอก')
+        case 'text':
+          addRequired(
+            field,
+            (validationSchema[field.name] = Yup.string()
+              .matches(/^[0-9]+$/, 'กรุณากรอกเฉพาะตัวเลข')
+              .required('จำเป็นต้องกรอกตัวเลข'))
+          )
           break
         case 'date':
-          validationSchema[field.name] = Yup.date().required('จำเป็นต้องกรอก')
+          addRequired(
+            field,
+            (validationSchema[field.name] = Yup.date().required(
+              'จำเป็นต้องกรอกวันที่'
+            ))
+          )
           break
-        case 'phone':
-          validationSchema[field.name] = Yup.string()
-            .required('จำเป็นต้องกรอก')
-            .matches(/^[0-9]+$/, 'กรุณากรอกเฉพาะตัวเลข')
-            .length(10, 'เบอร์โทรศัพท์จำเป็นต้องมี 10 หลัก')
+        case 'phoneNumber':
+          addRequired(
+            field,
+            (validationSchema[field.name] = Yup.string()
+              .required('จำเป็นต้องกรอก')
+              .matches(/^[0-9]+$/, 'กรุณากรอกเฉพาะตัวเลข')
+              .length(10, 'เบอร์โทรศัพท์จำเป็นต้องมี 10 หลัก'))
+          )
           break
         case 'email':
-          validationSchema[field.name] = Yup.string()
-            .required('จำเป็นต้องกรอก')
-            .matches(
-              /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-              'กรุณากรอกอีเมลให้ถูกต้อง'
-            )
+          addRequired(
+            field,
+            (validationSchema[field.name] = Yup.string()
+              .required('จำเป็นต้องกรอก')
+              .matches(
+                /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+                'กรุณากรอกอีเมลให้ถูกต้อง'
+              ))
+          )
           break
         case 'singleSelect':
-          validationSchema[field.name] =
-            Yup.string().required('เลือก 1 ตัวเลือก')
+          addRequired(
+            field,
+            (validationSchema[field.name] = Yup.string()
+              .oneOf(field.fieldChoice.map((choice) => choice.name))
+              .required('เลือก 1 ตัวเลือก'))
+          )
+          break
         case 'multiSelect':
           validationSchema[field.name] = Yup.array().required(
             'เลือกอย่างน้อย 1 ตัวเลือก'
@@ -173,23 +202,21 @@ const FormPage = () => {
           <FormInput
             label={field.officialName}
             name={field.name}
-            placeholder="number"
+            placeholder="string"
             type="text"
+            showCorrectBorder
+            required={field.isRequired}
           />
         )
       case 'number':
-        // return (
-        //   <FormControl id={field.id} isRequired>
-        //     <FormLabel>{field.officialName}</FormLabel>
-        //     <Input placeholder="number" type="number" />
-        //   </FormControl>
-        // )
         return (
           <FormInput
             label={field.officialName}
             name={field.name}
             placeholder="number"
-            type="number"
+            type="text"
+            showCorrectBorder
+            required={field.isRequired}
           />
         )
       case 'date':
@@ -197,8 +224,10 @@ const FormPage = () => {
           <FormInput
             label={field.officialName}
             name={field.name}
-            placeholder="number"
+            placeholder="date"
             type="date"
+            showCorrectBorder
+            required={field.isRequired}
           />
         )
       case 'email':
@@ -206,53 +235,106 @@ const FormPage = () => {
           <FormInput
             label={field.officialName}
             name={field.name}
-            placeholder="number"
+            placeholder="email"
             type="text"
+            showCorrectBorder
+            required={field.isRequired}
           />
         )
-      case 'phone':
+      case 'phoneNumber':
         return (
           <FormInput
             label={field.officialName}
             name={field.name}
-            placeholder="number"
+            placeholder="0800000000"
             type="text"
+            showCorrectBorder
+            required={field.isRequired}
           />
         )
-      case 'singleSelect':
+      case 'singleSelect': {
+        console.log(field.fieldChoice)
         return (
-          <FormControl id={field.id}>
-            <FormLabel>{field.officialName}</FormLabel>
-            <RadioGroup placeholder="singleSelect">
-              {/* TODO: getFieldOption(field.id) */}
-              <Flex flexWrap={'wrap'} gap="1rem">
-                <Radio value="1">First</Radio>
-                <Radio value="2">Second</Radio>
-                <Radio value="3">Third</Radio>
-                <Radio value="4">Fourth</Radio>
-                <Radio value="5">Fifth</Radio>
-                <Radio value="6">Sixth</Radio>
-              </Flex>
-            </RadioGroup>
-          </FormControl>
+          <FormInput
+            label={field.officialName}
+            name={field.name}
+            type="select"
+            showCorrectBorder
+            placeholder="Select option"
+            options={field.fieldChoice.map((choice) => choice.officialName)}
+            optionsValue={field.fieldChoice.map((choice) => choice.name)}
+            required={field.isRequired}
+          />
         )
+      }
       case 'multiSelect':
         return (
           <FormControl id={field.id}>
             <FormLabel>{field.officialName}</FormLabel>
             <CheckboxGroup>
-              <Flex flexWrap={'wrap'} gap="1rem">
-                {/* TODO: getFieldOption(field.id) */}
-                <Checkbox value="option1">option1</Checkbox>
-                <Checkbox value="option2">option2</Checkbox>
-                <Checkbox value="option3">option3</Checkbox>
-              </Flex>
+              {field.fieldChoice.map((choice) => (
+                <Checkbox value={choice.name}>{choice.officialName}</Checkbox>
+              ))}
             </CheckboxGroup>
           </FormControl>
         )
       default:
         return null
     }
+  }
+
+  const fillForm = async (values: any) => {
+    const formUrl = document?.URI ? document.URI : ''
+    // Fetch the PDF with form fields
+    const formBytes = await fetch(formUrl).then((res) => res.arrayBuffer())
+
+    // Fetch the Sarabun font
+    const fontUrl = '/assets/THSarabunNew.ttf'
+    const fontBytes = await fetch(fontUrl).then((res) => res.arrayBuffer())
+
+    // Load the PDF with form fields
+    const pdfDoc = await PDFDocument.load(formBytes)
+
+    // Embed the font
+    pdfDoc.registerFontkit(fontkit)
+    const sarabunFont = await pdfDoc.embedFont(fontBytes)
+
+    const form = pdfDoc.getForm()
+
+    field.map((field: Fields) => {
+      if (form.getFieldMaybe(field.name)) {
+        console.log(field.name, values[field.name])
+        switch (field.type) {
+          case 'text':
+            form.getTextField(field.name).setText(values[field.name])
+            break
+          case 'number':
+            form.getTextField(field.name).setText(values[field.name])
+            break
+          case 'date':
+            form.getTextField(field.name).setText(values[field.name])
+            break
+          case 'singleSelect':
+            form.getRadioGroup(field.name).select(values[field.name])
+            break
+          case 'multiSelect':
+            form.getCheckBox('option1').check()
+            break
+          default:
+            form
+              .getTextField(field.name)
+              .setText('ภาษาไทย ' + field.officialName)
+            break
+        }
+      }
+    })
+
+    form.updateFieldAppearances(sarabunFont)
+
+    form.flatten()
+
+    const pdfBytes = await pdfDoc.save()
+    await download(pdfBytes, 'filled.pdf', 'application/pdf')
   }
 
   if (field.length == 0) {
@@ -271,42 +353,41 @@ const FormPage = () => {
         initialValues={initialValuesExraction()}
         validationSchema={Yup.object(validationSchemaExraction())}
         onSubmit={(values) => {
+          console.log('values')
+          fillForm(values)
           console.table(values)
         }}
       >
-        {() => (
-          <Form>
-            <Flex sx={topSection}>
-              <Box>
-                <Heading as="h2" size="lg">
-                  ข้อมูลที่จำเป็น
-                </Heading>
-                <Text as="p">
-                  ข้อมูลเหล่านี้จะถูกนำไปบันทึกในเอกสารที่ระบบจะสร้างขึ้น
-                </Text>
-                <Text as="p" color="gray">
-                  ท่านสามารถตรวจสอบข้อมูลอีกครั้งเมื่อกรอกข้อมูลที่จำเป็นครบถ้วน
-                </Text>
-              </Box>
-              <Flex sx={formBox}>
-                {field.map((field) => renderField(field))}
+        <Form>
+          <Flex sx={topSection}>
+            <Box>
+              <Heading as="h2" size="lg">
+                ข้อมูลที่จำเป็น
+              </Heading>
+              <Text as="p">
+                ข้อมูลเหล่านี้จะถูกนำไปบันทึกในเอกสารที่ระบบจะสร้างขึ้น
+              </Text>
+              <Text as="p" color="gray">
+                ท่านสามารถตรวจสอบข้อมูลอีกครั้งเมื่อกรอกข้อมูลที่จำเป็นครบถ้วน
+              </Text>
+            </Box>
+
+            <Flex sx={formBox}>{field.map((field) => renderField(field))}</Flex>
+          </Flex>
+          <Flex sx={buttomSection}>
+            <Flex sx={progressSection}>
+              <Text>ความคืบหน้า</Text>
+              <Flex sx={progress}>
+                <Box sx={a} />
+                <Box sx={b} />
               </Flex>
+              <Text as="b">{`${100 * percent} %`}</Text> {/* why error bro */}
             </Flex>
-            <Flex sx={buttomSection}>
-              <Flex sx={progressSection}>
-                <Text>ความคืบหน้า</Text> {/* why error bro */}
-                <Flex sx={progress}>
-                  <Box sx={a} />
-                  <Box sx={b} />
-                </Flex>
-                <Text as="b">{`${100 * percent} %`}</Text> {/* why error bro */}
-              </Flex>
-              <Button type="submit" colorScheme="green">
-                ตรวจสอบ
-              </Button>
-            </Flex>
-          </Form>
-        )}
+            <Button type="submit" colorScheme="green">
+              ตรวจสอบ
+            </Button>
+          </Flex>
+        </Form>
       </Formik>
     </Box>
   )
