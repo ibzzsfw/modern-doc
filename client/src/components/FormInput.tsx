@@ -7,6 +7,7 @@ import {
   InputRightElement,
   InputLeftElement,
   Select,
+  chakra,
 } from '@chakra-ui/react'
 import { ErrorMessage, Field } from 'formik'
 
@@ -25,6 +26,7 @@ type propsType = {
   format?: string
   width?: string
   optionsValue?: string[]
+  required?: boolean
 }
 
 const FormInput = ({
@@ -41,6 +43,7 @@ const FormInput = ({
   format,
   width,
   optionsValue,
+  required,
 }: propsType) => {
   const renderErrorMessage = (msg: any) => {
     return (
@@ -59,7 +62,10 @@ const FormInput = ({
   if (type === 'select') {
     return (
       <FormControl paddingBottom="24px">
-        <FormLabel>{label}</FormLabel>
+        <FormLabel>
+          {label}
+          {required && <chakra.span color="red">*</chakra.span>}
+        </FormLabel>
         <Field name={name}>
           {({ field, form: { touched, errors }, meta }: any) => (
             <Select
@@ -98,7 +104,10 @@ const FormInput = ({
   } else {
     return (
       <FormControl paddingBottom="24px">
-        <FormLabel>{label}</FormLabel>
+        <FormLabel>
+          {label}
+          {required && <chakra.span color="red">*</chakra.span>}
+        </FormLabel>
         <Field name={name} width={width}>
           {({ field, form: { touched, errors }, meta }: any) => (
             <InputGroup>

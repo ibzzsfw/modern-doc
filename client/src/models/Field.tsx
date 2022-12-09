@@ -17,6 +17,7 @@ type argType = {
   }[]
   description?: string
   example?: string
+  isRequired?: boolean
   userValue?: string
 }
 
@@ -27,6 +28,7 @@ class Field {
   type: string = ''
   description?: string
   example?: string
+  isRequired?: boolean = false
   userValue?: string = ''
   fieldChoice: {
     name: string
@@ -40,6 +42,7 @@ class Field {
     this.type = arg.type
     this.description = arg.description
     this.example = arg.example
+    this.isRequired = arg.isRequired
     this.userValue = arg.userValue
     this.fieldChoice = arg.fieldChoice
   }

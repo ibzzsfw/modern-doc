@@ -24,6 +24,9 @@ import FormInput from '@components/FormInput'
 import { Field, Form, Formik, useFormik } from 'formik'
 import * as Yup from 'yup'
 import { connectStorageEmulator } from 'firebase/storage'
+import download from 'downloadjs'
+import { PDFDocument } from 'pdf-lib'
+import fontkit from '@pdf-lib/fontkit'
 
 const FormPage = () => {
   const { document, field } = useFormPageStore()
@@ -36,7 +39,7 @@ const FormPage = () => {
     field.map((field: Fields) => {
       switch (field.type) {
         case 'number':
-          initialValues[field.name] = 0
+          initialValues[field.name] = '0'
           break
         case 'date':
           initialValues[field.name] = new Date()
@@ -53,42 +56,62 @@ const FormPage = () => {
     return initialValues
   }
 
+  const addRequired = (field: Fields, YupSchema: any) => {
+    if (field.isRequired) return YupSchema.required('จำเป็นต้องกรอก')
+    return YupSchema
+  }
+
   const validationSchemaExraction = () => {
     const validationSchema: { [key: string]: any } = {}
 
     field.map((field: Fields) => {
       switch (field.type) {
         case 'text':
-          validationSchema[field.name] = Yup.string().required('จำเป็นต้องกรอก')
+          addRequired(field, (validationSchema[field.name] = Yup.string()))
           break
-        case 'number':
-          validationSchema[field.name] = Yup.number().required(
-            'จำเป็นต้องกรอกตัวเลข'
+        case 'text':
+          addRequired(
+            field,
+            (validationSchema[field.name] = Yup.string()
+              .matches(/^[0-9]+$/, 'กรุณากรอกเฉพาะตัวเลข')
+              .required('จำเป็นต้องกรอกตัวเลข'))
           )
           break
         case 'date':
-          validationSchema[field.name] = Yup.date().required(
-            'จำเป็นต้องกรอกวันที่'
+          addRequired(
+            field,
+            (validationSchema[field.name] = Yup.date().required(
+              'จำเป็นต้องกรอกวันที่'
+            ))
           )
           break
         case 'phoneNumber':
-          validationSchema[field.name] = Yup.string()
-            .required('จำเป็นต้องกรอก')
-            .matches(/^[0-9]+$/, 'กรุณากรอกเฉพาะตัวเลข')
-            .length(10, 'เบอร์โทรศัพท์จำเป็นต้องมี 10 หลัก')
+          addRequired(
+            field,
+            (validationSchema[field.name] = Yup.string()
+              .required('จำเป็นต้องกรอก')
+              .matches(/^[0-9]+$/, 'กรุณากรอกเฉพาะตัวเลข')
+              .length(10, 'เบอร์โทรศัพท์จำเป็นต้องมี 10 หลัก'))
+          )
           break
         case 'email':
-          validationSchema[field.name] = Yup.string()
-            .required('จำเป็นต้องกรอก')
-            .matches(
-              /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-              'กรุณากรอกอีเมลให้ถูกต้อง'
-            )
+          addRequired(
+            field,
+            (validationSchema[field.name] = Yup.string()
+              .required('จำเป็นต้องกรอก')
+              .matches(
+                /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+                'กรุณากรอกอีเมลให้ถูกต้อง'
+              ))
+          )
           break
         case 'singleSelect':
-          validationSchema[field.name] = Yup.string()
-            .oneOf(field.fieldChoice.map((choice) => choice.name))
-            .required('เลือก 1 ตัวเลือก')
+          addRequired(
+            field,
+            (validationSchema[field.name] = Yup.string()
+              .oneOf(field.fieldChoice.map((choice) => choice.name))
+              .required('เลือก 1 ตัวเลือก'))
+          )
           break
         case 'multiSelect':
           validationSchema[field.name] = Yup.array().required(
@@ -182,6 +205,7 @@ const FormPage = () => {
             placeholder="string"
             type="text"
             showCorrectBorder
+            required={field.isRequired}
           />
         )
       case 'number':
@@ -190,8 +214,9 @@ const FormPage = () => {
             label={field.officialName}
             name={field.name}
             placeholder="number"
-            type="number"
+            type="text"
             showCorrectBorder
+            required={field.isRequired}
           />
         )
       case 'date':
@@ -202,6 +227,7 @@ const FormPage = () => {
             placeholder="date"
             type="date"
             showCorrectBorder
+            required={field.isRequired}
           />
         )
       case 'email':
@@ -212,6 +238,7 @@ const FormPage = () => {
             placeholder="email"
             type="text"
             showCorrectBorder
+            required={field.isRequired}
           />
         )
       case 'phoneNumber':
@@ -222,6 +249,7 @@ const FormPage = () => {
             placeholder="0800000000"
             type="text"
             showCorrectBorder
+            required={field.isRequired}
           />
         )
       case 'singleSelect': {
@@ -235,6 +263,7 @@ const FormPage = () => {
             placeholder="Select option"
             options={field.fieldChoice.map((choice) => choice.officialName)}
             optionsValue={field.fieldChoice.map((choice) => choice.name)}
+            required={field.isRequired}
           />
         )
       }
@@ -254,6 +283,60 @@ const FormPage = () => {
     }
   }
 
+  const fillForm = async (values: any) => {
+    const formUrl = document?.URI ? document.URI : ''
+    // Fetch the PDF with form fields
+    const formBytes = await fetch(formUrl).then((res) => res.arrayBuffer())
+
+    // Fetch the Sarabun font
+    const fontUrl = '/assets/THSarabunNew.ttf'
+    const fontBytes = await fetch(fontUrl).then((res) => res.arrayBuffer())
+
+    // Load the PDF with form fields
+    const pdfDoc = await PDFDocument.load(formBytes)
+
+    // Embed the font
+    pdfDoc.registerFontkit(fontkit)
+    const sarabunFont = await pdfDoc.embedFont(fontBytes)
+
+    const form = pdfDoc.getForm()
+
+    field.map((field: Fields) => {
+      if (form.getFieldMaybe(field.name)) {
+        console.log(field.name, values[field.name])
+        switch (field.type) {
+          case 'text':
+            form.getTextField(field.name).setText(values[field.name])
+            break
+          case 'number':
+            form.getTextField(field.name).setText(values[field.name])
+            break
+          case 'date':
+            form.getTextField(field.name).setText(values[field.name])
+            break
+          case 'singleSelect':
+            form.getRadioGroup(field.name).select(values[field.name])
+            break
+          case 'multiSelect':
+            form.getCheckBox('option1').check()
+            break
+          default:
+            form
+              .getTextField(field.name)
+              .setText('ภาษาไทย ' + field.officialName)
+            break
+        }
+      }
+    })
+
+    form.updateFieldAppearances(sarabunFont)
+
+    form.flatten()
+
+    const pdfBytes = await pdfDoc.save()
+    await download(pdfBytes, 'filled.pdf', 'application/pdf')
+  }
+
   if (field.length == 0) {
     return (
       <Box sx={formLayout}>
@@ -271,6 +354,7 @@ const FormPage = () => {
         validationSchema={Yup.object(validationSchemaExraction())}
         onSubmit={(values) => {
           console.log('values')
+          fillForm(values)
           console.table(values)
         }}
       >
