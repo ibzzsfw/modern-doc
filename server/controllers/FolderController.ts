@@ -10,6 +10,9 @@ class FolderController {
   searchByName = async (req: Request, res: Response) => {
     Folder.searchByName(req, res)
   }
+  addNote = async (req: Request, res: Response) => {
+    Folder.addNote(req, res)
+  }
 }
 
 export default new FolderController()

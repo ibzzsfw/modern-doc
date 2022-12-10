@@ -296,6 +296,46 @@ class File {
       res.status(400).json(err)
     }
   }
+
+  static addNote = async (req: Request, res: Response) => {
+    const { id, type } = req.params
+    const { note } = req.body
+    const userId = req.headers['user-id'] as string
+    const schema = z.object({
+      id: z.string().uuid(),
+      type: z.enum(fileType),
+      userId: z.string().uuid(),
+      note: z.string(),
+    })
+    try {
+      schema.parse({ id, type, userId, note })
+      switch (type) {
+        case 'generatedFile': {
+          const result = await Prisma.$queryRaw`
+            UPDATE "UserGeneratedFile" SET "note" = ${note} 
+            WHERE "generatedFileId" = ${id}::uuid AND "userId" = ${userId}::uuid`
+          res.status(200).json({ message: 'success' })
+          break
+        }
+        case 'uploadedFile': {
+          const result = await Prisma.$queryRaw`
+            UPDATE "UserUploadedFile" SET "note" = ${note}
+            WHERE "uploadedFileId" = ${id}::uuid AND "userId" = ${userId}::uuid`
+          res.status(200).json({ message: 'success' })
+          break
+        }
+        case 'userFreeUploadFile': {
+          const result = await Prisma.$queryRaw`
+            UPDATE "UserFreeUploadFile" SET "note" = ${note}
+            WHERE "id" = ${id}::uuid AND "userId" = ${userId}::uuid`
+          res.status(200).json({ message: 'success' })
+          break
+        }
+      }
+    } catch (err) {
+      res.status(400).json(err)
+    }
+  }
 }
 
 export default File

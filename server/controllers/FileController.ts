@@ -16,6 +16,9 @@ class FileController {
   newUploadedFile = async (req: Request, res: Response) => {
     File.newUploadedFile(req, res)
   }
+  addNote = async (req: Request, res: Response) => {
+    File.addNote(req, res)
+  }
 }
 
 export default new FileController()

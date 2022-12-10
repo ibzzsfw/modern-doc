@@ -25,6 +25,7 @@ class FileRouter {
       '/new/uploadedFile/:fileId',
       this.controller.newUploadedFile
     )
+    this.router.put('/add-note/:type/:id', this.controller.addNote)
   }
 }
 
