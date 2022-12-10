@@ -15,6 +15,12 @@ import {
   Radio,
   RadioGroup,
   Stack,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalCloseButton,
+  useDisclosure,
+  ModalHeader,
 } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
 import { useFormPageStore } from '@stores/FormPageStore'
@@ -27,16 +33,24 @@ import { connectStorageEmulator } from 'firebase/storage'
 import download from 'downloadjs'
 import { PDFDocument } from 'pdf-lib'
 import fontkit from '@pdf-lib/fontkit'
+import { useNavigate } from 'react-router-dom'
+import FileController from '@models/FileController'
 
 const FormPage = () => {
   const { document, field } = useFormPageStore()
-
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const navigate = useNavigate()
   const [percent, setPercent] = useState<number>(0.31)
+  const [formValues, setFormValues] = useState<any>({})
 
   const initialValuesExraction = () => {
     const initialValues: { [key: string]: any | any[] } = {}
 
     field.map((field: Fields) => {
+      if (field.userValue) {
+        initialValues[field.name] = field.userValue
+        return
+      }
       switch (field.type) {
         case 'number':
           initialValues[field.name] = '0'
@@ -67,46 +81,45 @@ const FormPage = () => {
     field.map((field: Fields) => {
       switch (field.type) {
         case 'text':
-          addRequired(field, (validationSchema[field.name] = Yup.string()))
+          validationSchema[field.name] = addRequired(field, Yup.string())
           break
         case 'text':
-          addRequired(
+          validationSchema[field.name] = addRequired(
             field,
-            (validationSchema[field.name] = Yup.string()
+            Yup.string()
               .matches(/^[0-9]+$/, 'กรุณากรอกเฉพาะตัวเลข')
-              .required('จำเป็นต้องกรอกตัวเลข'))
+              .required('จำเป็นต้องกรอกตัวเลข')
           )
+
           break
         case 'date':
-          addRequired(
+          validationSchema[field.name] = addRequired(
             field,
-            (validationSchema[field.name] = Yup.date().required(
-              'จำเป็นต้องกรอกวันที่'
-            ))
+            Yup.date().required('จำเป็นต้องกรอกวันที่')
           )
           break
         case 'phoneNumber':
-          addRequired(
+          validationSchema[field.name] = addRequired(
             field,
-            (validationSchema[field.name] = Yup.string()
+            Yup.string()
               .required('จำเป็นต้องกรอก')
               .matches(/^[0-9]+$/, 'กรุณากรอกเฉพาะตัวเลข')
-              .length(10, 'เบอร์โทรศัพท์จำเป็นต้องมี 10 หลัก'))
+              .length(10, 'เบอร์โทรศัพท์จำเป็นต้องมี 10 หลัก')
           )
           break
         case 'email':
-          addRequired(
+          validationSchema[field.name] = addRequired(
             field,
-            (validationSchema[field.name] = Yup.string()
+            Yup.string()
               .required('จำเป็นต้องกรอก')
               .matches(
                 /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
                 'กรุณากรอกอีเมลให้ถูกต้อง'
-              ))
+              )
           )
           break
         case 'singleSelect':
-          addRequired(
+          validationSchema[field.name] = addRequired(
             field,
             (validationSchema[field.name] = Yup.string()
               .oneOf(field.fieldChoice.map((choice) => choice.name))
@@ -134,7 +147,7 @@ const FormPage = () => {
   //   },
   // });
 
-  console.log(field)
+  console.log('field', field)
 
   let formLayout = {
     display: 'flex',
@@ -171,7 +184,7 @@ const FormPage = () => {
 
   let buttomSection = {
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
   }
 
   let progressSection = {
@@ -187,6 +200,13 @@ const FormPage = () => {
     overflow: 'auto',
   }
 
+  let previewBox = {
+    flexDirection: 'column',
+    padding: '0 36px',
+    rowGap: '0',
+    overflow: 'auto',
+  }
+
   let topSection = {
     flexDirection: 'column',
     rowGap: '2rem',
@@ -195,7 +215,21 @@ const FormPage = () => {
     borderRadius: '8px',
   }
 
-  const renderField = (field: Fields) => {
+  let submitButton = {
+    width: '102px',
+    height: '40px',
+    backgroundColor: 'accent.blue',
+    color: 'white',
+    margin: 'auto',
+    _hover: {
+      backgroundColor: 'hover.blue',
+    },
+    _active: {
+      backgroundColor: 'hover.blue',
+    },
+  }
+
+  const renderField = (field: Fields, disable: boolean = false) => {
     switch (field.type) {
       case 'text':
         return (
@@ -206,6 +240,7 @@ const FormPage = () => {
             type="text"
             showCorrectBorder
             required={field.isRequired}
+            disable={disable}
           />
         )
       case 'number':
@@ -217,6 +252,7 @@ const FormPage = () => {
             type="text"
             showCorrectBorder
             required={field.isRequired}
+            disable={disable}
           />
         )
       case 'date':
@@ -228,6 +264,7 @@ const FormPage = () => {
             type="date"
             showCorrectBorder
             required={field.isRequired}
+            disable={disable}
           />
         )
       case 'email':
@@ -239,6 +276,7 @@ const FormPage = () => {
             type="text"
             showCorrectBorder
             required={field.isRequired}
+            disable={disable}
           />
         )
       case 'phoneNumber':
@@ -250,6 +288,7 @@ const FormPage = () => {
             type="text"
             showCorrectBorder
             required={field.isRequired}
+            disable={disable}
           />
         )
       case 'singleSelect': {
@@ -264,6 +303,7 @@ const FormPage = () => {
             options={field.fieldChoice.map((choice) => choice.officialName)}
             optionsValue={field.fieldChoice.map((choice) => choice.name)}
             required={field.isRequired}
+            disable={disable}
           />
         )
       }
@@ -353,8 +393,8 @@ const FormPage = () => {
         initialValues={initialValuesExraction()}
         validationSchema={Yup.object(validationSchemaExraction())}
         onSubmit={(values) => {
-          console.log('values')
-          fillForm(values)
+          onOpen()
+          setFormValues(values)
           console.table(values)
         }}
       >
@@ -375,20 +415,53 @@ const FormPage = () => {
             <Flex sx={formBox}>{field.map((field) => renderField(field))}</Flex>
           </Flex>
           <Flex sx={buttomSection}>
-            <Flex sx={progressSection}>
+            {/* <Flex sx={progressSection}>
               <Text>ความคืบหน้า</Text>
               <Flex sx={progress}>
                 <Box sx={a} />
                 <Box sx={b} />
               </Flex>
-              <Text as="b">{`${100 * percent} %`}</Text> {/* why error bro */}
-            </Flex>
+              <Text as="b">{`${100 * percent} %`}</Text> 
+            </Flex> */}
             <Button type="submit" colorScheme="green">
               ตรวจสอบ
             </Button>
           </Flex>
         </Form>
       </Formik>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+        <ModalOverlay />
+        <ModalContent maxHeight="600px" overflowY="scroll" paddingBottom="16px">
+          <ModalHeader>ตรวจสอบความถูกต้องของข้อมูล</ModalHeader>
+          <ModalCloseButton />
+          <Formik
+            initialValues={formValues}
+            validationSchema={Yup.object(validationSchemaExraction())}
+            onSubmit={async (values) => {
+              fillForm(values).then(() => {
+                onClose()
+                FileController.saveGeneratedFile(
+                  document?.id,
+                  field.map((f, index) => ({
+                    ...f,
+                    userValue: values[f.name],
+                  }))
+                )
+                navigate(-1)
+              })
+            }}
+          >
+            <Form>
+              <Flex sx={previewBox}>
+                {field.map((field) => renderField(field, true))}
+                <Button type="submit" sx={submitButton}>
+                  บันทึก
+                </Button>
+              </Flex>
+            </Form>
+          </Formik>
+        </ModalContent>
+      </Modal>
     </Box>
   )
 }
