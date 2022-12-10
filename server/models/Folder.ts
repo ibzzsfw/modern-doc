@@ -110,6 +110,29 @@ class Folder {
       res.status(400).json(err)
     }
   }
+
+  static addNote = async (req: Request, res: Response) => {
+    const { userFolderId } = req.params
+    const { note } = req.body
+    const userId = req.headers['user-id'] as string
+    const schema = z.object({
+      userFolderId: z.string().uuid(),
+      note: z.string(),
+      userId: z.string().uuid(),
+    })
+
+    try {
+      schema.parse({ userFolderId, note, userId })
+      const folder = await Prisma.$queryRaw`
+        UPDATE "UserFolder" SET "note" = ${note} 
+        WHERE "id" = ${userFolderId}::uuid 
+        AND "userId" = ${userId}::uuid
+      `
+      res.json(folder)
+    } catch (err) {
+      res.status(400).json(err)
+    }
+  }
 }
 
 export default Folder

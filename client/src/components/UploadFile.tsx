@@ -18,10 +18,14 @@ import {
   Text,
   Spacer,
   HStack,
+  chakra,
 } from '@chakra-ui/react'
 import { AiOutlineDelete } from 'react-icons/ai'
 import { useState, useEffect } from 'react'
-import UploadedFile from '@models/UploadedFile'
+import UploadedFile from '@models/dyl/UploadedFile'
+import FileController from '@models/FileController'
+import { uploadFile } from '@firebase'
+import { v4 as uuidv4 } from 'uuid'
 
 type propsType = {
   open?: boolean
@@ -33,10 +37,14 @@ type propsType = {
 const UploadFile = ({ open, setOpen, file ,customButton}: propsType) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [fileExists, setFileExists] = useState(false)
+  const [search, setSearch] = useState('')
   const [fileType, setFileType] = useState('upload')
   const [selectedFile, setSelectedFile] = useState('')
-  const [isExpirable, setIsExpirable] = useState(true)
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null)
+  const [isExpirable, setIsExpirable] = useState(false)
   const [wannaRemove, setWannaRemove] = useState(false)
+  const [note, setNote] = useState('')
+  const [expiredDate, setExpiredDate] = useState<null | Date>(null)
 /*
   useEffect(() => {
     if (open) {
@@ -57,13 +65,12 @@ const UploadFile = ({ open, setOpen, file ,customButton}: propsType) => {
   }*/
 
   useEffect(() => {
-    if (file) {
-      setFileExists(false)
-      setFileType('upload')
-      setSelectedFile(file.name)
-      setIsExpirable(file.dayLifeSpan > 0)
-    }
-  }, [])
+    setNote('')
+    setUploadedFile(null)
+    setExpiredDate(null)
+    setIsExpirable(false)
+    setFileExists(false)
+  }, [file])
 
   return (
     <>
@@ -76,13 +83,14 @@ const UploadFile = ({ open, setOpen, file ,customButton}: propsType) => {
         isOpen={isOpen}
         onClose={onClose}
         size="xl"
+        isCentered
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>อัพโหลดเอกสาร</ModalHeader>
-         
+          <ModalHeader>อัพโหลดเอกสาร {file?.officialName}</ModalHeader>
+          <ModalCloseButton />
           <ModalBody sx={modalBody}>
-            <HStack>
+            {/* <HStack>
               <Text as="b">Click to experiment</Text>
               <Spacer />
               <Button
@@ -105,8 +113,11 @@ const UploadFile = ({ open, setOpen, file ,customButton}: propsType) => {
               >
                 {fileType} file
               </Button>
-            </HStack>
-            <Input placeholder="พิมพ์เพื่อค้นหาเอกสาร" />
+            </HStack> */}
+            {/* <Input
+              placeholder="พิมพ์เพื่อค้นหาเอกสาร"
+              onChange={(e) => setSearch(e.target.value)}
+            />
             <Select
               placeholder="เลือกเอกสาร"
               onChange={(e) => setSelectedFile(e.target.value)}
@@ -122,7 +133,7 @@ const UploadFile = ({ open, setOpen, file ,customButton}: propsType) => {
                   <option value={`system_file_${i}`}>System file {i}</option>
                 )
               })}
-            </Select>
+            </Select> */}
             {fileType != 'generate' && (
               <Center sx={dropFile}>
                 {fileExists ? (
@@ -131,7 +142,8 @@ const UploadFile = ({ open, setOpen, file ,customButton}: propsType) => {
                     onMouseOver={() => setWannaRemove(true)}
                     onMouseLeave={() => setWannaRemove(false)}
                   >
-                    <Text as="b">{selectedFile}</Text>
+                    <Text as="b">{uploadedFile?.name}</Text>
+
                     {wannaRemove ? (
                       <AiOutlineDelete
                         color={wannaRemove ? 'red' : 'gray'}
@@ -139,16 +151,46 @@ const UploadFile = ({ open, setOpen, file ,customButton}: propsType) => {
                         onClick={() => setFileExists(false)}
                       />
                     ) : (
-                      <Text as="b">1.2 MB</Text>
+                      <Text as="b">
+                        {uploadedFile?.size ? uploadedFile?.size / 1000 : 0} KB
+                      </Text>
                     )}
                   </Box>
                 ) : (
-                  <Box sx={activeDrop}>
+                  <chakra.label sx={activeDrop}>
                     <Image src="/assets/upload-cloud.svg" />
-                  </Box>
+                    <chakra.input
+                      type="file"
+                      accept="application/pdf"
+                      display="none"
+                      onChange={(e) => {
+                        if (e.target.files == null) return
+                        setUploadedFile(e.target.files[0])
+                        setFileExists(true)
+                      }}
+                    />
+                  </chakra.label>
                 )}
               </Center>
             )}
+            <Box sx={expirationSection}>
+              <Checkbox
+                defaultChecked
+                onChange={(e) => setIsExpirable(e.target.checked)}
+              >
+                {!isExpirable ? 'เอกสารมีวันหมดอายุ' : 'กำหนดวันหมดอายุ'}
+              </Checkbox>
+              {isExpirable && (
+                <Input
+                  type="date"
+                  width="30%"
+                  onChange={(e) => {
+                    console.log(e.target.value)
+                    setExpiredDate(new Date(e.target.value))
+                  }}
+                />
+              )}
+            </Box>
             {selectedFile === 'outsideFile' ? (
               <>
                 <Input placeholder="ตั้งชื่อไฟล์" />
@@ -159,7 +201,16 @@ const UploadFile = ({ open, setOpen, file ,customButton}: propsType) => {
                   >
                     {!isExpirable ? 'เอกสารมีวันหมดอายุ' : 'กำหนดวันหมดอายุ'}
                   </Checkbox>
-                  {isExpirable && <Input type="date" width="30%" />}
+                  {isExpirable && (
+                    <Input
+                      type="date"
+                      width="30%"
+                      onChange={(e) => {
+                        if (e.target.files) console.log(e.target.value)
+                        setExpiredDate(new Date(e.target.value))
+                      }}
+                    />
+                  )}
                 </Box>
               </>
             ) : (
@@ -171,7 +222,11 @@ const UploadFile = ({ open, setOpen, file ,customButton}: propsType) => {
                 />
               )
             )}
-            <Textarea placeholder="บันทึกที่จัดเก็บของเอกสารดังกล่าว หรือเตือนความจำบางอย่างกับเอกสารชุดนี้" />
+            <Textarea
+              placeholder="บันทึกที่จัดเก็บของเอกสารดังกล่าว หรือเตือนความจำบางอย่างกับเอกสารชุดนี้"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+            />
           </ModalBody>
           <ModalFooter>
             {fileExists && fileType != 'generate' && (
@@ -179,7 +234,24 @@ const UploadFile = ({ open, setOpen, file ,customButton}: propsType) => {
             )}
             <Spacer />
             <Button onClick={onClose}>ยกเลิก</Button>
-            <Button colorScheme="green" ml="12px">
+            <Button
+              colorScheme="green"
+              ml="12px"
+              onClick={async () => {
+                if (fileType != 'generate') {
+                  console.log(expiredDate)
+                  FileController.newUploadedFile(
+                    file?.id,
+                    await uploadFile(
+                      `userUploads/${uuidv4()}.pdf`,
+                      uploadedFile
+                    ),
+                    note,
+                    isExpirable ? expiredDate : null
+                  )
+                }
+              }}
+            >
               {fileType == 'generate' ? 'สร้างเอกสาร' : 'อัพโหลด'}
             </Button>
           </ModalFooter>
@@ -232,6 +304,7 @@ let fileExistsBox = {
 }
 
 let activeDrop = {
+  cursor: 'pointer',
   display: 'flex',
   justifyContent: 'center',
   padding: '72px 0',

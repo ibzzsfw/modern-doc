@@ -74,16 +74,42 @@ class FileController {
 
   static async saveGeneratedFile(fileId: string | undefined, fields: Field[]) {
     let response = await axios.post(
-      `${import.meta.env.VITE_API_ENDPOINT}/file/save-generated-file/${fileId}`,
+      `${import.meta.env.VITE_API_ENDPOINT}/file/new/generatedFile/${fileId}`,
       {
         fields: fields,
       },
       {
         headers: {
           'user-id': useLoginDataStore.getState()?.user?.id,
+          token: useLoginDataStore.getState()?.user?.token,
         },
       }
     )
+    return response.data
+  }
+
+  static newUploadedFile = async (
+    fileId: string | undefined,
+    URI: string,
+    note: string,
+    expiredDate: Date | null
+  ) => {
+    console.log('newUploadedFile', fileId, URI, note, expiredDate)
+    let response = await axios.post(
+      `${import.meta.env.VITE_API_ENDPOINT}/file/new/uploadedFile/${fileId}`,
+      {
+        URI: URI,
+        note: note,
+        expiredDate: expiredDate != null ? expiredDate?.toISOString() : null,
+      },
+      {
+        headers: {
+          'user-id': useLoginDataStore.getState()?.user?.id,
+          token: useLoginDataStore.getState()?.user?.token,
+        },
+      }
+    )
+    window.location.reload()
     return response.data
   }
 }

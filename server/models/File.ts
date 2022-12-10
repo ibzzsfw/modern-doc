@@ -222,7 +222,7 @@ class File {
     }
   }
 
-  static async saveGenerateFile(req: Request, res: Response) {
+  static async newGeneratedFile(req: Request, res: Response) {
     const { fileId } = req.params
     const { fields } = req.body as {
       fields: {
@@ -266,6 +266,72 @@ class File {
       })
       await Promise.all(promise)
       res.status(200).json({ message: 'success' })
+    } catch (err) {
+      res.status(400).json(err)
+    }
+  }
+
+  static async newUploadedFile(req: Request, res: Response) {
+    console.log('here')
+    const { fileId } = req.params
+    const { URI, note, expiredDate } = req.body
+    const expired = expiredDate ? new Date(expiredDate) : null
+    const userId = req.headers['user-id'] as string
+    const schema = z.object({
+      fileId: z.string().uuid(),
+      URI: z.string().url(),
+      userId: z.string().uuid(),
+      note: z.string().optional(),
+    })
+    try {
+      schema.parse({ fileId, URI, userId })
+      const result = await Prisma.$queryRaw`
+        INSERT INTO "UserUploadedFile" ("id","userId","uploadedFileId","URI","isShared"
+        ,"note","expirationDate","date")
+        VALUES ((SELECT gen_random_uuid()),${userId}::uuid, ${fileId}::uuid, ${URI}, false, ${note}, ${expired}, ${new Date()})
+        ON CONFLICT ("userId", "uploadedFileId") DO UPDATE SET "URI" = ${URI}, "date" = ${new Date()}, "note" = ${note}, "expirationDate" = ${expired}
+      `
+      res.status(200).json({ message: 'success' })
+    } catch (err) {
+      res.status(400).json(err)
+    }
+  }
+
+  static addNote = async (req: Request, res: Response) => {
+    const { id, type } = req.params
+    const { note } = req.body
+    const userId = req.headers['user-id'] as string
+    const schema = z.object({
+      id: z.string().uuid(),
+      type: z.enum(fileType),
+      userId: z.string().uuid(),
+      note: z.string(),
+    })
+    try {
+      schema.parse({ id, type, userId, note })
+      switch (type) {
+        case 'generatedFile': {
+          const result = await Prisma.$queryRaw`
+            UPDATE "UserGeneratedFile" SET "note" = ${note} 
+            WHERE "generatedFileId" = ${id}::uuid AND "userId" = ${userId}::uuid`
+          res.status(200).json({ message: 'success' })
+          break
+        }
+        case 'uploadedFile': {
+          const result = await Prisma.$queryRaw`
+            UPDATE "UserUploadedFile" SET "note" = ${note}
+            WHERE "uploadedFileId" = ${id}::uuid AND "userId" = ${userId}::uuid`
+          res.status(200).json({ message: 'success' })
+          break
+        }
+        case 'userFreeUploadFile': {
+          const result = await Prisma.$queryRaw`
+            UPDATE "UserFreeUploadFile" SET "note" = ${note}
+            WHERE "id" = ${id}::uuid AND "userId" = ${userId}::uuid`
+          res.status(200).json({ message: 'success' })
+          break
+        }
+      }
     } catch (err) {
       res.status(400).json(err)
     }

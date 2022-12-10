@@ -12,6 +12,7 @@ type arg = {
   URI: string
   fileURI: string
   amount?: string
+  type?: string
 }
 class UploadedFile {
   isShare: boolean = false
@@ -24,6 +25,7 @@ class UploadedFile {
   expirationDate: Date
   fileURI: string
   amount?: string
+  type?: string
 
   constructor({
     id,
@@ -35,6 +37,7 @@ class UploadedFile {
     expirationDate,
     fileURI,
     amount,
+    type,
   }: arg) {
     this.id = id
     this.lastModified = lastModified
@@ -45,6 +48,7 @@ class UploadedFile {
     this.expirationDate = expirationDate
     this.fileURI = fileURI
     this.amount = amount
+    this.type = type
   }
 
   getStatus(): DocumentStatus {

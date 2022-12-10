@@ -11,7 +11,13 @@ class FileController {
     File.searchByName(req, res)
   }
   saveGenerateFile = async (req: Request, res: Response) => {
-    File.saveGenerateFile(req, res)
+    File.newGeneratedFile(req, res)
+  }
+  newUploadedFile = async (req: Request, res: Response) => {
+    File.newUploadedFile(req, res)
+  }
+  addNote = async (req: Request, res: Response) => {
+    File.addNote(req, res)
   }
 }
 
