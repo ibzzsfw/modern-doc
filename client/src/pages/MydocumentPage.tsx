@@ -24,88 +24,34 @@ import { AiFillPlusCircle } from 'react-icons/ai'
 import { BsShareFill } from 'react-icons/bs'
 import ShareModal from '@components/ShareModal'
 import { useNavigate } from 'react-router-dom'
-
+import UploadFile from '@components/UploadFile'
+import { useQuery } from '@tanstack/react-query'
+import FileController from '@models/FileController'
+import FolderController from '@models/FolderController'
+import NoteController from '@models/NoteController'
+import { useLoginDataStore } from '@stores/LoginDataStore'
 
 const MyDocument = () => {
   //const { search, setSearch } = useSearchBoxStore()
   const [search, setSearch] = useState('')
   const navigate = useNavigate()
-  
-  const { onToggle } = useDisclosure()
-  const [shareFile, setShareFile] = useState([
-    {
-      id: '6',
-      type: 'sharedFile',
-      title: 'รักษาดินแดน',
-      author: 'Wang Junkai',
-    },
-    {
-      id: '6',
-      type: 'sharedFile',
-      title: 'พาร์สปอร์ต',
-      author: 'Yi yangqianxi',
-    },
-    { id: '6', type: 'sharedFile', title: 'ทะเบียนบ้าน', author: 'Wang yuan' },
-  ])
-  const [myFile, setMyFile] = useState([
-    {
-      id: '6',
-      type: 'uploadedFile',
-      title: 'รักษาดินแดน',
-      amount: 9,
-      size: 1.2,
-    },
-    {
-      id: '6',
-      type: 'uploadedFile',
-      title: 'รักษาดินแดน',
-      amount: 9,
-      size: 6,
-    },
-    {
-      id: '6',
-      type: 'uploadedFile',
-      title: 'รักษาดินแดน',
-      amount: 9,
-      size: 527,
-    },
-  ])
-  const [myFolder, setMyFolder] = useState([
-    {
-      id: '6',
-      type: 'generatedFolder',
-      title: 'สมัครงานกับ TechLead',
-      amount: 9,
-      image:
-        'https://cdn.sanity.io/images/xeonec4d/production/fc4aef437fe8753e30757498e7baceb016de4c6c-300x250.png?w=1000',
-    },
-    {
-      id: '6',
-      type: 'generatedFolder',
-      title: 'รักษาดินแดน',
-      amount: 9,
-    },
-    {
-      id: '6',
-      type: 'generatedFolder',
-      title: 'รักษาดินแดน',
-      amount: 9,
-    },
-  ])
-
-  let layout = {
-    backgroundColor: 'background.gray',
-    color: 'accent.black',
-    width: '100%',
-  }
-
-  let threeDot = {
-    position: 'absolute',
-    top: '10px',
-    right: '20px',
-    color: 'accent.black',
-  }
+  const user = useLoginDataStore.getState().user
+  const [shareFile, setShareFile] = useState([])
+  const [myFile, setMyFile] = useState([])
+  const [myFolder, setMyFolder] = useState([])
   const [note, setNote] = useState([])
+  const [uploadedFile, setUploadedFile] = useState([])
+  const {
+    data: latestFiles,
+    isLoading: latestFilesLoading,
+    error: latestFilesError,
+  } = useQuery(['latestFiles', user?.id], FileController.getLatestFile)
+
+  const {
+    data: latestFolder,
+    isLoading: latestFolderLoading,
+    error: latestFolderError,
+  } = useQuery(['latestFolder', user?.id], FolderController.getLatestFolder)
 
   let menu = (
     <MenuProvider
@@ -150,9 +96,8 @@ const MyDocument = () => {
     </MenuProvider>
   )
 
-  return  (
+  return (
     <Box sx={layout}>
-     
       <Flex
         alignItems="center"
         justifyContent="space-between"
@@ -174,9 +119,49 @@ const MyDocument = () => {
           }}
         />
       </Flex>
-      <DocumentBar title="บันทึกเตือนความจำของฉัน" onAddonButtonClick={()=>{navigate('/alldocument/note')}}>
+      <DocumentBar
+        title="บันทึกเตือนความจำของฉัน"
+        onAddonButtonClick={() => {
+          navigate('/alldocument/note')
+        }}
+      >
         <>
           <TakeNote
+            customButton={
+              <DocumentBlankBox
+                icon={AiFillPlusCircle}
+                size={'80px'}
+                color={'gray.500'}
+              />
+            }
+          />
+
+          {note
+            .filter((file) => file.title.toLowerCase().includes(search))
+            .map((file: any) => {
+              return (
+                <DocumentBox
+                  id={file.id}
+                  type={file.type}
+                  title={file.title}
+                  author={file.author}
+                  showNote
+                  menu={menu}
+                />
+              )
+            })
+            .slice(0, 1)}
+        </>
+      </DocumentBar>
+      <Divider size="20px" />
+      <DocumentBar
+        title="เอกสารที่แชร์ร่วมกัน"
+        onAddonButtonClick={() => {
+          navigate('/alldocument/sharefile')
+        }}
+      >
+        <>
+          <ShareModal
             customButton={
               <DocumentBlankBox
                 icon={AiFillPlusCircle}
@@ -199,40 +184,16 @@ const MyDocument = () => {
                   menu={menu}
                 />
               )
-            })}
+            })
+            .slice(0, 1)}
         </>
       </DocumentBar>
-      <Divider size = '10px'  />
-      <DocumentBar title="เอกสารที่แชร์ร่วมกัน" onAddonButtonClick={()=>{navigate('/alldocument/sharefile')}}>
-        <>
-          <ShareModal
-            customButton={
-              <DocumentBlankBox
-                icon={BsShareFill}
-                size={'70px'}
-                color={'#D1B1F0'}
-                onClick={() => {}}
-              />
-            }
-          />
-
-          {shareFile
-            .filter((file) => file.title.toLowerCase().includes(search))
-            .map((file: any) => {
-              return (
-                <DocumentBox
-                  id={file.id}
-                  type={file.type}
-                  title={file.title}
-                  author={file.author}
-                  showNote
-                  menu={menu}
-                />
-              )
-            })}
-        </>
-      </DocumentBar>
-      <DocumentBar title="แฟ้มเอกสารของฉัน" onAddonButtonClick={()=>{navigate('/alldocument/folder')}}>
+      <DocumentBar
+        title="แฟ้มเอกสารของฉัน"
+        onAddonButtonClick={() => {
+          navigate('/alldocument/folder')
+        }}
+      >
         {myFolder
           .filter((file) => file.title.toLowerCase().includes(search))
           .map((file: any) => {
@@ -247,9 +208,15 @@ const MyDocument = () => {
                 menu={menu}
               />
             )
-          })}
+          })
+          .slice(0, 1)}
       </DocumentBar>
-      <DocumentBar title="ไฟล์ของฉัน" onAddonButtonClick={()=>{navigate('/alldocument/file')}}>
+      <DocumentBar
+        title="ไฟล์ของฉัน"
+        onAddonButtonClick={() => {
+          navigate('/alldocument/file')
+        }}
+      >
         {myFile
           .filter((file) => file.title.toLowerCase().includes(search))
           .map((file: any) => {
@@ -265,14 +232,60 @@ const MyDocument = () => {
                 menu={menu}
               />
             )
-          })}
+          })
+          .slice(0, 1)}
+      </DocumentBar>
+      <DocumentBar
+        title="เอกสารที่อัปโหลด"
+        onAddonButtonClick={() => {
+          navigate('/alldocument/uploadfile')
+        }}
+      >
+        <>
+          <UploadFile
+            customButton={
+              <DocumentBlankBox
+                icon={AiFillPlusCircle}
+                size={'80px'}
+                color={'gray.500'}
+              />
+            }
+          />
+
+          {uploadedFile
+            .filter((file) => file.title.toLowerCase().includes(search))
+            .map((file: any) => {
+              return (
+                <DocumentBox
+                  id={file.id}
+                  type={file.type}
+                  title={file.title}
+                  image={file.image}
+                  amount={file.amount}
+                  showNote
+                  size={file.size}
+                  menu={menu}
+                />
+              )
+            })
+            .slice(0, 1)}
+        </>
       </DocumentBar>
     </Box>
   )
-
-
 }
-
 
 export default MyDocument
 
+let layout = {
+  backgroundColor: 'background.gray',
+  color: 'accent.black',
+  width: '100%',
+}
+
+let threeDot = {
+  position: 'absolute',
+  top: '10px',
+  right: '20px',
+  color: 'accent.black',
+}

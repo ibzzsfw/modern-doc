@@ -1,46 +1,52 @@
 import {
-  Icon,
   Button,
-  Box,
-  Flex,
-  Select,
-  VStack,
-  IconButton,
-  Divider,
   ButtonGroup,
-  HStack,
+  Flex,
+  Icon,
+  IconButton,
   Menu,
   MenuButton,
-  MenuList,
-  MenuItem,
-  MenuItemOption,
-  MenuGroup,
-  MenuOptionGroup,
   MenuDivider,
+  MenuItemOption,
+  MenuList,
+  MenuOptionGroup,
+  VStack,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  Text,
 } from '@chakra-ui/react'
-import { useParams } from 'react-router-dom'
-import TableList from '@components/TableList'
-import TableListItem from '@components/TableListItem'
-import MenuProvider from '@components/MenuProvider'
-import { BsThreeDots, BsTrash } from 'react-icons/bs'
-import { GrDocumentText, GrDownload } from 'react-icons/gr'
-import { AiFillPrinter, AiOutlineEdit } from 'react-icons/ai'
-import { useState, useEffect } from 'react'
-import SearchBox from '@components/SearchBox'
-import { AiOutlineMenu, AiOutlineAppstore } from 'react-icons/ai'
-import DocumentBar from '@components/DocumentBar'
 import DocumentBox from '@components/DocumentBox'
 import Frame from '@components/Frame'
-import { IoChevronDownOutline, IoChevronForwardOutline } from 'react-icons/io5'
+import MenuProvider from '@components/MenuProvider'
+import SearchBox from '@components/SearchBox'
+import TableListItem from '@components/TableListItem'
+import { useState } from 'react'
+import {
+  AiFillPrinter,
+  AiOutlineAppstore,
+  AiOutlineEdit,
+  AiOutlineMenu,
+} from 'react-icons/ai'
+import { BsThreeDots, BsTrash } from 'react-icons/bs'
+import { GrDocumentText, GrDownload } from 'react-icons/gr'
+import { IoChevronDownOutline } from 'react-icons/io5'
+import { useParams } from 'react-router-dom'
 
 const AllDocumentPage = () => {
   const { category } = useParams<{ category: string }>()
   const [view, setView] = useState<'box' | 'table'>('box')
   const [search, setSearch] = useState('')
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [sortMenu, setSortMenu] = useState({ sort: '', order: '' })
   const [documents, setDocuments] = useState([
     {
       id: '6',
-      type: 'generatedFolder',
+      type: '',
       title: 'สมัครงานกับ TechLead',
       amount: 9,
       image:
@@ -91,7 +97,9 @@ const AllDocumentPage = () => {
           {
             title: 'ลบแฟ้ม',
             icon: <Icon as={BsTrash} color="accent.red" />,
-            onClick: () => {},
+            onClick: () => {
+              onOpen()
+            },
             style: {
               color: 'accent.red',
             },
@@ -106,7 +114,7 @@ const AllDocumentPage = () => {
       />
     </MenuProvider>
   )
-
+  /*
   const sorting = (option: String | String[]) => {
     let sorted: any = [...documents]
     switch (option) {
@@ -123,8 +131,48 @@ const AllDocumentPage = () => {
         setDocuments(sorted)
         break
     }
-    console.log(sorted)
+    
+  }*/ /*
+  const multipleSorting = (values: String | String[]) => {
+    let sorted: any = [...documents]
+    sorted = [...documents].sort((a, b) => (a[values] < b[values] ? 1 : -1))
+    return
   }
+*/
+  let deleteModal = (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      isCentered
+      closeOnOverlayClick={false}
+    >
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>ลบสมาชิก</ModalHeader>
+        <ModalBody>
+          คุณต้องการลบสมาชิก ใช่หรือไม่
+          <br />
+          (เอกสารร่วมจะหายไปด้วย)
+        </ModalBody>
+        <ModalFooter>
+          <Flex gap="22px">
+            <Button variant="outline" onClick={onClose}>
+              ยกเลิก
+            </Button>
+            <Button
+              variant="solid"
+              colorScheme="red"
+              onClick={() => {
+                //delete api
+              }}
+            >
+              ลบ
+            </Button>
+          </Flex>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  )
 
   return (
     <>
@@ -148,21 +196,32 @@ const AllDocumentPage = () => {
               </MenuButton>
               <MenuList minWidth="240px">
                 <MenuOptionGroup
+                  type="radio"
+                  title="เรียงลำดับด้วย"
+                  onChange={(value) => {
+                    setSortMenu({ sort: value, order: sortMenu.order })
+                    console.log(sortMenu)
+                  }}
+                >
+                  <MenuItemOption value="title">ชื่อ</MenuItemOption>
+                  <MenuItemOption value="lastModified">
+                    วันที่แก้ไขล่าสุด
+                  </MenuItemOption>
+                  <MenuItemOption value="dateCreate">
+                    วันที่สร้าง
+                  </MenuItemOption>
+                </MenuOptionGroup>
+                <MenuDivider />
+                <MenuOptionGroup
                   defaultValue=""
-                  title="Order"
+                  title="เรียงลำดับจาก"
                   type="radio"
                   onChange={(value) => {
-                    sorting(value)
+                    console.log(value)
                   }}
                 >
                   <MenuItemOption value="ASC">Ascending</MenuItemOption>
                   <MenuItemOption value="DESC">Descending</MenuItemOption>
-                </MenuOptionGroup>
-                <MenuDivider />
-                <MenuOptionGroup title="Country" type="checkbox">
-                  <MenuItemOption value="email">Email</MenuItemOption>
-                  <MenuItemOption value="phone">Phone</MenuItemOption>
-                  <MenuItemOption value="country">Country</MenuItemOption>
                 </MenuOptionGroup>
               </MenuList>
             </Menu>
@@ -196,6 +255,7 @@ const AllDocumentPage = () => {
                   title={file.title}
                   author={file.author}
                   showNote
+                  showDate
                   menu={menu}
                 />
               ) : (
@@ -205,11 +265,13 @@ const AllDocumentPage = () => {
                   title={file.title}
                   author={file.author}
                   showNote
+                  showDate
                   menu={menu}
                 />
               )
             })}
         </Frame>
+        {deleteModal}
       </VStack>
     </>
   )

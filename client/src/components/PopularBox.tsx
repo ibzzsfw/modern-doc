@@ -8,7 +8,6 @@ type propsType = {
 }
 
 const PopularBox = ({ title, image }: propsType) => {
-
   const navigate = useNavigate()
   const { search, setSearch, setSearchResult } = useSearchBoxStore()
 
@@ -23,7 +22,7 @@ const PopularBox = ({ title, image }: propsType) => {
       boxShadow: '0px 10px 10px 2px rgba(0, 0, 0, 0.1)',
       transform: 'translateY(-2px)',
       transition: 'all 0.2s ease-in-out',
-    }
+    },
   }
 
   let imageBox = {
@@ -39,21 +38,21 @@ const PopularBox = ({ title, image }: propsType) => {
     border: '1px solid #E2E8F0',
     borderRadius: '8px',
     textAlign: 'center',
-    padding: '8px 0px'
+    padding: '8px 0px',
   }
 
   const onSelectTag = (title: string) => {
     setSearch(title)
-    let result: any | any[] = [] // API call search(title)
+    let result: any | any[] = [] // API search
     setSearchResult(result)
-    navigate(`/search/${title}`)
+    navigate(`/search/`)
   }
 
   return (
-    <Flex sx={layout} gap='0px' onClick={() => onSelectTag(title)}>
+    <Flex sx={layout} gap="0px" onClick={() => onSelectTag(title)}>
       <Box sx={imageBox} />
       <Box sx={titleBox}>
-        <Text as='b'>{title}</Text>
+        <Text as="b">{title}</Text>
       </Box>
     </Flex>
   )

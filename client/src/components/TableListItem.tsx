@@ -1,4 +1,18 @@
-import { Badge, Box, Flex, HStack, Image, Text } from '@chakra-ui/react'
+import {
+  Badge,
+  Box,
+  Flex,
+  SimpleGrid,
+  HStack,
+  Image,
+  Text,
+  Editable,
+  EditablePreview,
+  EditableTextarea,
+  GridItem,
+  Center,
+} from '@chakra-ui/react'
+import { getDate } from 'date-fns'
 
 type propsType = {
   type: 'generatedFolder' | 'generatedFile' | 'uploadedFile' | 'sharedFile'
@@ -89,28 +103,49 @@ const TableListItem = ({
 
   return (
     <Box sx={boxLayout} alignItems="center" padding="20px">
-      <Flex
-        justifyContent="space-between"
-        alignItems="center"
-        width="100%"
-        height="100%"
-      >
-        <HStack gap="10px">
-          <Image
-            src={getImageUrl() || '/assets/shared_logo.png'}
-            sx={documentImage}
-          />
-          <Flex direction="column" maxWidth="250px">
-            <Text sx={titleText}>{title || 'มอบอำนาจ'}</Text>
-            <Text sx={subText}>{getSubText() || 'เอกสาร'} </Text>
-          </Flex>
-        </HStack>
-        <Badge colorScheme="blue" fontSize="16px">
-          แก้ไขล่าสุด 2 ชั่วโมงที่แล้ว
-        </Badge>
+      <SimpleGrid columns={10} alignItems="center" width="100%">
+        <GridItem colSpan={3}>
+          <HStack spacing="10px">
+            <Image src={getImageUrl()} sx={documentImage} />
+            <Flex direction="column">
+              <Text sx={titleText}>{title}</Text>
+              <Text sx={subText}>{getSubText()} </Text>
+            </Flex>
+          </HStack>
+        </GridItem>
+        <GridItem colSpan={3}>
+          <Center>
+            <Badge
+              colorScheme="blue"
+              fontSize="16px"
+              textAlign="center"
+              margin="auto"
+            >
+              {Date()}
+            </Badge>
+          </Center>
+        </GridItem>
 
-        <Box position="relative">{menu}</Box>
-      </Flex>
+        <GridItem colSpan={3}>
+          <Center>
+            {showNote && (
+              <Box>
+                <Editable
+                  defaultValue="note"
+                  fontSize="14px"
+                  color="accent.gray"
+                >
+                  <EditablePreview />
+                  <EditableTextarea _focusVisible={{ boxShadow: 'none' }} />
+                </Editable>
+              </Box>
+            )}
+          </Center>
+        </GridItem>
+        <GridItem colSpan={1}>
+          <Box position="relative">{menu}</Box>
+        </GridItem>
+      </SimpleGrid>
     </Box>
   )
 }
@@ -134,10 +169,9 @@ let layout = {
 }
 
 let boxLayout = {
-  width: '80%',
+  width: '95%',
   height: '100px',
   backgroundColor: 'accent.white',
-
   borderColor: 'accent.gray',
   borderRadius: '8px',
   boxShadow: '2px 2px 2px 2px rgba(0, 0, 0, 0.1)',

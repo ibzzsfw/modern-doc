@@ -111,7 +111,7 @@ const SearchPage = () => {
             </Checkbox>
             {showFolder ? (
               <Flex sx={childrenFlex}>
-                {folderResult.length != 0 ? folderResult.map((folder: any) => {
+                {folderResult ? folderResult.map((folder: any) => {
                   return (
                     <DocumentBox
                       id={folder.id}

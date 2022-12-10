@@ -23,7 +23,7 @@ const DocumentBar = ({
   let childrenFlex = {
     width: '100%',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
     margin: 'auto',
     gap: '32px',
   }

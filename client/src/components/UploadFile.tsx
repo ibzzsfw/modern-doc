@@ -24,24 +24,25 @@ import { useState, useEffect } from 'react'
 import UploadedFile from '@models/UploadedFile'
 
 type propsType = {
-  open: boolean
-  setOpen: (open: boolean) => void
-  file: UploadedFile | null
+  open?: boolean
+  setOpen?: (open: boolean) => void
+  file?: UploadedFile | null
+  customButton?: JSX.Element
 }
 
-const UploadFile = ({ open, setOpen, file }: propsType) => {
+const UploadFile = ({ open, setOpen, file ,customButton}: propsType) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [fileExists, setFileExists] = useState(false)
   const [fileType, setFileType] = useState('upload')
   const [selectedFile, setSelectedFile] = useState('')
   const [isExpirable, setIsExpirable] = useState(true)
   const [wannaRemove, setWannaRemove] = useState(false)
-
+/*
   useEffect(() => {
     if (open) {
       onOpen()
     }
-  }, [open])
+  }, [open])*/
 
   useEffect(() => {
     if (selectedFile == 'outsideFile') {
@@ -49,11 +50,11 @@ const UploadFile = ({ open, setOpen, file }: propsType) => {
     }
     setFileExists(selectedFile != '')
   }, [selectedFile])
-
+/*
   const closeModal = () => {
     onClose()
     setOpen(false)
-  }
+  }*/
 
   useEffect(() => {
     if (file) {
@@ -66,17 +67,20 @@ const UploadFile = ({ open, setOpen, file }: propsType) => {
 
   return (
     <>
-      {/* <Button onClick={onOpen} colorScheme={"red"}>Upload file</Button> */}
+      {customButton && 
+        <Box as="button" onClick={onOpen} >
+          {customButton}
+        </Box>}
       <Modal
         closeOnOverlayClick={false}
         isOpen={isOpen}
-        onClose={closeModal}
+        onClose={onClose}
         size="xl"
       >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>อัพโหลดเอกสาร</ModalHeader>
-          <ModalCloseButton />
+         
           <ModalBody sx={modalBody}>
             <HStack>
               <Text as="b">Click to experiment</Text>

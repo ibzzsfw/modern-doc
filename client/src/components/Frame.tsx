@@ -1,3 +1,4 @@
+import { Box } from '@chakra-ui/react'
 import DocumentBar from '@components/DocumentBar'
 import TableList from '@components/TableList'
 
@@ -11,7 +12,9 @@ type propsType = {
 
 const Frame = ({ title, view, children }: propsType) => {
   return view === 'box' ? (
-    <DocumentBar title={title}>{children}</DocumentBar>
+    <Box width="100%">
+      <DocumentBar title={title}>{children}</DocumentBar>
+    </Box>
   ) : (
     <TableList title={title}>{children}</TableList>
   )

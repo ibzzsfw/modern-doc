@@ -94,42 +94,45 @@ const TakeNote = ({ customButton }: propsTypes) => {
           <ModalBody sx={modalBody}>
             <FormControl>
               <FormLabel>ประเภทเอกสาร</FormLabel>
-            <Select
-              placeholder="ประเภทของบันทึก"
-              onChange={(e) => {
-                setNoteType(e.target.value)
-                setSelectedDocumentID('')
-              }}
-            >
-              <option value="free_note">บันทึกอิสระ</option>
-              <option value="file_note">บันทึกในเอกสาร</option>
-              <option value="folder_note">บันทึกในแฟ้ม</option>
-            </Select>
-            {noteType != '' && (<>
-              <FormLabel>ชื่อเอกสาร</FormLabel>
               <Select
-                placeholder={selectPlaceholder}
-                onChange={(e) => setSelectedDocumentID(e.target.value)}
+                placeholder="ประเภทของบันทึก"
+                onChange={(e) => {
+                  setNoteType(e.target.value)
+                  setSelectedDocumentID('')
+                }}
               >
-                {note.map((note, index) => {
-                  return (
-                    <option key={index} value={note.id}>
-                      {note.title}
-                    </option>
-                  )
-                })}
-              </Select></>
-              
-            )}
-            {selectedDocumentID && (<>
-              <FormLabel>บันทึกเตือนความจำ</FormLabel>
-              <Textarea
-                value={selectedNote ? selectedNote.content : 'เนื้อหาใหม่'}
-              />
-            </>
-             
-            )}
-            {/*onChange*/}
+                <option value="free_note">บันทึกอิสระ</option>
+                <option value="file_note">บันทึกในเอกสาร</option>
+                <option value="folder_note">บันทึกในแฟ้ม</option>
+              </Select>
+              <br />
+              {noteType != '' && (
+                <>
+                  <FormLabel>ชื่อเอกสาร</FormLabel>
+                  <Select
+                    placeholder={selectPlaceholder}
+                    onChange={(e) => setSelectedDocumentID(e.target.value)}
+                  >
+                    {note.map((note, index) => {
+                      return (
+                        <option key={index} value={note.id}>
+                          {note.title}
+                        </option>
+                      )
+                    })}
+                  </Select>
+                </>
+              )}
+              {selectedDocumentID && (
+                <>
+                  <br />
+                  <FormLabel>บันทึกเตือนความจำ</FormLabel>
+                  <Textarea
+                    value={selectedNote ? selectedNote.content : 'เนื้อหาใหม่'}
+                  />
+                </>
+              )}
+              {/*onChange*/}
             </FormControl>
           </ModalBody>
           <ModalFooter>

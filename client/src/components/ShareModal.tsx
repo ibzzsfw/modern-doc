@@ -1,22 +1,18 @@
 import {
   Box,
   Button,
+  FormControl,
+  FormLabel,
   Modal,
   ModalBody,
-  ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
   Select,
-  Textarea,
   useDisclosure,
-  FormControl,
-  Input,
-  FormLabel,
-  VStack,
 } from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 type propsTypes = {
   customButton?: JSX.Element
@@ -30,7 +26,7 @@ const ShareModal = ({ customButton }: propsTypes) => {
     'บัตรประชาชน',
     'สำเนาทะเบียนบ้าน',
   ])
-  const [value,setValue] = useState({})
+  const [value, setValue] = useState({})
   return (
     <>
       {customButton ? (
@@ -57,9 +53,14 @@ const ShareModal = ({ customButton }: propsTypes) => {
                 <option value="file_note">เอกสาร</option>
                 <option value="free_note">บันทึก</option>
               </Select>
-
+              <br />
               <FormLabel width="100%">ชื่อเอกสาร</FormLabel>
-              <Select placeholder="ชื่อเอกสาร" onChange={(e)=>{setValue(e.target.value)}}>
+              <Select
+                placeholder="ชื่อเอกสาร"
+                onChange={(e) => {
+                  setValue(e.target.value)
+                }}
+              >
                 {officialName.map((name, index) => {
                   return (
                     <option key={index} value={name}>
@@ -74,10 +75,14 @@ const ShareModal = ({ customButton }: propsTypes) => {
             <Button onClick={onClose} type="reset">
               ยกเลิก
             </Button>
-            <Button colorScheme="blue" marginLeft="12px" onClick={() => {
-              console.log(value)
-              console.log(noteType)
-            }}>
+            <Button
+              colorScheme="blue"
+              marginLeft="12px"
+              onClick={() => {
+                console.log(value)
+                console.log(noteType)
+              }}
+            >
               บันทึก
             </Button>
           </ModalFooter>
