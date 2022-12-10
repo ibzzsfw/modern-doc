@@ -5,6 +5,7 @@ export default {
     '!src/**/*.d.ts',
     '!src/mocks/**',
   ],
+  preset: 'ts-jest',
   testEnvironment: 'jsdom',
   transform: {
     '^.+\\.(ts|tsx|js|jsx)$': 'ts-jest',
@@ -12,7 +13,6 @@ export default {
   },
   modulePaths: ['<rootDir>/src'],
   moduleDirectories: ['node_modules', 'src'],
-  module: 'esnext',
   moduleNameMapper: {
     '@components/(.*)': '<rootDir>/src/components/$1',
     '@pages/(.*)': '<rootDir>/src/pages/$1',
@@ -24,9 +24,7 @@ export default {
       '<rootDir>/mocks/fileMock.ts',
     '\\.(css|less)$': '<rootDir>/mocks/fileMock.ts',
   },
-  transformIgnorePatterns: [
-    '[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs|cjs|ts|tsx)$',
-  ],
+  transformIgnorePatterns: ['<rootDir>/node_modules/'],
   setupFiles: ['dotenv/config'],
   setupFilesAfterEnv: ['@testing-library/jest-dom/extend-expect'],
   testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$',

@@ -30,6 +30,10 @@ class File {
           SELECT date FROM "UserGeneratedFile" WHERE "UserGeneratedFile"."generatedFileId" = ${id}::uuid
           AND "UserGeneratedFile"."userId" = ${userId}::uuid
         ) AS "date",
+        (
+          SELECT note FROM "UserGeneratedFile" WHERE "UserGeneratedFile"."generatedFileId" = ${id}::uuid
+          AND "UserGeneratedFile"."userId" = ${userId}::uuid
+        ) AS "note",
         array(
           SELECT DISTINCT jsonb_build_object(
             'id', "Field"."id",
