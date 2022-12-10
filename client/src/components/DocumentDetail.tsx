@@ -8,16 +8,12 @@ import {
   Spacer,
 } from '@chakra-ui/react'
 import GeneratedDocumentBadge from '@components/DocumentBadge'
-import { AiOutlineDoubleLeft, AiOutlineDoubleRight } from 'react-icons/ai'
 import Status from '@models/DocumentStatus'
-import Markdown from 'marked-react'
 import { useFilePageStore } from '@stores/FilePageStore'
-import GeneratedFile from '@models/GeneratedFile'
-import Field from '@models/Field'
-import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
-import shallow from 'zustand/shallow'
 import { useFormPageStore } from '@stores/FormPageStore'
+import Markdown from 'marked-react'
+import { useNavigate } from 'react-router-dom'
+import shallow from 'zustand/shallow'
 
 type propsType = {
   title: string
@@ -25,6 +21,7 @@ type propsType = {
   description: string
   markdown: string
   type?: 'generatedFile' | 'uploadedFile' | 'freeUploadFile' | 'folder' | string
+  note?: string
 }
 
 const FolderDetail = ({
@@ -33,6 +30,7 @@ const FolderDetail = ({
   description,
   markdown,
   type = 'uploadedFile',
+  note,
 }: propsType) => {
   const navigate = useNavigate()
 
@@ -150,7 +148,7 @@ const FolderDetail = ({
           ></Button> */}
         </Box>
       </Flex>
-      <Box sx={noteBox}>{description}</Box>
+      <Box sx={noteBox}>{file.note}</Box>
       {type === 'generatedFile' ? (
         <ButtonGroup
           gap="24px"

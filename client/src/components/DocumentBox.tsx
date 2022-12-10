@@ -1,19 +1,21 @@
 import {
   Box,
-  Editable,
-  EditablePreview,
-  EditableTextarea,
+  Button,
+  ButtonGroup,
   Flex,
+  Icon,
+  IconButton,
   Image,
   Text,
-  Button,
+  Textarea,
   useEditableControls,
-  Input,
-  EditableInput,
-  useEditableState,
 } from '@chakra-ui/react'
-import { Link } from 'react-router-dom'
+import MenuProvider from '@components/MenuProvider'
+import { Field, Form, Formik } from 'formik'
 import { useState } from 'react'
+import { AiOutlineCheck, AiOutlineClose, AiOutlineEdit } from 'react-icons/ai'
+import { BsThreeDots, BsTrash } from 'react-icons/bs'
+import { Link } from 'react-router-dom'
 
 type propsType = {
   type:
@@ -31,7 +33,6 @@ type propsType = {
   showMenu?: boolean
   showNote?: boolean
   note?: string
-  menu?: any
   colorBar?: string
   createdDate?: Date
   modifiedDate?: Date
@@ -49,14 +50,48 @@ const DocumentBox = ({
   image,
   showNote,
   note,
-  menu,
+  showMenu = false,
   colorBar,
   modifiedDate,
   createdDate,
   showDate,
   url,
 }: propsType) => {
-  
+  const [editNote, setEditNote] = useState(false)
+
+  function EditableControls() {
+    const {
+      isEditing,
+      getSubmitButtonProps,
+      getCancelButtonProps,
+      getEditButtonProps,
+    } = useEditableControls()
+
+    return isEditing ? (
+      <ButtonGroup justifyContent="center" size="sm">
+        <IconButton
+          aria-label="checkBtn"
+          icon={<AiOutlineCheck />}
+          {...getSubmitButtonProps()}
+        />
+        <IconButton
+          aria-label="closeBtn"
+          icon={<AiOutlineClose />}
+          {...getCancelButtonProps()}
+        />
+      </ButtonGroup>
+    ) : (
+      <Flex justifyContent="center">
+        <IconButton
+          aria-label="editBtn"
+          size="sm"
+          icon={<AiOutlineEdit />}
+          {...getEditButtonProps()}
+        />
+      </Flex>
+    )
+  }
+
   let layout = {
     width: '320px',
     boxShadow: '5px 5px 3px -2px rgba(0, 0, 0, 0.1)',
@@ -118,7 +153,6 @@ const DocumentBox = ({
     if (type === 'note') {
       return '/assets/note_logo.png'
     }
-    
   }
 
   const getSubText = () => {
@@ -141,7 +175,9 @@ const DocumentBox = ({
       return `ผู้สร้าง : ${author}`
     }
     if (type === 'note') {
-      return `แก้ไขล่าสุดเมื่อ : ${new Date(modifiedDate).toLocaleDateString('en-GB')}`
+      return `แก้ไขล่าสุดเมื่อ : ${new Date(modifiedDate).toLocaleDateString(
+        'en-GB'
+      )}`
     }
   }
 
@@ -161,11 +197,94 @@ const DocumentBox = ({
     return ''
   }
 
+  const getThaiName = (): string => {
+    if (type === 'generatedFolder') {
+      return 'แฟ้ม'
+    }
+    if (type === 'generatedFile') {
+      return 'เอกสาร'
+    }
+    if (type === 'uploadedFile') {
+      return 'เอกสาร'
+    }
+    if (type === 'sharedFile') {
+      return 'เอกสาร'
+    }
+    if (type === 'note') {
+      return 'บันทึก'
+    }
+  }
+  /*
+  const getMenuItem = (): [] => {
+    let menu = [
+      {
+        title: 'รายละเอียด',
+        icon: <Icon as={GrDocumentText} />,
+        onClick: () => {},
+      },
+      {
+        title: `แก้ไข${getThaiName()}`,
+        icon: <Icon as={AiOutlineEdit} />,
+        onClick: () => {},
+      },
+      {
+        title: 'ดาวน์โหลด',
+        icon: <Icon as={GrDownload} />,
+        onClick: () => {},
+      },
+    ]
+    if (type === 'generatedFolder') {
+      return [menu[1],menu[2]]
+    }
+    if (type === 'generatedFile') {
+      return []
+    }
+    if (type === 'uploadedFile') {
+      return []
+    }
+    if (type === 'sharedFile') {
+      return []
+    }
+    if (type === 'note') {
+      return []
+    }
+  }*/
+
+  let menu = (
+    <MenuProvider
+      left="108px"
+      top="36px"
+      menusList={[
+        [
+          {
+            title: `แก้ไขบันทึก`,
+            icon: <Icon as={AiOutlineEdit} />,
+            onClick: () => {
+              setEditNote(true)
+            },
+          },
+        ],
+        [
+          {
+            title: `ลบ${getThaiName()}`,
+            icon: <Icon as={BsTrash} color="accent.red" />,
+            onClick: () => {},
+            style: {
+              color: 'accent.red',
+            },
+          },
+        ],
+      ]}
+    >
+      <Icon as={BsThreeDots} sx={threeDot} boxSize="18px" />
+    </MenuProvider>
+  )
+
   return (
     <Box sx={layout}>
       {colorBar && <Box sx={colorBarStyle}></Box>}
       <Flex gap="30px" alignItems="center">
-        {menu}
+        {showMenu && menu}
         <Link to={getUrl()}>
           <Image src={getImageUrl()} sx={documentImage} />
         </Link>
@@ -179,21 +298,45 @@ const DocumentBox = ({
 
       {showNote && (
         <Box marginTop="18px">
-          <Editable
-            defaultValue={note}
-            height="80px"
-            border="2px solid"
-            borderColor="#E2E8F0"
-            borderRadius="8px"
-            padding="4px 12px"
-            fontSize="14px"
-            color="accent.gray"
-            overflow="hidden"
+          <Formik
+            initialValues={{ note: note }}
+            onSubmit={(value) => {
+              console.log(value)
+            }}
+            onReset={(value) => {
+              setEditNote(false)
+            }}
           >
-            <EditablePreview />
-            <EditableTextarea _focusVisible={{ boxShadow: 'none' }} />
-            
-          </Editable>
+            <Form>
+              <Field name="note">
+                {({ field, form }: any) => (
+                  <Textarea
+                    name="note"
+                    {...field}
+                    {...textareaLayout}
+                    disabled={!editNote}
+                  />
+                )}
+              </Field>
+              <br />
+              <br />
+              {editNote && (
+                <ButtonGroup
+                  justifyContent="flex-end"
+                  alignItems="center"
+                  width="100%"
+                  size="sm"
+                >
+                  <Button type="reset" variant="outline">
+                    ยกเลิก
+                  </Button>
+                  <Button type="submit" colorScheme="blue">
+                    บันทึก
+                  </Button>
+                </ButtonGroup>
+              )}
+            </Form>
+          </Formik>
         </Box>
       )}
     </Box>
@@ -201,3 +344,29 @@ const DocumentBox = ({
 }
 
 export default DocumentBox
+
+let textareaLayout = {
+  height: '80px',
+  border: '2px solid',
+  borderColor: '#E2E8F0',
+  borderRadius: '8px',
+  padding: '4px 12px',
+  fontSize: '14px',
+  color: 'accent.gray',
+}
+let threeDot = {
+  position: 'absolute',
+  top: '10px',
+  right: '20px',
+  color: 'accent.black',
+}
+
+/** <Editable
+            defaultValue={note}
+            
+          >
+            <EditablePreview />
+            <EditableTextarea _focusVisible={{ boxShadow: 'none' }} />
+            {EditableControls}
+            <Input as = {EditableInput}/>
+          </Editable> */

@@ -44,26 +44,7 @@ const AllDocumentPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [sortMenu, setSortMenu] = useState({ sort: '', order: '' })
   const [documents, setDocuments] = useState([
-    {
-      id: '6',
-      type: '',
-      title: 'สมัครงานกับ TechLead',
-      amount: 9,
-      image:
-        'https://cdn.sanity.io/images/xeonec4d/production/fc4aef437fe8753e30757498e7baceb016de4c6c-300x250.png?w=1000',
-    },
-    {
-      id: '6',
-      type: 'generatedFolder',
-      title: 'รักษาดินแดน',
-      amount: 9,
-    },
-    {
-      id: '6',
-      type: 'generatedFolder',
-      title: 'รักษาดินแดน',
-      amount: 9,
-    },
+  
   ])
 
   let menu = (
@@ -220,8 +201,8 @@ const AllDocumentPage = () => {
                     console.log(value)
                   }}
                 >
-                  <MenuItemOption value="ASC">Ascending</MenuItemOption>
-                  <MenuItemOption value="DESC">Descending</MenuItemOption>
+                  <MenuItemOption value="ASC">{sortMenu.sort}</MenuItemOption>
+                  <MenuItemOption value="DESC">{sortMenu.sort}</MenuItemOption>
                 </MenuOptionGroup>
               </MenuList>
             </Menu>

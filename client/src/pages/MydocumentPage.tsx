@@ -9,6 +9,7 @@ import {
   Icon,
   useDisclosure,
   Divider,
+  useEditableControls
 } from '@chakra-ui/react'
 import SearchBox from '@components/SearchBox'
 import DocumentBox from '@components/DocumentBox'
@@ -59,48 +60,9 @@ const MyDocument = () => {
     error: latestNoteError,
   } = useQuery(['lastestNote', user?.id], NoteController.getLastestNote)
 
-  let menu = (
-    <MenuProvider
-      left="108px"
-      top="36px"
-      menusList={[
-        [
-          {
-            title: 'รายละเอียด',
-            icon: <Icon as={GrDocumentText} />,
-            onClick: () => {},
-          },
-          {
-            title: 'แก้ไขโน้ต',
-            icon: <Icon as={AiOutlineEdit} />,
-            onClick: () => {},
-          },
-          {
-            title: 'ดาวน์โหลด',
-            icon: <Icon as={GrDownload} />,
-            onClick: () => {},
-          },
-          {
-            title: 'พิมพ์',
-            icon: <Icon as={AiFillPrinter} />,
-            onClick: () => {},
-          },
-        ],
-        [
-          {
-            title: 'ลบแฟ้ม',
-            icon: <Icon as={BsTrash} color="accent.red" />,
-            onClick: () => {},
-            style: {
-              color: 'accent.red',
-            },
-          },
-        ],
-      ]}
-    >
-      <Icon as={BsThreeDots} sx={threeDot} boxSize="18px" />
-    </MenuProvider>
-  )
+  
+
+ 
 
   if (latestFilesLoading || latestFolderLoading || latestNoteLoading)
     return <div>Loading...</div>
@@ -110,6 +72,7 @@ const MyDocument = () => {
 
   if (latestFiles || latestFolder || latestNote)
     return (
+      
       <Box sx={layout}>
         <Flex
           alignItems="center"
@@ -160,7 +123,7 @@ const MyDocument = () => {
                     showNote
                     note={note.content}
                     modifiedDate={new Date(note.modifiedDate)}
-                    menu={menu}
+                    showMenu = {true}
                   />
                 )
               })}
@@ -194,7 +157,7 @@ const MyDocument = () => {
                     title={file.title}
                     author={file.author}
                     showNote
-                    menu={menu}
+                    showMenu= {true}
                   />
                 )
               })
@@ -220,7 +183,7 @@ const MyDocument = () => {
                   image={folder.image}
                   amount={folder.amount}
                   showNote
-                  menu={menu}
+                  showMenu= {true}
                 />
               )
             })
@@ -241,7 +204,7 @@ const MyDocument = () => {
                   amount={file.amount}
                   showNote
                   size={file.size}
-                  menu={menu}
+                  showMenu= {true}
                   id={file.id}
                   title={file.officialName}
                   type={file.type ?? 'generatedFile'}
@@ -281,7 +244,7 @@ const MyDocument = () => {
                     amount={file.amount}
                     showNote
                     size={file.size}
-                    menu={menu}
+                    showMenu= {true}
                   />
                 )
               })
