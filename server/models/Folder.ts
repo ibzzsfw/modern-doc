@@ -42,7 +42,9 @@ class Folder {
         -- LEFT JOIN "Field" ON "Field"."id" = "GeneratedFileField"."fieldId") AS "fields"
         FROM "FolderGeneratedFile"
         LEFT JOIN "GeneratedFile" ON "FolderGeneratedFile"."generatedFileId" = "GeneratedFile"."id"
-        LEFT JOIN "UserGeneratedFile" ON "GeneratedFile"."id" = "UserGeneratedFile"."generatedFileId"
+        LEFT JOIN "UserGeneratedFile" ON ("GeneratedFile"."id" = "UserGeneratedFile"."generatedFileId"
+          AND "UserGeneratedFile"."userId" = ${userId}::uuid
+        )
         WHERE "FolderGeneratedFile"."folderId" = ${id}::uuid 
         UNION
         SELECT "UploadedFile"."id","UploadedFile"."officialName",
@@ -52,9 +54,10 @@ class Folder {
         "UserUploadedFile"."URI","UserUploadedFile"."expirationDate"
         FROM "FolderUploadedFile"
         LEFT JOIN "UploadedFile" ON "FolderUploadedFile"."uploadedFileId" = "UploadedFile"."id"
-        LEFT JOIN "UserUploadedFile" ON "UploadedFile"."id" = "UserUploadedFile"."uploadedFileId"
+        LEFT JOIN "UserUploadedFile" ON ("UploadedFile"."id" = "UserUploadedFile"."uploadedFileId"
+          AND "UserUploadedFile"."userId" = ${userId}::uuid
+        )
         WHERE "FolderUploadedFile"."folderId" = ${id}::uuid 
-        AND ("UserUploadedFile"."userId" = ${userId}::uuid OR "UserUploadedFile"."userId" IS NULL)
       `
 
       res.json({

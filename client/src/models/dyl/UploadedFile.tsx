@@ -10,7 +10,6 @@ type arg = {
   isShared: boolean
   expirationDate: Date
   URI: string
-  fileURI: string
   amount?: string
   type?: string
 }
@@ -23,7 +22,7 @@ class UploadedFile {
   officialName: string
   isShared: boolean
   expirationDate: Date
-  fileURI: string
+  URI: string
   amount?: string
   type?: string
 
@@ -35,7 +34,7 @@ class UploadedFile {
     officialName,
     isShared,
     expirationDate,
-    fileURI,
+    URI,
     amount,
     type,
   }: arg) {
@@ -46,17 +45,17 @@ class UploadedFile {
     this.officialName = officialName
     this.isShared = isShared
     this.expirationDate = expirationDate
-    this.fileURI = fileURI
+    this.URI = URI
     this.amount = amount
     this.type = type
   }
 
   getStatus(): DocumentStatus {
     const today = new Date()
-    if (this.expirationDate == null && this.fileURI != '') {
+    if (this.expirationDate == null && this.URI != '' && this.URI != null) {
       return 'มีอยู่ในคลัง'
     }
-    if (this.fileURI == '') {
+    if (this.URI == '' || this.URI == null) {
       return 'ไม่มีอยู่ในคลัง'
     }
     if (this.expirationDate < today) {

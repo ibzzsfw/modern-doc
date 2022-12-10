@@ -129,6 +129,7 @@ const FileList = ({ files }: propsType) => {
           <Box sx={tableContent}>
             {files.map((file) => {
               file = new UploadedFile(file)
+              console.log('brobro', file, file.getStatus())
               return (
                 <>
                   <Grid
