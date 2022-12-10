@@ -13,6 +13,8 @@ import {
   useDisclosure,
   FormLabel,
   FormControl,
+  Input,
+  Spacer,
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import Note from '@models/Note'
@@ -29,7 +31,7 @@ const TakeNote = ({ customButton }: propsTypes) => {
   const [selectedNote, setSelectedNote] = useState<Note | null>(null)
   const [note, setNote] = useState<Note[]>([])
   const [selectPlaceholder, setSelectPlaceholder] = useState('')
-
+  /*
   useEffect(() => {
     let notes = NoteController.getNotes(noteType)
     switch (noteType) {
@@ -55,7 +57,7 @@ const TakeNote = ({ customButton }: propsTypes) => {
       setSelectedNote(findNote)
     }
   }, [selectedDocumentID])
-
+*/
   const initialState = () => {
     onClose()
     setNoteType('')
@@ -93,46 +95,16 @@ const TakeNote = ({ customButton }: propsTypes) => {
           <ModalCloseButton />
           <ModalBody sx={modalBody}>
             <FormControl>
-              <FormLabel>ประเภทเอกสาร</FormLabel>
-              <Select
-                placeholder="ประเภทของบันทึก"
-                onChange={(e) => {
-                  setNoteType(e.target.value)
-                  setSelectedDocumentID('')
-                }}
-              >
-                <option value="free_note">บันทึกอิสระ</option>
-                <option value="file_note">บันทึกในเอกสาร</option>
-                <option value="folder_note">บันทึกในแฟ้ม</option>
-              </Select>
+              <FormLabel>หัวข้อ</FormLabel>
+              <Input placeholder="หัวข้อบันทึก" />
               <br />
-              {noteType != '' && (
-                <>
-                  <FormLabel>ชื่อเอกสาร</FormLabel>
-                  <Select
-                    placeholder={selectPlaceholder}
-                    onChange={(e) => setSelectedDocumentID(e.target.value)}
-                  >
-                    {note.map((note, index) => {
-                      return (
-                        <option key={index} value={note.id}>
-                          {note.title}
-                        </option>
-                      )
-                    })}
-                  </Select>
-                </>
-              )}
-              {selectedDocumentID && (
-                <>
-                  <br />
-                  <FormLabel>บันทึกเตือนความจำ</FormLabel>
-                  <Textarea
-                    value={selectedNote ? selectedNote.content : 'เนื้อหาใหม่'}
-                  />
-                </>
-              )}
-              {/*onChange*/}
+              <br />
+              <FormLabel>เนื้อหา</FormLabel>
+              <Textarea
+                placeholder={
+                  selectedNote ? selectedNote.content : 'เนื้อหาที่จะบันทึก'
+                }
+              />
             </FormControl>
           </ModalBody>
           <ModalFooter>
