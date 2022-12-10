@@ -46,9 +46,10 @@ class FileController {
     return response.data
   }
 
-  static async getLatestFile() {
+  static async getLatestFile(type: string = 'generatedFile') {
+    console.log('typetype', type)
     let response = await axios.get(
-      `${process.env.VITE_API_ENDPOINT}/file/latest-files/generatedFile`,
+      `${process.env.VITE_API_ENDPOINT}/file/latest-files/${type}`,
       {
         headers: {
           'user-id': useLoginDataStore.getState()?.user?.id,

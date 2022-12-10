@@ -42,10 +42,21 @@ const MyDocument = () => {
   const [note, setNote] = useState([])
   const [uploadedFile, setUploadedFile] = useState([])
   const {
-    data: latestFiles,
-    isLoading: latestFilesLoading,
-    error: latestFilesError,
-  } = useQuery(['latestFiles', user?.id], FileController.getLatestFile)
+    data: latestGeneratedFiles,
+    isLoading: latestGeneratedFilesLoading,
+    error: latestGeneratedFilesError,
+  } = useQuery(['generatedFile', user?.id], async () => {
+    return await FileController.getLatestFile('generatedFile')
+  })
+
+  const {
+    data: latestUploadedFiles,
+    isLoading: latestUploadedFilesLoading,
+    error: latestUploadedFilesError,
+  } = useQuery(['uploadedFile', user?.id], async () => {
+    return await FileController.getLatestFile('uploadedFile')
+  })
+  console.log('latestUploadedFiles', latestUploadedFiles)
 
   const {
     data: latestFolder,
@@ -102,13 +113,23 @@ const MyDocument = () => {
     </MenuProvider>
   )
 
-  if (latestFilesLoading || latestFolderLoading || latestNoteLoading)
+  if (
+    latestGeneratedFilesLoading ||
+    latestUploadedFilesLoading ||
+    latestFolderLoading ||
+    latestNoteLoading
+  )
     return <div>Loading...</div>
 
-  if (latestFilesError || latestFolderError || latestNoteError)
+  if (
+    latestGeneratedFilesError ||
+    latestUploadedFilesError ||
+    latestFolderError ||
+    latestNoteError
+  )
     return <div>Error</div>
 
-  if (latestFiles || latestFolder || latestNote)
+  if (latestGeneratedFiles || latestUploadedFiles || latestFolder || latestNote)
     return (
       <Box sx={layout}>
         <Flex
@@ -149,12 +170,12 @@ const MyDocument = () => {
               }
             />
             {latestNote
-              .filter((note) => note.heading.toLowerCase().includes(search))
+              // .filter((note) => note.heading.toLowerCase().includes(search))
               .map((note: any) => {
                 return (
                   <DocumentBox
                     id={note.id}
-                    type= {'note'}
+                    type={'note'}
                     title={note.heading}
                     author={note.author}
                     showNote
@@ -185,7 +206,7 @@ const MyDocument = () => {
             />
 
             {shareFile
-              .filter((file) => file.title.toLowerCase().includes(search))
+              // .filter((file) => file.title.toLowerCase().includes(search))
               .map((file: any) => {
                 return (
                   <DocumentBox
@@ -208,7 +229,9 @@ const MyDocument = () => {
           }}
         >
           {latestFolder
-            .filter((folder) => folder.officialName.toLowerCase().includes(search))
+            // .filter((folder) =>
+            //   folder.officialName.toLowerCase().includes(search)
+            // )
             .map((folder: any) => {
               return (
                 <DocumentBox
@@ -224,7 +247,7 @@ const MyDocument = () => {
                 />
               )
             })
-          .slice(0, 1)}
+            .slice(0, 1)}
         </DocumentBar>
         <DocumentBar
           title="ไฟล์ของฉัน"
@@ -232,8 +255,8 @@ const MyDocument = () => {
             navigate('/alldocument/file')
           }}
         >
-          {latestFiles
-            .filter((file) => file.officialName.toLowerCase().includes(search))
+          {latestGeneratedFiles
+            // .filter((file) => file.officialName.toLowerCase().includes(search))
             .map((file: any) => {
               return (
                 <DocumentBox
@@ -250,7 +273,7 @@ const MyDocument = () => {
                 />
               )
             })
-          .slice(0, 1)}
+            .slice(0, 2)}
         </DocumentBar>
         <DocumentBar
           title="เอกสารที่อัปโหลด"
@@ -259,7 +282,7 @@ const MyDocument = () => {
           }}
         >
           <>
-            <UploadFile
+            {/* <UploadFile
               customButton={
                 <DocumentBlankBox
                   icon={AiFillPlusCircle}
@@ -267,16 +290,16 @@ const MyDocument = () => {
                   color={'gray.500'}
                 />
               }
-            />
+            /> */}
 
-            {uploadedFile
-              .filter((file) => file.title.toLowerCase().includes(search))
+            {latestUploadedFiles
+              // .filter((file) => file.title.toLowerCase().includes(search))
               .map((file: any) => {
                 return (
                   <DocumentBox
                     id={file.id}
                     type={file.type}
-                    title={file.title}
+                    title={file.officialName}
                     image={file.image}
                     amount={file.amount}
                     showNote
@@ -285,7 +308,7 @@ const MyDocument = () => {
                   />
                 )
               })
-              .slice(0, 1)}
+              .slice(0, 3)}
           </>
         </DocumentBar>
       </Box>
