@@ -3,7 +3,7 @@ import { useLoginDataStore } from '@stores/LoginDataStore'
 class FolderController {
   static async getFolderById(id: string | undefined) {
     let response = await axios.get(
-      `${import.meta.env.VITE_API_ENDPOINT}/folder/get-by-id/${id}`,
+      `${process.env.VITE_API_ENDPOINT}/folder/get-by-id/${id}`,
       {
         headers: {
           'user-id': useLoginDataStore.getState()?.user?.id,
@@ -16,7 +16,7 @@ class FolderController {
 
   static async getLatestFolder() {
     let response = await axios.get(
-      `${import.meta.env.VITE_API_ENDPOINT}/folder/latest-folders`,
+      `${process.env.VITE_API_ENDPOINT}/folder/latest-folders`,
       {
         headers: {
           'user-id': useLoginDataStore.getState()?.user?.id,
@@ -29,7 +29,7 @@ class FolderController {
 
   static async search(name: string) {
     let response = await axios.get(
-      `${import.meta.env.VITE_API_ENDPOINT}/folder/search/${name}`,
+      `${process.env.VITE_API_ENDPOINT}/folder/search/${name}`,
       {
         headers: {
           'user-id': useLoginDataStore.getState()?.user?.id,

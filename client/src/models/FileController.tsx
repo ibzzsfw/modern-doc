@@ -31,7 +31,7 @@ class FileController {
 
   static async getFileById(id: string, type: string) {
     let response = await axios.get(
-      `${import.meta.env.VITE_API_ENDPOINT}/file/get-by-id/${this.getTypeName(
+      `${process.env.VITE_API_ENDPOINT}/file/get-by-id/${this.getTypeName(
         type
       )}/${id}`,
       {
@@ -48,7 +48,7 @@ class FileController {
 
   static async getLatestFile() {
     let response = await axios.get(
-      `${import.meta.env.VITE_API_ENDPOINT}/file/latest-files/generatedFile`,
+      `${process.env.VITE_API_ENDPOINT}/file/latest-files/generatedFile`,
       {
         headers: {
           'user-id': useLoginDataStore.getState()?.user?.id,
@@ -61,7 +61,7 @@ class FileController {
 
   static async search(name: any) {
     let response = await axios.get(
-      `${import.meta.env.VITE_API_ENDPOINT}/file/search/${name}`,
+      `${process.env.VITE_API_ENDPOINT}/file/search/${name}`,
       {
         headers: {
           'user-id': useLoginDataStore.getState()?.user?.id,
@@ -74,7 +74,7 @@ class FileController {
 
   static async saveGeneratedFile(fileId: string | undefined, fields: Field[]) {
     let response = await axios.post(
-      `${import.meta.env.VITE_API_ENDPOINT}/file/new/generatedFile/${fileId}`,
+      `${process.env.VITE_API_ENDPOINT}/file/new/generatedFile/${fileId}`,
       {
         fields: fields,
       },
@@ -96,7 +96,7 @@ class FileController {
   ) => {
     console.log('newUploadedFile', fileId, URI, note, expiredDate)
     let response = await axios.post(
-      `${import.meta.env.VITE_API_ENDPOINT}/file/new/uploadedFile/${fileId}`,
+      `${process.env.VITE_API_ENDPOINT}/file/new/uploadedFile/${fileId}`,
       {
         URI: URI,
         note: note,

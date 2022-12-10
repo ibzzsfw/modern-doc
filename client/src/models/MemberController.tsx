@@ -17,7 +17,7 @@ class MemberController {
     const householdId = useLoginDataStore.getState().user?.householdId
 
     let response = await axios.put(
-      `${import.meta.env.VITE_API_ENDPOINT}/member/${memberId}`,
+      `${process.env.VITE_API_ENDPOINT}/member/${memberId}`,
       memberData,
       {
         headers: {
@@ -28,7 +28,7 @@ class MemberController {
     )
     if (response.status === 200) {
       let updatedMember = await axios.get(
-        `${import.meta.env.VITE_API_ENDPOINT}/member`,
+        `${process.env.VITE_API_ENDPOINT}/member`,
         {
           headers: {
             token: token,

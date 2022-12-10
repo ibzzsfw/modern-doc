@@ -161,7 +161,7 @@ const Login = () => {
         }}
         validationSchema={loginSchema}
         onSubmit={(values) => {
-          if (import.meta.env.VITE_USE_OTP_AUTH == 'true') {
+          if (process.env.VITE_USE_OTP_AUTH == 'true') {
             onClickLogin({
               phoneNumber: values.phoneNumber,
               password: values.password,

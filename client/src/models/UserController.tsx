@@ -19,7 +19,7 @@ interface loginForm {
 class UserController {
   static register = async (data: RegisterForm): Promise<any> => {
     let response = await axios.post(
-      `${import.meta.env.VITE_API_ENDPOINT}/user`,
+      `${process.env.VITE_API_ENDPOINT}/user`,
       data
     )
     return response.data
@@ -27,7 +27,7 @@ class UserController {
 
   static login = async (phoneNumber: string) => {
     let response = await axios.post(
-      `${import.meta.env.VITE_API_ENDPOINT}/user/login`,
+      `${process.env.VITE_API_ENDPOINT}/user/login`,
       {
         phoneNumber: phoneNumber,
       }
@@ -37,7 +37,7 @@ class UserController {
 
   static checkPhonePassword = async ({ phoneNumber, password }: loginForm) => {
     let response = await axios.post(
-      `${import.meta.env.VITE_API_ENDPOINT}/user/check-phone-password`,
+      `${process.env.VITE_API_ENDPOINT}/user/check-phone-password`,
       {
         phoneNumber: phoneNumber,
         password: password,
@@ -48,7 +48,7 @@ class UserController {
 
   static switchMember = async (userId: string) => {
     let response = await axios.post(
-      `${import.meta.env.VITE_API_ENDPOINT}/user/switch-member`,
+      `${process.env.VITE_API_ENDPOINT}/user/switch-member`,
       {
         userId: userId,
       }
