@@ -166,7 +166,7 @@ class File {
     try {
       schema.parse({ id, type, userId })
       let result = await this.getFile(id, type, userId)
-      res.status(200).json({ ...result[0], type: 'generatedFile' })
+      res.status(200).json({ ...result[0], type: type })
     } catch (err) {
       return res.status(500).json({ message: err })
     }
