@@ -4,6 +4,7 @@ specifiers:
   '@chakra-ui/react': ^2.3.6
   '@emotion/react': ^11
   '@emotion/styled': ^11
+  '@firebase/app': ^0.9.0
   '@pdf-lib/fontkit': ^1.1.1
   '@react-pdf-viewer/core': 3.8.0
   '@react-pdf-viewer/default-layout': ^3.8.0
@@ -54,6 +55,7 @@ dependencies:
   '@chakra-ui/react': 2.3.6_4hjho7kgjymeccyd6tzpeh4pdi
   '@emotion/react': 11.10.4_iapumuv4e6jcjznwuxpf4tt22e
   '@emotion/styled': 11.10.4_g3tud4ene45llglqap74b5kkse
+  '@firebase/app': 0.9.0
   '@pdf-lib/fontkit': 1.1.1
   '@react-pdf-viewer/core': 3.8.0_kp5pner2jmznyggalki4owmerm
   '@react-pdf-viewer/default-layout': 3.8.0_kp5pner2jmznyggalki4owmerm
@@ -1904,6 +1906,16 @@ packages:
       tslib: 2.4.0
     dev: false
 
+  /@firebase/app/0.9.0:
+    resolution: {integrity: sha512-sa15stSK6FoGW4mCeAVDt0TvBFxPjvNcG2rhacGudOzMaW3g2TS326zXTFG+p5jnTCPZ2SO5TTSiGHn1NNcD9Q==}
+    dependencies:
+      '@firebase/component': 0.6.0
+      '@firebase/logger': 0.4.0
+      '@firebase/util': 1.8.0
+      idb: 7.0.1
+      tslib: 2.4.0
+    dev: false
+
   /@firebase/auth-compat/0.2.23_i2ahgvjm4wg2xeccojmmxawjhq:
     resolution: {integrity: sha512-r9YEXaL7YKoFOWHRvVoQ6d5klP+hkSsAtt21UIvP3/BxDDU+yLXN5vVvFHr38apuUeMGN34M7zkY6SihnLutIQ==}
     peerDependencies:
@@ -1967,6 +1979,13 @@ packages:
     resolution: {integrity: sha512-wP51tQBlPFprfAWxWjzC/56hG4APhl43jFsgwuqCl3bhVbiKcr278QbrbGNmIXDeGKo4sGZLAnH9whl2apeCmA==}
     dependencies:
       '@firebase/util': 1.7.2
+      tslib: 2.4.0
+    dev: false
+
+  /@firebase/component/0.6.0:
+    resolution: {integrity: sha512-9hyNc4OmrXMtthDJq6zyJHll/UIYBWYmMG3rXty2eMeWxHWB0vlsq3AOI+k14PL15aSBAQolv0EZJWVJv/gCEg==}
+    dependencies:
+      '@firebase/util': 1.8.0
       tslib: 2.4.0
     dev: false
 
@@ -2130,6 +2149,12 @@ packages:
       tslib: 2.4.0
     dev: false
 
+  /@firebase/logger/0.4.0:
+    resolution: {integrity: sha512-eRKSeykumZ5+cJPdxxJRgAC3G5NknY2GwEbKfymdnXtnT0Ucm4pspfR6GT4MUQEDuJwRVbVcSx85kgJulMoFFA==}
+    dependencies:
+      tslib: 2.4.0
+    dev: false
+
   /@firebase/messaging-compat/0.1.19_ccgnan4cdumznqsqrm66k6tw4a:
     resolution: {integrity: sha512-h5tx4nxfSILeRquk5mKE8Onu7WtL6b7rfB6GKNJKecvkPs3nnq5Z4cp2Av4JUR2Wtt9UxCTfO0iRbbmtrt2bZQ==}
     peerDependencies:
@@ -2271,6 +2296,12 @@ packages:
 
   /@firebase/util/1.7.2:
     resolution: {integrity: sha512-P3aTihYEMoz2QQlcn0T7av7HLEK9gsTc1ZiN9VA8wnUtEJscUNemCmTmP3RRysqEb3Z+tVVoycztY8f6R36rRw==}
+    dependencies:
+      tslib: 2.4.0
+    dev: false
+
+  /@firebase/util/1.8.0:
+    resolution: {integrity: sha512-clK6pTTxIiLMYz4UrvDTVAs2rIaOiroAuFdX67C0JalvEwzi6Vv8li6xAGj38tkj7Qax06mosM1fQkxf2h4VTg==}
     dependencies:
       tslib: 2.4.0
     dev: false

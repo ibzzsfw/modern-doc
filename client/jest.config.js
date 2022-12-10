@@ -10,6 +10,7 @@ export default {
   transform: {
     '^.+\\.(ts|tsx|js|jsx)$': 'ts-jest',
     '^.+\\.(css|scss|sass|less)$': 'jest-preview/transforms/css',
+    "<rootDir>/node_modules/variables/.+\\.(j|t)sx?$": "ts-jest"
   },
   modulePaths: ['<rootDir>/src'],
   moduleDirectories: ['node_modules', 'src'],
@@ -24,7 +25,8 @@ export default {
       '<rootDir>/mocks/fileMock.ts',
     '\\.(css|less)$': '<rootDir>/mocks/fileMock.ts',
   },
-  transformIgnorePatterns: ['<rootDir>/node_modules/'],
+  transformIgnorePatterns: [`/node_modules/(?!(sip\.js))`],
+  resolver: '<rootDir>/jest.resolver.ts',
   setupFiles: ['dotenv/config'],
   setupFilesAfterEnv: ['@testing-library/jest-dom/extend-expect'],
   testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$',
