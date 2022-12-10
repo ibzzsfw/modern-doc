@@ -6,5 +6,10 @@ describe('DocumentBlankBox', () => {
       const { container } = render(<DocumentBlankBox />)
       expect(container).toBeInTheDocument()
     })
-
+    it('should call onClick', () => {
+      const onClick = jest.fn()
+      render(<DocumentBlankBox onClick={onClick} />)
+      fireEvent.click(screen.getByRole('group'))
+      expect(onClick).toHaveBeenCalled()
+    })
 })

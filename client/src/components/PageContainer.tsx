@@ -44,13 +44,15 @@ const PageContainer = ({
               }
               padding="24px 12px"
             >
-              {getBreadcrumbFromPath(window.location.pathname).map((item) => (
-                <BreadcrumbItem>
-                  <BreadcrumbLink href={item?.path}>
-                    {item?.title}
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-              ))}
+              {getBreadcrumbFromPath(window.location.pathname).map(
+                (item: any) => (
+                  <BreadcrumbItem>
+                    <BreadcrumbLink href={item?.path}>
+                      {item?.title}
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                )
+              )}
             </Breadcrumb>
 
             <Box width="100%" height="1px" backgroundColor="accent.black" />

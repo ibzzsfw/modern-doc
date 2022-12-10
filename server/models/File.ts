@@ -63,7 +63,7 @@ class File {
       }
       case 'uploadedFile': {
         return await Prisma.$queryRaw`
-          SELECT "UploadedFile".*, "UserUploadedFile"."URI" as "userURI",
+          SELECT "UploadedFile".*, "UserUploadedFile"."URI",
           "UserUploadedFile"."date",
           "UserUploadedFile"."expirationDate",
           array(
@@ -166,7 +166,7 @@ class File {
     try {
       schema.parse({ id, type, userId })
       let result = await this.getFile(id, type, userId)
-      res.status(200).json({ ...result[0], type: 'generatedFile' })
+      res.status(200).json({ ...result[0], type: type })
     } catch (err) {
       return res.status(500).json({ message: err })
     }
@@ -227,6 +227,7 @@ class File {
   }
 
   static async newGeneratedFile(req: Request, res: Response) {
+    console.log('man')
     const { fileId } = req.params
     const { fields } = req.body as {
       fields: {

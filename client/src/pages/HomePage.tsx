@@ -23,7 +23,9 @@ const Home = () => {
     data: latestFiles,
     isLoading: latestFilesLoading,
     error: latestFilesError,
-  } = useQuery(['latestFiles', user?.id], FileController.getLatestFile)
+  } = useQuery(['latestFiles', user?.id], async () => {
+    return await FileController.getLatestFile('generatedFile')
+  })
 
   const {
     data: latestFolder,
@@ -73,11 +75,11 @@ const Home = () => {
           />
         </PopularBar>
 
-        <DocumentBar title="แฟ้มล่าสุด" onAddonButtonClick={()=>{}}>
+        <DocumentBar title="แฟ้มล่าสุด" onAddonButtonClick={() => {}}>
           {latestFolder.map((folder: any) => (
             <DocumentBox
               id={folder.id}
-              title={folder.officialName} 
+              title={folder.officialName}
               type="generatedFolder"
               createdDate={folder.date}
               showDate
@@ -85,7 +87,7 @@ const Home = () => {
           ))}
         </DocumentBar>
 
-        <DocumentBar title="เอกสารล่าสุด" onAddonButtonClick={()=>{}}>
+        <DocumentBar title="เอกสารล่าสุด" onAddonButtonClick={() => {}}>
           {latestFiles?.map((file: any) => (
             <DocumentBox
               id={file.id}

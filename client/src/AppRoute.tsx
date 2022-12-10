@@ -26,7 +26,7 @@ const AppRoute = () => {
             path="/mydocument"
             element={
               <>
-                <PageContainer breadcrumb >
+                <PageContainer breadcrumb>
                   <MyDocumentPage />
                 </PageContainer>
               </>
@@ -36,7 +36,7 @@ const AppRoute = () => {
             path="/alldocument/:category"
             element={
               <>
-                <PageContainer >
+                <PageContainer breadcrumb>
                   <AllDocumentPage />
                 </PageContainer>
               </>

@@ -18,8 +18,8 @@ class FileRouter {
     this.router.get('/latest-files/:type', this.controller.getLatestFiles)
     this.router.get('/search/:name', this.controller.searchByName)
     this.router.post(
-      'new/generatedFile/:fileId',
-      this.controller.saveGenerateFile
+      '/new/generatedFile/:fileId',
+      this.controller.newGeneratedFile
     )
     this.router.post(
       '/new/uploadedFile/:fileId',
