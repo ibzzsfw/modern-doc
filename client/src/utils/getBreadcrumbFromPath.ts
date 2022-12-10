@@ -1,18 +1,32 @@
 let breadcrumbConfig = [
   {
     title: 'หน้าหลัก',
-    path: '/',
-    history: [],
+    path: '/home',
+    history: [{}],
   },
   {
     title: 'เอกสารของฉัน',
     path: '/mydocument',
-    history: ['หน้าหลัก'],
+    history: [
+      {
+        title: 'หน้าหลัก',
+        path: '/home',
+      },
+    ],
   },
   {
-    title: 'สร้างเอกสาร',
-    path: '/folder',
-    history: ['หน้าหลัก'],
+    title: 'แฟ้มเอกสารของฉัน',
+    path: '/alldocument/folder',
+    history: [
+      {
+        title: 'เอกสารของฉัน',
+        path: '/mydocument',
+      },
+      {
+        title: 'หน้าหลัก',
+        path: '/home',
+      },
+    ],
   },
 ]
 
@@ -24,7 +38,7 @@ const getBreadcrumbFromPath = (path: string) => {
     path = path.substring(0, path.lastIndexOf('/')) + '/'
   }
   config.push(breadcrumbConfig.find((item) => item.path === '/'))
-  return config.reverse()
+  return []
 }
 
 export default getBreadcrumbFromPath
