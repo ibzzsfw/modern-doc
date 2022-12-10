@@ -63,7 +63,7 @@ class File {
       }
       case 'uploadedFile': {
         return await Prisma.$queryRaw`
-          SELECT "UploadedFile".*, "UserUploadedFile"."URI" as "userURI",
+          SELECT "UploadedFile".*, "UserUploadedFile"."URI",
           "UserUploadedFile"."date",
           "UserUploadedFile"."expirationDate",
           array(
