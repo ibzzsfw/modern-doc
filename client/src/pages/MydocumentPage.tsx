@@ -53,6 +53,12 @@ const MyDocument = () => {
     error: latestFolderError,
   } = useQuery(['latestFolder', user?.id], FolderController.getLatestFolder)
 
+  const {
+    data: latestNote,
+    isLoading: latestNoteLoading,
+    error: latestNoteError,
+  } = useQuery(['lastestNote', user?.id], NoteController.getLastestNote)
+
   let menu = (
     <MenuProvider
       left="108px"
@@ -96,183 +102,194 @@ const MyDocument = () => {
     </MenuProvider>
   )
 
-  return (
-    <Box sx={layout}>
-      <Flex
-        alignItems="center"
-        justifyContent="space-between"
-        marginBottom="30px"
-      >
-        <Flex flexDirection="column" gap="0">
-          <Text fontSize="32px" fontWeight="700" color="accent.black">
-            เอกสารของฉัน
-          </Text>
-          <Text fontSize="16px" fontWeight="500" color="accent.lightGray">
-            คลังเก็บเอกสารที่สร้างจากเว็บไซต์และเอกสารที่อัปโหลด
-          </Text>
+  if (latestFilesLoading || latestFolderLoading || latestNoteLoading)
+    return <div>Loading...</div>
+
+  if (latestFilesError || latestFolderError || latestNoteError)
+    return <div>Error</div>
+
+  if (latestFiles || latestFolder || latestNote)
+    return (
+      <Box sx={layout}>
+        <Flex
+          alignItems="center"
+          justifyContent="space-between"
+          marginBottom="30px"
+        >
+          <Flex flexDirection="column" gap="0">
+            <Text fontSize="32px" fontWeight="700" color="accent.black">
+              เอกสารของฉัน
+            </Text>
+            <Text fontSize="16px" fontWeight="500" color="accent.lightGray">
+              คลังเก็บเอกสารที่สร้างจากเว็บไซต์และเอกสารที่อัปโหลด
+            </Text>
+          </Flex>
+          <SearchBox
+            value={search}
+            onSearchClick={(params) => {
+              console.log('search', params)
+              setSearch(params)
+            }}
+          />
         </Flex>
-        <SearchBox
-          value={search}
-          onSearchClick={(params) => {
-            console.log('search', params)
-            setSearch(params)
+        <DocumentBar
+          title="บันทึกเตือนความจำของฉัน"
+          onAddonButtonClick={() => {
+            navigate('/alldocument/note')
           }}
-        />
-      </Flex>
-      <DocumentBar
-        title="บันทึกเตือนความจำของฉัน"
-        onAddonButtonClick={() => {
-          navigate('/alldocument/note')
-        }}
-      >
-        <>
-          <TakeNote
-            customButton={
-              <DocumentBlankBox
-                icon={AiFillPlusCircle}
-                size={'80px'}
-                color={'gray.500'}
-              />
-            }
-          />
+        >
+          <>
+            <TakeNote
+              customButton={
+                <DocumentBlankBox
+                  icon={AiFillPlusCircle}
+                  size={'80px'}
+                  color={'gray.500'}
+                />
+              }
+            />
+            {latestNote
+              .filter((note) => note.heading.toLowerCase().includes(search))
+              .map((note: any) => {
+                return (
+                  <DocumentBox
+                    id={note.id}
+                    type= {'note'}
+                    title={note.heading}
+                    author={note.author}
+                    showNote
+                    note={note.content}
+                    modifiedDate={new Date(note.modifiedDate)}
+                    menu={menu}
+                  />
+                )
+              })}
+          </>
+        </DocumentBar>
+        <Divider size="20px" />
+        <DocumentBar
+          title="เอกสารที่แชร์ร่วมกัน"
+          onAddonButtonClick={() => {
+            navigate('/alldocument/sharefile')
+          }}
+        >
+          <>
+            <ShareModal
+              customButton={
+                <DocumentBlankBox
+                  icon={AiFillPlusCircle}
+                  size={'80px'}
+                  color={'gray.500'}
+                />
+              }
+            />
 
-          {note
-            .filter((file) => file.title.toLowerCase().includes(search))
-            .map((file: any) => {
+            {shareFile
+              .filter((file) => file.title.toLowerCase().includes(search))
+              .map((file: any) => {
+                return (
+                  <DocumentBox
+                    id={file.id}
+                    type={file.type}
+                    title={file.title}
+                    author={file.author}
+                    showNote
+                    menu={menu}
+                  />
+                )
+              })
+              .slice(0, 1)}
+          </>
+        </DocumentBar>
+        <DocumentBar
+          title="แฟ้มเอกสารของฉัน"
+          onAddonButtonClick={() => {
+            navigate('/alldocument/folder')
+          }}
+        >
+          {latestFolder
+            .filter((folder) => folder.officialName.toLowerCase().includes(search))
+            .map((folder: any) => {
               return (
                 <DocumentBox
-                  id={file.id}
-                  type={file.type}
-                  title={file.title}
-                  author={file.author}
+                  id={folder.id}
+                  title={folder.officialName}
+                  type="generatedFolder"
+                  createdDate={folder.date}
+                  showDate
+                  image={folder.image}
+                  amount={folder.amount}
                   showNote
                   menu={menu}
                 />
               )
             })
-            .slice(0, 1)}
-        </>
-      </DocumentBar>
-      <Divider size="20px" />
-      <DocumentBar
-        title="เอกสารที่แชร์ร่วมกัน"
-        onAddonButtonClick={() => {
-          navigate('/alldocument/sharefile')
-        }}
-      >
-        <>
-          <ShareModal
-            customButton={
-              <DocumentBlankBox
-                icon={AiFillPlusCircle}
-                size={'80px'}
-                color={'gray.500'}
-              />
-            }
-          />
-
-          {shareFile
-            .filter((file) => file.title.toLowerCase().includes(search))
+          .slice(0, 1)}
+        </DocumentBar>
+        <DocumentBar
+          title="ไฟล์ของฉัน"
+          onAddonButtonClick={() => {
+            navigate('/alldocument/file')
+          }}
+        >
+          {latestFiles
+            .filter((file) => file.officialName.toLowerCase().includes(search))
             .map((file: any) => {
               return (
                 <DocumentBox
-                  id={file.id}
-                  type={file.type}
-                  title={file.title}
-                  author={file.author}
-                  showNote
-                  menu={menu}
-                />
-              )
-            })
-            .slice(0, 1)}
-        </>
-      </DocumentBar>
-      <DocumentBar
-        title="แฟ้มเอกสารของฉัน"
-        onAddonButtonClick={() => {
-          navigate('/alldocument/folder')
-        }}
-      >
-        {myFolder
-          .filter((file) => file.title.toLowerCase().includes(search))
-          .map((file: any) => {
-            return (
-              <DocumentBox
-                id={file.id}
-                type={file.type}
-                title={file.title}
-                image={file.image}
-                amount={file.amount}
-                showNote
-                menu={menu}
-              />
-            )
-          })
-          .slice(0, 1)}
-      </DocumentBar>
-      <DocumentBar
-        title="ไฟล์ของฉัน"
-        onAddonButtonClick={() => {
-          navigate('/alldocument/file')
-        }}
-      >
-        {myFile
-          .filter((file) => file.title.toLowerCase().includes(search))
-          .map((file: any) => {
-            return (
-              <DocumentBox
-                id={file.id}
-                type={file.type}
-                title={file.title}
-                image={file.image}
-                amount={file.amount}
-                showNote
-                size={file.size}
-                menu={menu}
-              />
-            )
-          })
-          .slice(0, 1)}
-      </DocumentBar>
-      <DocumentBar
-        title="เอกสารที่อัปโหลด"
-        onAddonButtonClick={() => {
-          navigate('/alldocument/uploadfile')
-        }}
-      >
-        <>
-          <UploadFile
-            customButton={
-              <DocumentBlankBox
-                icon={AiFillPlusCircle}
-                size={'80px'}
-                color={'gray.500'}
-              />
-            }
-          />
-
-          {uploadedFile
-            .filter((file) => file.title.toLowerCase().includes(search))
-            .map((file: any) => {
-              return (
-                <DocumentBox
-                  id={file.id}
-                  type={file.type}
-                  title={file.title}
                   image={file.image}
                   amount={file.amount}
                   showNote
                   size={file.size}
                   menu={menu}
+                  id={file.id}
+                  title={file.officialName}
+                  type={file.type ?? 'generatedFile'}
+                  showDate
+                  createdDate={new Date(file.date)}
                 />
               )
             })
-            .slice(0, 1)}
-        </>
-      </DocumentBar>
-    </Box>
-  )
+          .slice(0, 1)}
+        </DocumentBar>
+        <DocumentBar
+          title="เอกสารที่อัปโหลด"
+          onAddonButtonClick={() => {
+            navigate('/alldocument/uploadfile')
+          }}
+        >
+          <>
+            <UploadFile
+              customButton={
+                <DocumentBlankBox
+                  icon={AiFillPlusCircle}
+                  size={'80px'}
+                  color={'gray.500'}
+                />
+              }
+            />
+
+            {uploadedFile
+              .filter((file) => file.title.toLowerCase().includes(search))
+              .map((file: any) => {
+                return (
+                  <DocumentBox
+                    id={file.id}
+                    type={file.type}
+                    title={file.title}
+                    image={file.image}
+                    amount={file.amount}
+                    showNote
+                    size={file.size}
+                    menu={menu}
+                  />
+                )
+              })
+              .slice(0, 1)}
+          </>
+        </DocumentBar>
+      </Box>
+    )
 }
 
 export default MyDocument

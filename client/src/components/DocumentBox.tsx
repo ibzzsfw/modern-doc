@@ -6,11 +6,22 @@ import {
   Flex,
   Image,
   Text,
+  Button,
+  useEditableControls,
+  Input,
+  EditableInput,
+  useEditableState,
 } from '@chakra-ui/react'
 import { Link } from 'react-router-dom'
+import { useState } from 'react'
 
 type propsType = {
-  type: 'generatedFolder' | 'generatedFile' | 'uploadedFile' | 'sharedFile'
+  type:
+    | 'generatedFolder'
+    | 'generatedFile'
+    | 'uploadedFile'
+    | 'sharedFile'
+    | 'note'
   id: string
   title: string
   amount?: number
@@ -19,9 +30,11 @@ type propsType = {
   image?: string
   showMenu?: boolean
   showNote?: boolean
+  note?: string
   menu?: any
   colorBar?: string
   createdDate?: Date
+  modifiedDate?: Date
   showDate?: boolean
   url?: string
 }
@@ -35,12 +48,15 @@ const DocumentBox = ({
   author,
   image,
   showNote,
+  note,
   menu,
   colorBar,
+  modifiedDate,
   createdDate,
   showDate,
   url,
 }: propsType) => {
+  
   let layout = {
     width: '320px',
     boxShadow: '5px 5px 3px -2px rgba(0, 0, 0, 0.1)',
@@ -99,6 +115,10 @@ const DocumentBox = ({
     if (type === 'sharedFile') {
       return '/assets/shared_logo.png'
     }
+    if (type === 'note') {
+      return '/assets/note_logo.png'
+    }
+    
   }
 
   const getSubText = () => {
@@ -119,6 +139,9 @@ const DocumentBox = ({
     }
     if (type === 'sharedFile') {
       return `ผู้สร้าง : ${author}`
+    }
+    if (type === 'note') {
+      return `แก้ไขล่าสุดเมื่อ : ${new Date(modifiedDate).toLocaleDateString('en-GB')}`
     }
   }
 
@@ -157,7 +180,7 @@ const DocumentBox = ({
       {showNote && (
         <Box marginTop="18px">
           <Editable
-            defaultValue="note"
+            defaultValue={note}
             height="80px"
             border="2px solid"
             borderColor="#E2E8F0"
@@ -165,9 +188,11 @@ const DocumentBox = ({
             padding="4px 12px"
             fontSize="14px"
             color="accent.gray"
+            overflow="hidden"
           >
             <EditablePreview />
             <EditableTextarea _focusVisible={{ boxShadow: 'none' }} />
+            
           </Editable>
         </Box>
       )}
@@ -175,6 +200,4 @@ const DocumentBox = ({
   )
 }
 
-
-
-export default  DocumentBox
+export default DocumentBox
