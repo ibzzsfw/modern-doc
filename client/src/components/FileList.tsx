@@ -173,7 +173,17 @@ const FileList = ({ files }: propsType) => {
                           menusList={[
                             file.type == 'generatedFile'
                               ? [menuOption[0][0]]
-                              : [menuOption[0][1]],
+                              : [
+                                  {
+                                    title: 'อัพโหลดไฟล์ใหม่',
+                                    icon: <Icon as={GrUpload} />,
+                                    onClick: () => {
+                                      //---------function upload file if you want you can delete this because have button upload file
+                                      setOpen(true)
+                                      setFile(file)
+                                    },
+                                  },
+                                ],
                             menuOption[1],
                           ]}
                         >
@@ -198,7 +208,7 @@ const FileList = ({ files }: propsType) => {
           </Button>
         </ButtonGroup>
       </Flex>
-      {/* <UploadFile open={open} setOpen={(e) => setOpen(e)} file={file} /> */}
+      <UploadFile open={open} setOpen={(e) => setOpen(e)} file={file} />
     </>
   )
 }

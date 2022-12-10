@@ -222,7 +222,7 @@ class File {
     }
   }
 
-  static async saveGenerateFile(req: Request, res: Response) {
+  static async newGeneratedFile(req: Request, res: Response) {
     const { fileId } = req.params
     const { fields } = req.body as {
       fields: {
@@ -265,6 +265,32 @@ class File {
         return updateField
       })
       await Promise.all(promise)
+      res.status(200).json({ message: 'success' })
+    } catch (err) {
+      res.status(400).json(err)
+    }
+  }
+
+  static async newUploadedFile(req: Request, res: Response) {
+    console.log('here')
+    const { fileId } = req.params
+    const { URI, note, expiredDate } = req.body
+    const expired = expiredDate ? new Date(expiredDate) : null
+    const userId = req.headers['user-id'] as string
+    const schema = z.object({
+      fileId: z.string().uuid(),
+      URI: z.string().url(),
+      userId: z.string().uuid(),
+      note: z.string().optional(),
+    })
+    try {
+      schema.parse({ fileId, URI, userId })
+      const result = await Prisma.$queryRaw`
+        INSERT INTO "UserUploadedFile" ("id","userId","uploadedFileId","URI","isShared"
+        ,"note","expirationDate","date")
+        VALUES ((SELECT gen_random_uuid()),${userId}::uuid, ${fileId}::uuid, ${URI}, false, ${note}, ${expired}, ${new Date()})
+        ON CONFLICT ("userId", "uploadedFileId") DO UPDATE SET "URI" = ${URI}, "date" = ${new Date()}, "note" = ${note}, "expirationDate" = ${expired}
+      `
       res.status(200).json({ message: 'success' })
     } catch (err) {
       res.status(400).json(err)

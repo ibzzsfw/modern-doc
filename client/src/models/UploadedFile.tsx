@@ -6,7 +6,6 @@ class UploadedFile extends SystemFile {
   constructor(
     id: string,
     lastModified: Date,
-    lastViewed: Date,
     name: string,
     dayLifeSpan: number,
     officialName: string,
