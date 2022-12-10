@@ -34,7 +34,7 @@ type propsType = {
   customButton?: JSX.Element
 }
 
-const UploadFile = ({ open, setOpen, file ,customButton}: propsType) => {
+const UploadFile = ({ open, setOpen, file, customButton }: propsType) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [fileExists, setFileExists] = useState(false)
   const [search, setSearch] = useState('')
@@ -45,12 +45,12 @@ const UploadFile = ({ open, setOpen, file ,customButton}: propsType) => {
   const [wannaRemove, setWannaRemove] = useState(false)
   const [note, setNote] = useState('')
   const [expiredDate, setExpiredDate] = useState<null | Date>(null)
-/*
+
   useEffect(() => {
     if (open) {
       onOpen()
     }
-  }, [open])*/
+  }, [open])
 
   useEffect(() => {
     if (selectedFile == 'outsideFile') {
@@ -58,11 +58,11 @@ const UploadFile = ({ open, setOpen, file ,customButton}: propsType) => {
     }
     setFileExists(selectedFile != '')
   }, [selectedFile])
-/*
+
   const closeModal = () => {
     onClose()
-    setOpen(false)
-  }*/
+    if (setOpen) setOpen(false)
+  }
 
   useEffect(() => {
     setNote('')
@@ -74,14 +74,15 @@ const UploadFile = ({ open, setOpen, file ,customButton}: propsType) => {
 
   return (
     <>
-      {customButton && 
-        <Box as="button" onClick={onOpen} >
+      {customButton && (
+        <Box as="button" onClick={onOpen}>
           {customButton}
-        </Box>}
+        </Box>
+      )}
       <Modal
         closeOnOverlayClick={false}
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={closeModal}
         size="xl"
         isCentered
       >
@@ -176,6 +177,7 @@ const UploadFile = ({ open, setOpen, file ,customButton}: propsType) => {
             <Box sx={expirationSection}>
               <Checkbox
                 defaultChecked
+                isChecked={isExpirable}
                 onChange={(e) => setIsExpirable(e.target.checked)}
               >
                 {!isExpirable ? 'เอกสารมีวันหมดอายุ' : 'กำหนดวันหมดอายุ'}

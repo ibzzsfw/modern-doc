@@ -9,12 +9,14 @@ import {
   Icon,
   IconButton,
   Spacer,
+  useDisclosure,
 } from '@chakra-ui/react'
 import MenuProvider from '@components/MenuProvider'
 import UploadFile from '@components/UploadFile'
 import GeneratedFile from '@models/GeneratedFile'
 // import UploadedFile from '@models/UploadedFile'
 import { useGeneratedFileStore } from '@stores/GeneratedFile'
+import { useFormPageStore } from '@stores/FormPageStore'
 import { useEffect, useState } from 'react'
 import {
   AiFillClockCircle,
@@ -36,6 +38,12 @@ type propsType = {
 
 const FileList = ({ files }: propsType) => {
   const { generatedFile, setGeneratedFile } = useGeneratedFileStore()
+  const {
+    setSelectedDocument,
+    selectedDocument,
+    setSelectedDocumentField,
+    setDocumentType,
+  } = useFormPageStore()
   const [open, setOpen] = useState(false)
   const [file, setFile] = useState<UploadedFile | null>(null)
 
@@ -49,7 +57,7 @@ const FileList = ({ files }: propsType) => {
 
   const onChangeAllCheckbox = (checked: boolean) => {
     if (checked) {
-      setGeneratedFile(files.filter((file) => file instanceof GeneratedFile))
+      setGeneratedFile(files.filter((file) => file.URI != null))
     } else {
       setGeneratedFile([])
     }
@@ -58,6 +66,8 @@ const FileList = ({ files }: propsType) => {
   const isSelectedThisFile = (file: GeneratedFile) => {
     return generatedFile.filter((f) => f.id === file.id).length > 0
   }
+
+  console.log('selected file', generatedFile)
 
   useEffect(() => console.table(generatedFile), [generatedFile])
 
