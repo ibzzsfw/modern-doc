@@ -83,20 +83,6 @@ let breadcrumbConfig = [
         path: '/home',
       },
     ],
-  },
-  {
-    title: 'เอกสารที่อัปโหลด',
-    path: '/alldocument/uploadfile',
-    history: [
-      {
-        title: 'เอกสารของฉัน',
-        path: '/mydocument',
-      },
-      {
-        title: 'หน้าหลัก',
-        path: '/home',
-      },
-    ],
   }
 ]
 
