@@ -227,6 +227,7 @@ class File {
   }
 
   static async newGeneratedFile(req: Request, res: Response) {
+    console.log('man')
     const { fileId } = req.params
     const { fields } = req.body as {
       fields: {

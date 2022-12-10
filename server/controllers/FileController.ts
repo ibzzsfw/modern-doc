@@ -10,7 +10,7 @@ class FileController {
   searchByName = async (req: Request, res: Response) => {
     File.searchByName(req, res)
   }
-  saveGenerateFile = async (req: Request, res: Response) => {
+  newGeneratedFile = async (req: Request, res: Response) => {
     File.newGeneratedFile(req, res)
   }
   newUploadedFile = async (req: Request, res: Response) => {
