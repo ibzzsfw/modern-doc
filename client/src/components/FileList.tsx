@@ -137,7 +137,9 @@ const FileList = ({ files }: propsType) => {
                     key={file.id}
                   >
                     <Box sx={simpleBox}>
-                      {file.type == 'generatedFile' ? (
+                      {file.type == 'generatedFile' ||
+                      (file.type == 'uploadedFile' &&
+                        file.getStatus() != 'ไม่มีอยู่ในคลัง') ? (
                         <Checkbox
                           isChecked={isSelectedThisFile(file)}
                           onChange={(e) =>

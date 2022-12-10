@@ -1,0 +1,9 @@
+
+Tonight:
+  [] generateFolder api/front: 2hr @critical
+  [] add/delete note api: 30m. @critical
+  [] edit profile api/front: 15m. @high
+  [] breadcrumb fix url path: 30m. @high
+  [] myDocument api/front: 45m. @high
+  [] file view for uploadedFile/freeUploaded @low
+  [] sharable things: 1hr. @high
