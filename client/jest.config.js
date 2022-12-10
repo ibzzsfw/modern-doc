@@ -18,7 +18,8 @@ export default {
     '@pages/(.*)': '<rootDir>/src/pages/$1',
     '@utils/(.*)': '<rootDir>/src/utils/$1',
     '@stores/(.*)': '<rootDir>/src/stores/$1',
-    '@firebase/(.*)': '<rootDir>/src/firebase/$1',
+    '@firebase': '<rootDir>/src/firebase',
+    '@models/(.*)': '<rootDir>/src/models/$1',
     '\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
       '<rootDir>/mocks/fileMock.ts',
     '\\.(css|less)$': '<rootDir>/mocks/fileMock.ts',

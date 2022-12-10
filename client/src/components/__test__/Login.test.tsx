@@ -3,7 +3,7 @@ import { render, fireEvent, waitFor, screen } from '@testing-library/react'
 import Login from '@components/Login'
 
 describe('DocumentBlankBox', () => {
-  import.meta.env.VITE_USE_OTP_AUTH = 'false'
+  process.env.VITE_USE_OTP_AUTH = 'false'
   it('should render', () => {
     const { container } = render(<Login />)
     expect(container).toBeInTheDocument()
