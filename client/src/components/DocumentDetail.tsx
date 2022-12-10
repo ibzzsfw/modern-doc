@@ -124,6 +124,7 @@ const FolderDetail = ({
     'birthdate_personal',
     'citizenId_personal',
     'email_personal',
+    'title_personal',
   ]
 
   return (
@@ -162,14 +163,8 @@ const FolderDetail = ({
             onClick={() => {
               setField(
                 file.fields.map((field) => {
-                  if (keepField.includes(field.name)) field.userValue = ''
-                  return field
-                })
-              )
-              console.log(
-                'myman',
-                file.fields.map((field) => {
-                  if (!keepField.includes(field.name)) field.userValue = ''
+                  if (keepField.includes(field.name) === false)
+                    field.userValue = ''
                   return field
                 })
               )
