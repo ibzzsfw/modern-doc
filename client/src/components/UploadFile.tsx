@@ -58,11 +58,11 @@ const UploadFile = ({ open, setOpen, file, customButton }: propsType) => {
     }
     setFileExists(selectedFile != '')
   }, [selectedFile])
-  /*
+
   const closeModal = () => {
     onClose()
-    setOpen(false)
-  }*/
+    if (setOpen) setOpen(false)
+  }
 
   useEffect(() => {
     setNote('')
@@ -82,7 +82,7 @@ const UploadFile = ({ open, setOpen, file, customButton }: propsType) => {
       <Modal
         closeOnOverlayClick={false}
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={closeModal}
         size="xl"
         isCentered
       >
@@ -177,6 +177,7 @@ const UploadFile = ({ open, setOpen, file, customButton }: propsType) => {
             <Box sx={expirationSection}>
               <Checkbox
                 defaultChecked
+                isChecked={isExpirable}
                 onChange={(e) => setIsExpirable(e.target.checked)}
               >
                 {!isExpirable ? 'เอกสารมีวันหมดอายุ' : 'กำหนดวันหมดอายุ'}

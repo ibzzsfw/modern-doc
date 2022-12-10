@@ -1,6 +1,6 @@
 import { Flex, Box, Button } from '@chakra-ui/react'
 import FileList from '@components/FileList'
-import FolderDetail from '@components/DocumentDetail'
+import DocumentDetail from '@components/DocumentDetail'
 import FolderUploadedFile from '@models/FolderUploadedFile'
 import GeneratedFile from '@models/GeneratedFile'
 import UploadedFile from '@models/UploadedFile'
@@ -191,11 +191,12 @@ const Folder = (
           <TakeNote /> */}
           {/* <FileViewerDrawer files={mockFile} /> */}
         </Box>
-        <FolderDetail
+        <DocumentDetail
           title={folderData.officialName}
           description={folderData.note}
           markdown={folderData.description}
           status="มีอยู่ในคลัง"
+          type="folder"
         />
         <FileList files={folderData.file} />
       </Flex>
