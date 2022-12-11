@@ -4,16 +4,17 @@ import {
   ButtonGroup,
   Flex,
   Icon,
-  IconButton,
   Image,
   Text,
   Textarea,
-  useEditableControls,
+  useToast,
 } from '@chakra-ui/react'
 import MenuProvider from '@components/MenuProvider'
+import NoteController from '@models/NoteController'
+import { useMutation } from '@tanstack/react-query'
 import { Field, Form, Formik } from 'formik'
 import { useState } from 'react'
-import { AiOutlineCheck, AiOutlineClose, AiOutlineEdit } from 'react-icons/ai'
+import { AiOutlineEdit } from 'react-icons/ai'
 import { BsThreeDots, BsTrash } from 'react-icons/bs'
 import { Link } from 'react-router-dom'
 
@@ -58,39 +59,7 @@ const DocumentBox = ({
   url,
 }: propsType) => {
   const [editNote, setEditNote] = useState(false)
-
-  function EditableControls() {
-    const {
-      isEditing,
-      getSubmitButtonProps,
-      getCancelButtonProps,
-      getEditButtonProps,
-    } = useEditableControls()
-
-    return isEditing ? (
-      <ButtonGroup justifyContent="center" size="sm">
-        <IconButton
-          aria-label="checkBtn"
-          icon={<AiOutlineCheck />}
-          {...getSubmitButtonProps()}
-        />
-        <IconButton
-          aria-label="closeBtn"
-          icon={<AiOutlineClose />}
-          {...getCancelButtonProps()}
-        />
-      </ButtonGroup>
-    ) : (
-      <Flex justifyContent="center">
-        <IconButton
-          aria-label="editBtn"
-          size="sm"
-          icon={<AiOutlineEdit />}
-          {...getEditButtonProps()}
-        />
-      </Flex>
-    )
-  }
+  const toast = useToast()
 
   let layout = {
     width: '320px',
@@ -214,6 +183,14 @@ const DocumentBox = ({
       return 'บันทึก'
     }
   }
+
+  /*const deleteNote = async (id : string) => {
+    if (type === 'note') {
+      await 
+      window.location.reload()
+    }
+
+  }*/
   /*
   const getMenuItem = (): [] => {
     let menu = [
@@ -249,6 +226,57 @@ const DocumentBox = ({
       return []
     }
   }*/
+  const deleteNote = useMutation(
+    (id: string | undefined) => {
+      return NoteController.deleteNoteById(id)
+    },
+    {
+      onSuccess: () => {
+        toast({
+          title: 'ลบบันทึกสำเร็จ',
+          status: 'success',
+          description: `ลบ${title}สำเร็จ`,
+          duration: 3000,
+        })
+        window.location.reload()
+      },
+      onError: (error) => {
+        toast({
+          title: 'ลบบันทึกไม่สำเร็จ',
+          description: error.message,
+          status: 'error',
+          duration: 3000,
+        })
+      },
+    }
+  )
+
+  const updateFreeNote = useMutation(
+    (value: { heading: string; content: string; id: string | undefined }) => {
+      return NoteController.editNote(value.heading, value.content, value.id)
+    },
+    {
+      onSuccess: () => {
+        ;async () => {
+          await toast({
+            title: 'แก้ไขบันทึกสำเร็จ',
+            status: 'success',
+            description: `แก้ไข${title}สำเร็จ`,
+            duration: 3000,
+          })
+          await window.location.reload()
+        }
+      },
+      onError: (error) => {
+        toast({
+          title: 'แก้ไขบันทึกไม่สำเร็จ',
+          description: error.message,
+          status: 'error',
+          duration: 3000,
+        })
+      },
+    }
+  )
 
   let menu = (
     <MenuProvider
@@ -268,7 +296,9 @@ const DocumentBox = ({
           {
             title: `ลบ${getThaiName()}`,
             icon: <Icon as={BsTrash} color="accent.red" />,
-            onClick: () => {},
+            onClick: () => {
+              deleteNote.mutate(id)
+            },
             style: {
               color: 'accent.red',
             },
@@ -299,19 +329,24 @@ const DocumentBox = ({
       {showNote && (
         <Box marginTop="18px">
           <Formik
-            initialValues={{ note: note }}
+            initialValues={{ content: note }}
             onSubmit={(value) => {
-              console.log(value)
+              updateFreeNote.mutate({
+                heading: title,
+                content: value.content,
+                id: id,
+              })
+              setEditNote(false)
             }}
             onReset={(value) => {
               setEditNote(false)
             }}
           >
             <Form>
-              <Field name="note">
+              <Field name="content">
                 {({ field, form }: any) => (
                   <Textarea
-                    name="note"
+                    name="content"
                     {...field}
                     {...textareaLayout}
                     disabled={!editNote}

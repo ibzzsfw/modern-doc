@@ -1,63 +1,40 @@
-import {
-  Box,
-  Flex,
-  HStack,
-  VStack,
-  Text,
-  Input,
-  IconButton,
-  Icon,
-  useDisclosure,
-  Divider,
-  useEditableControls
-} from '@chakra-ui/react'
-import SearchBox from '@components/SearchBox'
-import DocumentBox from '@components/DocumentBox'
+import { Box, Divider, Flex, Text } from '@chakra-ui/react'
 import DocumentBar from '@components/DocumentBar'
-import MenuProvider from '@components/MenuProvider'
-import { BsThreeDots, BsTrash } from 'react-icons/bs'
-import { GrDocumentText, GrDownload } from 'react-icons/gr'
-import { AiFillPrinter, AiOutlineEdit } from 'react-icons/ai'
-import { useState, useEffect } from 'react'
 import DocumentBlankBox from '@components/DocumentBlankBox'
-import TakeNote from '@components/TakeNote'
-import { AiFillPlusCircle } from 'react-icons/ai'
-import { BsShareFill } from 'react-icons/bs'
+import DocumentBox from '@components/DocumentBox'
+import SearchBox from '@components/SearchBox'
 import ShareModal from '@components/ShareModal'
-import { useNavigate } from 'react-router-dom'
+import TakeNote from '@components/TakeNote'
 import UploadFile from '@components/UploadFile'
-import { useQuery } from '@tanstack/react-query'
 import FileController from '@models/FileController'
 import FolderController from '@models/FolderController'
 import NoteController from '@models/NoteController'
 import { useLoginDataStore } from '@stores/LoginDataStore'
+import { useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
+import { AiFillPlusCircle } from 'react-icons/ai'
+import { useNavigate } from 'react-router-dom'
 
 const MyDocument = () => {
   //const { search, setSearch } = useSearchBoxStore()
   const [search, setSearch] = useState('')
   const navigate = useNavigate()
   const user = useLoginDataStore.getState().user
+  console.log('token', user?.token)
   const [shareFile, setShareFile] = useState([])
   const [myFile, setMyFile] = useState([])
   const [myFolder, setMyFolder] = useState([])
   const [note, setNote] = useState([])
   const [uploadedFile, setUploadedFile] = useState([])
   const {
-    data: latestGeneratedFiles,
-    isLoading: latestGeneratedFilesLoading,
-    error: latestGeneratedFilesError,
-  } = useQuery(['generatedFile', user?.id], async () => {
+    data: latestFiles,
+    isLoading: latestFilesLoading,
+    error: latestFilesError,
+  } = useQuery(['latestFiles', user?.id], async () => {
     return await FileController.getLatestFile('generatedFile')
   })
 
-  const {
-    data: latestUploadedFiles,
-    isLoading: latestUploadedFilesLoading,
-    error: latestUploadedFilesError,
-  } = useQuery(['uploadedFile', user?.id], async () => {
-    return await FileController.getLatestFile('uploadedFile')
-  })
-  console.log('latestUploadedFiles', latestUploadedFiles)
+  console.log(latestFiles)
 
   const {
     data: latestFolder,
@@ -71,29 +48,14 @@ const MyDocument = () => {
     error: latestNoteError,
   } = useQuery(['lastestNote', user?.id], NoteController.getLastestNote)
 
-  
-
- 
-
-  if (
-    latestGeneratedFilesLoading ||
-    latestUploadedFilesLoading ||
-    latestFolderLoading ||
-    latestNoteLoading
-  )
+  if (latestFilesLoading || latestFolderLoading || latestNoteLoading)
     return <div>Loading...</div>
 
-  if (
-    latestGeneratedFilesError ||
-    latestUploadedFilesError ||
-    latestFolderError ||
-    latestNoteError
-  )
+  if (latestFilesError || latestFolderError || latestNoteError)
     return <div>Error</div>
 
-  if (latestGeneratedFiles || latestUploadedFiles || latestFolder || latestNote)
+  if (latestFiles || latestFolder || latestNote)
     return (
-      
       <Box sx={layout}>
         <Flex
           alignItems="center"
@@ -124,6 +86,7 @@ const MyDocument = () => {
         >
           <>
             <TakeNote
+              userId={user?.id}
               customButton={
                 <DocumentBlankBox
                   icon={AiFillPlusCircle}
@@ -133,7 +96,7 @@ const MyDocument = () => {
               }
             />
             {latestNote
-              // .filter((note) => note.heading.toLowerCase().includes(search))
+              .filter((note) => note.heading.toLowerCase().includes(search))
               .map((note: any) => {
                 return (
                   <DocumentBox
@@ -144,7 +107,7 @@ const MyDocument = () => {
                     showNote
                     note={note.content}
                     modifiedDate={new Date(note.modifiedDate)}
-                    showMenu = {true}
+                    showMenu={true}
                   />
                 )
               })}
@@ -169,7 +132,7 @@ const MyDocument = () => {
             />
 
             {shareFile
-              // .filter((file) => file.title.toLowerCase().includes(search))
+              .filter((file) => file.title.toLowerCase().includes(search))
               .map((file: any) => {
                 return (
                   <DocumentBox
@@ -178,7 +141,8 @@ const MyDocument = () => {
                     title={file.title}
                     author={file.author}
                     showNote
-                    showMenu= {true}
+                    note={file.note}
+                    showMenu={true}
                   />
                 )
               })
@@ -192,9 +156,9 @@ const MyDocument = () => {
           }}
         >
           {latestFolder
-            // .filter((folder) =>
-            //   folder.officialName.toLowerCase().includes(search)
-            // )
+            .filter((folder) =>
+              folder.officialName.toLowerCase().includes(search)
+            )
             .map((folder: any) => {
               return (
                 <DocumentBox
@@ -206,7 +170,8 @@ const MyDocument = () => {
                   image={folder.image}
                   amount={folder.amount}
                   showNote
-                  showMenu= {true}
+                  note={folder.note}
+                  showMenu={true}
                 />
               )
             })
@@ -218,8 +183,8 @@ const MyDocument = () => {
             navigate('/alldocument/file')
           }}
         >
-          {latestGeneratedFiles
-            // .filter((file) => file.officialName.toLowerCase().includes(search))
+          {latestFiles
+            .filter((file) => file.officialName.toLowerCase().includes(search))
             .map((file: any) => {
               return (
                 <DocumentBox
@@ -227,16 +192,17 @@ const MyDocument = () => {
                   amount={file.amount}
                   showNote
                   size={file.size}
-                  showMenu= {true}
+                  showMenu={true}
                   id={file.id}
                   title={file.officialName}
                   type={file.type ?? 'generatedFile'}
+                  note={file.note}
                   showDate
                   createdDate={new Date(file.date)}
                 />
               )
             })
-            .slice(0, 2)}
+            .slice(0, 1)}
         </DocumentBar>
         <DocumentBar
           title="เอกสารที่อัปโหลด"
@@ -245,7 +211,7 @@ const MyDocument = () => {
           }}
         >
           <>
-            {/* <UploadFile
+            <UploadFile
               customButton={
                 <DocumentBlankBox
                   icon={AiFillPlusCircle}
@@ -253,25 +219,26 @@ const MyDocument = () => {
                   color={'gray.500'}
                 />
               }
-            /> */}
+            />
 
-            {latestUploadedFiles
-              // .filter((file) => file.title.toLowerCase().includes(search))
+            {uploadedFile
+              .filter((file) => file.title.toLowerCase().includes(search))
               .map((file: any) => {
                 return (
                   <DocumentBox
                     id={file.id}
                     type={file.type}
-                    title={file.officialName}
+                    title={file.title}
                     image={file.image}
                     amount={file.amount}
                     showNote
+                    note={file.note}
                     size={file.size}
-                    showMenu= {true}
+                    showMenu={true}
                   />
                 )
               })
-              .slice(0, 3)}
+              .slice(0, 1)}
           </>
         </DocumentBar>
       </Box>
@@ -284,11 +251,4 @@ let layout = {
   backgroundColor: 'background.gray',
   color: 'accent.black',
   width: '100%',
-}
-
-let threeDot = {
-  position: 'absolute',
-  top: '10px',
-  right: '20px',
-  color: 'accent.black',
 }

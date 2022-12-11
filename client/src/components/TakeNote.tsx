@@ -1,6 +1,9 @@
 import {
   Box,
   Button,
+  FormControl,
+  FormLabel,
+  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -8,29 +11,30 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Select,
   Textarea,
   useDisclosure,
-  FormLabel,
-  FormControl,
-  Input,
-  Spacer,
+  useToast,
 } from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
 import Note from '@models/Note'
 import NoteController from '@models/NoteController'
+import { useMutation } from '@tanstack/react-query'
+import { Field, Form, Formik } from 'formik'
+import { useState } from 'react'
 
 type propsTypes = {
   customButton?: JSX.Element
+  userId?: string
+  type?: string
 }
 
-const TakeNote = ({ customButton }: propsTypes) => {
+const TakeNote = ({ customButton, userId, type }: propsTypes) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [noteType, setNoteType] = useState('')
   const [selectedDocumentID, setSelectedDocumentID] = useState('')
   const [selectedNote, setSelectedNote] = useState<Note | null>(null)
   const [note, setNote] = useState<Note[]>([])
   const [selectPlaceholder, setSelectPlaceholder] = useState('')
+  const toast = useToast()
   /*
   useEffect(() => {
     let notes = NoteController.getNotes(noteType)
@@ -66,10 +70,33 @@ const TakeNote = ({ customButton }: propsTypes) => {
     setNote([])
   }
 
-  const saveNote = () => {
-    Note.postSaveNote()
-    initialState()
+  interface NoteType {
+    heading: string
+    content: string
   }
+  const addNote = useMutation(
+    (value: NoteType) => {
+      return NoteController.addFreeNote(value.heading, value.content)
+    },
+    {
+      onSuccess: (variables: NoteType | any) => {
+        toast({
+          title: 'สร้างบันทึกสำเร็จ',
+          description: `สร้าง${variables.heading}สำเร็จ`,
+          status: 'success',
+          duration: 5000,
+        })
+      },
+      onError: (error) => {
+        toast({
+          title: 'สร้างบันทึกไม่สำเร็จ',
+          description: `${error.massage}`,
+          status: 'error',
+          duration: 5000,
+        })
+      },
+    }
+  )
 
   return (
     <>
@@ -93,26 +120,57 @@ const TakeNote = ({ customButton }: propsTypes) => {
         <ModalContent>
           <ModalHeader>สร้างบันทึก</ModalHeader>
           <ModalCloseButton />
-          <ModalBody sx={modalBody}>
-            <FormControl>
-              <FormLabel>หัวข้อ</FormLabel>
-              <Input placeholder="หัวข้อบันทึก" />
-              <br />
-              <br />
-              <FormLabel>เนื้อหา</FormLabel>
-              <Textarea
-                placeholder={
-                  selectedNote ? selectedNote.content : 'เนื้อหาที่จะบันทึก'
-                }
-              />
-            </FormControl>
-          </ModalBody>
-          <ModalFooter>
-            <Button onClick={initialState}>ยกเลิก</Button>
-            <Button colorScheme="blue" marginLeft="12px" onClick={saveNote}>
-              บันทึก
-            </Button>
-          </ModalFooter>
+          <Formik
+            initialValues={{ heading: '', content: '' }}
+            onSubmit={(value) => {
+              addNote.mutate(value)
+            }}
+            onReset={(value) => {
+              console.log('reset', value)
+              initialState()
+            }}
+          >
+            <Form>
+              <ModalBody sx={modalBody}>
+                <FormControl>
+                  <Field name="heading">
+                    {({ field, form }) => (
+                      <>
+                        <FormLabel>หัวข้อ</FormLabel>
+                        <Input
+                          id="heading"
+                          {...field}
+                          name="heading"
+                          placeholder="หัวข้อบันทึก"
+                        />
+                      </>
+                    )}
+                  </Field>
+                  <br />
+                  <br />
+                  <Field name="content">
+                    {({ field, form }) => (
+                      <>
+                        <FormLabel>เนื้อหา</FormLabel>
+                        <Textarea
+                          {...field}
+                          id="content"
+                          name="content"
+                          placeholder={'เนื้อหาที่จะบันทึก'}
+                        />
+                      </>
+                    )}
+                  </Field>
+                </FormControl>
+              </ModalBody>
+              <ModalFooter>
+                <Button type="reset">ยกเลิก</Button>
+                <Button colorScheme="blue" marginLeft="12px" type="submit">
+                  บันทึก
+                </Button>
+              </ModalFooter>
+            </Form>
+          </Formik>
         </ModalContent>
       </Modal>
     </>
