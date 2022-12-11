@@ -21,8 +21,9 @@ import {
   ModalCloseButton,
   useDisclosure,
   ModalHeader,
+  VStack,
 } from '@chakra-ui/react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useFormPageStore } from '@stores/FormPageStore'
 import { useGeneratedFileStore } from '@stores/GeneratedFile'
 import Fields from '@models/Field'
@@ -35,15 +36,22 @@ import { PDFDocument } from 'pdf-lib'
 import fontkit from '@pdf-lib/fontkit'
 import { useNavigate } from 'react-router-dom'
 import FileController from '@models/FileController'
+import PDFMerger from 'pdf-merger-js'
+import FolderController from '@models/FolderController'
 
 const FormPage = () => {
-  const { document, field } = useFormPageStore()
+  const { document, field, generatedFiles, selectedDocument, documentType } =
+    useFormPageStore()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const navigate = useNavigate()
   const [percent, setPercent] = useState<number>(0.31)
   const [formValues, setFormValues] = useState<any>({})
+  const [mergedField, setMergedField] = useState<Fields[]>([])
+  const [requiredCount, setRequiredCount] = useState<number>(0)
 
-  const initialValuesExraction = () => {
+  const formRef = useRef<any>(null)
+
+  const initialValuesExraction = (field: Fields[]) => {
     const initialValues: { [key: string]: any | any[] } = {}
 
     field.map((field: Fields) => {
@@ -66,16 +74,49 @@ const FormPage = () => {
           break
       }
     })
-    console.log('initialValues', initialValues)
     return initialValues
   }
+
+  const mergeField = (a: Fields[], b: Fields[]): Fields[] => {
+    const result: Fields[] = []
+    for (let i = 0; i < a.length; i++) {
+      result.push(a[i])
+    }
+    for (let i = 0; i < b.length; i++) {
+      let isDuplicate = false
+      for (let j = 0; j < a.length; j++) {
+        if (a[j].name === b[i].name) {
+          isDuplicate = true
+          break
+        }
+      }
+      if (!isDuplicate) result.push(b[i])
+    }
+    return result
+  }
+
+  useEffect(() => {
+    let count = 0
+    field.map((field: Fields) => {
+      if (field.isRequired) count++
+    })
+    setRequiredCount(count)
+
+    if (documentType === 'folder') {
+      let temp: Fields[] = []
+      for (let i = 0; i < generatedFiles.length; i++) {
+        temp = mergeField(temp, generatedFiles[i].fields)
+      }
+      setMergedField(temp)
+    }
+  }, [])
 
   const addRequired = (field: Fields, YupSchema: any) => {
     if (field.isRequired) return YupSchema.required('จำเป็นต้องกรอก')
     return YupSchema
   }
 
-  const validationSchemaExraction = () => {
+  const validationSchemaExraction = (field: Fields[]) => {
     const validationSchema: { [key: string]: any } = {}
 
     field.map((field: Fields) => {
@@ -147,8 +188,6 @@ const FormPage = () => {
   //   },
   // });
 
-  console.log('field', field)
-
   let formLayout = {
     display: 'flex',
     flexDirection: 'column',
@@ -184,7 +223,7 @@ const FormPage = () => {
 
   let buttomSection = {
     alignItems: 'center',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
   }
 
   let progressSection = {
@@ -198,6 +237,7 @@ const FormPage = () => {
     rowGap: '1rem',
     maxHeight: '530px',
     overflow: 'auto',
+    justifyContent: 'flex-start',
   }
 
   let previewBox = {
@@ -241,6 +281,9 @@ const FormPage = () => {
             showCorrectBorder
             required={field.isRequired}
             disable={disable}
+            onChange={(e) => {
+              console.log('abraham')
+            }}
           />
         )
       case 'number':
@@ -253,6 +296,9 @@ const FormPage = () => {
             showCorrectBorder
             required={field.isRequired}
             disable={disable}
+            onChange={(e) => {
+              console.log('abraham')
+            }}
           />
         )
       case 'date':
@@ -265,6 +311,9 @@ const FormPage = () => {
             showCorrectBorder
             required={field.isRequired}
             disable={disable}
+            onChange={(e) => {
+              console.log('abraham')
+            }}
           />
         )
       case 'email':
@@ -377,7 +426,84 @@ const FormPage = () => {
     await download(pdfBytes, `${document?.officialName}.pdf`, 'application/pdf')
   }
 
-  if (field.length == 0) {
+  const fillFormFolder = async (values: any) => {
+    const pdfList: any[] = []
+    let promise = generatedFiles.map(async (file) => {
+      const formUrl = file?.URI ? file.URI : ''
+      // Fetch the PDF with form fields
+      const formBytes = await fetch(formUrl).then((res) => res.arrayBuffer())
+
+      // Fetch the Sarabun font
+      const fontUrl = '/assets/THSarabunNew.ttf'
+      const fontBytes = await fetch(fontUrl).then((res) => res.arrayBuffer())
+
+      // Load the PDF with form fields
+      const pdfDoc = await PDFDocument.load(formBytes)
+
+      // Embed the font
+      pdfDoc.registerFontkit(fontkit)
+      const sarabunFont = await pdfDoc.embedFont(fontBytes)
+
+      const form = pdfDoc.getForm()
+
+      file.fields.map((field: Fields) => {
+        if (form.getFieldMaybe(field.name)) {
+          console.log(field.name, values[field.name])
+          switch (field.type) {
+            case 'text':
+              form.getTextField(field.name).setText(values[field.name])
+              break
+            case 'number':
+              form.getTextField(field.name).setText(values[field.name])
+              break
+            case 'date':
+              form.getTextField(field.name).setText(values[field.name])
+              break
+            case 'singleSelect':
+              form.getRadioGroup(field.name).select(values[field.name])
+              break
+            case 'multiSelect':
+              form.getCheckBox('option1').check()
+              break
+            default:
+              form
+                .getTextField(field.name)
+                .setText('ภาษาไทย ' + field.officialName)
+              break
+          }
+        }
+      })
+
+      form.updateFieldAppearances(sarabunFont)
+
+      form.flatten()
+
+      const pdfBytes = await pdfDoc.save()
+      pdfList.push(pdfBytes)
+    })
+
+    await Promise.all(promise)
+    const merger = new PDFMerger()
+
+    let pdfListPromise = pdfList.map(async (pdf) => {
+      await merger.add(pdf)
+    })
+
+    let uploadedListPromise = selectedDocument.map(async (file) => {
+      if (file.type == 'uploadedFile') {
+        const formUrl = file?.URI ? file.URI : ''
+        const formBytes = await fetch(formUrl).then((res) => res.arrayBuffer())
+        await merger.add(formBytes)
+      }
+    })
+    await Promise.all(pdfListPromise)
+    await Promise.all(uploadedListPromise)
+
+    const testMergePdf = await merger.save('testMergePdf.pdf')
+    console.log(pdfList)
+  }
+
+  if (documentType == 'file' && field.length == 0) {
     return (
       <Box sx={formLayout}>
         <Heading as="h2" size="lg">
@@ -387,11 +513,103 @@ const FormPage = () => {
     )
   }
 
+  console.log(requiredCount)
+
+  if (documentType == 'file')
+    return (
+      <Box sx={formLayout}>
+        <Formik
+          initialValues={initialValuesExraction(field)}
+          validationSchema={Yup.object(validationSchemaExraction(field))}
+          onSubmit={(values) => {
+            onOpen()
+            setFormValues(values)
+            console.table(values)
+          }}
+        >
+          <Form>
+            <Flex sx={topSection}>
+              <Box>
+                <Heading as="h2" size="lg">
+                  ข้อมูลที่จำเป็น
+                </Heading>
+                <Text as="p">
+                  ข้อมูลเหล่านี้จะถูกนำไปบันทึกในเอกสารที่ระบบจะสร้างขึ้น
+                </Text>
+                <Text as="p" color="gray">
+                  ท่านสามารถตรวจสอบข้อมูลอีกครั้งเมื่อกรอกข้อมูลที่จำเป็นครบถ้วน
+                </Text>
+              </Box>
+
+              <Flex sx={formBox}>
+                {field.map((field) => renderField(field))}
+              </Flex>
+            </Flex>
+            <Flex sx={buttomSection}>
+              <Flex sx={progressSection}>
+                <Text>ความคืบหน้า</Text>
+                <Flex sx={progress}>
+                  <Box sx={a} />
+                  <Box sx={b} />
+                </Flex>
+                <Text as="b">{`${100 * percent} %`}</Text>
+              </Flex>
+              <Button type="submit" colorScheme="green">
+                ตรวจสอบ
+              </Button>
+            </Flex>
+          </Form>
+        </Formik>
+        <Modal isOpen={isOpen} onClose={onClose} isCentered>
+          <ModalOverlay />
+          <ModalContent
+            maxHeight="600px"
+            overflowY="scroll"
+            paddingBottom="16px"
+          >
+            <ModalHeader>ตรวจสอบความถูกต้องของข้อมูล</ModalHeader>
+            <ModalCloseButton />
+            <Formik
+              initialValues={formValues}
+              validationSchema={Yup.object(validationSchemaExraction(field))}
+              onSubmit={async (values) => {
+                fillForm(values).then(() => {
+                  onClose()
+                  FileController.saveGeneratedFile(
+                    document?.id,
+                    field.map((f, index) => ({
+                      ...f,
+                      userValue: values[f.name],
+                    }))
+                  )
+                  navigate(-1)
+                })
+              }}
+            >
+              <Form>
+                <Flex sx={previewBox}>
+                  {field.map((field) => renderField(field, true))}
+                  <Button type="submit" sx={submitButton}>
+                    บันทึก
+                  </Button>
+                </Flex>
+              </Form>
+            </Formik>
+          </ModalContent>
+        </Modal>
+      </Box>
+    )
+
+  console.log('doccc', document)
+
+  //folder
   return (
     <Box sx={formLayout}>
       <Formik
-        initialValues={initialValuesExraction()}
-        validationSchema={Yup.object(validationSchemaExraction())}
+        innerRef={formRef}
+        initialValues={initialValuesExraction(mergedField)}
+        enableReinitialize={true}
+        validationSchema={Yup.object(validationSchemaExraction(mergedField))}
         onSubmit={(values) => {
           onOpen()
           setFormValues(values)
@@ -412,17 +630,28 @@ const FormPage = () => {
               </Text>
             </Box>
 
-            <Flex sx={formBox}>{field.map((field) => renderField(field))}</Flex>
+            <Flex sx={formBox} ref={formRef}>
+              {generatedFiles.map((file, index) => (
+                <VStack alignItems="flex-start">
+                  <Text fontSize="18px" fontWeight="bold">
+                    {index + 1}. {file.officialName}
+                  </Text>
+                  {file.fields.map((field) => renderField(field))}
+                  <hr />
+                </VStack>
+              ))}
+            </Flex>
           </Flex>
           <Flex sx={buttomSection}>
-            {/* <Flex sx={progressSection}>
+            <Flex sx={progressSection}>
               <Text>ความคืบหน้า</Text>
               <Flex sx={progress}>
                 <Box sx={a} />
                 <Box sx={b} />
               </Flex>
-              <Text as="b">{`${100 * percent} %`}</Text> 
-            </Flex> */}
+              <Text as="b">{`${100 * percent} %`}</Text>
+            </Flex>
+
             <Button type="submit" colorScheme="green">
               ตรวจสอบ
             </Button>
@@ -436,13 +665,15 @@ const FormPage = () => {
           <ModalCloseButton />
           <Formik
             initialValues={formValues}
-            validationSchema={Yup.object(validationSchemaExraction())}
+            validationSchema={Yup.object(
+              validationSchemaExraction(mergedField)
+            )}
             onSubmit={async (values) => {
-              fillForm(values).then(() => {
+              fillFormFolder(values).then(() => {
                 onClose()
-                FileController.saveGeneratedFile(
+                FolderController.saveFolder(
                   document?.id,
-                  field.map((f, index) => ({
+                  mergedField.map((f, index) => ({
                     ...f,
                     userValue: values[f.name],
                   }))
@@ -453,7 +684,7 @@ const FormPage = () => {
           >
             <Form>
               <Flex sx={previewBox}>
-                {field.map((field) => renderField(field, true))}
+                {mergedField.map((field) => renderField(field, true))}
                 <Button type="submit" sx={submitButton}>
                   บันทึก
                 </Button>

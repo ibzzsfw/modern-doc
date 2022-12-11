@@ -44,8 +44,8 @@ const FileList = ({ files }: propsType) => {
   const {
     setSelectedDocument,
     selectedDocument,
-    setSelectedDocumentField,
     setDocumentType,
+    setGeneratedFiles,
   } = useFormPageStore()
   const [open, setOpen] = useState(false)
   const [file, setFile] = useState<File | null>(null)
@@ -84,7 +84,7 @@ const FileList = ({ files }: propsType) => {
         })
       const result = await Promise.all(promise)
       console.log('result', result)
-      setSelectedDocumentField(result)
+      setGeneratedFiles(result)
     }
     getGeneratedFileField()
 

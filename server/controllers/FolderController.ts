@@ -16,6 +16,9 @@ class FolderController {
   getField = async (req: Request, res: Response) => {
     Folder.getField(req, res)
   }
+  saveFolder = async (req: Request, res: Response) => {
+    Folder.saveFolder(req, res)
+  }
 }
 
 export default new FolderController()

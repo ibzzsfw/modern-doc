@@ -17,6 +17,7 @@ import { useState } from 'react'
 import FolderController from '@models/FolderController'
 import { useQuery } from '@tanstack/react-query'
 import { useLoginDataStore } from '@stores/LoginDataStore'
+import { useFormPageStore } from '@stores/FormPageStore'
 import shallow from 'zustand/shallow'
 import User from '@models/User'
 import { useParams } from 'react-router-dom'
@@ -28,6 +29,7 @@ const Folder = (
   }
 ) => {
   const { id } = useParams<{ id: string }>()
+  const { setDocument } = useFormPageStore()
 
   const [generateFileList, setGenerateFileList] = useState<any[]>([])
   const [uploadedFileList, setUploadedFileList] = useState<any[]>([])
@@ -37,6 +39,7 @@ const Folder = (
     async () => await FolderController.getFolderById(id),
     {
       onSuccess: async (data) => {
+        setDocument(data)
         let generateFile: any[] = []
         let uploadedFile: any[] = []
         data.generateFile.map((file: any) => generateFile.push(file))

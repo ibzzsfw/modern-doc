@@ -19,6 +19,7 @@ class FolderRouter {
     this.router.get('/search/:name', this.controller.searchByName)
     this.router.put('/add-note/:userFolderId', this.controller.addNote)
     this.router.get('/get-field/', this.controller.getField)
+    this.router.post('/new/:folderId', this.controller.saveFolder)
   }
 }
 

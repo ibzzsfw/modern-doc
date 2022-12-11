@@ -7,8 +7,8 @@ interface FormPageStore {
   field: Field[]
   selectedDocument: File[]
   setSelectedDocument: (selectedDocument: File[]) => void
-  selectedDocumentField: Field[][]
-  setSelectedDocumentField: (selectedDocumentField: Field[][]) => void
+  generatedFiles: File[]
+  setGeneratedFiles: (generatedFiles: File[]) => void
   documentType: 'folder' | 'file'
   setDocumentType: (documentType: 'folder' | 'file') => void
   type: 'newFile' | 'editFile'
@@ -25,9 +25,8 @@ export const useFormPageStore = create<FormPageStore>((set) => ({
   setDocumentType: (documentType) => set({ documentType }),
   selectedDocument: [],
   setSelectedDocument: (selectedDocument) => set({ selectedDocument }),
-  selectedDocumentField: [],
-  setSelectedDocumentField: (selectedDocumentField) =>
-    set({ selectedDocumentField }),
+  generatedFiles: [],
+  setGeneratedFiles: (generatedFiles) => set({ generatedFiles }),
   setType: (type) => set({ type }),
   setField: (field) => set({ field }),
   setDocument: (document) => set({ document }),
