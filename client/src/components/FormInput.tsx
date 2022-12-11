@@ -27,6 +27,7 @@ type propsType = {
   width?: string
   optionsValue?: string[]
   required?: boolean
+  onChange?: (e: any) => void
 }
 
 const FormInput = ({
@@ -44,6 +45,7 @@ const FormInput = ({
   width,
   optionsValue,
   required,
+  onChange,
 }: propsType) => {
   const renderErrorMessage = (msg: any) => {
     return (
@@ -74,6 +76,9 @@ const FormInput = ({
               isInvalid={meta.touched && meta.error}
               disabled={disable}
               width={width}
+              onChange={(e) => {
+                if (onChange) onChange(e)
+              }}
               borderColor={
                 showCorrectBorder && !meta.error && meta.touched
                   ? 'green'
@@ -118,7 +123,11 @@ const FormInput = ({
                 placeholder={placeholder}
                 isInvalid={meta.touched && meta.error}
                 disabled={disable}
+                value={field.value}
                 width={width}
+                onChange={(e) => {
+                  if (onChange) onChange(e)
+                }}
                 borderColor={
                   showCorrectBorder && !meta.error && meta.touched
                     ? 'green'

@@ -34,6 +34,11 @@ import UploadedFile from '@models/dyl/UploadedFile'
 import File from '@models/File'
 import FileController from '@models/FileController'
 import { useNavigate } from 'react-router-dom'
+import download from 'downloadjs'
+import { PDFDocument } from 'pdf-lib'
+import fontkit from '@pdf-lib/fontkit'
+import PDFMerger from 'pdf-merger-js'
+import Field from '@models/Field'
 
 type propsType = {
   files: any[]
@@ -42,10 +47,12 @@ type propsType = {
 const FileList = ({ files }: propsType) => {
   const navigate = useNavigate()
   const {
+    document,
     setSelectedDocument,
     selectedDocument,
-    setSelectedDocumentField,
     setDocumentType,
+    generatedFiles,
+    setGeneratedFiles,
   } = useFormPageStore()
   const [open, setOpen] = useState(false)
   const [file, setFile] = useState<File | null>(null)
@@ -71,7 +78,82 @@ const FileList = ({ files }: propsType) => {
     return selectedDocument.filter((f) => f.id === file.id).length > 0
   }
 
-  console.log('selected file', selectedDocument)
+  const fillFormFolder = async () => {
+    const pdfList: any[] = []
+    let promise = generatedFiles.map(async (file) => {
+      const formUrl = file?.URI ? file.URI : ''
+      // Fetch the PDF with form fields
+      const formBytes = await fetch(formUrl).then((res) => res.arrayBuffer())
+
+      // Fetch the Sarabun font
+      const fontUrl = '/assets/THSarabunNew.ttf'
+      const fontBytes = await fetch(fontUrl).then((res) => res.arrayBuffer())
+
+      // Load the PDF with form fields
+      const pdfDoc = await PDFDocument.load(formBytes)
+
+      // Embed the font
+      pdfDoc.registerFontkit(fontkit)
+      const sarabunFont = await pdfDoc.embedFont(fontBytes)
+
+      const form = pdfDoc.getForm()
+
+      file.fields.map((field: Field) => {
+        if (form.getFieldMaybe(field.name)) {
+          console.log(field.name, field.userValue)
+          switch (field.type) {
+            case 'text':
+              form.getTextField(field.name).setText(field.userValue)
+              break
+            case 'number':
+              form.getTextField(field.name).setText(field.userValue)
+              break
+            case 'date':
+              form.getTextField(field.name).setText(field.userValue)
+              break
+            case 'singleSelect':
+              form.getRadioGroup(field.name).select(field.userValue ?? '')
+              break
+            case 'multiSelect':
+              form.getCheckBox('option1').check()
+              break
+            default:
+              form
+                .getTextField(field.name)
+                .setText('ภาษาไทย ' + field.officialName)
+              break
+          }
+        }
+      })
+
+      form.updateFieldAppearances(sarabunFont)
+
+      form.flatten()
+
+      const pdfBytes = await pdfDoc.save()
+      pdfList.push(pdfBytes)
+    })
+
+    await Promise.all(promise)
+    const merger = new PDFMerger()
+
+    let pdfListPromise = pdfList.map(async (pdf) => {
+      await merger.add(pdf)
+    })
+
+    let uploadedListPromise = selectedDocument.map(async (file) => {
+      if (file.type == 'uploadedFile') {
+        const formUrl = file?.URI ? file.URI : ''
+        const formBytes = await fetch(formUrl).then((res) => res.arrayBuffer())
+        await merger.add(formBytes)
+      }
+    })
+    await Promise.all(pdfListPromise)
+    await Promise.all(uploadedListPromise)
+
+    const testMergePdf = await merger.save('testMergePdf.pdf')
+    console.log(pdfList)
+  }
 
   useEffect(() => {
     setDocumentType('folder')
@@ -84,7 +166,7 @@ const FileList = ({ files }: propsType) => {
         })
       const result = await Promise.all(promise)
       console.log('result', result)
-      setSelectedDocumentField(result)
+      setGeneratedFiles(result)
     }
     getGeneratedFileField()
 
@@ -232,6 +314,10 @@ const FileList = ({ files }: propsType) => {
             colorScheme={'messenger'}
             size="sm"
             rightIcon={<AiOutlineDownload />}
+            disabled={selectedDocument.length == 0}
+            onClick={() => {
+              fillFormFolder()
+            }}
           >
             ดาวน์โหลดแฟ้ม
           </Button>

@@ -186,6 +186,73 @@ class Folder {
       res.status(400).json(err)
     }
   }
+
+  static saveFolder = async (req: Request, res: Response) => {
+    const { folderId } = req.params
+    const { fields, generatedFiles } = req.body
+    const userId = req.headers['user-id'] as string
+    const schema = z.object({
+      folderId: z.string().uuid(),
+      fields: z.array(
+        z.object({
+          id: z.string().uuid(),
+          userValue: z.string(),
+        })
+      ),
+      generatedFiles: z.array(
+        z.object({
+          id: z.string().uuid(),
+        })
+      ),
+      userId: z.string().uuid(),
+    })
+    try {
+      schema.parse({ folderId, fields, generatedFiles, userId })
+      let arr = []
+
+      const updateUserFolder = await Prisma.$queryRaw`
+        INSERT INTO "UserFolder" ("id","userId","folderId","date")
+        VALUES (
+        (SELECT gen_random_uuid())
+        ,
+        ${userId}::uuid, ${folderId}::uuid, ${new Date()})
+        ON CONFLICT ("userId", "folderId") DO UPDATE SET "date" = ${new Date()}
+        
+      `
+
+      const promise = await async.map(generatedFiles, async (generatedFile) => {
+        const { id } = generatedFile
+        console.log(id)
+        const updateGeneratedFile = await Prisma.$queryRaw`
+          INSERT INTO "UserGeneratedFile" ("id","userId","generatedFileId","date")
+          VALUES (
+          (SELECT gen_random_uuid())
+          ,
+          ${userId}::uuid, ${id}::uuid, ${new Date()})
+          ON CONFLICT ("userId", "generatedFileId") DO UPDATE SET "date" = ${new Date()}
+        `
+        return updateGeneratedFile
+      })
+
+      const promise2 = await async.map(fields, async (field) => {
+        const { name, userValue } = field
+        const updateField = await Prisma.$queryRaw`
+          INSERT INTO "UserField" ("id","userId","fieldId","rawValue","date")
+          VALUES (
+          (SELECT gen_random_uuid())
+          ,
+          ${userId}::uuid, ${field.id}::uuid, ${userValue}, ${new Date()})
+          ON CONFLICT ("userId", "fieldId") DO UPDATE SET "rawValue" = ${userValue}, "date" = ${new Date()}
+        `
+        return updateField
+      })
+      await Promise.all(promise)
+      await Promise.all(promise2)
+      res.json(arr)
+    } catch (err) {
+      res.status(400).json(err)
+    }
+  }
 }
 
 export default Folder

@@ -42,11 +42,21 @@ const FolderDetail = ({
     }
   }, shallow)
 
-  const { setField, setDocument, setType } = useFormPageStore((state) => {
+  const {
+    setField,
+    setDocument,
+    setType,
+    generatedFiles,
+    setGeneratedFiles,
+    selectedDocument,
+  } = useFormPageStore((state) => {
     return {
       setField: state.setField,
       setDocument: state.setDocument,
       setType: state.setType,
+      generatedFiles: state.generatedFiles,
+      setGeneratedFiles: state.setGeneratedFiles,
+      selectedDocument: state.selectedDocument,
     }
   }, shallow)
 
@@ -196,11 +206,37 @@ const FolderDetail = ({
         </ButtonGroup>
       ) : null}
       {type === 'folder' ? (
-        <ButtonGroup gap="24px" marginTop="24px" >
-          <Button sx={newDocumentBtn} colorScheme="green" onClick={() => {}}>
+        <ButtonGroup
+          gap="24px"
+          marginTop="24px"
+          isDisabled={selectedDocument.length == 0}
+        >
+          <Button
+            sx={newDocumentBtn}
+            colorScheme="green"
+            onClick={() => {
+              let temp = generatedFiles.map((file) => {
+                file.fields.map((field) => {
+                  if (keepField.includes(field.name) === false)
+                    field.userValue = ''
+                  return field
+                })
+                return file
+              })
+              setGeneratedFiles(temp)
+              navigate('/form')
+            }}
+          >
             สร้างเอกสารใหม่
           </Button>
-          <Button sx={editDocumentBtn} colorScheme="gray" variant="outline">
+          <Button
+            sx={editDocumentBtn}
+            colorScheme="gray"
+            variant="outline"
+            onClick={() => {
+              navigate('/form')
+            }}
+          >
             แก้ไขเอกสารเดิม
           </Button>
           <TakeNote doucmentType = {file.type} documentId = {file.id} noteContent = {file.note}  documentTitle = {title} type= {'folderNote'} customButton={<Button  colorScheme="gray" variant="outline">

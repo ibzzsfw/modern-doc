@@ -13,12 +13,18 @@ import FileController from '@models/FileController'
 import { useFilePageStore } from '@stores/FilePageStore'
 import { useFormPageStore } from '@stores/FormPageStore'
 import shallow from 'zustand/shallow'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
 import BlankPdf from '../../public/assets/blank.pdf'
+import Field from '@models/Field'
+import download from 'downloadjs'
+import { PDFDocument } from 'pdf-lib'
+import fontkit from '@pdf-lib/fontkit'
+import FileData from '@models/File'
 
 const File = () => {
   const { id, type } = useParams<{ id: string; type: string }>()
+  const [userPdf, setUserPdf] = useState<any>(null)
 
   const { file, setFile } = useFilePageStore((state) => {
     return {
@@ -27,12 +33,71 @@ const File = () => {
     }
   }, shallow)
 
+  const fillForm = async (fields: Field[], file: FileData) => {
+    const formUrl = file?.URI ? file.URI : ''
+    // Fetch the PDF with form fields
+    const formBytes = await fetch(formUrl).then((res) => res.arrayBuffer())
+
+    // Fetch the Sarabun font
+    const fontUrl = '/assets/THSarabunNew.ttf'
+    const fontBytes = await fetch(fontUrl).then((res) => res.arrayBuffer())
+
+    // Load the PDF with form fields
+    const pdfDoc = await PDFDocument.load(formBytes)
+
+    // Embed the font
+    pdfDoc.registerFontkit(fontkit)
+    const sarabunFont = await pdfDoc.embedFont(fontBytes)
+
+    const form = pdfDoc.getForm()
+
+    fields.map((field: Field) => {
+      if (form.getFieldMaybe(field.name)) {
+        switch (field.type) {
+          case 'text':
+            form.getTextField(field.name).setText(field.userValue)
+            break
+          case 'number':
+            form.getTextField(field.name).setText(field.userValue)
+            break
+          case 'date':
+            form.getTextField(field.name).setText(field.userValue)
+            break
+          case 'singleSelect':
+            form.getRadioGroup(field.name).select(field.userValue ?? '')
+            break
+          case 'multiSelect':
+            form.getCheckBox('option1').check()
+            break
+          default:
+            form
+              .getTextField(field.name)
+              .setText('ภาษาไทย ' + field.officialName)
+            break
+        }
+      }
+    })
+
+    form.updateFieldAppearances(sarabunFont)
+
+    form.flatten()
+
+    const pdfBytes = await pdfDoc.save()
+
+    setUserPdf(pdfBytes)
+  }
+
   const { data, isLoading, error } = useQuery(
     ['getFileById', id, type],
     async () => {
       if (id !== undefined && type !== undefined) {
         return await FileController.getFileById(id, type)
       }
+    },
+    {
+      onSuccess(data) {
+        fillForm(data.fields, data)
+      },
     }
   )
 
@@ -53,7 +118,7 @@ const File = () => {
           type={file.type}
         />
         {file.URI ? (
-          <FileViewer fileUrl={file.URI} />
+          <FileViewer fileUrl={userPdf ? userPdf : file.URI} />
         ) : (
           <FileViewer fileUrl={BlankPdf} />
         )}
