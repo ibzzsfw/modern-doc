@@ -7,17 +7,36 @@ import {
   ModalBody,
   ModalCloseButton,
   Button,
+  ListItem,
+  UnorderedList,
   useDisclosure,
+  Center,
 } from '@chakra-ui/react'
+import { useEffect } from 'react'
 
 type propsType = {
   title?: string
   discirption?: string
+  documentItem?: any | any[]
   onClick?: () => void
+  open?: boolean
+  setOpen?: (open: boolean) => void
 }
 
-const ConfirmationModal = ({ title, discirption, onClick }: propsType) => {
+const ConfirmationModal = ({
+  title,
+  discirption,
+  onClick,
+  open,
+  setOpen,
+  documentItem,
+}: propsType) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
+  useEffect(() => {
+    if (open) {
+      onOpen()
+    }
+  }, [open])
 
   return (
     <>
@@ -31,10 +50,28 @@ const ConfirmationModal = ({ title, discirption, onClick }: propsType) => {
         <ModalContent>
           <ModalHeader>{title}</ModalHeader>
 
-          <ModalBody>{discirption}</ModalBody>
+          <ModalBody>
+            {discirption}
+
+            <UnorderedList marginLeft="50px">
+              {documentItem &&
+                documentItem.map((item: any) => {
+                  return (
+                    <ListItem fontWeight="bold">{item.officialName}</ListItem>
+                  )
+                })}
+            </UnorderedList>
+          </ModalBody>
 
           <ModalFooter>
-            <Button variant="outline" mr={3} onClick={onClose}>
+            <Button
+              variant="outline"
+              mr={3}
+              onClick={() => {
+                if (setOpen) setOpen(false)
+                onClose()
+              }}
+            >
               ยกเลิก
             </Button>
             <Button
