@@ -26,12 +26,7 @@ class Folder {
         WHERE "UserFolder"."folderId" = ${id}::uuid AND "UserFolder"."userId" = ${userId}::uuid
       `
 
-      if ((userFolder = []))
-        userFolder[0] = {
-          note: null,
-          date: null,
-        }
-
+      console.log(userFolder)
       const file = await Prisma.$queryRaw`
         SELECT "GeneratedFile"."id","GeneratedFile"."officialName"
         ,"FolderGeneratedFile"."amount","FolderGeneratedFile"."remark",
@@ -62,7 +57,8 @@ class Folder {
 
       res.json({
         ...folder[0],
-        ...userFolder[0],
+        note: userFolder[0]?.note,
+        date: userFolder[0]?.date,
         file,
       })
     } catch (err) {
@@ -128,7 +124,7 @@ class Folder {
       schema.parse({ userFolderId, note, userId })
       const folder = await Prisma.$queryRaw`
         UPDATE "UserFolder" SET "note" = ${note} 
-        WHERE "id" = ${userFolderId}::uuid 
+        WHERE "folderId" = ${userFolderId}::uuid 
         AND "userId" = ${userId}::uuid
       `
       res.json(folder)

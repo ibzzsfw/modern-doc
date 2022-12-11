@@ -44,6 +44,7 @@ const FolderDetail = ({
 
   const {
     setField,
+    document,
     setDocument,
     setType,
     generatedFiles,
@@ -52,6 +53,7 @@ const FolderDetail = ({
   } = useFormPageStore((state) => {
     return {
       setField: state.setField,
+      document: state.document,
       setDocument: state.setDocument,
       setType: state.setType,
       generatedFiles: state.generatedFiles,
@@ -136,21 +138,23 @@ const FolderDetail = ({
     'title_personal',
   ]
 
+  console.log('file', document)
 
-  return (
-    <Flex sx={detailsBox}>
-      <Flex sx={descriptionBox}>
-        <HStack align="center">
-          <Heading sx={titleText}>{title}</Heading>
-          <GeneratedDocumentBadge status={status} />
-          <Spacer />
-          {/* <BadgeStatus status={status} /> */}
-        </HStack>
-        <Box sx={markdownBox}>
-          <Markdown value={markdown} />
-        </Box>
-        <Box textAlign="end">
-          {/* <Button
+  if (file)
+    return (
+      <Flex sx={detailsBox}>
+        <Flex sx={descriptionBox}>
+          <HStack align="center">
+            <Heading sx={titleText}>{title}</Heading>
+            <GeneratedDocumentBadge status={status} />
+            <Spacer />
+            {/* <BadgeStatus status={status} /> */}
+          </HStack>
+          <Box sx={markdownBox}>
+            <Markdown value={markdown} />
+          </Box>
+          <Box textAlign="end">
+            {/* <Button
             size="sm"
             borderColor="accent.blue"
             variant="outline"
@@ -158,95 +162,112 @@ const FolderDetail = ({
             leftIcon={isExpand ? <AiOutlineDoubleLeft /> : undefined}
             onClick={() => setIsExpand(!isExpand)}
           ></Button> */}
-        </Box>
-      </Flex>
+          </Box>
+        </Flex>
 
-      <Box sx={noteBox}>
-        <Heading sx={titleText}>บันทึกเตือนความจำ</Heading>
-        {file.note}
-      </Box>
-      {type === 'generatedFile' ? (
-        <ButtonGroup
-          gap="24px"
-          marginTop="24px"
-          isDisabled={file.fields.length === 0}
-        >
-          <Button
-            sx={newDocumentBtn}
-            colorScheme="green"
-            onClick={() => {
-              setField(
-                file.fields.map((field) => {
-                  if (keepField.includes(field.name) === false)
-                    field.userValue = ''
-                  return field
+        <Box sx={noteBox}>
+          <Heading sx={titleText}>บันทึกเตือนความจำ</Heading>
+          {description}
+        </Box>
+        {type === 'generatedFile' ? (
+          <ButtonGroup
+            gap="24px"
+            marginTop="24px"
+            isDisabled={file.fields.length === 0}
+          >
+            <Button
+              sx={newDocumentBtn}
+              colorScheme="green"
+              onClick={() => {
+                setField(
+                  file.fields.map((field) => {
+                    if (keepField.includes(field.name) === false)
+                      field.userValue = ''
+                    return field
+                  })
+                )
+                setDocument(file)
+                navigate('/form')
+              }}
+            >
+              สร้างเอกสารใหม่
+            </Button>
+            <Button
+              sx={editDocumentBtn}
+              colorScheme="gray"
+              variant="outline"
+              onClick={() => {
+                setField(file.fields)
+                setDocument(file)
+                navigate('/form')
+              }}
+            >
+              แก้ไขเอกสารเดิม
+            </Button>
+            <TakeNote
+              doucmentType={file.type}
+              documentId={file.id}
+              noteContent={file.note}
+              documentTitle={title}
+              type={'fileNote'}
+              customButton={
+                <Button colorScheme="gray" variant="outline">
+                  แก้ไขบันทึก
+                </Button>
+              }
+            />
+          </ButtonGroup>
+        ) : null}
+        {type === 'folder' ? (
+          <ButtonGroup
+            gap="24px"
+            marginTop="24px"
+            isDisabled={selectedDocument.length == 0}
+          >
+            <Button
+              sx={newDocumentBtn}
+              colorScheme="green"
+              onClick={() => {
+                let temp = generatedFiles.map((document) => {
+                  document.fields.map((field) => {
+                    if (keepField.includes(field.name) === false)
+                      field.userValue = ''
+                    return field
+                  })
+                  return document
                 })
-              )
-              setDocument(file)
-              navigate('/form')
-            }}
-          >
-            สร้างเอกสารใหม่
-          </Button>
-          <Button
-            sx={editDocumentBtn}
-            colorScheme="gray"
-            variant="outline"
-            onClick={() => {
-              setField(file.fields)
-              setDocument(file)
-              navigate('/form')
-            }}
-          >
-            แก้ไขเอกสารเดิม
-          </Button>
-          <TakeNote  doucmentType = {file.type} documentId = {file.id} noteContent = {file.note} documentTitle = {title}  type= {'fileNote'} customButton={<Button colorScheme="gray" variant="outline">
-            แก้ไขบันทึก
-          </Button>} />
-        </ButtonGroup>
-      ) : null}
-      {type === 'folder' ? (
-        <ButtonGroup
-          gap="24px"
-          marginTop="24px"
-          isDisabled={selectedDocument.length == 0}
-        >
-          <Button
-            sx={newDocumentBtn}
-            colorScheme="green"
-            onClick={() => {
-              let temp = generatedFiles.map((file) => {
-                file.fields.map((field) => {
-                  if (keepField.includes(field.name) === false)
-                    field.userValue = ''
-                  return field
-                })
-                return file
-              })
-              setGeneratedFiles(temp)
-              navigate('/form')
-            }}
-          >
-            สร้างเอกสารใหม่
-          </Button>
-          <Button
-            sx={editDocumentBtn}
-            colorScheme="gray"
-            variant="outline"
-            onClick={() => {
-              navigate('/form')
-            }}
-          >
-            แก้ไขเอกสารเดิม
-          </Button>
-          <TakeNote doucmentType = {file.type} documentId = {file.id} noteContent = {file.note}  documentTitle = {title} type= {'folderNote'} customButton={<Button  colorScheme="gray" variant="outline">
-            แก้ไขบันทึก
-          </Button>} />
-          
-        </ButtonGroup>
-      ) : null}
-    </Flex>
-  )
+                setGeneratedFiles(temp)
+                navigate('/form')
+              }}
+            >
+              สร้างเอกสารใหม่
+            </Button>
+            <Button
+              sx={editDocumentBtn}
+              colorScheme="gray"
+              variant="outline"
+              onClick={() => {
+                navigate('/form')
+              }}
+            >
+              แก้ไขเอกสารเดิม
+            </Button>
+            <TakeNote
+              doucmentType={document?.type}
+              documentId={document?.id}
+              noteContent={document?.note}
+              documentTitle={title}
+              type={'folderNote'}
+              customButton={
+                <Button colorScheme="gray" variant="outline">
+                  แก้ไขบันทึก
+                </Button>
+              }
+            />
+          </ButtonGroup>
+        ) : null}
+      </Flex>
+    )
 }
 
 export default FolderDetail

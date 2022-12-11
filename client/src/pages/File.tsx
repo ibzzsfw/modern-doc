@@ -113,7 +113,7 @@ const File = () => {
         <Box sx={abstractArea}>{/* <UploadFile /> */}</Box>
         <DocumentDetail
           title={file.officialName}
-          description={''}
+          description={file?.note}
           markdown={file.description}
           status={file.date ? 'มีอยู่ในคลัง' : 'ไม่มีอยู่ในคลัง'}
           type={file.type}

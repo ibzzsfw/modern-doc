@@ -12,6 +12,7 @@ class File {
   fields: Field[] = []
   type?: string
   date?: Date
+  note?: string
 }
 
 export default File
