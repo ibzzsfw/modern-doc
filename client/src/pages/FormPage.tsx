@@ -374,7 +374,7 @@ const FormPage = () => {
     form.flatten()
 
     const pdfBytes = await pdfDoc.save()
-    await download(pdfBytes, 'filled.pdf', 'application/pdf')
+    await download(pdfBytes, `${document?.officialName}.pdf`, 'application/pdf')
   }
 
   if (field.length == 0) {

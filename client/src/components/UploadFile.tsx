@@ -26,11 +26,12 @@ import UploadedFile from '@models/dyl/UploadedFile'
 import FileController from '@models/FileController'
 import { uploadFile } from '@firebase'
 import { v4 as uuidv4 } from 'uuid'
+import File from '@models/File'
 
 type propsType = {
   open?: boolean
   setOpen?: (open: boolean) => void
-  file?: UploadedFile | null
+  file?: File | null
   customButton?: JSX.Element
 }
 

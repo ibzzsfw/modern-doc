@@ -39,6 +39,20 @@ class FolderController {
     )
     return response.data
   }
+
+  static async getField(idArr: string[]) {
+    let response = await axios.get(
+      `${process.env.VITE_API_ENDPOINT}/folder/get-field`,
+      {
+        headers: {
+          'user-id': useLoginDataStore.getState()?.user?.id,
+          token: useLoginDataStore.getState()?.user?.token,
+          'generated-file-ids': JSON.stringify(idArr),
+        },
+      }
+    )
+    return response.data
+  }
 }
 
 export default FolderController
