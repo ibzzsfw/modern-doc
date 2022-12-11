@@ -57,6 +57,14 @@ class FolderController {
     return response.data
   }
 
+<<<<<<< HEAD
+  static async editNote(content : string, id : string | undefined){
+    console.log(content,id)
+    let response = await axios.put(
+      `${process.env.VITE_API_ENDPOINT}/folder/add-note/${id}`,
+      {
+        note: content,
+=======
   static async saveFolder(
     folderId: string | undefined,
     fields: Field[],
@@ -67,6 +75,7 @@ class FolderController {
       {
         fields: fields,
         generatedFiles: generatedFiles,
+>>>>>>> 159b304bbbe694e15121e5f7b105d472538cb8ad
       },
       {
         headers: {
@@ -75,8 +84,16 @@ class FolderController {
         },
       }
     )
+<<<<<<< HEAD
+
     return response.data
   }
+
+
+=======
+    return response.data
+  }
+>>>>>>> 159b304bbbe694e15121e5f7b105d472538cb8ad
 }
 
 export default FolderController

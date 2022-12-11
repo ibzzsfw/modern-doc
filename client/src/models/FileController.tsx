@@ -113,6 +113,28 @@ class FileController {
     window.location.reload()
     return response.data
   }
+
+  static async editNote(
+    content: string,
+    type: string | undefined,
+    id: string | undefined
+  ) {
+    console.log('editNote', content, type, id)
+    let response = await axios.put(
+      `${process.env.VITE_API_ENDPOINT}/file/add-note/${type}/${id}`,
+      {
+        note: content,
+      },
+      {
+        headers: {
+          'user-id': useLoginDataStore.getState()?.user?.id,
+          token: useLoginDataStore.getState()?.user?.token,
+        },
+      }
+    )
+    window.location.reload()
+    return response.data
+  }
 }
 
 export default FileController

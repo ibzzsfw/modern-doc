@@ -14,9 +14,12 @@ import {
   Textarea,
   useDisclosure,
   useToast,
+  Text,
 } from '@chakra-ui/react'
 import Note from '@models/Note'
 import NoteController from '@models/NoteController'
+import FileController from '@models/FileController'
+import FolderController from '@models/FolderController'
 import { useMutation } from '@tanstack/react-query'
 import { Field, Form, Formik } from 'formik'
 import { useState } from 'react'
@@ -24,10 +27,22 @@ import { useState } from 'react'
 type propsTypes = {
   customButton?: JSX.Element
   userId?: string
-  type?: string
+  documentId?: string | undefined
+  doucmentType?: string | undefined
+  type?: 'freeNote' | 'folderNote' | 'fileNote'
+  noteContent?: String
+  documentTitle: String
 }
 
-const TakeNote = ({ customButton, userId, type }: propsTypes) => {
+const TakeNote = ({
+  customButton,
+  userId,
+  type,
+  noteContent,
+  documentId,
+  doucmentType,
+  documentTitle,
+}: propsTypes) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [noteType, setNoteType] = useState('')
   const [selectedDocumentID, setSelectedDocumentID] = useState('')
@@ -74,7 +89,59 @@ const TakeNote = ({ customButton, userId, type }: propsTypes) => {
     heading: string
     content: string
   }
-  const addNote = useMutation(
+  const editFolderNote = useMutation(
+    (value: { content: string; id: string | undefined }) => {
+      return FolderController.editNote(value.content, value.id)
+    },
+    {
+      onSuccess: (variables: NoteType | any) => {
+        toast({
+          title: 'แก้ไขบันทึกสำเร็จ',
+          description: `แก้ไขบันทึกสำเร็จ`,
+          status: 'success',
+          duration: 5000,
+        })
+      },
+      onError: (error) => {
+        toast({
+          title: 'แก้ไขบันทึกไม่สำเร็จ',
+          description: `${error}`,
+          status: 'error',
+          duration: 5000,
+        })
+      },
+    }
+  )
+
+  const editFileNote = useMutation(
+    (value: {
+      content: string
+      type: string | undefined
+      id: string | undefined
+    }) => {
+      return FileController.editNote(value.content, value.type, value.id)
+    },
+    {
+      onSuccess: (variables: NoteType | any) => {
+        toast({
+          title: 'แก้ไขบันทึกสำเร็จ',
+          description: `แก้ไขบันทึกสำเร็จ`,
+          status: 'success',
+          duration: 5000,
+        })
+      },
+      onError: (error) => {
+        toast({
+          title: 'แก้ไขบันทึกไม่สำเร็จ',
+          description: `${error.massage}`,
+          status: 'error',
+          duration: 5000,
+        })
+      },
+    }
+  )
+
+  const addFreeNote = useMutation(
     (value: NoteType) => {
       return NoteController.addFreeNote(value.heading, value.content)
     },
@@ -118,12 +185,39 @@ const TakeNote = ({ customButton, userId, type }: propsTypes) => {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>สร้างบันทึก</ModalHeader>
-          <ModalCloseButton />
+          <ModalHeader>
+            {documentTitle ? `แก้ไขบันทึกของ${documentTitle}` : 'สร้างบันทึก'}
+          </ModalHeader>
+
           <Formik
-            initialValues={{ heading: '', content: '' }}
+            initialValues={
+              documentTitle
+                ? { content: noteContent }
+                : { heading: '', content: '' }
+            }
             onSubmit={(value) => {
-              addNote.mutate(value)
+              switch (type) {
+                case 'freeNote':
+                  addFreeNote.mutate(value)
+                  break
+                case 'fileNote':
+                  editFileNote.mutate({
+                    content: value.content,
+                    type: doucmentType,
+                    id: documentId,
+                  })
+                  break
+                case 'folderNote':
+                  console.log(documentId)
+                  editFolderNote.mutate({
+                    content: value.content,
+                    id: documentId,
+                  })
+                  break
+                default:
+                  console.log(value)
+                  break
+              }
             }}
             onReset={(value) => {
               console.log('reset', value)
@@ -133,21 +227,26 @@ const TakeNote = ({ customButton, userId, type }: propsTypes) => {
             <Form>
               <ModalBody sx={modalBody}>
                 <FormControl>
-                  <Field name="heading">
-                    {({ field, form }) => (
-                      <>
-                        <FormLabel>หัวข้อ</FormLabel>
-                        <Input
-                          id="heading"
-                          {...field}
-                          name="heading"
-                          placeholder="หัวข้อบันทึก"
-                        />
-                      </>
-                    )}
-                  </Field>
-                  <br />
-                  <br />
+                  {!documentTitle && (
+                    <>
+                      <Field name="heading">
+                        {({ field, form }) => (
+                          <>
+                            <FormLabel>หัวข้อ</FormLabel>
+                            <Input
+                              id="heading"
+                              {...field}
+                              name="heading"
+                              placeholder="หัวข้อบันทึก"
+                            />
+                          </>
+                        )}
+                      </Field>
+                      <br />
+                      <br />
+                    </>
+                  )}
+
                   <Field name="content">
                     {({ field, form }) => (
                       <>
