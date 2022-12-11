@@ -189,7 +189,7 @@ class Folder {
 
   static saveFolder = async (req: Request, res: Response) => {
     const { folderId } = req.params
-    const { fields } = req.body
+    const { fields, generatedFiles } = req.body
     const userId = req.headers['user-id'] as string
     const schema = z.object({
       folderId: z.string().uuid(),
@@ -199,10 +199,15 @@ class Folder {
           userValue: z.string(),
         })
       ),
+      generatedFiles: z.array(
+        z.object({
+          id: z.string().uuid(),
+        })
+      ),
       userId: z.string().uuid(),
     })
     try {
-      schema.parse({ folderId, fields, userId })
+      schema.parse({ folderId, fields, generatedFiles, userId })
       let arr = []
 
       const updateUserFolder = await Prisma.$queryRaw`
@@ -215,7 +220,21 @@ class Folder {
         
       `
 
-      const promise = await async.map(fields, async (field) => {
+      const promise = await async.map(generatedFiles, async (generatedFile) => {
+        const { id } = generatedFile
+        console.log(id)
+        const updateGeneratedFile = await Prisma.$queryRaw`
+          INSERT INTO "UserGeneratedFile" ("id","userId","generatedFileId","date")
+          VALUES (
+          (SELECT gen_random_uuid())
+          ,
+          ${userId}::uuid, ${id}::uuid, ${new Date()})
+          ON CONFLICT ("userId", "generatedFileId") DO UPDATE SET "date" = ${new Date()}
+        `
+        return updateGeneratedFile
+      })
+
+      const promise2 = await async.map(fields, async (field) => {
         const { name, userValue } = field
         const updateField = await Prisma.$queryRaw`
           INSERT INTO "UserField" ("id","userId","fieldId","rawValue","date")
@@ -228,6 +247,7 @@ class Folder {
         return updateField
       })
       await Promise.all(promise)
+      await Promise.all(promise2)
       res.json(arr)
     } catch (err) {
       res.status(400).json(err)

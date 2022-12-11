@@ -31,12 +31,8 @@ import FormInput from '@components/FormInput'
 import { Field, Form, Formik, useFormik } from 'formik'
 import * as Yup from 'yup'
 import { connectStorageEmulator } from 'firebase/storage'
-import download from 'downloadjs'
-import { PDFDocument } from 'pdf-lib'
-import fontkit from '@pdf-lib/fontkit'
 import { useNavigate } from 'react-router-dom'
 import FileController from '@models/FileController'
-import PDFMerger from 'pdf-merger-js'
 import FolderController from '@models/FolderController'
 
 const FormPage = () => {
@@ -372,137 +368,6 @@ const FormPage = () => {
     }
   }
 
-  const fillForm = async (values: any) => {
-    const formUrl = document?.URI ? document.URI : ''
-    // Fetch the PDF with form fields
-    const formBytes = await fetch(formUrl).then((res) => res.arrayBuffer())
-
-    // Fetch the Sarabun font
-    const fontUrl = '/assets/THSarabunNew.ttf'
-    const fontBytes = await fetch(fontUrl).then((res) => res.arrayBuffer())
-
-    // Load the PDF with form fields
-    const pdfDoc = await PDFDocument.load(formBytes)
-
-    // Embed the font
-    pdfDoc.registerFontkit(fontkit)
-    const sarabunFont = await pdfDoc.embedFont(fontBytes)
-
-    const form = pdfDoc.getForm()
-
-    field.map((field: Fields) => {
-      if (form.getFieldMaybe(field.name)) {
-        console.log(field.name, values[field.name])
-        switch (field.type) {
-          case 'text':
-            form.getTextField(field.name).setText(values[field.name])
-            break
-          case 'number':
-            form.getTextField(field.name).setText(values[field.name])
-            break
-          case 'date':
-            form.getTextField(field.name).setText(values[field.name])
-            break
-          case 'singleSelect':
-            form.getRadioGroup(field.name).select(values[field.name])
-            break
-          case 'multiSelect':
-            form.getCheckBox('option1').check()
-            break
-          default:
-            form
-              .getTextField(field.name)
-              .setText('ภาษาไทย ' + field.officialName)
-            break
-        }
-      }
-    })
-
-    form.updateFieldAppearances(sarabunFont)
-
-    form.flatten()
-
-    const pdfBytes = await pdfDoc.save()
-    await download(pdfBytes, `${document?.officialName}.pdf`, 'application/pdf')
-  }
-
-  const fillFormFolder = async (values: any) => {
-    const pdfList: any[] = []
-    let promise = generatedFiles.map(async (file) => {
-      const formUrl = file?.URI ? file.URI : ''
-      // Fetch the PDF with form fields
-      const formBytes = await fetch(formUrl).then((res) => res.arrayBuffer())
-
-      // Fetch the Sarabun font
-      const fontUrl = '/assets/THSarabunNew.ttf'
-      const fontBytes = await fetch(fontUrl).then((res) => res.arrayBuffer())
-
-      // Load the PDF with form fields
-      const pdfDoc = await PDFDocument.load(formBytes)
-
-      // Embed the font
-      pdfDoc.registerFontkit(fontkit)
-      const sarabunFont = await pdfDoc.embedFont(fontBytes)
-
-      const form = pdfDoc.getForm()
-
-      file.fields.map((field: Fields) => {
-        if (form.getFieldMaybe(field.name)) {
-          console.log(field.name, values[field.name])
-          switch (field.type) {
-            case 'text':
-              form.getTextField(field.name).setText(values[field.name])
-              break
-            case 'number':
-              form.getTextField(field.name).setText(values[field.name])
-              break
-            case 'date':
-              form.getTextField(field.name).setText(values[field.name])
-              break
-            case 'singleSelect':
-              form.getRadioGroup(field.name).select(values[field.name])
-              break
-            case 'multiSelect':
-              form.getCheckBox('option1').check()
-              break
-            default:
-              form
-                .getTextField(field.name)
-                .setText('ภาษาไทย ' + field.officialName)
-              break
-          }
-        }
-      })
-
-      form.updateFieldAppearances(sarabunFont)
-
-      form.flatten()
-
-      const pdfBytes = await pdfDoc.save()
-      pdfList.push(pdfBytes)
-    })
-
-    await Promise.all(promise)
-    const merger = new PDFMerger()
-
-    let pdfListPromise = pdfList.map(async (pdf) => {
-      await merger.add(pdf)
-    })
-
-    let uploadedListPromise = selectedDocument.map(async (file) => {
-      if (file.type == 'uploadedFile') {
-        const formUrl = file?.URI ? file.URI : ''
-        const formBytes = await fetch(formUrl).then((res) => res.arrayBuffer())
-        await merger.add(formBytes)
-      }
-    })
-    await Promise.all(pdfListPromise)
-    await Promise.all(uploadedListPromise)
-
-    const testMergePdf = await merger.save('testMergePdf.pdf')
-    console.log(pdfList)
-  }
-
   if (documentType == 'file' && field.length == 0) {
     return (
       <Box sx={formLayout}>
@@ -573,17 +438,15 @@ const FormPage = () => {
               initialValues={formValues}
               validationSchema={Yup.object(validationSchemaExraction(field))}
               onSubmit={async (values) => {
-                fillForm(values).then(() => {
-                  onClose()
-                  FileController.saveGeneratedFile(
-                    document?.id,
-                    field.map((f, index) => ({
-                      ...f,
-                      userValue: values[f.name],
-                    }))
-                  )
-                  navigate(-1)
-                })
+                onClose()
+                FileController.saveGeneratedFile(
+                  document?.id,
+                  field.map((f, index) => ({
+                    ...f,
+                    userValue: values[f.name],
+                  }))
+                )
+                navigate(-1)
               }}
             >
               <Form>
@@ -669,17 +532,16 @@ const FormPage = () => {
               validationSchemaExraction(mergedField)
             )}
             onSubmit={async (values) => {
-              fillFormFolder(values).then(() => {
-                onClose()
-                FolderController.saveFolder(
-                  document?.id,
-                  mergedField.map((f, index) => ({
-                    ...f,
-                    userValue: values[f.name],
-                  }))
-                )
-                navigate(-1)
-              })
+              onClose()
+              FolderController.saveFolder(
+                document?.id,
+                mergedField.map((f, index) => ({
+                  ...f,
+                  userValue: values[f.name],
+                })),
+                generatedFiles
+              )
+              navigate(-1)
             }}
           >
             <Form>

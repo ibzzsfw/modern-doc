@@ -12,6 +12,7 @@ type arg = {
   URI: string
   amount?: string
   type?: string
+  date?: Date
 }
 class UploadedFile {
   isShare: boolean = false
@@ -25,6 +26,7 @@ class UploadedFile {
   URI: string
   amount?: string
   type?: string
+  date?: Date
 
   constructor({
     id,
@@ -37,6 +39,7 @@ class UploadedFile {
     URI,
     amount,
     type,
+    date,
   }: arg) {
     this.id = id
     this.lastModified = lastModified
@@ -48,11 +51,18 @@ class UploadedFile {
     this.URI = URI
     this.amount = amount
     this.type = type
+    this.date = date
   }
 
   getStatus(): DocumentStatus {
     const today = new Date()
-    if (this.expirationDate == null && this.URI != '' && this.URI != null) {
+    if (
+      (this.expirationDate == null &&
+        this.URI != null &&
+        this.URI != '' &&
+        this.type == 'uploadedFile') ||
+      (this.type == 'generatedFile' && this.date != null)
+    ) {
       return 'มีอยู่ในคลัง'
     }
     if (this.URI == '' || this.URI == null) {

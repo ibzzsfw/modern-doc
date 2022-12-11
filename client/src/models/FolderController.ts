@@ -1,3 +1,4 @@
+import { GeneratedFile } from '@models/GeneratedFile'
 import axios from 'axios'
 import { useLoginDataStore } from '@stores/LoginDataStore'
 import Field from '@models/Field'
@@ -56,11 +57,16 @@ class FolderController {
     return response.data
   }
 
-  static async saveFolder(folderId: string | undefined, fields: Field[]) {
+  static async saveFolder(
+    folderId: string | undefined,
+    fields: Field[],
+    generatedFiles: { id: string }[]
+  ) {
     let response = await axios.post(
       `${process.env.VITE_API_ENDPOINT}/folder/new/${folderId}`,
       {
         fields: fields,
+        generatedFiles: generatedFiles,
       },
       {
         headers: {
