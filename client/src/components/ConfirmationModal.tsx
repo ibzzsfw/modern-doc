@@ -10,7 +10,7 @@ import {
   ListItem,
   UnorderedList,
   useDisclosure,
-  Center
+  Center,
 } from '@chakra-ui/react'
 import { useEffect } from 'react'
 
@@ -52,15 +52,14 @@ const ConfirmationModal = ({
 
           <ModalBody>
             {discirption}
-            
-            <UnorderedList marginLeft='50px'>
-                
-                {documentItem &&
+
+            <UnorderedList marginLeft="50px">
+              {documentItem &&
                 documentItem.map((item: any) => {
-                  return <ListItem fontWeight='bold' >{item.officialName}</ListItem>
+                  return (
+                    <ListItem fontWeight="bold">{item.officialName}</ListItem>
+                  )
                 })}
-                
-             
             </UnorderedList>
           </ModalBody>
 
