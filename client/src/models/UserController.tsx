@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import { useLoginDataStore } from '@stores/LoginDataStore'
 interface RegisterForm {
   title: string
@@ -61,6 +61,18 @@ class UserController {
       user: null,
     })
     window.location.pathname = '/'
+  }
+
+  static checkCitizenIdStatus = async (citizenId: string) => {
+    try {
+      let response = await axios.get(
+        `${process.env.VITE_API_ENDPOINT}/user/citizenId-status/${citizenId}`
+      )
+      return response.data
+    } catch (err: any) {
+      console.log(err.response.data.message)
+      return err.response.data
+    }
   }
 }
 

@@ -1,4 +1,3 @@
-import { GeneratedFile } from '@models/GeneratedFile'
 import axios from 'axios'
 import { useLoginDataStore } from '@stores/LoginDataStore'
 import Field from '@models/Field'

@@ -1,10 +1,10 @@
 Tonight:
-  [] generateFolder api/front: 2hr @critical
-  [] add/delete note api: 30m. @critical
+  [X] generateFolder api/front: 2hr @critical
+  [X] add/delete note api: 30m. @critical
   [] edit profile api/front: 15m. @high
-  [] breadcrumb fix url path: 30m. @high
+  [X] breadcrumb fix url path: 30m. @high
   [] myDocument api/front: 45m. @high
-  [] file view for uploadedFile/freeUploaded @low
+  [X] file view for uploadedFile/freeUploaded @low
   [] sharable things: 1hr. @high
-  [] เชคบัตรปชช หน้า regis @low
-  [] สลับผิดคน @critical
+  [X] เชคบัตรปชช หน้า regis @low
+  [X] สลับผิดคน @critical

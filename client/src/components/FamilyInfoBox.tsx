@@ -29,6 +29,7 @@ import { BsThreeDots, BsTrash } from 'react-icons/bs'
 import * as Yup from 'yup'
 import MemberController from '@models/MemberController'
 import getRelationshipText from '@utils/getRelationshipText'
+import UserController from '@models/UserController'
 
 type propsType = {
   data?: any
@@ -256,11 +257,24 @@ const FamilyInfoBox = ({
                 onReset={(values) => {
                   if (onCancelButtonClick) onCancelButtonClick()
                 }}
-                onSubmit={(values, actions) => {
-                  console.log(values)
-                  addFamily(values)
-                  toast(addFamilySuccess)
-                  if (onCancelButtonClick) onCancelButtonClick()
+                onSubmit={async (values, actions) => {
+                  const checkCitizenIdStatus =
+                    await UserController.checkCitizenIdStatus(values.citizenId)
+                  if (
+                    checkCitizenIdStatus.message === 'Citizen ID is available'
+                  ) {
+                    console.log(values)
+                    addFamily(values)
+                    toast(addFamilySuccess)
+                    if (onCancelButtonClick) onCancelButtonClick()
+                  } else {
+                    toast({
+                      title: 'เพิ่มสมาชิกไม่สำเร็จ',
+                      description: checkCitizenIdStatus.message,
+                      status: 'error',
+                      duration: 3000,
+                    })
+                  }
                 }}
               >
                 <Form>
@@ -467,7 +481,7 @@ let boxLayout = {
   width: '909px',
 }
 let threeDot = {
-  cursor : 'pointer',
+  cursor: 'pointer',
   position: 'absolute',
   top: '10px',
   right: '20px',

@@ -43,6 +43,23 @@ class MemberController {
     }
     return response.data
   }
+
+  static getAvailableUploadedFile = async (fileId: string) => {
+    const token = useLoginDataStore.getState().user?.token
+    const userId = useLoginDataStore.getState().user?.id
+    const householdId = useLoginDataStore.getState().user?.householdId
+
+    let response = await axios.get(
+      `${process.env.VITE_API_ENDPOINT}/member/available-uploadedFile/${fileId}`,
+      {
+        headers: {
+          token: token,
+          'user-id': userId,
+        },
+      }
+    )
+    return response.data
+  }
 }
 
 export default MemberController

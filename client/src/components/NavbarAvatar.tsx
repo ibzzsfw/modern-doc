@@ -50,6 +50,11 @@ const NavbarAvatar = () => {
   } = useDisclosure()
 
   const [isExpand, setIsExpand] = useState(false)
+  const [selectedMember, setSelectedMember] = useState<any>({
+    id: '',
+    firstName: '',
+    lastName: '',
+  })
 
   const userJson = useLoginDataStore((state) => state.user, shallow)
   const setUserData = useLoginDataStore((state) => state.setUserData, shallow)
@@ -140,8 +145,8 @@ const NavbarAvatar = () => {
                       return (
                         <Link
                           onClick={() => {
+                            setSelectedMember(member)
                             onOpenModal()
-                            // setMemberID(member.id)
                           }}
                         >
                           <Flex as="button" sx={memberList}>
@@ -163,7 +168,8 @@ const NavbarAvatar = () => {
                                 <Text>
                                   ต้องการสลับสมาชิกเป็น{' '}
                                   <Text as="b">
-                                    {member.firstName} {member.lastName}
+                                    {selectedMember.firstName}{' '}
+                                    {selectedMember.lastName}
                                   </Text>{' '}
                                   หรือไม่
                                 </Text>
@@ -178,7 +184,10 @@ const NavbarAvatar = () => {
                                   </Button>
                                   <Button
                                     sx={submitButton}
-                                    onClick={() => switchMember(member.id)}
+                                    onClick={() => {
+                                      console.log(member)
+                                      switchMember(selectedMember.id)
+                                    }}
                                   >
                                     สลับ
                                   </Button>

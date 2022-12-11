@@ -71,6 +71,7 @@ class Note {
         SELECT *
         FROM "Note"
         WHERE "userId" = ${userId}::uuid
+        ORDER BY "modifiedDate" DESC
       `
       res.json(getAllNote)
     } catch (err) {
