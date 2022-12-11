@@ -39,6 +39,7 @@ import { PDFDocument } from 'pdf-lib'
 import fontkit from '@pdf-lib/fontkit'
 import PDFMerger from 'pdf-merger-js'
 import Field from '@models/Field'
+import ImportFromFamily from '@components/ImportFromFamily'
 
 type propsType = {
   files: any[]
@@ -57,6 +58,11 @@ const FileList = ({ files }: propsType) => {
   const [open, setOpen] = useState(false)
   const [file, setFile] = useState<File | null>(null)
   const [fileMenu, setFileMenu] = useState<File | null>(null)
+  const {
+    isOpen: isOpenImport,
+    onOpen: onOpenImport,
+    onClose: onCloseImport,
+  } = useDisclosure()
 
   const onChangeCheckbox = (checked: boolean, file: File) => {
     if (checked) {
@@ -210,6 +216,7 @@ const FileList = ({ files }: propsType) => {
         icon: <Icon as={HiArrowDownRight} />,
         onClick: () => {
           //-------- function import from member
+          onOpenImport()
         },
       },
     ],
@@ -324,6 +331,11 @@ const FileList = ({ files }: propsType) => {
         </ButtonGroup>
       </Flex>
       <UploadFile open={open} setOpen={(e) => setOpen(e)} file={file} />
+      <ImportFromFamily
+        isOpen={isOpenImport}
+        onClose={onCloseImport}
+        onOpen={onOpenImport}
+      />
     </>
   )
 }

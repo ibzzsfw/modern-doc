@@ -13,6 +13,9 @@ class MemberController {
   deleteMember = async (req: Request, res: Response) => {
     Member.deleteMember(req, res)
   }
+  getMemberAvailableUploadedFile = async (req: Request, res: Response) => {
+    Member.getMemberAvailableUploadedFile(req, res)
+  }
 }
 
 export default new MemberController()

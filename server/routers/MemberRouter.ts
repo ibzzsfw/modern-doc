@@ -18,6 +18,10 @@ class UserRouter {
     this.router.post('/', this.controller.addMember)
     this.router.put('/:id', this.controller.editMember)
     this.router.delete('/:id', this.controller.deleteMember)
+    this.router.get(
+      '/available-uploadedFile/:fileId',
+      this.controller.getMemberAvailableUploadedFile
+    )
   }
 }
 

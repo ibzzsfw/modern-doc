@@ -97,6 +97,7 @@ model GeneratedFileField {
   field           Field         @relation(fields: [fieldId], references: [id])
   fieldId         String        @db.Uuid
   isRequired      Boolean       @default(false)
+  order           Int           @default(1)
 
   @@unique([generatedFileId, fieldId])
 }

@@ -33,6 +33,8 @@ const File = () => {
     }
   }, shallow)
 
+  const setDocumentType = useFormPageStore((state) => state.setDocumentType)
+
   const fillForm = async (fields: Field[], file: FileData) => {
     const formUrl = file?.URI ? file.URI : ''
     // Fetch the PDF with form fields
@@ -70,9 +72,7 @@ const File = () => {
             form.getCheckBox('option1').check()
             break
           default:
-            form
-              .getTextField(field.name)
-              .setText('ภาษาไทย ' + field.officialName)
+            form.getTextField(field.name).setText(field.userValue ?? '')
             break
         }
       }
@@ -103,16 +103,14 @@ const File = () => {
 
   if (data) {
     setFile(data)
+    setDocumentType('file')
     console.log(data)
   }
 
   if (data)
     return (
       <Flex sx={documentView}>
-        <Box sx={abstractArea}>
-          {/* <UploadFile /> */}
-          <TakeNote />
-        </Box>
+        <Box sx={abstractArea}>{/* <UploadFile /> */}</Box>
         <DocumentDetail
           title={file.officialName}
           description={''}
