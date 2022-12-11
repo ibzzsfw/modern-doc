@@ -289,7 +289,10 @@ const FileList = ({ files }: propsType) => {
                     </Box>
                     <Box sx={simpleBox}>{file.remark}</Box>
                     <Box sx={simpleBox}>
-                      <Box position="absolute">
+                      <Box
+                        position="absolute"
+                        onClick={() => setFileMenu(file)}
+                      >
                         <MenuProvider
                           left="0px"
                           top="20px"
@@ -300,12 +303,7 @@ const FileList = ({ files }: propsType) => {
                             menuOption[1],
                           ]}
                         >
-                          <Icon
-                            as={BsThreeDots}
-                            sx={threeDot}
-                            boxSize="18px"
-                            onClick={() => setFileMenu(file)}
-                          />
+                          <Icon as={BsThreeDots} sx={threeDot} boxSize="18px" />
                         </MenuProvider>
                       </Box>
                     </Box>
@@ -335,6 +333,7 @@ const FileList = ({ files }: propsType) => {
         isOpen={isOpenImport}
         onClose={onCloseImport}
         onOpen={onOpenImport}
+        fileId={fileMenu?.id ?? ''}
       />
     </>
   )

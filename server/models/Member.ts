@@ -128,7 +128,7 @@ class Member {
     res: Response
   ) => {
     const { fileId } = req.params
-    const { userId } = req.headers
+    const userId = req.headers['user-id'] as string
     const schema = z.object({
       fileId: z.string().uuid(),
       userId: z.string().uuid(),
@@ -137,12 +137,15 @@ class Member {
       schema.parse({ fileId, userId: userId })
       const familyId = await Member.getUserHouseholdId(userId)
       const fileAvailableMember = await Prisma.$queryRaw`
-        SELECT "User"."id","User"."profileURI","User".firstName,
-        "User".lastName","User"."relationship" FROM "UserUploadedFile" 
-        LEFT JOIN "User" ON "UserUploadedFile"."userId" = "User"."id"
-        WHERE "UserUploadedFile"."fileId" = ${fileId} 
-        AND "User"."householdId" = ${familyId}
-        AND "User"."id" != ${userId}
+        SELECT "User"."id","User"."profileURI","User"."firstName",
+        "User"."lastName","User"."relationship",
+        "UserUploadedFile"."URI"
+         FROM "User" 
+        LEFT JOIN "UserUploadedFile" ON ("UserUploadedFile"."userId" = "User"."id"
+        AND "UserUploadedFile"."uploadedFileId" = ${fileId}::uuid
+        )
+        WHERE "User"."householdId" = ${familyId}::uuid
+        AND "User"."id" != ${userId}::uuid
       `
 
       res.status(200).json(fileAvailableMember)

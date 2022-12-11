@@ -15,24 +15,30 @@ import {
   Button,
 } from '@chakra-ui/react'
 import React from 'react'
+import MemberController from '@models/MemberController'
 import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import getRelationshipText from '@utils/getRelationshipText'
+import FileController from '@models/FileController'
 
 type propsType = {
   isOpen: boolean
   onClose: () => void
   onOpen: () => void
-  isSelected?: boolean
-  isDisabled?: boolean
+  fileId: string
 }
 
-const ImportFromFamily = ({
-  isOpen,
-  onClose,
-  onOpen,
-  isSelected = false,
-  isDisabled = false,
-}: propsType) => {
-  const [selected, setSelected] = useState(false)
+const ImportFromFamily = ({ isOpen, onClose, onOpen, fileId }: propsType) => {
+  const [selected, setSelected] = useState(null)
+
+  console.log('fileId', fileId)
+
+  const { data, isLoading, error } = useQuery(
+    ['getAvailableUploadedFile'],
+    async () => {
+      return MemberController.getAvailableUploadedFile(fileId)
+    }
+  )
 
   const layout = {
     width: '100%',
@@ -46,13 +52,27 @@ const ImportFromFamily = ({
     height: '80px',
     margin: 'auto',
     padding: '8px 24px',
-    cursor: isDisabled ? 'not-allowed' : 'pointer',
-    background: isSelected ? '#0072F520' : isDisabled ? '#68707620' : '#ffffff',
-    border: isSelected ? '2px solid #0072F5' : '2px solid transparent',
+    cursor: 'pointer',
+    background: '#ffffff',
+    border: '2px solid transparent',
     _hover: {
-      background: isDisabled ? '#68707620' : '#0072F520',
+      background: '#0072F520',
     },
     flexDirection: 'column',
+  }
+
+  const disabledBox = {
+    cursor: 'not-allowed',
+    background: '#68707620',
+    border: '2px solid transparent',
+    _hover: {
+      background: '#68707620',
+    },
+  }
+
+  const selectedBox = {
+    background: '#0072F520',
+    border: '2px solid #0072F5',
   }
 
   let submitButton = {
@@ -77,57 +97,57 @@ const ImportFromFamily = ({
         </ModalHeader>
         <ModalBody>
           <VStack sx={layout}>
-            <Flex sx={memberBox}>
-              <HStack gap="24px">
-                <Avatar />
-                <VStack>
-                  <Text color="#2D3748">ชื่อ นามสกุล</Text>
-                  <Text color="#718096">ความสัมพันธ์</Text>
-                </VStack>
-              </HStack>
-            </Flex>
-            <Flex sx={memberBox}>
-              <HStack gap="24px">
-                <Avatar />
-                <VStack>
-                  <Text color="#2D3748">ชื่อ นามสกุล</Text>
-                  <Text color="#718096">ความสัมพันธ์</Text>
-                </VStack>
-              </HStack>
-            </Flex>
-            <Flex sx={memberBox}>
-              <HStack gap="24px">
-                <Avatar />
-                <VStack>
-                  <Text color="#2D3748">ชื่อ นามสกุล</Text>
-                  <Text color="#718096">ความสัมพันธ์</Text>
-                </VStack>
-              </HStack>
-            </Flex>
-            <Flex sx={memberBox}>
-              <HStack gap="24px">
-                <Avatar />
-                <VStack>
-                  <Text color="#2D3748">ชื่อ นามสกุล</Text>
-                  <Text color="#718096">ความสัมพันธ์</Text>
-                </VStack>
-              </HStack>
-            </Flex>
-            <Flex sx={memberBox}>
-              <HStack gap="24px">
-                <Avatar />
-                <VStack>
-                  <Text color="#2D3748">ชื่อ นามสกุล</Text>
-                  <Text color="#718096">ความสัมพันธ์</Text>
-                </VStack>
-              </HStack>
-            </Flex>
+            {data &&
+              data.map((member: any) => (
+                <Flex
+                  sx={{
+                    ...memberBox,
+                    ...(selected === member.URI ? selectedBox : {}),
+                    ...(member.URI ? {} : disabledBox),
+                  }}
+                  onClick={() => {
+                    setSelected(member.URI)
+                  }}
+                >
+                  <HStack gap="24px">
+                    <Avatar src={member.profileURI} />
+                    <VStack alignItems="flex-start">
+                      <Text color="#2D3748">
+                        {member.firstName} {member.lastName}
+                      </Text>
+                      <Text color="#718096">
+                        {getRelationshipText(member.relationship)}
+                      </Text>
+                    </VStack>
+                  </HStack>
+                </Flex>
+              ))}
           </VStack>
         </ModalBody>
         <ModalFooter>
           <HStack>
-            <Button colorScheme="red">ยกเลิก</Button>
-            <Button sx={submitButton}>ยืนยัน</Button>
+            <Button colorScheme="red" onClick={() => onClose()}>
+              ยกเลิก
+            </Button>
+            <Button
+              sx={submitButton}
+              disabled={!selected}
+              onClick={() => {
+                if (selected) {
+                  FileController.newUploadedFile(
+                    fileId,
+                    selected,
+                    `นำเข้าจาก ${
+                      data.find((member: any) => member.URI === selected)
+                        .firstName
+                    }`,
+                    null
+                  )
+                }
+              }}
+            >
+              ยืนยัน
+            </Button>
           </HStack>
         </ModalFooter>
       </ModalContent>
