@@ -333,7 +333,8 @@ const FileList = ({ files }: propsType) => {
         isOpen={isOpenImport}
         onClose={onCloseImport}
         onOpen={onOpenImport}
-        fileId={fileMenu?.id ?? ''}
+        fileId={fileMenu?.id}
+        fileName={fileMenu?.officialName}
       />
     </>
   )

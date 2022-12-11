@@ -25,10 +25,17 @@ type propsType = {
   isOpen: boolean
   onClose: () => void
   onOpen: () => void
-  fileId: string
+  fileId: string | undefined
+  fileName: string | undefined
 }
 
-const ImportFromFamily = ({ isOpen, onClose, onOpen, fileId }: propsType) => {
+const ImportFromFamily = ({
+  isOpen,
+  onClose,
+  onOpen,
+  fileId,
+  fileName,
+}: propsType) => {
   const [selected, setSelected] = useState(null)
 
   console.log('fileId', fileId)
@@ -36,7 +43,7 @@ const ImportFromFamily = ({ isOpen, onClose, onOpen, fileId }: propsType) => {
   const { data, isLoading, error } = useQuery(
     ['getAvailableUploadedFile'],
     async () => {
-      return MemberController.getAvailableUploadedFile(fileId)
+      if (fileId) return MemberController.getAvailableUploadedFile(fileId)
     }
   )
 
@@ -93,7 +100,7 @@ const ImportFromFamily = ({ isOpen, onClose, onOpen, fileId }: propsType) => {
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
-          <Text>นำเข้าจากสมาชิก</Text>
+          <Text>นำเข้า {fileName} จากสมาชิก</Text>
         </ModalHeader>
         <ModalBody>
           <VStack sx={layout}>
