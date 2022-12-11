@@ -298,9 +298,12 @@ const FileList = ({ files }: propsType) => {
                           top="20px"
                           menusList={[
                             file.type == 'generatedFile'
-                              ? [menuOption[0][0]]
-                              : [menuOption[0][1]],
-                            menuOption[1],
+                              ? [menuOption[0][0], menuOption[1][0]]
+                              : [
+                                  menuOption[0][1],
+                                  menuOption[1][1],
+                                  menuOption[1][0],
+                                ],
                           ]}
                         >
                           <Icon as={BsThreeDots} sx={threeDot} boxSize="18px" />
