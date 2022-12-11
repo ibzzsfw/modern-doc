@@ -33,12 +33,14 @@ import DocumentBadge from '@components/DocumentBadge'
 import UploadedFile from '@models/dyl/UploadedFile'
 import File from '@models/File'
 import FileController from '@models/FileController'
+import { useNavigate } from 'react-router-dom'
 
 type propsType = {
   files: any[]
 }
 
 const FileList = ({ files }: propsType) => {
+  const navigate = useNavigate()
   const {
     setSelectedDocument,
     selectedDocument,
@@ -47,6 +49,7 @@ const FileList = ({ files }: propsType) => {
   } = useFormPageStore()
   const [open, setOpen] = useState(false)
   const [file, setFile] = useState<File | null>(null)
+  const [fileMenu, setFileMenu] = useState<File | null>(null)
 
   const onChangeCheckbox = (checked: boolean, file: File) => {
     if (checked) {
@@ -91,13 +94,13 @@ const FileList = ({ files }: propsType) => {
   const countGeneratedFile = () =>
     files.filter((file) => file.type == 'generatedFile').length
 
-  const [menuOption, setmenuOption] = useState([
+  const menuOption = [
     [
       {
         title: 'สร้างเอกสาร',
         icon: <Icon as={AiOutlinePlus} />,
         onClick: () => {
-          //---------function generate file
+          navigate(`/file/1/${fileMenu?.id}`)
         },
       },
       {
@@ -106,7 +109,7 @@ const FileList = ({ files }: propsType) => {
         onClick: () => {
           //---------function upload file if you want you can delete this because have button upload file
           setOpen(true)
-          setFile(file)
+          setFile(fileMenu)
         },
       },
     ],
@@ -115,7 +118,9 @@ const FileList = ({ files }: propsType) => {
         title: 'ดูตัวอย่าง',
         icon: <Icon as={RiFileSearchLine} />,
         onClick: () => {
-          ///----------function see example
+          if (fileMenu?.type == 'generatedFile')
+            navigate(`/file/1/${fileMenu?.id}`)
+          else navigate(`/file/2/${fileMenu?.id}`)
         },
       },
       {
@@ -126,7 +131,7 @@ const FileList = ({ files }: propsType) => {
         },
       },
     ],
-  ])
+  ]
 
   console.log('files', files)
 
@@ -202,21 +207,16 @@ const FileList = ({ files }: propsType) => {
                           menusList={[
                             file.type == 'generatedFile'
                               ? [menuOption[0][0]]
-                              : [
-                                  {
-                                    title: 'อัพโหลดไฟล์ใหม่',
-                                    icon: <Icon as={GrUpload} />,
-                                    onClick: () => {
-                                      //---------function upload file if you want you can delete this because have button upload file
-                                      setOpen(true)
-                                      setFile(file)
-                                    },
-                                  },
-                                ],
+                              : [menuOption[0][1]],
                             menuOption[1],
                           ]}
                         >
-                          <Icon as={BsThreeDots} sx={threeDot} boxSize="18px" />
+                          <Icon
+                            as={BsThreeDots}
+                            sx={threeDot}
+                            boxSize="18px"
+                            onClick={() => setFileMenu(file)}
+                          />
                         </MenuProvider>
                       </Box>
                     </Box>

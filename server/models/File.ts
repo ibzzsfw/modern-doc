@@ -77,7 +77,9 @@ class File {
            ) AS "tags"
           FROM "UploadedFile" 
           LEFT JOIN "UserUploadedFile" 
-          ON "UserUploadedFile"."uploadedFileId" = "UploadedFile"."id"
+          ON ("UserUploadedFile"."uploadedFileId" = "UploadedFile"."id"
+          AND "UserUploadedFile"."userId" = ${userId}::uuid
+          )
           WHERE "UploadedFile"."id" = ${id}::uuid
         `
       }
