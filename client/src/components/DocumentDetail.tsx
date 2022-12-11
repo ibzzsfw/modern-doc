@@ -14,6 +14,7 @@ import { useFormPageStore } from '@stores/FormPageStore'
 import Markdown from 'marked-react'
 import { useNavigate } from 'react-router-dom'
 import shallow from 'zustand/shallow'
+import TakeNote from '@components/TakeNote'
 
 type propsType = {
   title: string
@@ -125,6 +126,7 @@ const FolderDetail = ({
     'title_personal',
   ]
 
+
   return (
     <Flex sx={detailsBox}>
       <Flex sx={descriptionBox}>
@@ -148,7 +150,11 @@ const FolderDetail = ({
           ></Button> */}
         </Box>
       </Flex>
-      <Box sx={noteBox}>{file.note}</Box>
+
+      <Box sx={noteBox}>
+        <Heading sx={titleText}>บันทึกเตือนความจำ</Heading>
+        {file.note}
+      </Box>
       {type === 'generatedFile' ? (
         <ButtonGroup
           gap="24px"
@@ -184,16 +190,23 @@ const FolderDetail = ({
           >
             แก้ไขเอกสารเดิม
           </Button>
+          <TakeNote  doucmentType = {file.type} documentId = {file.id} noteContent = {file.note} documentTitle = {title}  type= {'fileNote'} customButton={<Button colorScheme="gray" variant="outline">
+            แก้ไขบันทึก
+          </Button>} />
         </ButtonGroup>
       ) : null}
       {type === 'folder' ? (
-        <ButtonGroup gap="24px" marginTop="24px" isDisabled={true}>
+        <ButtonGroup gap="24px" marginTop="24px" >
           <Button sx={newDocumentBtn} colorScheme="green" onClick={() => {}}>
             สร้างเอกสารใหม่
           </Button>
           <Button sx={editDocumentBtn} colorScheme="gray" variant="outline">
             แก้ไขเอกสารเดิม
           </Button>
+          <TakeNote doucmentType = {file.type} documentId = {file.id} noteContent = {file.note}  documentTitle = {title} type= {'folderNote'} customButton={<Button  colorScheme="gray" variant="outline">
+            แก้ไขบันทึก
+          </Button>} />
+          
         </ButtonGroup>
       ) : null}
     </Flex>

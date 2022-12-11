@@ -29,27 +29,8 @@ type propTypes = {
 }
 
 const ProfileFormInput = ({ data }: propTypes) => {
-  const [info, setInfo] = useState({
-    title: 'เด็กชาย',
-    firstName: 'ใจฟู',
-    lastName: 'ศิลาคงกะพัน',
-    sex: 'ชาย',
-    birthDate: '21/12/2005',
-    citizenId: '5 6684 33592 45 1',
-    phoneNumber: '0812345678',
-    email: 'jaifu.dudee@gmail.com',
-    password: 'test555',
-    houseNumber: '285/285',
-    villageName: 'ภักดีชินรัตนา',
-    swineNumber: '2',
-    alley: 'เริงรัตน์ 5',
-    lane: 'ภักดี 2',
-    road: 'สมเด็จพระเจ้าตากสิน',
-    subDistrict: 'ดาวคะนอง',
-    district: 'ธนบุรี',
-    province: 'กรุงเทพมหานคร',
-    postalCode: '10600',
-  })
+  const toast = useToast()
+
   const { isEdit, setEdit } = useMyProfileStore()
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -61,14 +42,10 @@ const ProfileFormInput = ({ data }: propTypes) => {
     province: ['กรุงเทพมหานคร'],
     postalCode: ['10600'],
   }
-//------------confirm password and call update api
-  const handleform = (values) => {
-
-  }
-//---------------handale values for wait to confirm password
-  const updateProfile = (values) => {
-
-  }
+  //------------confirm password and call update api
+  const handleform = (values) => {}
+  //---------------handale values for wait to confirm password
+  const updateProfile = (values) => {}
 
   const confirmPasswordModal = (
     <>
@@ -123,7 +100,6 @@ const ProfileFormInput = ({ data }: propTypes) => {
     </>
   )
 
- 
   return (
     <VStack>
       <Box width="100%" textAlign="right" height="40px">
@@ -144,7 +120,7 @@ const ProfileFormInput = ({ data }: propTypes) => {
       <Divider />
 
       <Formik
-        initialValues={info}
+        initialValues={data}
         onReset={(values) => {
           setEdit(false)
         }}
@@ -344,14 +320,9 @@ const ProfileFormInput = ({ data }: propTypes) => {
   )
 }
 
-
 export default ProfileFormInput
 
-
-
-
-
- /*const ProfileSchema = Yup.object().shape({
+/*const ProfileSchema = Yup.object().shape({
         title: Yup.mixed().oneOf(['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง']),
         firstName: Yup.string().required('จำเป็นต้องกรอก'),
         lastName: Yup.string().required('จำเป็นต้องกรอก'),

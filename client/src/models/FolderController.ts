@@ -53,6 +53,26 @@ class FolderController {
     )
     return response.data
   }
+
+  static async editNote(content : string, id : string | undefined){
+    console.log(content,id)
+    let response = await axios.put(
+      `${process.env.VITE_API_ENDPOINT}/folder/add-note/${id}`,
+      {
+        note: content,
+      },
+      {
+        headers: {
+          'user-id': useLoginDataStore.getState()?.user?.id,
+          token: useLoginDataStore.getState()?.user?.token,
+        },
+      }
+    )
+
+    return response.data
+  }
+
+
 }
 
 export default FolderController

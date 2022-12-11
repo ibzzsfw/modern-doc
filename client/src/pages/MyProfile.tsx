@@ -4,16 +4,16 @@ import ProfilePicture from '@components/ProfilePicture'
 import { useLoginDataStore } from '@stores/LoginDataStore'
 
 const MyProfile = () => {
-  const profile = useLoginDataStore((state) => state.user)
+  const user = useLoginDataStore.getState().user
 
-  console.log(profile)
+  console.log(user)
 
   return (
     <Box sx={myprofileLayout}>
       <Center>
         <HStack gap="138px">
-          <ProfilePicture url={profile?.profileURI} />
-          <ProfileFormInput data={profile} />
+          <ProfilePicture url={user?.profileURI} />
+          <ProfileFormInput data={user} />
         </HStack>
       </Center>
     </Box>

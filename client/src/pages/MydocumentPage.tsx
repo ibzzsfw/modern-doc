@@ -87,6 +87,7 @@ const MyDocument = () => {
           <>
             <TakeNote
               userId={user?.id}
+              type={'freeNote'}
               customButton={
                 <DocumentBlankBox
                   icon={AiFillPlusCircle}

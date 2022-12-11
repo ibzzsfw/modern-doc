@@ -5,7 +5,7 @@ import FolderUploadedFile from '@models/FolderUploadedFile'
 import { addDays, subDays } from 'date-fns'
 import markdown from 'src/mockData/markdown'
 import UploadFile from '@components/UploadFile'
-import TakeNote from '@components/TakeNote'
+
 import FileViewer from '@components/FileViewer'
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
@@ -44,10 +44,7 @@ const File = () => {
   if (data)
     return (
       <Flex sx={documentView}>
-        <Box sx={abstractArea}>
-          {/* <UploadFile /> */}
-          <TakeNote />
-        </Box>
+        <Box sx={abstractArea}>{/* <UploadFile /> */}</Box>
         <DocumentDetail
           title={file.officialName}
           description={''}
