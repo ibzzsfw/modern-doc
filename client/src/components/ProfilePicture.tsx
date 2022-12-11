@@ -12,6 +12,7 @@ import {
 import { useState } from 'react'
 import { AiOutlineUpload } from 'react-icons/ai'
 import { useMyProfileStore } from '@stores/MyProfilePageStore'
+import { v4 as uuidv4 } from 'uuid'
 
 type propTypes = {
   url: string | undefined
@@ -20,12 +21,18 @@ type propTypes = {
 const ProfilePicture = ({ url }: propTypes) => {
   const { isEdit, setEdit } = useMyProfileStore()
 
+  const [image, setImage] = useState<any>(null)
+
   return (
     <VStack gap="34px">
       <Box sx={uploadImagelayout}>
         <VStack>
           <Image
-            src={url || 'https://via.placeholder.com/365x365'}
+            src={
+              image != null
+                ? URL.createObjectURL(image)
+                : url ?? 'https://via.placeholder.com/365x365'
+            }
             boxSize="365px"
             borderRadius="8px"
             position="absolute"
@@ -37,8 +44,6 @@ const ProfilePicture = ({ url }: propTypes) => {
             borderRadius="8px"
             sx={isEdit ? backgroundHover : { opacity: 0 }}
           >
-            //------------api for upload image----- 
-            //-----------but i dont know how to provide api interface
             <Input
               type="file"
               position="absolute"
@@ -47,8 +52,11 @@ const ProfilePicture = ({ url }: propTypes) => {
               aria-hidden="true"
               display={isEdit ? 'block' : 'none'}
               accept="image/*"
+              onChange={(e) => {
+                setImage(e.target.files![0])
+                console.log(e.target.files![0])
+              }}
             />
-
             <Icon
               as={AiOutlineUpload}
               top="157.5px"

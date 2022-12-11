@@ -84,6 +84,60 @@ let breadcrumbConfig = [
       },
     ],
   },
+  {
+    title: 'ดูรายละเอียดไฟล์',
+    path: '/alldocument/xxx',
+    history: [
+      {
+        title: 'หน้าหลัก',
+        path: '/home',
+      },
+      {
+        title: 'เอกสารของฉัน',
+        path: '/mydocument',
+      },
+      {
+        title: 'ไฟล์ของฉัน',
+        path: '/file',
+      },
+    ],
+  },
+  {
+    title: 'ดูรายละเอียด',
+    path: '/alldocument/xxx',
+    history: [
+      {
+        title: 'หน้าหลัก',
+        path: '/home',
+      },
+      {
+        title: 'เอกสารของฉัน',
+        path: '/mydocument',
+      },
+      {
+        title: 'แฟ้มเอกสารของฉัน',
+        path: '/folder',
+      },
+    ],
+  },
+  {
+    title: 'ดูรายละเอียด',
+    path: '/alldocument/xxx',
+    history: [
+      {
+        title: 'หน้าหลัก',
+        path: '/home',
+      },
+      {
+        title: 'เอกสารของฉัน',
+        path: '/mydocument',
+      },
+      {
+        title: 'เอกสารที่อัปโหลด',
+        path: '/uploadfile',
+      },
+    ],
+  },
 ]
 
 const getBreadcrumbFromPath = (path: string) => {

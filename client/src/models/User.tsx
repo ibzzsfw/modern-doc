@@ -13,6 +13,8 @@ class User implements UserType {
   token
   relationship
   profileURI
+  email
+  birthDate
 
   constructor(arg: UserType) {
     this.id = arg.id
@@ -26,6 +28,8 @@ class User implements UserType {
     this.token = arg.token
     this.relationship = arg.relationship
     this.profileURI = arg.profileURI
+    this.email = arg.email
+    this.birthDate = arg.birthDate
   }
 
   public getFullName(): string {

@@ -383,6 +383,83 @@ class User {
       res.status(400).json({ message: err })
     }
   }
+
+  static editProfile = async (req: Request, res: Response) => {
+    let {
+      title,
+      firstName,
+      lastName,
+      sex,
+      phoneNumber,
+      birthDate,
+      profileURI,
+      password,
+    } = req.body
+
+    const userId = req.headers['user-id'] as string
+    const schema = z.object({
+      userId: z.string().uuid(),
+      title: z.string(),
+      firstName: z.string(),
+      lastName: z.string(),
+      sex: z.any(),
+      phoneNumber: z.string(),
+      birthDate: z.string(),
+      profileURI: z.string(),
+      password: z.string(),
+    })
+    try {
+      schema.parse({
+        userId,
+        title,
+        firstName,
+        lastName,
+        sex,
+        phoneNumber,
+        birthDate,
+        profileURI,
+        password,
+      })
+
+      const getUser = await Prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+        select: {
+          id: true,
+          hashedPassword: true,
+        },
+      })
+
+      if (!getUser) {
+        return res.status(404).json({ message: 'ไม่พบข้อมูลผู้ใช้งาน' })
+      }
+
+      const isPasswordCorrect = await bcrypt.compare(
+        password,
+        getUser.hashedPassword
+      )
+
+      if (!isPasswordCorrect) {
+        return res.status(400).json({ message: 'รหัสผ่านไม่ถูกต้อง' })
+      }
+
+      const editProfile = await Prisma.$queryRaw`
+      UPDATE "User" SET "title" = ${title}, "firstName" = ${firstName}, 
+      "lastName" = ${lastName}, sex= ${sex}::"Sex", "phoneNumber" = ${phoneNumber},
+      "profileURI" = ${profileURI}, 
+      "birthDate" = ${new Date(
+        birthDate
+      )} WHERE "id" = ${userId}::uuid RETURNING *
+      `
+
+      console.log(editProfile)
+
+      res.status(200).json(editProfile)
+    } catch (err) {
+      res.status(400).json({ message: err })
+    }
+  }
 }
 
 export default User

@@ -5,9 +5,11 @@ interface UserType {
   firstName: string
   lastName: string
   citizenId: string
+  email: string
   phoneNumber: string
+  birthDate: string
   sex: 'ชาย' | 'หญิง' | ''
-  token: string 
+  token: string
   relationship: Relationship
   profileURI: string
 }

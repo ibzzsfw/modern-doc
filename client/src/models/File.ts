@@ -13,6 +13,7 @@ class File {
   type?: string
   date?: Date
   note?: string
+  previewURI?: string
 }
 
 export default File
