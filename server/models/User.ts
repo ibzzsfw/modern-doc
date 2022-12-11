@@ -4,7 +4,7 @@ import { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import { z } from 'zod'
 import checkCitizenId from '@utils/checkCitizenId'
-import getSexMF from '@utils/getSexEnum'
+import getSexEnum from '@utils/getSexEnum'
 import getSexText from '@utils/getSexText'
 import Prisma from '@utils/prisma'
 import async from 'async'
@@ -64,7 +64,7 @@ class User {
     })
     try {
       schema.parse(req.body)
-      req.body.sex = getSexMF(req.body.sex)
+      req.body.sex = getSexEnum(req.body.sex)
       let hashedPassword = await bcrypt.hash(req.body.password, 10)
       let {
         title,
@@ -446,7 +446,9 @@ class User {
 
       const editProfile = await Prisma.$queryRaw`
       UPDATE "User" SET "title" = ${title}, "firstName" = ${firstName}, 
-      "lastName" = ${lastName}, sex= ${sex}::"Sex", "phoneNumber" = ${phoneNumber},
+      "lastName" = ${lastName}, sex= ${getSexEnum(
+        sex
+      )}::"Sex", "phoneNumber" = ${phoneNumber},
       "profileURI" = ${profileURI}, 
       "birthDate" = ${new Date(
         birthDate
