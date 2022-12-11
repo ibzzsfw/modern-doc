@@ -13,6 +13,7 @@ import {
   ModalCloseButton,
   useDisclosure,
   useToast,
+  ButtonGroup
 } from '@chakra-ui/react'
 import { HiKey } from 'react-icons/hi'
 
@@ -106,8 +107,8 @@ const ChangePassword = () => {
                 />
               </ModalBody>
 
-              <ModalFooter justifyContent="center">
-                <Flex gap="22px">
+              <ModalFooter justifyContent="flex-end">
+                <ButtonGroup gap="10px" size='md'>
                   <Button variant="outline" type="reset">
                     ยกเลิก
                   </Button>
@@ -119,7 +120,7 @@ const ChangePassword = () => {
                   >
                     ตกลง
                   </Button>
-                </Flex>
+                </ButtonGroup>
               </ModalFooter>
             </Form>
           </Formik>
