@@ -5,8 +5,15 @@ import {
   Flex,
   Icon,
   Image,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Text,
   Textarea,
+  useDisclosure,
   useToast,
 } from '@chakra-ui/react'
 import MenuProvider from '@components/MenuProvider'
@@ -60,7 +67,7 @@ const DocumentBox = ({
 }: propsType) => {
   const [editNote, setEditNote] = useState(false)
   const toast = useToast()
-
+  const { isOpen, onOpen, onClose } = useDisclosure()
   let layout = {
     width: '320px',
     boxShadow: '5px 5px 3px -2px rgba(0, 0, 0, 0.1)',
@@ -297,7 +304,7 @@ const DocumentBox = ({
             title: `ลบ${getThaiName()}`,
             icon: <Icon as={BsTrash} color="accent.red" />,
             onClick: () => {
-              deleteNote.mutate(id)
+              onOpen()
             },
             style: {
               color: 'accent.red',
@@ -308,6 +315,40 @@ const DocumentBox = ({
     >
       <Icon as={BsThreeDots} sx={threeDot} boxSize="18px" />
     </MenuProvider>
+  )
+
+  let deleteModal = (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      isCentered
+      closeOnOverlayClick={false}
+    >
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>ลบ{getThaiName()}</ModalHeader>
+        <ModalBody>
+          คุณต้องการลบ <Text as="b">{title}</Text> หรือไม่
+        </ModalBody>
+        <ModalFooter>
+          <Flex gap="22px">
+            <Button variant="outline" onClick={onClose}>
+              ยกเลิก
+            </Button>
+            <Button
+              variant="solid"
+              colorScheme="red"
+              onClick={() => {
+                deleteNote.mutate(id)
+                onClose()
+              }}
+            >
+              ลบ
+            </Button>
+          </Flex>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   )
 
   return (
@@ -374,6 +415,7 @@ const DocumentBox = ({
           </Formik>
         </Box>
       )}
+      {deleteModal}
     </Box>
   )
 }
