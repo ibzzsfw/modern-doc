@@ -6,6 +6,7 @@ import {
   Heading,
   HStack,
   Spacer,
+  Text,
 } from '@chakra-ui/react'
 import GeneratedDocumentBadge from '@components/DocumentBadge'
 import Status from '@models/DocumentStatus'
@@ -15,6 +16,9 @@ import Markdown from 'marked-react'
 import { useNavigate } from 'react-router-dom'
 import shallow from 'zustand/shallow'
 import TakeNote from '@components/TakeNote'
+import ConfirmationModal from '@components/ConfirmationModal'
+import { useState } from 'react'
+import UploadFile from '@components/UploadFile'
 
 type propsType = {
   title: string
@@ -34,6 +38,8 @@ const FolderDetail = ({
   note,
 }: propsType) => {
   const navigate = useNavigate()
+  const [comfirmModal, setConfirmModal] = useState(false)
+  const [infoModal, setInfoModal] = useState({ title: '', discription: '' })
 
   const { file, setFile } = useFilePageStore((state) => {
     return {
@@ -219,39 +225,50 @@ const FolderDetail = ({
           </ButtonGroup>
         ) : null}
         {type === 'folder' ? (
-          <ButtonGroup
-            gap="24px"
-            marginTop="24px"
-            isDisabled={selectedDocument.length == 0}
-          >
-            <Button
-              sx={newDocumentBtn}
-              colorScheme="green"
-              onClick={() => {
-                let temp = generatedFiles.map((document) => {
-                  document.fields.map((field) => {
-                    if (keepField.includes(field.name) === false)
-                      field.userValue = ''
-                    return field
+          <>
+            <ButtonGroup
+              gap="24px"
+              marginTop="24px"
+              isDisabled={selectedDocument.length == 0}
+            >
+              <Button
+                sx={newDocumentBtn}
+                colorScheme="green"
+                onClick={() => {
+                  let temp = generatedFiles.map((document) => {
+                    document.fields.map((field) => {
+                      if (keepField.includes(field.name) === false)
+                        field.userValue = ''
+                      return field
+                    })
+                    return document
                   })
-                  return document
-                })
-                setGeneratedFiles(temp)
-                navigate('/form')
-              }}
-            >
-              สร้างเอกสารใหม่
-            </Button>
-            <Button
-              sx={editDocumentBtn}
-              colorScheme="gray"
-              variant="outline"
-              onClick={() => {
-                navigate('/form')
-              }}
-            >
-              แก้ไขเอกสารเดิม
-            </Button>
+                  setInfoModal({
+                    title: 'สร้างเอกสารใหม่',
+                    discription: (
+                      <Text>
+                        คุณต้องการสร้างเอกสารใหม่{' '}
+                        <Text as="b"> {selectedDocument.length} </Text>{' '}
+                        รายการหรือไม่
+                      </Text>
+                    ),
+                  })
+                  setGeneratedFiles(temp)
+
+                  setConfirmModal(true)
+                }}
+              >
+                สร้างเอกสารใหม่
+              </Button>
+              <Button
+                sx={editDocumentBtn}
+                colorScheme="gray"
+                variant="outline"
+                onClick={() => {}}
+              >
+                แก้ไขเอกสารเดิม
+              </Button>
+            </ButtonGroup>
             <TakeNote
               doucmentType={document?.type}
               documentId={document?.id}
@@ -264,8 +281,27 @@ const FolderDetail = ({
                 </Button>
               }
             />
-          </ButtonGroup>
+          </>
         ) : null}
+        <Flex justifyContent="flex-start">
+          {status === 'ไม่มีอยู่ในคลัง' && (
+            <UploadFile
+              customButton={<Button colorScheme="green">อัปโหลดไฟล์</Button>}
+            />
+          )}
+          <ConfirmationModal
+            open={comfirmModal}
+            setOpen={(value) => {
+              setConfirmModal(value)
+            }}
+            title={infoModal.title}
+            discirption={infoModal.discription}
+            documentItem={selectedDocument}
+            onClick={() => {
+              navigate('/form')
+            }}
+          />
+        </Flex>
       </Flex>
     )
 }
