@@ -23,9 +23,10 @@ import { useState } from 'react'
 import { FiEdit } from 'react-icons/fi'
 import { useMyProfileStore } from '@stores/MyProfilePageStore'
 import { updateCurrentUser } from 'firebase/auth'
+import { useEffect } from 'react'
 
 type propTypes = {
-  data: UserType | null
+  data: any
 }
 
 const ProfileFormInput = ({ data }: propTypes) => {
@@ -43,9 +44,9 @@ const ProfileFormInput = ({ data }: propTypes) => {
     postalCode: ['10600'],
   }
   //------------confirm password and call update api
-  const handleform = (values) => {}
+  const handleform = (values: any) => {}
   //---------------handale values for wait to confirm password
-  const updateProfile = (values) => {}
+  const updateProfile = (values: any) => {}
 
   const confirmPasswordModal = (
     <>
@@ -85,7 +86,7 @@ const ProfileFormInput = ({ data }: propTypes) => {
 
               <ModalFooter justifyContent="center">
                 <Flex gap="22px">
-                  <Button variant="outline" type="reset">
+                  <Button variant="outliวัยne" type="reset">
                     ยกเลิก
                   </Button>
                   <Button variant="solid" colorScheme="blue" type="submit">
@@ -208,7 +209,7 @@ const ProfileFormInput = ({ data }: propTypes) => {
               />
               {!isEdit && <ChangePassword />}
             </Flex>
-            <Text as="b">ที่อยู่ตามทะเบียนบ้าน</Text>
+            {/* <Text as="b">ที่อยู่ตามทะเบียนบ้าน</Text>
             <Divider />
             <Flex gap="16px">
               <FormInput
@@ -299,7 +300,7 @@ const ProfileFormInput = ({ data }: propTypes) => {
                 width="146px"
                 disable={!isEdit}
               />
-            </Flex>
+            </Flex> */}
             <Box height="40px" textAlign="right" width="100%">
               <HStack
                 gap="22px"

@@ -20,6 +20,7 @@ import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import getRelationshipText from '@utils/getRelationshipText'
 import FileController from '@models/FileController'
+import { useEffect } from 'react'
 
 type propsType = {
   isOpen: boolean
@@ -40,12 +41,16 @@ const ImportFromFamily = ({
 
   console.log('fileId', fileId)
 
-  const { data, isLoading, error } = useQuery(
+  const { data, isLoading, error, refetch } = useQuery(
     ['getAvailableUploadedFile'],
     async () => {
       if (fileId) return MemberController.getAvailableUploadedFile(fileId)
     }
   )
+
+  useEffect(() => {
+    refetch()
+  }, [fileId])
 
   const layout = {
     width: '100%',
@@ -95,6 +100,8 @@ const ImportFromFamily = ({
     },
   }
 
+  if (isLoading) return <div>Loading...</div>
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
@@ -133,7 +140,7 @@ const ImportFromFamily = ({
         </ModalBody>
         <ModalFooter>
           <HStack>
-            <Button colorScheme="red" onClick={() => onClose()}>
+            <Button variant="outline" onClick={() => onClose()}>
               ยกเลิก
             </Button>
             <Button

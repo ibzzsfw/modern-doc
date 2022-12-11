@@ -19,7 +19,7 @@ import TakeNote from '@components/TakeNote'
 type propsType = {
   title: string
   status: Status
-  description: string
+  description: string | undefined | null
   markdown: string
   type?: 'generatedFile' | 'uploadedFile' | 'freeUploadFile' | 'folder' | string
   note?: string

@@ -13,7 +13,12 @@ const MyProfile = () => {
       <Center>
         <HStack gap="138px">
           <ProfilePicture url={user?.profileURI} />
-          <ProfileFormInput data={user} />
+          <ProfileFormInput
+            data={{
+              ...user,
+              birthDate: new Date(user!.birthDate).toISOString().split('T')[0],
+            }}
+          />
         </HStack>
       </Center>
     </Box>

@@ -43,9 +43,7 @@ const AllDocumentPage = () => {
   const [search, setSearch] = useState('')
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [sortMenu, setSortMenu] = useState({ sort: '', order: '' })
-  const [documents, setDocuments] = useState([
-  
-  ])
+  const [documents, setDocuments] = useState([])
 
   let menu = (
     <MenuProvider

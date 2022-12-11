@@ -100,6 +100,8 @@ const Login = () => {
             token: data.token,
             relationship: data.relationship,
             profileURI: data.profileURI,
+            email: data.email,
+            birthDate: data.birthDate,
           })
         )
 

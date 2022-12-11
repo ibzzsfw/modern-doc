@@ -22,6 +22,9 @@ class UserController {
   switchMember = async (req: Request, res: Response) => {
     User.switchMember(req, res)
   }
+  editProfile = async (req: Request, res: Response) => {
+    User.editProfile(req, res)
+  }
 }
 
 export default new UserController()
