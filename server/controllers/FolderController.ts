@@ -13,6 +13,9 @@ class FolderController {
   addNote = async (req: Request, res: Response) => {
     Folder.addNote(req, res)
   }
+  getField = async (req: Request, res: Response) => {
+    Folder.getField(req, res)
+  }
 }
 
 export default new FolderController()

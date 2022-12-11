@@ -31,13 +31,14 @@ import { HiArrowDownRight } from 'react-icons/hi2'
 import { RiFileSearchLine } from 'react-icons/ri'
 import DocumentBadge from '@components/DocumentBadge'
 import UploadedFile from '@models/dyl/UploadedFile'
+import File from '@models/File'
+import FileController from '@models/FileController'
 
 type propsType = {
   files: any[]
 }
 
 const FileList = ({ files }: propsType) => {
-  const { generatedFile, setGeneratedFile } = useGeneratedFileStore()
   const {
     setSelectedDocument,
     selectedDocument,
@@ -45,31 +46,47 @@ const FileList = ({ files }: propsType) => {
     setDocumentType,
   } = useFormPageStore()
   const [open, setOpen] = useState(false)
-  const [file, setFile] = useState<UploadedFile | null>(null)
+  const [file, setFile] = useState<File | null>(null)
 
-  const onChangeCheckbox = (checked: boolean, file: GeneratedFile) => {
+  const onChangeCheckbox = (checked: boolean, file: File) => {
     if (checked) {
-      setGeneratedFile([...generatedFile, file])
+      setSelectedDocument([...selectedDocument, file])
     } else {
-      setGeneratedFile(generatedFile.filter((f) => f.id !== file.id))
+      setSelectedDocument(selectedDocument.filter((f) => f.id !== file.id))
     }
   }
 
   const onChangeAllCheckbox = (checked: boolean) => {
     if (checked) {
-      setGeneratedFile(files.filter((file) => file.URI != null))
+      setSelectedDocument(files.filter((file) => file.URI != null))
     } else {
-      setGeneratedFile([])
+      setSelectedDocument([])
     }
   }
 
   const isSelectedThisFile = (file: GeneratedFile) => {
-    return generatedFile.filter((f) => f.id === file.id).length > 0
+    return selectedDocument.filter((f) => f.id === file.id).length > 0
   }
 
-  console.log('selected file', generatedFile)
+  console.log('selected file', selectedDocument)
 
-  useEffect(() => console.table(generatedFile), [generatedFile])
+  useEffect(() => {
+    setDocumentType('folder')
+    const getGeneratedFileField = async () => {
+      const promise = selectedDocument
+        .filter((file) => file.type == 'generatedFile')
+        .map(async (file) => {
+          const result = await FileController.getFileById(file.id, '1')
+          return result
+        })
+      const result = await Promise.all(promise)
+      console.log('result', result)
+      setSelectedDocumentField(result)
+    }
+    getGeneratedFileField()
+
+    console.table(selectedDocument)
+  }, [selectedDocument])
 
   const countGeneratedFile = () =>
     files.filter((file) => file.type == 'generatedFile').length
@@ -120,7 +137,7 @@ const FileList = ({ files }: propsType) => {
           <Grid templateColumns="1fr 3fr 2fr 2fr 1fr 1fr" sx={tableHead}>
             <Box sx={simpleBox}>
               <Checkbox
-                isChecked={generatedFile.length === countGeneratedFile()}
+                isChecked={selectedDocument.length === countGeneratedFile()}
                 onChange={(e) => onChangeAllCheckbox(e.target.checked)}
               />
             </Box>

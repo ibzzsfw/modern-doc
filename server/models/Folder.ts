@@ -136,6 +136,56 @@ class Folder {
       res.status(400).json(err)
     }
   }
+
+  static getField = async (req: Request, res: Response) => {
+    const generatedFileIds = JSON.parse(
+      req.headers['generated-file-ids'] as string
+    )
+    const userId = req.headers['user-id'] as string
+    const schema = z.object({
+      generatedFileIds: z.array(z.string().uuid()),
+      userId: z.string().uuid(),
+    })
+    try {
+      schema.parse({ generatedFileIds, userId })
+      let arr = []
+      let promise = generatedFileIds.map(async (generatedFileId, index) => {
+        const field = await Prisma.$queryRaw`
+          SELECT  array(
+          SELECT DISTINCT jsonb_build_object(
+            'id', "Field"."id",
+            'generatedFileId', "GeneratedFileField"."generatedFileId",
+            'name', "Field"."name",
+            'type', "Field"."type",
+            'description', "Field"."description",
+            'officialName', "Field"."officialName",
+            'isRequired', "GeneratedFileField"."isRequired",
+            'userValue', "UserField"."rawValue",
+            'date', "UserField"."date",
+            'fieldChoice',(SELECT json_agg(json_build_object(
+              'name', "FieldChoice"."name",
+              'officialName', "FieldChoice"."officialName"
+            ))
+              FROM "FieldChoice"
+           	  WHERE "FieldChoice"."fieldId" = "Field"."id"
+           )
+          )
+          FROM "GeneratedFileField" 
+          LEFT JOIN "Field" ON "Field"."id" = "GeneratedFileField"."fieldId"
+          LEFT JOIN "UserField" ON "UserField"."fieldId" = "Field"."id"
+          WHERE "GeneratedFileField"."generatedFileId" = ${generatedFileId}::uuid
+          AND ("UserField"."userId" = ${userId}::uuid OR "UserField"."userId" IS NULL)
+        ) AS "fields" FROM "GeneratedFileField" WHERE id = ${generatedFileId}::uuid
+        `
+        console.log(field)
+        arr.push(field[0])
+      })
+      await Promise.all(promise)
+      res.json(arr)
+    } catch (err) {
+      res.status(400).json(err)
+    }
+  }
 }
 
 export default Folder
