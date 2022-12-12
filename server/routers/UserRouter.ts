@@ -31,6 +31,7 @@ class UserRouter {
     this.router.get('/get-folders/:userId', this.controller.getFolders)
     this.router.get('/get-files/:userId', this.controller.getFiles)
     this.router.put('/edit-profile', this.controller.editProfile)
+    this.router.post('/change-password', this.controller.changePassword)
   }
 }
 

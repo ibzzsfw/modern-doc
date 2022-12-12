@@ -124,9 +124,7 @@ const FileList = ({ files }: propsType) => {
               form.getCheckBox('option1').check()
               break
             default:
-              form
-                .getTextField(field.name)
-                .setText('ภาษาไทย ' + field.officialName)
+              form.getTextField(field.name).setText(field.userValue ?? '')
               break
           }
         }
@@ -157,7 +155,7 @@ const FileList = ({ files }: propsType) => {
     await Promise.all(pdfListPromise)
     await Promise.all(uploadedListPromise)
 
-    const testMergePdf = await merger.save('testMergePdf.pdf')
+    const testMergePdf = await merger.save(`${document?.officialName}`)
     console.log(pdfList)
   }
 
