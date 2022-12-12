@@ -297,7 +297,7 @@ const DocumentBox = ({
       return FileController.editNote(value.content, value.type, value.id)
     },
     {
-      onSuccess: (variables: NoteType | any) => {
+      onSuccess: () => {
         toast({
           title: 'แก้ไขบันทึกสำเร็จ',
           description: `แก้ไขบันทึกสำเร็จ`,
@@ -305,7 +305,7 @@ const DocumentBox = ({
           duration: 5000,
         })
       },
-      onError: (error) => {
+      onError: (error: any) => {
         toast({
           title: 'แก้ไขบันทึกไม่สำเร็จ',
           description: `${error.massage}`,

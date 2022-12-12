@@ -6,9 +6,7 @@ import { useFamilyDataStore } from '@stores/FamilyDataStore'
 import { useProfiledataStore } from '@stores/MyProfiledataStore'
 const MyProfile = () => {
   const user = useLoginDataStore.getState().user
-  const { setUser } = useProfiledataStore()
-  console.log(user)
-  
+
   return (
     <Box sx={myprofileLayout}>
       <Center>
