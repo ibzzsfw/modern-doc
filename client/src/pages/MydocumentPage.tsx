@@ -264,10 +264,12 @@ const MyDocument = () => {
                     image={file.image}
                     amount={file.amount}
                     showNote
+                    showDate
                     note={file.note}
                     size={file.size}
                     showMenu={true}
                     isShared={file.isShared}
+                    createdDate={new Date(file.date)}
                   />
                 )
               })
