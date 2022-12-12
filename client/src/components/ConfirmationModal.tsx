@@ -16,7 +16,7 @@ import { useEffect } from 'react'
 
 type propsType = {
   title?: string
-  description?: string
+  description?: any
   documentItem?: any | any[]
   onClick?: () => void
   open?: boolean

@@ -219,7 +219,7 @@ const FormPage = () => {
 
   let buttomSection = {
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
   }
 
   let progressSection = {
@@ -411,14 +411,14 @@ const FormPage = () => {
               </Flex>
             </Flex>
             <Flex sx={buttomSection}>
-              <Flex sx={progressSection}>
+              {/* <Flex sx={progressSection}>
                 <Text>ความคืบหน้า</Text>
                 <Flex sx={progress}>
                   <Box sx={a} />
                   <Box sx={b} />
                 </Flex>
                 <Text as="b">{`${100 * percent} %`}</Text>
-              </Flex>
+              </Flex> */}
               <Button type="submit" colorScheme="green">
                 ตรวจสอบ
               </Button>
@@ -506,14 +506,14 @@ const FormPage = () => {
             </Flex>
           </Flex>
           <Flex sx={buttomSection}>
-            <Flex sx={progressSection}>
+            {/* <Flex sx={progressSection}>
               <Text>ความคืบหน้า</Text>
               <Flex sx={progress}>
                 <Box sx={a} />
                 <Box sx={b} />
               </Flex>
               <Text as="b">{`${100 * percent} %`}</Text>
-            </Flex>
+            </Flex> */}
 
             <Button type="submit" colorScheme="green">
               ตรวจสอบ

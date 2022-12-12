@@ -53,7 +53,8 @@ class File {
             ))
               FROM "FieldChoice"
            	  WHERE "FieldChoice"."fieldId" = "Field"."id"
-           )
+           ),
+           'order', "GeneratedFileField"."order"
           )
           FROM "GeneratedFileField" 
           LEFT JOIN "Field" ON "Field"."id" = "GeneratedFileField"."fieldId"
@@ -199,7 +200,10 @@ class File {
     try {
       schema.parse({ id, type, userId })
       let result = await this.getFile(id, type, userId)
-      res.status(200).json({ ...result[0], type: type })
+      if (type === 'generatedFile') {
+        result[0].fields.sort((a: any, b: any) => a.order - b.order)
+        res.status(200).json({ ...result[0], type: type })
+      } else res.status(200).json({ ...result[0], type: type })
     } catch (err) {
       return res.status(500).json({ message: err })
     }
