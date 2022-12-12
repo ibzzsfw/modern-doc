@@ -17,6 +17,8 @@ import {
   useToast,
 } from '@chakra-ui/react'
 import MenuProvider from '@components/MenuProvider'
+import FileController from '@models/FileController'
+import FolderController from '@models/FolderController'
 import NoteController from '@models/NoteController'
 import { useMutation } from '@tanstack/react-query'
 import { Field, Form, Formik } from 'formik'
@@ -257,6 +259,57 @@ const DocumentBox = ({
       },
     }
   )
+  const editFileNote = useMutation(
+    (value: {
+      content: string
+      type: string | undefined
+      id: string | undefined
+    }) => {
+      return FileController.editNote(value.content, value.type, value.id)
+    },
+    {
+      onSuccess: (variables: NoteType | any) => {
+        toast({
+          title: 'แก้ไขบันทึกสำเร็จ',
+          description: `แก้ไขบันทึกสำเร็จ`,
+          status: 'success',
+          duration: 5000,
+        })
+      },
+      onError: (error) => {
+        toast({
+          title: 'แก้ไขบันทึกไม่สำเร็จ',
+          description: `${error.massage}`,
+          status: 'error',
+          duration: 5000,
+        })
+      },
+    }
+  )
+
+  const editFolderNote = useMutation(
+    (value: { content: string; id: string | undefined }) => {
+      return FolderController.editNote(value.content, value.id)
+    },
+    {
+      onSuccess: () => {
+        toast({
+          title: 'แก้ไขบันทึกสำเร็จ',
+          description: `แก้ไขบันทึกสำเร็จ`,
+          status: 'success',
+          duration: 5000,
+        })
+      },
+      onError: (error) => {
+        toast({
+          title: 'แก้ไขบันทึกไม่สำเร็จ',
+          description: `${error}`,
+          status: 'error',
+          duration: 5000,
+        })
+      },
+    }
+  )
 
   const updateFreeNote = useMutation(
     (value: { heading: string; content: string; id: string | undefined }) => {
@@ -277,7 +330,7 @@ const DocumentBox = ({
       onError: (error) => {
         toast({
           title: 'แก้ไขบันทึกไม่สำเร็จ',
-          description: error.message,
+          description: error,
           status: 'error',
           duration: 3000,
         })
@@ -370,13 +423,31 @@ const DocumentBox = ({
       {showNote && (
         <Box marginTop="18px">
           <Formik
-            initialValues={{ content: note }}
-            onSubmit={(value) => {
-              updateFreeNote.mutate({
-                heading: title,
-                content: value.content,
-                id: id,
-              })
+            initialValues={{ content: note || '' }}
+            onSubmit={(value: { content: string }) => {
+              switch (type) {
+                case 'note':
+                  updateFreeNote.mutate({
+                    heading: title,
+                    content: value.content,
+                    id: id,
+                  })
+                  break
+                case 'generatedFolder':
+                  editFolderNote.mutate({
+                    content: value.content,
+                    id: id,
+                  })
+                  break
+                case 'generatedFile':
+                  editFileNote.mutate({
+                    content: value.content,
+                    type: type,
+                    id: id,
+                  })
+                  break
+              }
+
               setEditNote(false)
             }}
             onReset={(value) => {

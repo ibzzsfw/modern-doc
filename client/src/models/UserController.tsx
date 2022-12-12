@@ -74,6 +74,48 @@ class UserController {
       return err.response.data
     }
   }
+  static async editProfile(
+    title: string,
+    fistName: string,
+    lastName: string,
+    sex: string,
+    phoneNumber: string,
+    birthDate: string,
+    profileURI: string,
+    password: string
+  ) {
+    console.log(
+      title,
+      fistName,
+      lastName,
+      sex,
+      phoneNumber,
+      birthDate,
+      profileURI,
+      password
+    )
+    let response = await axios.put(
+      `${process.env.VITE_API_ENDPOINT}/user/edit-profile`,
+      {
+        title: title,
+        firstName: fistName,
+        lastName: lastName,
+        sex: sex,
+        phoneNumber: phoneNumber,
+        birthDate: birthDate,
+        profileURI: profileURI,
+        password: password,
+      },
+      {
+        headers: {
+          'user-id': useLoginDataStore.getState()?.user?.id,
+          token: useLoginDataStore.getState()?.user?.token,
+        },
+      }
+    )
+
+    return response.data
+  }
 }
 
 export default UserController

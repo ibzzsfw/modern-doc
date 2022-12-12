@@ -34,8 +34,6 @@ const MyDocument = () => {
     return await FileController.getLatestFile('generatedFile')
   })
 
-  console.log(latestFiles)
-
   const {
     data: latestFolder,
     isLoading: latestFolderLoading,
@@ -185,26 +183,21 @@ const MyDocument = () => {
           }}
         >
           {latestFiles
-            .filter((file) => file.officialName.toLowerCase().includes(search))
-            .map((file: any) => {
-              return (
-                <DocumentBox
-                  image={file.image}
-                  amount={file.amount}
-                  showNote
-                  size={file.size}
-                  showMenu={true}
-                  id={file.id}
-                  title={file.officialName}
-                  type={file.type ?? 'generatedFile'}
-                  note={file.note}
-                  showDate
-                  createdDate={new Date(file.date)}
-                />
-              )
-            })
-            .slice(0, 1)}
+            ?.filter((file) => file.officialName.toLowerCase().includes(search))
+            .map((file: any) => (
+              <DocumentBox
+                id={file.id}
+                title={file.officialName}
+                type={file.type ?? 'generatedFile'}
+                showDate
+                createdDate={new Date(file.date)}
+                showNote
+                showMenu={true}
+              />
+            ))
+            .slice(0, 3)}
         </DocumentBar>
+
         <DocumentBar
           title="เอกสารที่อัปโหลด"
           onAddonButtonClick={() => {
@@ -253,3 +246,14 @@ let layout = {
   color: 'accent.black',
   width: '100%',
 }
+
+/** image={file.image}
+                  amount={file.amount}
+                  showNote
+                  size={file.size}
+                  showMenu={true}
+                  id={file.id}
+                  title={file.officialName}
+                  type={file.type}
+                  
+                  showDate */
