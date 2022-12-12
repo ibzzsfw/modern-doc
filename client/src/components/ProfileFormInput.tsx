@@ -14,7 +14,7 @@ import {
   ModalBody,
   useToast,
   useDisclosure,
-  ButtonGroup
+  ButtonGroup,
 } from '@chakra-ui/react'
 import ChangePassword from '@components/ChangePassword'
 import FormInput from '@components/FormInput'
@@ -24,7 +24,7 @@ import { Form, Formik } from 'formik'
 import { FiEdit } from 'react-icons/fi'
 import { useMyProfileStore } from '@stores/MyProfilePageStore'
 import { updateCurrentUser } from 'firebase/auth'
-import { useEffect,useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useFamilyDataStore } from '@stores/FamilyDataStore'
 import User from '@models/User'
 import { useMutation } from '@tanstack/react-query'
@@ -40,7 +40,7 @@ const ProfileFormInput = ({ data }: any) => {
 
   const { isEdit, setEdit } = useMyProfileStore()
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const { user, setUser } = useProfiledataStore()
+  const { user, setUser, profileUrl } = useProfiledataStore()
   const [userInfo, setUserInfo] = useState<any>(null)
   const selectOptions = {
     title: ['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง'],
@@ -51,20 +51,38 @@ const ProfileFormInput = ({ data }: any) => {
     postalCode: ['10600'],
   }
   //------------confirm password and call update api
-  
-  
 
-  const updateUser = useMutation((value : any) => {return UserController.editProfile(value.title, value.firstName, value.lastName,value.sex,
-    value.phoneNumber,value.birthDate,value.profileURI,value.password)},{
+  const updateUser = useMutation(
+    (value: any) => {
+      return UserController.editProfile(
+        value.title,
+        value.firstName,
+        value.lastName,
+        value.sex,
+        value.phoneNumber,
+        value.birthDate,
+        value.profileURI,
+        value.password
+      )
+    },
+    {
       onSuccess: (data) => {},
       onError: (error) => {},
-    })
-    const confirmPassword = useMutation((value : {phoneNumber : string,password : string})=>{
+    }
+  )
+  const confirmPassword = useMutation(
+    (value: { phoneNumber: string; password: string }) => {
       return UserController.checkPhonePassword(value)
-    },{
-      onSuccess: (data) => {return true},
-      onError: (error) => {return false},
-    })
+    },
+    {
+      onSuccess: (data) => {
+        return true
+      },
+      onError: (error) => {
+        return false
+      },
+    }
+  )
   //---------------handale values for wait to confirm password
   const updateProfile = (values: any) => {}
 
@@ -90,17 +108,16 @@ const ProfileFormInput = ({ data }: any) => {
               onClose()
             }}
             onSubmit={async (values) => {
-             
-               if(confirmPassword.mutate({phoneNumber : user.phoneNumber,password : values.password})){
-                console.log("pass ถูก")
-               }else{
-                console.log("pass ผิด")
-               }
-
-              
-             
-              
-              
+              if (
+                confirmPassword.mutate({
+                  phoneNumber: user.phoneNumber,
+                  password: values.password,
+                })
+              ) {
+                console.log('pass ถูก')
+              } else {
+                console.log('pass ผิด')
+              }
             }}
           >
             <Form>
@@ -115,7 +132,7 @@ const ProfileFormInput = ({ data }: any) => {
 
               <ModalFooter justifyContent="flex-end">
                 <ButtonGroup gap="10px">
-                  <Button variant='outline' type="reset">
+                  <Button variant="outline" type="reset">
                     ยกเลิก
                   </Button>
                   <Button variant="solid" colorScheme="blue" type="submit">
@@ -154,18 +171,14 @@ const ProfileFormInput = ({ data }: any) => {
         onReset={(values) => {
           setEdit(false)
         }}
-        onSubmit={ (value) => {
-          //console.log(values)
+        onSubmit={(values) => {
+          console.log({ ...values, profileURI: profileUrl })
+
           //--------------------do something for handle value
           //----------next Open modal for confirm password
-         
-          
-          
         }}
-        
-
       >
-        <Form >
+        <Form>
           <VStack align="flex-start">
             <FormInput
               label="เลขบัตรประจำตัวประชาชน"
@@ -184,8 +197,6 @@ const ProfileFormInput = ({ data }: any) => {
                 placeholder="เลือกคำนำหน้า"
                 width="143px"
                 disable={!isEdit}
-                
-               
               />
               <FormInput
                 label="ชื่อ"
@@ -203,7 +214,6 @@ const ProfileFormInput = ({ data }: any) => {
                 placeholder="กรอกนามสกุล"
                 width="226px"
                 disable={!isEdit}
-                
               />
             </Flex>
             <Flex gap="16px">
@@ -215,7 +225,6 @@ const ProfileFormInput = ({ data }: any) => {
                 options={selectOptions.sex}
                 width="111px"
                 disable={!isEdit}
-               
               />
               <FormInput
                 label="วัน/เดือน/ปีเกิด"
@@ -224,7 +233,6 @@ const ProfileFormInput = ({ data }: any) => {
                 placeholder="XX/XX/XXXX"
                 width="214px"
                 disable={!isEdit}
-              
               />
               <FormInput
                 label="หมายเลขโทรศัพท์"
@@ -233,7 +241,6 @@ const ProfileFormInput = ({ data }: any) => {
                 placeholder="08XXXXXXXX"
                 width="252px"
                 disable={!isEdit}
-              
               />
             </Flex>
 
@@ -245,7 +252,6 @@ const ProfileFormInput = ({ data }: any) => {
                 placeholder="example@moderndoc.angel.com"
                 width="238px"
                 disable={!isEdit}
-            
               />
               {!isEdit && <ChangePassword />}
             </Flex>
@@ -347,7 +353,9 @@ const ProfileFormInput = ({ data }: any) => {
                 justifyContent="flex-end"
                 display={isEdit ? 'unset' : 'none'}
               >
-                <Button variant='outline' type="reset">ยกเลิก</Button>
+                <Button variant="outline" type="reset">
+                  ยกเลิก
+                </Button>
                 <Button type="submit" colorScheme="blue">
                   ตกลง
                 </Button>

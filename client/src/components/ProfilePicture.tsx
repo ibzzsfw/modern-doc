@@ -24,8 +24,7 @@ type propTypes = {
 
 const ProfilePicture = ({ url }: propTypes) => {
   const { isEdit, setEdit } = useMyProfileStore()
-  const {user,setUser,setUrl,profileUrl} = useProfiledataStore()
-  
+  const { user, setUser, setUrl, profileUrl } = useProfiledataStore()
 
   const [image, setImage] = useState<any>(null)
 
@@ -61,11 +60,10 @@ const ProfilePicture = ({ url }: propTypes) => {
               onChange={(e) => {
                 setImage(e.target.files![0])
                 console.log(e.target.files![0])
-                uploadFile('images/',e.target.files![0]).then((url) => {setUrl(url)  
-                 console.log('from url',url)
-                console.log('from profileUrl',profileUrl)})
-                
-                
+                uploadFile('images/', e.target.files![0]).then((url) => {
+                  setUrl(url)
+                  console.log('from url', url)
+                })
               }}
             />
             <Icon
@@ -129,43 +127,3 @@ let boxLayout = {
   padding: '20px',
   width: '909px',
 }
-
-/** <Box sx={uploadImagelayout}>
-            <Image
-              src="https://bit.ly/sage-adebayo"
-              boxSize="206px"
-              borderRadius="8px"
-              position="absolute"
-            ></Image>
-
-            <Box
-              width="206px"
-              height="206px"
-              sx={
-                isAdd
-                  ? backgroundHover
-                  : isEdit
-                  ? backgroundHover
-                  : { opacity: 0 }
-              }
-            >
-              <Input
-                type="file"
-                position="absolute"
-                height="100%"
-                opacity="0"
-                aria-hidden="true"
-                display={isAdd ? 'block' : isEdit ? 'block' : 'none'}
-                accept="image/*"
-              />
-              <Icon
-                as={AiOutlineUpload}
-                top="71.5px"
-                left="71.5px"
-                position="absolute"
-                boxSize="60px"
-                color="white"
-                aria-hidden="true"
-              />
-            </Box>
-          </Box> */
