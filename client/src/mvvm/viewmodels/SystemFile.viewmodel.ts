@@ -1,4 +1,4 @@
-import Sharable from "@models/Sharable";
+import Sharable from "src/view-models/Sharable";
 import SystemFileType from "../types/SystemFiles";
 import FileViewModel from "./Files.viewmodel";
 

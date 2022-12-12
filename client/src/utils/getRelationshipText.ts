@@ -1,4 +1,4 @@
-import Relationship from '@models/Relationship'
+import Relationship from 'src/view-models/Relationship'
 
 const getRelationshipText = (relationship: Relationship): string => {
   console.log(relationship)

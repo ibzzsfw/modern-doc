@@ -22,19 +22,19 @@
     "baseUrl": ".",
     "paths": {
       "@components/*": [
-        "src/components/*"
+        "src/views/components/*"
       ],
-      "@models/*": [
-        "src/models/*"
+      "@view-models/*": [
+        "src/view-models/*"
       ],
       "@pages/*": [
-        "src/pages/*"
+        "src/views/pages/*"
       ],
       "@utils/*": [
         "src/utils/*"
       ],
-      "@stores/*": [
-        "src/stores/*"
+      "@models/*": [
+        "src/models/*"
       ],
       "@firebase": [
         "src/firebase/index"
