@@ -19,6 +19,15 @@ class FileController {
   addNote = async (req: Request, res: Response) => {
     File.addNote(req, res)
   }
+  shareFile = async (req: Request, res: Response) => {
+    File.shareFile(req, res)
+  }
+  unShareFile = async (req: Request, res: Response) => {
+    File.unShareFile(req, res)
+  }
+  deleteFile = async (req: Request, res: Response) => {
+    File.deleteFile(req, res)
+  }
 }
 
 export default new FileController()

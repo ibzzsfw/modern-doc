@@ -25,7 +25,10 @@ class FileRouter {
       '/new/uploadedFile/:fileId',
       this.controller.newUploadedFile
     )
-    this.router.put('/add-note/:type/:id', this.controller.addNote)
+    this.router.put('/add-note/:type/:fileId', this.controller.addNote)
+    this.router.put('/share/:type/:fileId', this.controller.shareFile)
+    this.router.put('/unshare/:type/:fileId', this.controller.unShareFile)
+    this.router.delete('/delete/:type/:fileId', this.controller.deleteFile)
   }
 }
 

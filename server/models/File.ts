@@ -4,11 +4,13 @@ import { Request, Response } from 'express'
 import { z } from 'zod'
 import formatGeneratedFile from '@utils/formatGeneratedFile'
 import formatUploadedFile from '@utils/formatUploadedFile'
+import Member from '@models/Member'
 
 const fileType = [
   'generatedFile',
   'uploadedFile',
   'userFreeUploadFile',
+  'sharedFile',
 ] as const
 
 class File {
@@ -108,6 +110,7 @@ class File {
           take: 3,
           select: {
             date: true,
+            note: true,
             generatedFile: {
               select: {
                 id: true,
@@ -130,6 +133,8 @@ class File {
           take: 3,
           select: {
             date: true,
+            isShared: true,
+            note: true,
             uploadedFile: {
               select: {
                 id: true,
@@ -140,6 +145,29 @@ class File {
             },
           },
         })
+
+      case 'sharedFile':
+        const user = await Prisma.user.findUnique({
+          where: { id: userId },
+          select: { householdId: true },
+        })
+        const householdId = user.householdId
+
+        return await Prisma.$queryRaw`
+          SELECT "UserUploadedFile"."isShared",
+          "UserUploadedFile"."date", "UserUploadedFile"."note",  
+         "UploadedFile"."name",
+         "UploadedFile"."officialName", "UploadedFile"."description",
+          "UploadedFile"."id" ,
+          "User"."firstName", "User"."lastName", "User"."id" FROM "UserUploadedFile"
+          LEFT JOIN "UploadedFile" ON "UploadedFile"."id" = "UserUploadedFile"."uploadedFileId"
+          LEFT JOIN "User" ON "User"."id" = "UserUploadedFile"."userId"
+          WHERE "User"."householdId" = ${householdId}::uuid
+          AND "UserUploadedFile"."isShared" = true
+          ORDER BY "UserUploadedFile"."date" DESC
+          LIMIT 3
+        `
+
       default:
         return await Prisma.userFreeUploadFile.findMany({
           where: {
@@ -153,6 +181,7 @@ class File {
             date: true,
             officialName: true,
             note: true,
+            isShared: true,
           },
         })
     }
@@ -306,36 +335,141 @@ class File {
   }
 
   static addNote = async (req: Request, res: Response) => {
-    const { id, type } = req.params
+    const { fileId, type } = req.params
     const { note } = req.body
     const userId = req.headers['user-id'] as string
     const schema = z.object({
-      id: z.string().uuid(),
+      fileId: z.string().uuid(),
       type: z.enum(fileType),
       userId: z.string().uuid(),
       note: z.string(),
     })
     try {
-      schema.parse({ id, type, userId, note })
+      schema.parse({ fileId, type, userId, note })
       switch (type) {
         case 'generatedFile': {
           const result = await Prisma.$queryRaw`
             UPDATE "UserGeneratedFile" SET "note" = ${note} 
-            WHERE "generatedFileId" = ${id}::uuid AND "userId" = ${userId}::uuid`
+            WHERE "generatedFileId" = ${fileId}::uuid AND "userId" = ${userId}::uuid`
           res.status(200).json({ message: 'success' })
           break
         }
         case 'uploadedFile': {
           const result = await Prisma.$queryRaw`
             UPDATE "UserUploadedFile" SET "note" = ${note}
-            WHERE "uploadedFileId" = ${id}::uuid AND "userId" = ${userId}::uuid`
+            WHERE "uploadedFileId" = ${fileId}::uuid AND "userId" = ${userId}::uuid`
           res.status(200).json({ message: 'success' })
           break
         }
         case 'userFreeUploadFile': {
           const result = await Prisma.$queryRaw`
             UPDATE "UserFreeUploadFile" SET "note" = ${note}
-            WHERE "id" = ${id}::uuid AND "userId" = ${userId}::uuid`
+            WHERE "id" = ${fileId}::uuid AND "userId" = ${userId}::uuid`
+          res.status(200).json({ message: 'success' })
+          break
+        }
+      }
+    } catch (err) {
+      res.status(400).json(err)
+    }
+  }
+
+  static shareFile = async (req: Request, res: Response) => {
+    const { fileId, type } = req.params
+    const userId = req.headers['user-id'] as string
+    const schema = z.object({
+      fileId: z.string().uuid(),
+      type: z.enum(fileType),
+      userId: z.string().uuid(),
+    })
+    console.log(fileId, type, userId)
+    try {
+      schema.parse({ fileId, type, userId })
+      switch (type) {
+        case 'uploadedFile': {
+          const result = await Prisma.$queryRaw`
+            UPDATE "UserUploadedFile" SET "isShared" = true
+            WHERE "uploadedFileId" = ${fileId}::uuid AND "userId" = ${userId}::uuid`
+          res.status(200).json({ message: 'success' })
+        }
+        case 'userFreeUploadFile': {
+          const result = await Prisma.$queryRaw`
+            UPDATE "UserFreeUploadFile" SET "isShared" = true
+            WHERE "id" = ${fileId}::uuid AND "userId" = ${userId}::uuid`
+          res.status(200).json({ message: 'success' })
+        }
+        default: {
+          res.status(400).json({ message: 'invalid type' })
+        }
+      }
+    } catch (err) {
+      res.status(400).json(err)
+    }
+  }
+
+  static unShareFile = async (req: Request, res: Response) => {
+    const { fileId, type } = req.params
+    const userId = req.headers['user-id'] as string
+    const schema = z.object({
+      fileId: z.string().uuid(),
+      type: z.enum(fileType),
+      userId: z.string().uuid(),
+    })
+    try {
+      schema.parse({ fileId, type, userId })
+      switch (type) {
+        case 'uploadedFile': {
+          const result = await Prisma.$queryRaw`
+            UPDATE "UserUploadedFile" SET "isShared" = false
+            WHERE "uploadedFileId" = ${fileId}::uuid AND "userId" = ${userId}::uuid`
+          res.status(200).json({ message: 'success' })
+          break
+        }
+        case 'userFreeUploadFile': {
+          const result = await Prisma.$queryRaw`
+            UPDATE "UserFreeUploadFile" SET "isShared" = false
+            WHERE "id" = ${fileId}::uuid AND "userId" = ${userId}::uuid`
+          res.status(200).json({ message: 'success' })
+          break
+        }
+        default: {
+          res.status(400).json({ message: 'invalid type' })
+        }
+      }
+    } catch (err) {
+      res.status(400).json(err)
+    }
+  }
+
+  static deleteFile = async (req: Request, res: Response) => {
+    const { fileId, type } = req.params
+    const userId = req.headers['user-id'] as string
+    const schema = z.object({
+      fileId: z.string().uuid(),
+      type: z.enum(fileType),
+      userId: z.string().uuid(),
+    })
+    try {
+      schema.parse({ fileId, type, userId })
+      switch (type) {
+        case 'generatedFile': {
+          const result = await Prisma.$queryRaw`
+            DELETE FROM "UserGeneratedFile"
+            WHERE "generatedFileId" = ${fileId}::uuid AND "userId" = ${userId}::uuid`
+          res.status(200).json({ message: 'success' })
+          break
+        }
+        case 'uploadedFile': {
+          const result = await Prisma.$queryRaw`
+            DELETE FROM "UserUploadedFile"
+            WHERE "uploadedFileId" = ${fileId}::uuid AND "userId" = ${userId}::uuid`
+          res.status(200).json({ message: 'success' })
+          break
+        }
+        case 'userFreeUploadFile': {
+          const result = await Prisma.$queryRaw`
+            DELETE FROM "UserFreeUploadFile"
+            WHERE "id" = ${fileId}::uuid AND "userId" = ${userId}::uuid`
           res.status(200).json({ message: 'success' })
           break
         }
