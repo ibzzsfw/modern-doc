@@ -159,7 +159,8 @@ class File {
          "UploadedFile"."name",
          "UploadedFile"."officialName", "UploadedFile"."description",
           "UploadedFile"."id" ,
-          "User"."firstName", "User"."lastName", "User"."id" FROM "UserUploadedFile"
+          "User"."firstName", "User"."lastName", "User"."id" 
+          FROM "UserUploadedFile"
           LEFT JOIN "UploadedFile" ON "UploadedFile"."id" = "UserUploadedFile"."uploadedFileId"
           LEFT JOIN "User" ON "User"."id" = "UserUploadedFile"."userId"
           WHERE "User"."householdId" = ${householdId}::uuid
@@ -219,7 +220,7 @@ class File {
           ...file,
           ...file[type],
           [type]: undefined,
-          type: type,
+          type: type === 'sharedFile' ? 'uploadedFile' : type,
         })
       })
       res.status(200).json(formattedResult)
@@ -242,15 +243,40 @@ class File {
         SELECT "GeneratedFile".*, 'generatedFile' as "type" FROM "GeneratedFile"
         LEFT JOIN "GeneratedFileTag" ON "GeneratedFileTag"."generatedFileId" = "GeneratedFile"."id"
         LEFT JOIN "Tag" ON "Tag"."id" = "GeneratedFileTag"."tagId"
-        WHERE "GeneratedFile"."name" ILIKE ${`%${name}%`} OR "Tag"."name" ILIKE ${`%${name}%`}
+        WHERE "GeneratedFile"."officialName" ILIKE ${`%${name}%`} OR "Tag"."name" ILIKE ${`%${name}%`}
         UNION
         SELECT "UploadedFile".*, 'uploadedFile' as "type" FROM "UploadedFile"
         LEFT JOIN "UploadedFileTag" ON "UploadedFileTag"."uploadedFileId" = "UploadedFile"."id"
         LEFT JOIN "Tag" ON "Tag"."id" = "UploadedFileTag"."tagId"
-        WHERE "UploadedFile"."name" ILIKE ${`%${name}%`} OR "Tag"."name" ILIKE ${`%${name}%`}
+        WHERE "UploadedFile"."officialName" ILIKE ${`%${name}%`} OR "Tag"."name" ILIKE ${`%${name}%`}
         UNION
         SELECT "UserFreeUploadFile"."id","UserFreeUploadFile"."officialName",null as "name","UserFreeUploadFile"."URI",null as "description",null as "dayLifeSpan",'userFreeUploadFile' as "type" FROM "UserFreeUploadFile"
         WHERE "UserFreeUploadFile"."officialName" ILIKE ${`%${name}%`} AND "UserFreeUploadFile"."userId" = ${userId}::uuid
+      `
+      res.status(200).json(file)
+    } catch (err) {
+      res.status(400).json(err)
+    }
+  }
+
+  static async getAll(req: Request, res: Response) {
+    const userId = req.headers['user-id'] as string
+    const schema = z.object({
+      userId: z.string().uuid(),
+    })
+
+    try {
+      schema.parse({ userId })
+      const file = await Prisma.$queryRaw`
+        SELECT "GeneratedFile".*, 'generatedFile' as "type" FROM "GeneratedFile"
+        LEFT JOIN "GeneratedFileTag" ON "GeneratedFileTag"."generatedFileId" = "GeneratedFile"."id"
+        LEFT JOIN "Tag" ON "Tag"."id" = "GeneratedFileTag"."tagId"
+        UNION
+        SELECT "UploadedFile".*, 'uploadedFile' as "type" FROM "UploadedFile"
+        LEFT JOIN "UploadedFileTag" ON "UploadedFileTag"."uploadedFileId" = "UploadedFile"."id"
+        LEFT JOIN "Tag" ON "Tag"."id" = "UploadedFileTag"."tagId"
+        UNION
+        SELECT "UserFreeUploadFile"."id","UserFreeUploadFile"."officialName",null as "name","UserFreeUploadFile"."URI",null as "description",null as "dayLifeSpan",'userFreeUploadFile' as "type" FROM "UserFreeUploadFile"
       `
       res.status(200).json(file)
     } catch (err) {

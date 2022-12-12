@@ -17,6 +17,7 @@ class FileRouter {
     this.router.get('/get-by-id/:type/:id', this.controller.getFileById)
     this.router.get('/latest-files/:type', this.controller.getLatestFiles)
     this.router.get('/search/:name', this.controller.searchByName)
+    this.router.get('/search/', this.controller.getAll)
     this.router.post(
       '/new/generatedFile/:fileId',
       this.controller.newGeneratedFile
