@@ -97,9 +97,14 @@ class Folder {
     try {
       schema.parse({ name, userId })
       const folder = await Prisma.$queryRaw`
-        SELECT DISTINCT "Folder".*,'generatedFolder' AS "type" FROM "Folder"
+        SELECT DISTINCT "Folder".*,'generatedFolder' AS "type"
+        ,"UserFolder"."date"
+        FROM "Folder"
         LEFT JOIN "FolderTag" ON "Folder"."id" = "FolderTag"."folderId"
         LEFT JOIN "Tag" ON "FolderTag"."tagId" = "Tag"."id"
+        LEFT JOIN "UserFolder" ON ("Folder"."id" = "UserFolder"."folderId"
+          AND "UserFolder"."userId" = ${userId}::uuid
+        )
         WHERE ("Folder"."officialName" ILIKE ${`%${name}%`} OR "Folder"."description" ILIKE ${`%${name}%`}
         OR "Tag"."name" ILIKE ${`%${name}%`})
         LIMIT 9
@@ -119,9 +124,13 @@ class Folder {
     try {
       schema.parse({ userId })
       const folder = await Prisma.$queryRaw`
-        SELECT DISTINCT "Folder".*,'generatedFolder' AS "type" FROM "Folder"
+        SELECT DISTINCT "Folder".*,'generatedFolder' AS "type" 
+        ,"UserFolder"."date" FROM "Folder"
         LEFT JOIN "FolderTag" ON "Folder"."id" = "FolderTag"."folderId"
         LEFT JOIN "Tag" ON "FolderTag"."tagId" = "Tag"."id"
+        LEFT JOIN "UserFolder" ON ("Folder"."id" = "UserFolder"."folderId"
+          AND "UserFolder"."userId" = ${userId}::uuid
+        )
         LIMIT 9
       `
       res.json(folder)

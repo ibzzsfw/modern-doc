@@ -35,6 +35,7 @@ type propsType = {
     | 'generatedFile'
     | 'uploadedFile'
     | 'sharedFile'
+    | 'userFreeUploadFile'
     | 'note'
   id: string
   isShared?: boolean
@@ -153,7 +154,7 @@ const DocumentBox = ({
     if (type === 'generatedFile') {
       return '/assets/file_logo.png'
     }
-    if (type === 'uploadedFile') {
+    if (type === 'uploadedFile' || type === 'userFreeUploadFile') {
       return '/assets/card_logo.png'
     }
     if (type === 'sharedFile') {

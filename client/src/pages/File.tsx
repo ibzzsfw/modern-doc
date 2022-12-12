@@ -107,6 +107,8 @@ const File = () => {
     console.log(data)
   }
 
+  console.log('which', userPdf ? userPdf : file.URI ?? file.previewURI)
+
   if (data)
     return (
       <Flex sx={documentView}>
@@ -121,7 +123,7 @@ const File = () => {
         {file.URI ? (
           <FileViewer fileUrl={userPdf ? userPdf : file.URI} />
         ) : (
-          <FileViewer fileUrl={BlankPdf} />
+          <FileViewer fileUrl={file.previewURI ?? BlankPdf} />
         )}
       </Flex>
     )

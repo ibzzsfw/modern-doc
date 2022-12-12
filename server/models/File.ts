@@ -240,17 +240,28 @@ class File {
     try {
       schema.parse({ name, userId })
       const file = await Prisma.$queryRaw`
-        SELECT "GeneratedFile".*, 'generatedFile' as "type" FROM "GeneratedFile"
+        SELECT "GeneratedFile".*, 'generatedFile' as "type",
+        "UserGeneratedFile"."date" as "date"
+         FROM "GeneratedFile"
         LEFT JOIN "GeneratedFileTag" ON "GeneratedFileTag"."generatedFileId" = "GeneratedFile"."id"
         LEFT JOIN "Tag" ON "Tag"."id" = "GeneratedFileTag"."tagId"
+        LEFT JOIN "UserGeneratedFile" ON ("UserGeneratedFile"."generatedFileId" = "GeneratedFile"."id"
+        AND "UserGeneratedFile"."userId" = ${userId}::uuid)
         WHERE "GeneratedFile"."officialName" ILIKE ${`%${name}%`} OR "Tag"."name" ILIKE ${`%${name}%`}
         UNION
-        SELECT "UploadedFile".*, 'uploadedFile' as "type" FROM "UploadedFile"
+        SELECT "UploadedFile".*, 'uploadedFile' as "type",
+        "UserUploadedFile"."date" as "date"
+         FROM "UploadedFile"
         LEFT JOIN "UploadedFileTag" ON "UploadedFileTag"."uploadedFileId" = "UploadedFile"."id"
         LEFT JOIN "Tag" ON "Tag"."id" = "UploadedFileTag"."tagId"
+        LEFT JOIN "UserUploadedFile" ON ("UserUploadedFile"."uploadedFileId" = "UploadedFile"."id"
+        AND "UserUploadedFile"."userId" = ${userId}::uuid)
         WHERE "UploadedFile"."officialName" ILIKE ${`%${name}%`} OR "Tag"."name" ILIKE ${`%${name}%`}
         UNION
-        SELECT "UserFreeUploadFile"."id","UserFreeUploadFile"."officialName",null as "name","UserFreeUploadFile"."URI",null as "description",null as "dayLifeSpan",'userFreeUploadFile' as "type" FROM "UserFreeUploadFile"
+        SELECT "UserFreeUploadFile"."id","UserFreeUploadFile"."officialName",null as "name","UserFreeUploadFile"."URI"
+        ,null as "description",null as "dayLifeSpan",'userFreeUploadFile' as "type",
+        "UserFreeUploadFile"."date" as "date"
+         FROM "UserFreeUploadFile"
         WHERE "UserFreeUploadFile"."officialName" ILIKE ${`%${name}%`} AND "UserFreeUploadFile"."userId" = ${userId}::uuid
       `
       res.status(200).json(file)
@@ -268,15 +279,26 @@ class File {
     try {
       schema.parse({ userId })
       const file = await Prisma.$queryRaw`
-        SELECT "GeneratedFile".*, 'generatedFile' as "type" FROM "GeneratedFile"
+        SELECT "GeneratedFile".*, 'generatedFile' as "type",
+        "UserGeneratedFile"."date"
+        FROM "GeneratedFile"
         LEFT JOIN "GeneratedFileTag" ON "GeneratedFileTag"."generatedFileId" = "GeneratedFile"."id"
         LEFT JOIN "Tag" ON "Tag"."id" = "GeneratedFileTag"."tagId"
+        LEFT JOIN "UserGeneratedFile" ON ("UserGeneratedFile"."generatedFileId" = "GeneratedFile"."id"
+        AND "UserGeneratedFile"."userId" = ${userId}::uuid)
         UNION
-        SELECT "UploadedFile".*, 'uploadedFile' as "type" FROM "UploadedFile"
+        SELECT "UploadedFile".*, 'uploadedFile' as "type",
+        "UserUploadedFile"."date"
+         FROM "UploadedFile"
         LEFT JOIN "UploadedFileTag" ON "UploadedFileTag"."uploadedFileId" = "UploadedFile"."id"
         LEFT JOIN "Tag" ON "Tag"."id" = "UploadedFileTag"."tagId"
+        LEFT JOIN "UserUploadedFile" ON ("UserUploadedFile"."uploadedFileId" = "UploadedFile"."id"
+        AND "UserUploadedFile"."userId" = ${userId}::uuid)
         UNION
-        SELECT "UserFreeUploadFile"."id","UserFreeUploadFile"."officialName",null as "name","UserFreeUploadFile"."URI",null as "description",null as "dayLifeSpan",'userFreeUploadFile' as "type" FROM "UserFreeUploadFile"
+        SELECT "UserFreeUploadFile"."id","UserFreeUploadFile"."officialName",null as "name","UserFreeUploadFile"."URI"
+        ,null as "description",null as "dayLifeSpan",'userFreeUploadFile' as "type",
+        "UserFreeUploadFile"."date" as "date"
+         FROM "UserFreeUploadFile"
       `
       res.status(200).json(file)
     } catch (err) {
