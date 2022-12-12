@@ -25,6 +25,10 @@ import Frame from '@components/Frame'
 import MenuProvider from '@components/MenuProvider'
 import SearchBox from '@components/SearchBox'
 import TableListItem from '@components/TableListItem'
+import FileController from '@models/FileController'
+import FolderController from '@models/FolderController'
+import NoteController from '@models/NoteController'
+import { useEffect } from 'react'
 import { useState } from 'react'
 import {
   AiFillPrinter,
@@ -44,6 +48,24 @@ const AllDocumentPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [sortMenu, setSortMenu] = useState({ sort: '', order: '' })
   const [documents, setDocuments] = useState([])
+  const [data, setData] = useState([])
+
+  useEffect(() => {
+    if (category === 'note') {
+      NoteController.getLastestNote().then((res) => {
+        setData(res)
+      })
+    }
+    if (category === 'folder') {
+      FolderController.getLatestFolder().then((res) => {
+        setData(res)
+      })
+    } else {
+      FileController.getLatestFile(category).then((res) => {
+        setData(res)
+      })
+    }
+  }, [category])
 
   let menu = (
     <MenuProvider
@@ -118,6 +140,9 @@ const AllDocumentPage = () => {
     return
   }
 */
+
+  console.log('data', data)
+
   let deleteModal = (
     <Modal
       isOpen={isOpen}

@@ -108,7 +108,6 @@ class File {
           orderBy: {
             date: 'desc',
           },
-          take: 3,
           select: {
             date: true,
             note: true,
@@ -131,7 +130,6 @@ class File {
           orderBy: {
             date: 'desc',
           },
-          take: 3,
           select: {
             date: true,
             isShared: true,
@@ -167,7 +165,6 @@ class File {
           WHERE "User"."householdId" = ${householdId}::uuid
           AND "UserUploadedFile"."isShared" = true
           ORDER BY "UserUploadedFile"."date" DESC
-          LIMIT 3
         `
 
       default:
@@ -178,7 +175,6 @@ class File {
           orderBy: {
             date: 'desc',
           },
-          take: 3,
           select: {
             date: true,
             officialName: true,

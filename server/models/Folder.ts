@@ -78,7 +78,6 @@ class Folder {
         LEFT JOIN "Folder" ON "UserFolder"."folderId" = "Folder"."id"
         WHERE "UserFolder"."userId" = ${userId}::uuid
         ORDER BY "UserFolder"."date" DESC
-        LIMIT 3
       `
       res.json(folder)
     } catch (err) {

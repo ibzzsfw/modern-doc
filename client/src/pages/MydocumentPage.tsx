@@ -205,7 +205,7 @@ const MyDocument = () => {
         <DocumentBar
           title="ไฟล์ของฉัน"
           onAddonButtonClick={() => {
-            navigate('/alldocument/file')
+            navigate('/alldocument/generatedFile')
           }}
         >
           {latestGeneratedFiles
@@ -236,7 +236,7 @@ const MyDocument = () => {
         <DocumentBar
           title="เอกสารที่อัปโหลด"
           onAddonButtonClick={() => {
-            navigate('/alldocument/uploadfile')
+            navigate('/alldocument/uploadedFile')
           }}
         >
           <>
