@@ -139,7 +139,8 @@ const MyDocument = () => {
                     showMenu={true}
                   />
                 )
-              })}
+              })
+              .slice(0, 2)}
           </>
         </DocumentBar>
         <Divider size="20px" />
@@ -150,16 +151,6 @@ const MyDocument = () => {
           }}
         >
           <>
-            {/* <ShareModal
-              customButton={
-                <DocumentBlankBox
-                  icon={AiFillPlusCircle}
-                  size={'80px'}
-                  color={'gray.500'}
-                />
-              }
-            /> */}
-
             {latestSharedFiles
               .filter((file: any) =>
                 file.officialName.toLowerCase().includes(search)
@@ -169,7 +160,7 @@ const MyDocument = () => {
                 return (
                   <DocumentBox
                     id={file.id}
-                    type={file.type}
+                    type={'sharedFile'}
                     title={file.officialName}
                     author={file.firstName + ' ' + file.lastName}
                     showNote
@@ -285,6 +276,7 @@ const MyDocument = () => {
         </DocumentBar>
       </Box>
     )
+  return <></>
 }
 
 export default MyDocument
@@ -294,14 +286,3 @@ let layout = {
   color: 'accent.black',
   width: '100%',
 }
-
-/** image={file.image}
-                  amount={file.amount}
-                  showNote
-                  size={file.size}
-                  showMenu={true}
-                  id={file.id}
-                  title={file.officialName}
-                  type={file.type}
-                  
-                  showDate */

@@ -304,6 +304,7 @@ const FolderDetail = ({
         </Flex>
       </Flex>
     )
+  return <></>
 }
 
 export default FolderDetail

@@ -125,6 +125,7 @@ const File = () => {
         )}
       </Flex>
     )
+  else return <div>loading</div>
 }
 
 let documentView = {

@@ -100,6 +100,7 @@ const Home = () => {
         </DocumentBar>
       </VStack>
     )
+  return <></>
 }
 
 export default Home
