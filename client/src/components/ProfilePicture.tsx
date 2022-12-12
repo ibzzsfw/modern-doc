@@ -13,6 +13,10 @@ import { useState } from 'react'
 import { AiOutlineUpload } from 'react-icons/ai'
 import { useMyProfileStore } from '@stores/MyProfilePageStore'
 import { v4 as uuidv4 } from 'uuid'
+import { useFamilyDataStore } from '@stores/FamilyDataStore'
+import { useProfiledataStore } from '@stores/MyProfiledataStore'
+import { useFilePageStore } from '@stores/FilePageStore'
+import { uploadFile } from '@firebase'
 
 type propTypes = {
   url: string | undefined
@@ -20,6 +24,8 @@ type propTypes = {
 
 const ProfilePicture = ({ url }: propTypes) => {
   const { isEdit, setEdit } = useMyProfileStore()
+  const {user,setUser,setUrl,profileUrl} = useProfiledataStore()
+  
 
   const [image, setImage] = useState<any>(null)
 
@@ -55,6 +61,10 @@ const ProfilePicture = ({ url }: propTypes) => {
               onChange={(e) => {
                 setImage(e.target.files![0])
                 console.log(e.target.files![0])
+                uploadFile('images/',e.target.files![0]).then((url) => {setUrl(url)  
+                 console.log(url)})
+                
+                
               }}
             />
             <Icon

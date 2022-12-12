@@ -10,6 +10,9 @@ class FileController {
   searchByName = async (req: Request, res: Response) => {
     File.searchByName(req, res)
   }
+  getAll = async (req: Request, res: Response) => {
+    File.getAll(req, res)
+  }
   newGeneratedFile = async (req: Request, res: Response) => {
     File.newGeneratedFile(req, res)
   }
@@ -18,6 +21,15 @@ class FileController {
   }
   addNote = async (req: Request, res: Response) => {
     File.addNote(req, res)
+  }
+  shareFile = async (req: Request, res: Response) => {
+    File.shareFile(req, res)
+  }
+  unShareFile = async (req: Request, res: Response) => {
+    File.unShareFile(req, res)
+  }
+  deleteFile = async (req: Request, res: Response) => {
+    File.deleteFile(req, res)
   }
 }
 

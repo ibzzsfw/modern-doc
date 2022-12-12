@@ -24,16 +24,22 @@ import { FiEdit } from 'react-icons/fi'
 import { useMyProfileStore } from '@stores/MyProfilePageStore'
 import { updateCurrentUser } from 'firebase/auth'
 import { useEffect } from 'react'
+import { useFamilyDataStore } from '@stores/FamilyDataStore'
+import User from '@models/User'
+import { useMutation } from '@tanstack/react-query'
+import UserController from '@models/UserController'
+import { useProfiledataStore } from '@stores/MyProfiledataStore'
 
 type propTypes = {
   data: any
 }
 
-const ProfileFormInput = ({ data }: propTypes) => {
+const ProfileFormInput = ({ data }: any) => {
   const toast = useToast()
 
   const { isEdit, setEdit } = useMyProfileStore()
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const { user, setUser } = useProfiledataStore()
 
   const selectOptions = {
     title: ['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง'],
@@ -44,7 +50,21 @@ const ProfileFormInput = ({ data }: propTypes) => {
     postalCode: ['10600'],
   }
   //------------confirm password and call update api
-  const handleform = (values: any) => {}
+  const handleform = (values: any) => {
+    setUser({...user, ...values})
+    console.log(user)
+  }
+  const updateUser = useMutation((value : any) => {return UserController.editProfile(value.title, value.firstName, value.lastName,value.sex,
+    value.phoneNumber,value.birthDate,value.profileURI,value.password)},{
+      onSuccess: (data) => {},
+      onError: (error) => {},
+    })
+    const confirmPassword = useMutation((value : {phoneNumber : string,password : string})=>{
+      return UserController.checkPhonePassword(value)
+    },{
+      onSuccess: (data) => {return true},
+      onError: (error) => {return false},
+    })
   //---------------handale values for wait to confirm password
   const updateProfile = (values: any) => {}
 
@@ -70,8 +90,17 @@ const ProfileFormInput = ({ data }: propTypes) => {
               onClose()
             }}
             onSubmit={(values, actions) => {
-              console.log(values)
-              updateUser(values)
+             
+               if(confirmPassword.mutate({phoneNumber : user.phoneNumber,password : values.password})){
+                updateUser.mutate()
+               }else{
+                console.log("pass ผิด")
+               }
+
+              
+             
+              
+              
             }}
           >
             <Form>
@@ -126,7 +155,7 @@ const ProfileFormInput = ({ data }: propTypes) => {
           setEdit(false)
         }}
         onSubmit={(values) => {
-          console.log(values)
+          //console.log(values)
           //--------------------do something for handle value
           //----------next Open modal for confirm password
           handleform(values)

@@ -110,6 +110,26 @@ class Folder {
     }
   }
 
+  static async getAll(req: Request, res: Response) {
+    const userId = req.headers['user-id'] as string
+    const schema = z.object({
+      userId: z.string().uuid(),
+    })
+
+    try {
+      schema.parse({ userId })
+      const folder = await Prisma.$queryRaw`
+        SELECT DISTINCT "Folder".*,'generatedFolder' AS "type" FROM "Folder"
+        LEFT JOIN "FolderTag" ON "Folder"."id" = "FolderTag"."folderId"
+        LEFT JOIN "Tag" ON "FolderTag"."tagId" = "Tag"."id"
+        LIMIT 9
+      `
+      res.json(folder)
+    } catch (err) {
+      res.status(400).json(err)
+    }
+  }
+
   static addNote = async (req: Request, res: Response) => {
     const { userFolderId } = req.params
     const { note } = req.body

@@ -6,6 +6,7 @@ import SearchBox from '@components/SearchBox'
 import ShareModal from '@components/ShareModal'
 import TakeNote from '@components/TakeNote'
 import UploadFile from '@components/UploadFile'
+import File from '@models/File'
 import FileController from '@models/FileController'
 import FolderController from '@models/FolderController'
 import NoteController from '@models/NoteController'
@@ -27,11 +28,26 @@ const MyDocument = () => {
   const [note, setNote] = useState([])
   const [uploadedFile, setUploadedFile] = useState([])
   const {
-    data: latestFiles,
-    isLoading: latestFilesLoading,
-    error: latestFilesError,
-  } = useQuery(['latestFiles', user?.id], async () => {
+    data: latestGeneratedFiles,
+    isLoading: latestGeneratedFilesLoading,
+    error: latestGeneratedFilesError,
+  } = useQuery(['generatedFile', user?.id], async () => {
     return await FileController.getLatestFile('generatedFile')
+  })
+
+  const {
+    data: latestUploadedFiles,
+    isLoading: latestUploadedFilesLoading,
+    error: latestUploadedFilesError,
+  } = useQuery(['uploadedFile', user?.id], async () => {
+    return await FileController.getLatestFile('uploadedFile')
+  })
+  const {
+    data: latestSharedFiles,
+    isLoading: latestSharedFilesLoading,
+    error: latestSharedFilesError,
+  } = useQuery(['sharedFile', user?.id], async () => {
+    return await FileController.getLatestFile('sharedFile')
   })
 
   const {
@@ -46,13 +62,25 @@ const MyDocument = () => {
     error: latestNoteError,
   } = useQuery(['lastestNote', user?.id], NoteController.getLastestNote)
 
-  if (latestFilesLoading || latestFolderLoading || latestNoteLoading)
+  if (
+    latestGeneratedFilesLoading ||
+    latestUploadedFilesLoading ||
+    latestFolderLoading ||
+    latestNoteLoading ||
+    latestSharedFilesLoading
+  )
     return <div>Loading...</div>
 
-  if (latestFilesError || latestFolderError || latestNoteError)
+  if (
+    latestGeneratedFilesError ||
+    latestUploadedFilesError ||
+    latestFolderError ||
+    latestNoteError ||
+    latestSharedFilesError
+  )
     return <div>Error</div>
 
-  if (latestFiles || latestFolder || latestNote)
+  if (latestGeneratedFiles || latestUploadedFiles || latestFolder || latestNote)
     return (
       <Box sx={layout}>
         <Flex
@@ -95,7 +123,9 @@ const MyDocument = () => {
               }
             />
             {latestNote
-              .filter((note) => note.heading.toLowerCase().includes(search))
+              .filter((note: any) =>
+                note.heading.toLowerCase().includes(search)
+              )
               .map((note: any) => {
                 return (
                   <DocumentBox
@@ -120,7 +150,7 @@ const MyDocument = () => {
           }}
         >
           <>
-            <ShareModal
+            {/* <ShareModal
               customButton={
                 <DocumentBlankBox
                   icon={AiFillPlusCircle}
@@ -128,24 +158,28 @@ const MyDocument = () => {
                   color={'gray.500'}
                 />
               }
-            />
+            /> */}
 
-            {shareFile
-              .filter((file) => file.title.toLowerCase().includes(search))
+            {latestSharedFiles
+              .filter((file: any) =>
+                file.officialName.toLowerCase().includes(search)
+              )
               .map((file: any) => {
+                console.log('mygod', file)
                 return (
                   <DocumentBox
                     id={file.id}
                     type={file.type}
-                    title={file.title}
-                    author={file.author}
+                    title={file.officialName}
+                    author={file.firstName + ' ' + file.lastName}
                     showNote
                     note={file.note}
                     showMenu={true}
+                    isShared={file.isShared}
                   />
                 )
               })
-              .slice(0, 1)}
+              .slice(0, 3)}
           </>
         </DocumentBar>
         <DocumentBar
@@ -155,7 +189,7 @@ const MyDocument = () => {
           }}
         >
           {latestFolder
-            .filter((folder) =>
+            .filter((folder: any) =>
               folder.officialName.toLowerCase().includes(search)
             )
             .map((folder: any) => {
@@ -171,10 +205,11 @@ const MyDocument = () => {
                   showNote
                   note={folder.note}
                   showMenu={true}
+                  isShared={folder.isShared}
                 />
               )
             })
-            .slice(0, 1)}
+            .slice(0, 3)}
         </DocumentBar>
         <DocumentBar
           title="ไฟล์ของฉัน"
@@ -182,19 +217,28 @@ const MyDocument = () => {
             navigate('/alldocument/file')
           }}
         >
-          {latestFiles
-            ?.filter((file) => file.officialName.toLowerCase().includes(search))
-            .map((file: any) => (
-              <DocumentBox
-                id={file.id}
-                title={file.officialName}
-                type={file.type ?? 'generatedFile'}
-                showDate
-                createdDate={new Date(file.date)}
-                showNote
-                showMenu={true}
-              />
-            ))
+          {latestGeneratedFiles
+            .filter((file: File) =>
+              file.officialName.toLowerCase().includes(search)
+            )
+            .map((file: any) => {
+              return (
+                <DocumentBox
+                  image={file.image}
+                  amount={file.amount}
+                  showNote
+                  size={file.size}
+                  showMenu={true}
+                  id={file.id}
+                  title={file.officialName}
+                  type={file.type ?? 'generatedFile'}
+                  note={file.note}
+                  showDate
+                  createdDate={new Date(file.date)}
+                  isShared={file.isShared}
+                />
+              )
+            })
             .slice(0, 3)}
         </DocumentBar>
 
@@ -215,24 +259,28 @@ const MyDocument = () => {
               }
             />
 
-            {uploadedFile
-              .filter((file) => file.title.toLowerCase().includes(search))
+            {latestUploadedFiles
+              .filter((file: File) =>
+                file.officialName.toLowerCase().includes(search)
+              )
               .map((file: any) => {
+                console.log('here', file)
                 return (
                   <DocumentBox
                     id={file.id}
                     type={file.type}
-                    title={file.title}
+                    title={file.officialName}
                     image={file.image}
                     amount={file.amount}
                     showNote
                     note={file.note}
                     size={file.size}
                     showMenu={true}
+                    isShared={file.isShared}
                   />
                 )
               })
-              .slice(0, 1)}
+              .slice(0, 2)}
           </>
         </DocumentBar>
       </Box>

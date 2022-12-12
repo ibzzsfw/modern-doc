@@ -2,12 +2,13 @@ import { Box, Center, HStack } from '@chakra-ui/react'
 import ProfileFormInput from '@components/ProfileFormInput'
 import ProfilePicture from '@components/ProfilePicture'
 import { useLoginDataStore } from '@stores/LoginDataStore'
-
+import { useFamilyDataStore } from '@stores/FamilyDataStore'
+import { useProfiledataStore } from '@stores/MyProfiledataStore'
 const MyProfile = () => {
   const user = useLoginDataStore.getState().user
-
+  const { setUser } = useProfiledataStore()
   console.log(user)
-
+  
   return (
     <Box sx={myprofileLayout}>
       <Center>

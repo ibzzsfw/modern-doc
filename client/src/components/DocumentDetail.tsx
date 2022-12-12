@@ -295,7 +295,7 @@ const FolderDetail = ({
               setConfirmModal(value)
             }}
             title={infoModal.title}
-            discirption={infoModal.discription}
+            description={infoModal.discription}
             documentItem={selectedDocument}
             onClick={() => {
               navigate('/form')

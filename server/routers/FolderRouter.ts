@@ -17,6 +17,7 @@ class FolderRouter {
     this.router.get('/get-by-id/:id', this.controller.getFolderById)
     this.router.get('/latest-folders', this.controller.getLatestFolder)
     this.router.get('/search/:name', this.controller.searchByName)
+    this.router.get('/search/', this.controller.getAll)
     this.router.put('/add-note/:userFolderId', this.controller.addNote)
     this.router.get('/get-field/', this.controller.getField)
     this.router.post('/new/:folderId', this.controller.saveFolder)

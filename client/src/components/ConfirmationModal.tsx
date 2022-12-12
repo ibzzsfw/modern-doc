@@ -16,7 +16,7 @@ import { useEffect } from 'react'
 
 type propsType = {
   title?: string
-  discirption?: string
+  description?: string
   documentItem?: any | any[]
   onClick?: () => void
   open?: boolean
@@ -25,7 +25,7 @@ type propsType = {
 
 const ConfirmationModal = ({
   title,
-  discirption,
+  description,
   onClick,
   open,
   setOpen,
@@ -51,7 +51,7 @@ const ConfirmationModal = ({
           <ModalHeader>{title}</ModalHeader>
 
           <ModalBody>
-            {discirption}
+            {description}
 
             <UnorderedList marginLeft="50px">
               {documentItem &&
