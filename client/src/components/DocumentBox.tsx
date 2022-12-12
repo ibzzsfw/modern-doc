@@ -28,7 +28,7 @@ import { MdLeakRemove } from 'react-icons/md'
 import { BsThreeDots, BsTrash, BsShareFill } from 'react-icons/bs'
 import { Link } from 'react-router-dom'
 import ConfirmationModal from '@components/ConfirmationModal'
-import FileController from '@models/FileController'
+
 
 type propsType = {
   type:
