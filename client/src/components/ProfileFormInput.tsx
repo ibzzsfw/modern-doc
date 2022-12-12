@@ -30,6 +30,7 @@ import User from '@models/User'
 import { useMutation } from '@tanstack/react-query'
 import UserController from '@models/UserController'
 import { useProfiledataStore } from '@stores/MyProfiledataStore'
+import { useLoginDataStore } from '@stores/LoginDataStore'
 
 type propTypes = {
   data: any
@@ -66,25 +67,26 @@ const ProfileFormInput = ({ data }: any) => {
       )
     },
     {
-      onSuccess: (data) => {},
-      onError: (error) => {},
-    }
-  )
-  const confirmPassword = useMutation(
-    (value: { phoneNumber: string; password: string }) => {
-      return UserController.checkPhonePassword(value)
-    },
-    {
       onSuccess: (data) => {
-        return true
+        toast({
+          title: 'แก้ไขข้อมูลสำเร็จ',
+          status: 'success',
+          duration: 3000,
+        })
+        window.location.reload()
       },
       onError: (error) => {
-        return false
+        toast({
+          title: 'แก้ไขข้อมูลไม่สำเร็จ',
+          status: 'error',
+          duration: 3000,
+          description: `${error}`,
+        })
       },
     }
   )
+
   //---------------handale values for wait to confirm password
-  const updateProfile = (values: any) => {}
 
   const confirmPasswordModal = (
     <>
@@ -108,16 +110,7 @@ const ProfileFormInput = ({ data }: any) => {
               onClose()
             }}
             onSubmit={async (values) => {
-              if (
-                confirmPassword.mutate({
-                  phoneNumber: user.phoneNumber,
-                  password: values.password,
-                })
-              ) {
-                console.log('pass ถูก')
-              } else {
-                console.log('pass ผิด')
-              }
+              updateUser.mutate({ ...user, password: values.password })
             }}
           >
             <Form>
@@ -173,7 +166,8 @@ const ProfileFormInput = ({ data }: any) => {
         }}
         onSubmit={(values) => {
           console.log({ ...values, profileURI: profileUrl })
-
+          setUser({ ...values, profileURI: profileUrl })
+          onOpen()
           //--------------------do something for handle value
           //----------next Open modal for confirm password
         }}
@@ -205,7 +199,6 @@ const ProfileFormInput = ({ data }: any) => {
                 placeholder="กรอกชื่อไม่ต้องระบุคำนำหน้า"
                 width="208px"
                 disable={!isEdit}
-                onChange={Formik.handleChange}
               />
               <FormInput
                 label="นามสกุล"

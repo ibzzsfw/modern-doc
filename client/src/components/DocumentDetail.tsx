@@ -283,7 +283,7 @@ const FolderDetail = ({
               >
                 แก้ไขเอกสารเดิม
               </Button>
-            </ButtonGroup>
+            </ButtonGroup><Flex justify= 'flex-start'>
             <TakeNote
               doucmentType={document?.type}
               documentId={document?.id}
@@ -291,13 +291,28 @@ const FolderDetail = ({
               documentTitle={title}
               type={'folderNote'}
               customButton={
-                <Button colorScheme="gray" variant="outline">
+                <Button colorScheme="gray"  variant="outline">
                   แก้ไขบันทึก
                 </Button>
               }
             />
+            </Flex>
+           
           </>
-        ) : null}
+        ) : type === 'uploadedFile' && (<Flex justify= 'flex-start'>
+        <TakeNote
+          doucmentType={document?.type}
+          documentId={document?.id}
+          noteContent={document?.note}
+          documentTitle={title}
+          type={'folderNote'}
+          customButton={
+            <Button colorScheme="gray"  variant="outline">
+              แก้ไขบันทึก
+            </Button>
+          }
+        />
+        </Flex>)}
         <Flex justifyContent="flex-start">
           {status === 'ไม่มีอยู่ในคลัง' && (
             <UploadFile

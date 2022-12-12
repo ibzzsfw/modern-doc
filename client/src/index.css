@@ -4,4 +4,8 @@ body, html {
   background-color: #F1F3F5;
   font-family: "Sarabun", sans-serif !important;
   color: #2D3748 !important;
+}
+
+.rpv-default-layout__toolbar {
+  z-index: 0 !important;
 }/*# sourceMappingURL=index.css.map */

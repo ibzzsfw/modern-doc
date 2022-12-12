@@ -21,7 +21,7 @@ import download from 'downloadjs'
 import { PDFDocument } from 'pdf-lib'
 import fontkit from '@pdf-lib/fontkit'
 import FileData from '@models/File'
-
+import TakeNote from '@components/TakeNote'
 const File = () => {
   const { id, type } = useParams<{ id: string; type: string }>()
   const [userPdf, setUserPdf] = useState<any>(null)
