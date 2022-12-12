@@ -13,6 +13,7 @@ import {
   ModalCloseButton,
   useDisclosure,
   useToast,
+  ButtonGroup,
 } from '@chakra-ui/react'
 import { HiKey } from 'react-icons/hi'
 
@@ -25,7 +26,7 @@ const ChangePassword = () => {
     newPassword: Yup.string().required('กรุณากรอกรหัสผ่านใหม่'),
     confirmPassword: Yup.string().required('กรุณากรอกรหัสผ่านใหม่อีกครั้ง'),
   })
-//-------------api change password----------------
+  //-------------api change password----------------
   const setNewPassword = async (values: any) => {
     console.log('api process')
     if (values.newPassword == values.confirmPassword) {
@@ -106,20 +107,15 @@ const ChangePassword = () => {
                 />
               </ModalBody>
 
-              <ModalFooter justifyContent="center">
-                <Flex gap="22px">
+              <ModalFooter justifyContent="flex-end">
+                <ButtonGroup gap="10px" size="md">
                   <Button variant="outline" type="reset">
                     ยกเลิก
                   </Button>
-                  <Button
-                    variant="solid"
-                    colorScheme="blue"
-                    type="submit"
-                    
-                  >
+                  <Button variant="solid" colorScheme="blue" type="submit">
                     ตกลง
                   </Button>
-                </Flex>
+                </ButtonGroup>
               </ModalFooter>
             </Form>
           </Formik>

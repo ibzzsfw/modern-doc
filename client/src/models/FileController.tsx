@@ -135,6 +135,50 @@ class FileController {
     window.location.reload()
     return response.data
   }
+
+  static async deleteFile(type: string | undefined, id: string | undefined) {
+    let response = await axios.delete(
+      `${process.env.VITE_API_ENDPOINT}/file/delete/${type}/${id}`,
+      {
+        headers: {
+          'user-id': useLoginDataStore.getState()?.user?.id,
+          token: useLoginDataStore.getState()?.user?.token,
+        },
+      }
+    )
+    window.location.reload()
+    return response.data
+  }
+
+  static async shareFile(type: string | undefined, id: string | undefined) {
+    let response = await axios.put(
+      `${process.env.VITE_API_ENDPOINT}/file/share/${type}/${id}`,
+      {},
+      {
+        headers: {
+          'user-id': useLoginDataStore.getState()?.user?.id,
+          token: useLoginDataStore.getState()?.user?.token,
+        },
+      }
+    )
+    window.location.reload()
+    return response.data
+  }
+
+  static async unshareFile(type: string | undefined, id: string | undefined) {
+    let response = await axios.put(
+      `${process.env.VITE_API_ENDPOINT}/file/unshare/${type}/${id}`,
+      {},
+      {
+        headers: {
+          'user-id': useLoginDataStore.getState()?.user?.id,
+          token: useLoginDataStore.getState()?.user?.token,
+        },
+      }
+    )
+    window.location.reload()
+    return response.data
+  }
 }
 
 export default FileController

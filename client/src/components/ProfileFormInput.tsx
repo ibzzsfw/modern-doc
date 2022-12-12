@@ -14,27 +14,34 @@ import {
   ModalBody,
   useToast,
   useDisclosure,
+  ButtonGroup,
 } from '@chakra-ui/react'
 import ChangePassword from '@components/ChangePassword'
 import FormInput from '@components/FormInput'
 import UserType from '@models/UserType'
 import { Form, Formik } from 'formik'
-import { useState } from 'react'
+
 import { FiEdit } from 'react-icons/fi'
 import { useMyProfileStore } from '@stores/MyProfilePageStore'
 import { updateCurrentUser } from 'firebase/auth'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { useFamilyDataStore } from '@stores/FamilyDataStore'
+import User from '@models/User'
+import { useMutation } from '@tanstack/react-query'
+import UserController from '@models/UserController'
+import { useProfiledataStore } from '@stores/MyProfiledataStore'
 
 type propTypes = {
   data: any
 }
 
-const ProfileFormInput = ({ data }: propTypes) => {
+const ProfileFormInput = ({ data }: any) => {
   const toast = useToast()
 
   const { isEdit, setEdit } = useMyProfileStore()
   const { isOpen, onOpen, onClose } = useDisclosure()
-
+  const { user, setUser, profileUrl } = useProfiledataStore()
+  const [userInfo, setUserInfo] = useState<any>(null)
   const selectOptions = {
     title: ['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง'],
     sex: ['ชาย', 'หญิง'],
@@ -44,7 +51,38 @@ const ProfileFormInput = ({ data }: propTypes) => {
     postalCode: ['10600'],
   }
   //------------confirm password and call update api
-  const handleform = (values: any) => {}
+
+  const updateUser = useMutation(
+    (value: any) => {
+      return UserController.editProfile(
+        value.title,
+        value.firstName,
+        value.lastName,
+        value.sex,
+        value.phoneNumber,
+        value.birthDate,
+        value.profileURI,
+        value.password
+      )
+    },
+    {
+      onSuccess: (data) => {},
+      onError: (error) => {},
+    }
+  )
+  const confirmPassword = useMutation(
+    (value: { phoneNumber: string; password: string }) => {
+      return UserController.checkPhonePassword(value)
+    },
+    {
+      onSuccess: (data) => {
+        return true
+      },
+      onError: (error) => {
+        return false
+      },
+    }
+  )
   //---------------handale values for wait to confirm password
   const updateProfile = (values: any) => {}
 
@@ -69,9 +107,17 @@ const ProfileFormInput = ({ data }: propTypes) => {
               console.log(values)
               onClose()
             }}
-            onSubmit={(values, actions) => {
-              console.log(values)
-              updateUser(values)
+            onSubmit={async (values) => {
+              if (
+                confirmPassword.mutate({
+                  phoneNumber: user.phoneNumber,
+                  password: values.password,
+                })
+              ) {
+                console.log('pass ถูก')
+              } else {
+                console.log('pass ผิด')
+              }
             }}
           >
             <Form>
@@ -84,15 +130,15 @@ const ProfileFormInput = ({ data }: propTypes) => {
                 />
               </ModalBody>
 
-              <ModalFooter justifyContent="center">
-                <Flex gap="22px">
-                  <Button variant="outliวัยne" type="reset">
+              <ModalFooter justifyContent="flex-end">
+                <ButtonGroup gap="10px">
+                  <Button variant="outline" type="reset">
                     ยกเลิก
                   </Button>
                   <Button variant="solid" colorScheme="blue" type="submit">
                     ตกลง
                   </Button>
-                </Flex>
+                </ButtonGroup>
               </ModalFooter>
             </Form>
           </Formik>
@@ -126,11 +172,10 @@ const ProfileFormInput = ({ data }: propTypes) => {
           setEdit(false)
         }}
         onSubmit={(values) => {
-          console.log(values)
+          console.log({ ...values, profileURI: profileUrl })
+
           //--------------------do something for handle value
           //----------next Open modal for confirm password
-          handleform(values)
-          onOpen()
         }}
       >
         <Form>
@@ -160,6 +205,7 @@ const ProfileFormInput = ({ data }: propTypes) => {
                 placeholder="กรอกชื่อไม่ต้องระบุคำนำหน้า"
                 width="208px"
                 disable={!isEdit}
+                onChange={Formik.handleChange}
               />
               <FormInput
                 label="นามสกุล"
@@ -307,7 +353,9 @@ const ProfileFormInput = ({ data }: propTypes) => {
                 justifyContent="flex-end"
                 display={isEdit ? 'unset' : 'none'}
               >
-                <Button type="reset">ยกเลิก</Button>
+                <Button variant="outline" type="reset">
+                  ยกเลิก
+                </Button>
                 <Button type="submit" colorScheme="blue">
                   ตกลง
                 </Button>

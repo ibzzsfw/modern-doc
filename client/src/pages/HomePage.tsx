@@ -45,10 +45,8 @@ const Home = () => {
         <Center>
           <SearchBox
             onSearchClick={(values) => {
-              if (values !== '') {
-                setSearch(values)
-                navigate(`/search`)
-              }
+              setSearch(values)
+              navigate(`/search`)
             }}
           />
         </Center>
@@ -100,6 +98,7 @@ const Home = () => {
         </DocumentBar>
       </VStack>
     )
+  return <></>
 }
 
 export default Home

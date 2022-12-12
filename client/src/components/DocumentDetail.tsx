@@ -39,7 +39,10 @@ const FolderDetail = ({
 }: propsType) => {
   const navigate = useNavigate()
   const [comfirmModal, setConfirmModal] = useState(false)
-  const [infoModal, setInfoModal] = useState({ title: '', discription: '' })
+  const [infoModal, setInfoModal] = useState<any>({
+    title: '',
+    description: '',
+  })
 
   const { file, setFile } = useFilePageStore((state) => {
     return {
@@ -245,7 +248,7 @@ const FolderDetail = ({
                   })
                   setInfoModal({
                     title: 'สร้างเอกสารใหม่',
-                    discription: (
+                    description: (
                       <Text>
                         คุณต้องการสร้างเอกสารใหม่{' '}
                         <Text as="b"> {selectedDocument.length} </Text>{' '}
@@ -264,7 +267,19 @@ const FolderDetail = ({
                 sx={editDocumentBtn}
                 colorScheme="gray"
                 variant="outline"
-                onClick={() => {}}
+                onClick={() => {
+                  setInfoModal({
+                    title: 'แก้ไขเอกสารเดิม',
+                    description: (
+                      <Text>
+                        คุณต้องการแก้ไขเอกสาร{' '}
+                        <Text as="b"> {selectedDocument.length} </Text>{' '}
+                        รายการหรือไม่
+                      </Text>
+                    ),
+                  })
+                  setConfirmModal(true)
+                }}
               >
                 แก้ไขเอกสารเดิม
               </Button>
@@ -295,7 +310,7 @@ const FolderDetail = ({
               setConfirmModal(value)
             }}
             title={infoModal.title}
-            discirption={infoModal.discription}
+            description={infoModal.description}
             documentItem={selectedDocument}
             onClick={() => {
               navigate('/form')
@@ -304,6 +319,7 @@ const FolderDetail = ({
         </Flex>
       </Flex>
     )
+  return <></>
 }
 
 export default FolderDetail

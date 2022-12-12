@@ -17,13 +17,17 @@ import {
   useToast,
 } from '@chakra-ui/react'
 import MenuProvider from '@components/MenuProvider'
+import FileController from '@models/FileController'
+import FolderController from '@models/FolderController'
 import NoteController from '@models/NoteController'
 import { useMutation } from '@tanstack/react-query'
 import { Field, Form, Formik } from 'formik'
 import { useState } from 'react'
 import { AiOutlineEdit } from 'react-icons/ai'
-import { BsThreeDots, BsTrash } from 'react-icons/bs'
+import { MdLeakRemove } from 'react-icons/md'
+import { BsThreeDots, BsTrash, BsShareFill } from 'react-icons/bs'
 import { Link } from 'react-router-dom'
+import ConfirmationModal from '@components/ConfirmationModal'
 
 type propsType = {
   type:
@@ -31,8 +35,10 @@ type propsType = {
     | 'generatedFile'
     | 'uploadedFile'
     | 'sharedFile'
+    | 'userFreeUploadFile'
     | 'note'
   id: string
+  isShared?: boolean
   title: string
   amount?: number
   size?: number
@@ -51,6 +57,7 @@ type propsType = {
 const DocumentBox = ({
   type,
   id,
+  isShared = false,
   title,
   amount,
   size,
@@ -67,7 +74,21 @@ const DocumentBox = ({
 }: propsType) => {
   const [editNote, setEditNote] = useState(false)
   const toast = useToast()
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const {
+    isOpen: isOpenDelete,
+    onOpen: onOpenDelete,
+    onClose: onCloseDelete,
+  } = useDisclosure()
+  const {
+    isOpen: isOpenShared,
+    onOpen: onOpenShared,
+    onClose: onCloseShared,
+  } = useDisclosure()
+  const {
+    isOpen: isOpenUnshared,
+    onOpen: onOpenUnshared,
+    onClose: onCloseUnshared,
+  } = useDisclosure()
   let layout = {
     width: '320px',
     boxShadow: '5px 5px 3px -2px rgba(0, 0, 0, 0.1)',
@@ -110,6 +131,19 @@ const DocumentBox = ({
     backgroundColor: colorBar,
   }
 
+  let submitButton = {
+    height: '40px',
+    backgroundColor: 'accent.blue',
+    color: 'white',
+    margin: 'auto',
+    _hover: {
+      backgroundColor: 'hover.blue',
+    },
+    _active: {
+      backgroundColor: 'hover.blue',
+    },
+  }
+
   const getImageUrl = () => {
     if (image) {
       return image
@@ -120,7 +154,7 @@ const DocumentBox = ({
     if (type === 'generatedFile') {
       return '/assets/file_logo.png'
     }
-    if (type === 'uploadedFile') {
+    if (type === 'uploadedFile' || type === 'userFreeUploadFile') {
       return '/assets/card_logo.png'
     }
     if (type === 'sharedFile') {
@@ -186,9 +220,7 @@ const DocumentBox = ({
     if (type === 'sharedFile') {
       return 'เอกสาร'
     }
-    if (type === 'note') {
-      return 'บันทึก'
-    }
+    return 'บันทึก'
   }
 
   /*const deleteNote = async (id : string) => {
@@ -247,12 +279,63 @@ const DocumentBox = ({
         })
         window.location.reload()
       },
-      onError: (error) => {
+      onError: (error: any) => {
         toast({
           title: 'ลบบันทึกไม่สำเร็จ',
           description: error.message,
           status: 'error',
           duration: 3000,
+        })
+      },
+    }
+  )
+  const editFileNote = useMutation(
+    (value: {
+      content: string
+      type: string | undefined
+      id: string | undefined
+    }) => {
+      return FileController.editNote(value.content, value.type, value.id)
+    },
+    {
+      onSuccess: () => {
+        toast({
+          title: 'แก้ไขบันทึกสำเร็จ',
+          description: `แก้ไขบันทึกสำเร็จ`,
+          status: 'success',
+          duration: 5000,
+        })
+      },
+      onError: (error: any) => {
+        toast({
+          title: 'แก้ไขบันทึกไม่สำเร็จ',
+          description: `${error.massage}`,
+          status: 'error',
+          duration: 5000,
+        })
+      },
+    }
+  )
+
+  const editFolderNote = useMutation(
+    (value: { content: string; id: string | undefined }) => {
+      return FolderController.editNote(value.content, value.id)
+    },
+    {
+      onSuccess: () => {
+        toast({
+          title: 'แก้ไขบันทึกสำเร็จ',
+          description: `แก้ไขบันทึกสำเร็จ`,
+          status: 'success',
+          duration: 5000,
+        })
+      },
+      onError: (error) => {
+        toast({
+          title: 'แก้ไขบันทึกไม่สำเร็จ',
+          description: `${error}`,
+          status: 'error',
+          duration: 5000,
         })
       },
     }
@@ -274,10 +357,10 @@ const DocumentBox = ({
           await window.location.reload()
         }
       },
-      onError: (error) => {
+      onError: (error: any) => {
         toast({
           title: 'แก้ไขบันทึกไม่สำเร็จ',
-          description: error.message,
+          description: error,
           status: 'error',
           duration: 3000,
         })
@@ -304,14 +387,27 @@ const DocumentBox = ({
             title: `ลบ${getThaiName()}`,
             icon: <Icon as={BsTrash} color="accent.red" />,
             onClick: () => {
-              onOpen()
+              onOpenDelete()
             },
             style: {
               color: 'accent.red',
             },
           },
         ],
-      ]}
+        [
+          {
+            title: isShared ? 'ยกเลิกการแชร์' : 'แชร์เอกสาร',
+            icon: isShared ? (
+              <Icon as={MdLeakRemove} />
+            ) : (
+              <Icon as={BsShareFill} />
+            ),
+            onClick: () => {
+              isShared ? onOpenUnshared() : onOpenShared()
+            },
+          },
+        ],
+      ].slice(0, type === 'sharedFile' || type === 'uploadedFile' ? 3 : 2)}
     >
       <Icon as={BsThreeDots} sx={threeDot} boxSize="18px" />
     </MenuProvider>
@@ -319,8 +415,8 @@ const DocumentBox = ({
 
   let deleteModal = (
     <Modal
-      isOpen={isOpen}
-      onClose={onClose}
+      isOpen={isOpenDelete}
+      onClose={onCloseDelete}
       isCentered
       closeOnOverlayClick={false}
     >
@@ -332,18 +428,92 @@ const DocumentBox = ({
         </ModalBody>
         <ModalFooter>
           <Flex gap="22px">
-            <Button variant="outline" onClick={onClose}>
+            <Button variant="outline" onClick={onCloseDelete}>
               ยกเลิก
             </Button>
             <Button
               variant="solid"
               colorScheme="red"
-              onClick={() => {
-                deleteNote.mutate(id)
-                onClose()
+              onClick={async () => {
+                if (type === 'note') {
+                  deleteNote.mutate(id)
+                  onCloseDelete()
+                } else {
+                  await FileController.deleteFile(type, id)
+                  onCloseDelete()
+                }
               }}
             >
               ลบ
+            </Button>
+          </Flex>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  )
+
+  let sharedModal = (
+    <Modal
+      isOpen={isOpenShared}
+      onClose={onCloseShared}
+      isCentered
+      closeOnOverlayClick={false}
+    >
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>แชร์เอกสาร</ModalHeader>
+        <ModalBody>
+          คุณต้องการแชร์เอกสาร <Text as="b">{title}</Text> หรือไม่
+        </ModalBody>
+        <ModalFooter>
+          <Flex gap="22px">
+            <Button variant="outline" onClick={onCloseShared}>
+              ยกเลิก
+            </Button>
+            <Button
+              variant="solid"
+              sx={submitButton}
+              colorScheme="red"
+              onClick={async () => {
+                await FileController.shareFile(type, id)
+                onCloseShared()
+              }}
+            >
+              แชร์
+            </Button>
+          </Flex>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  )
+
+  let unsharedModal = (
+    <Modal
+      isOpen={isOpenUnshared}
+      onClose={onCloseUnshared}
+      isCentered
+      closeOnOverlayClick={false}
+    >
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>ยกเลิกแชร์เอกสาร</ModalHeader>
+        <ModalBody>
+          คุณต้องการยกเลิกแชร์เอกสาร <Text as="b">{title}</Text> หรือไม่
+        </ModalBody>
+        <ModalFooter>
+          <Flex gap="22px">
+            <Button variant="outline" onClick={onCloseUnshared}>
+              ยกเลิก
+            </Button>
+            <Button
+              variant="solid"
+              colorScheme="red"
+              onClick={async () => {
+                await FileController.unshareFile(type, id)
+                onCloseUnshared()
+              }}
+            >
+              ยกเลิกการแชร์
             </Button>
           </Flex>
         </ModalFooter>
@@ -370,13 +540,31 @@ const DocumentBox = ({
       {showNote && (
         <Box marginTop="18px">
           <Formik
-            initialValues={{ content: note }}
-            onSubmit={(value) => {
-              updateFreeNote.mutate({
-                heading: title,
-                content: value.content,
-                id: id,
-              })
+            initialValues={{ content: note || '' }}
+            onSubmit={(value: { content: string }) => {
+              switch (type) {
+                case 'note':
+                  updateFreeNote.mutate({
+                    heading: title,
+                    content: value.content,
+                    id: id,
+                  })
+                  break
+                case 'generatedFolder':
+                  editFolderNote.mutate({
+                    content: value.content,
+                    id: id,
+                  })
+                  break
+                case 'generatedFile':
+                  editFileNote.mutate({
+                    content: value.content,
+                    type: type,
+                    id: id,
+                  })
+                  break
+              }
+
               setEditNote(false)
             }}
             onReset={(value) => {
@@ -416,6 +604,8 @@ const DocumentBox = ({
         </Box>
       )}
       {deleteModal}
+      {sharedModal}
+      {unsharedModal}
     </Box>
   )
 }

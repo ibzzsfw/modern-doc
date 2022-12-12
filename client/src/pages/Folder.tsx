@@ -167,22 +167,6 @@ const Folder = (
     // })
   }
 
-  let adam = new User({
-    id: '1',
-    householdId: '1',
-    title: 'นาย',
-    firstName: 'นาย',
-    lastName: 'นาย',
-    citizenId: 'นาย',
-    phoneNumber: 'นาย',
-    sex: 'ชาย',
-    token: 'นาย',
-    relationship: 'นาย',
-    profileURI: 'นาย',
-  })
-  console.log('adam', adam, adam instanceof User)
-  console.log('fileList', generateFileList, uploadedFileList)
-
   if (folderData && generateFileList && uploadedFileList) {
     return (
       <Flex sx={documentView}>
@@ -204,6 +188,8 @@ const Folder = (
         <FileList files={folderData.file} />
       </Flex>
     )
+    return <></>
   }
+  return <></>
 }
 export default Folder

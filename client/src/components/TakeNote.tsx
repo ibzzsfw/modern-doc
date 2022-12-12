@@ -6,7 +6,6 @@ import {
   Input,
   Modal,
   ModalBody,
-  ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
@@ -14,12 +13,11 @@ import {
   Textarea,
   useDisclosure,
   useToast,
-  Text,
 } from '@chakra-ui/react'
-import Note from '@models/Note'
-import NoteController from '@models/NoteController'
 import FileController from '@models/FileController'
 import FolderController from '@models/FolderController'
+import Note from '@models/Note'
+import NoteController from '@models/NoteController'
 import { useMutation } from '@tanstack/react-query'
 import { Field, Form, Formik } from 'formik'
 import { useState } from 'react'
@@ -146,7 +144,7 @@ const TakeNote = ({
       return NoteController.addFreeNote(value.heading, value.content)
     },
     {
-      onSuccess: (variables: NoteType | any) => {
+      onSuccess: (data, variables) => {
         toast({
           title: 'สร้างบันทึกสำเร็จ',
           description: `สร้าง${variables.heading}สำเร็จ`,
@@ -157,7 +155,7 @@ const TakeNote = ({
       onError: (error) => {
         toast({
           title: 'สร้างบันทึกไม่สำเร็จ',
-          description: `${error.massage}`,
+          description: `${error}`,
           status: 'error',
           duration: 5000,
         })

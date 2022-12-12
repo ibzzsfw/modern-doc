@@ -18,53 +18,6 @@ const SearchPage = () => {
   const { search, setSearch, searchResult } = useSearchBoxStore()
   const [showFile, setShowFile] = useState(true)
   const [showFolder, setShowFolder] = useState(true)
-  const [files, setfiles] = useState([
-    {
-      id: '4',
-      title: 'หนังสือมอบอำนาจ',
-      type: 'generatedFile',
-      colorBar: '#FF9898',
-    },
-    {
-      id: '5',
-      title: 'เอกสารผู้ดูแลคนพิการ',
-      type: 'generatedFile',
-      showDate: true,
-      createdDate: new Date('12/08/2021'),
-    },
-    {
-      id: '6',
-      title: 'บัตรคนพิการ',
-      type: 'uploadedFile',
-      showDate: true,
-      createdDate: new Date('12/08/2021'),
-      colorBar: '#FF9898',
-    },
-    {
-      id: '7',
-      title: 'จ้างงานคนพิการ',
-      type: 'generatedFile',
-      showDate: true,
-      createdDate: new Date('12/08/2021'),
-      colorBar: '#FF9898',
-    },
-    {
-      id: '8',
-      title: 'ขึ้นทะเบียนคนพิการ',
-      type: 'generatedFile',
-      showDate: true,
-      createdDate: new Date('12/08/2021'),
-      colorBar: '#FF9898',
-    },
-  ])
-  const [folders, setFolders] = useState([
-    {
-      id: '1',
-      title: 'จ้างงานคนพิการ',
-      type: 'generatedFolder',
-      colorBar: '#FF9898',
-    },
-  ])
 
   const { data: folderResult, refetch: refetchFolder } = useQuery(
     ['searchFolder', search],
@@ -111,17 +64,22 @@ const SearchPage = () => {
             </Checkbox>
             {showFolder ? (
               <Flex sx={childrenFlex}>
-                {folderResult ? folderResult.map((folder: any) => {
-                  return (
-                    <DocumentBox
-                      id={folder.id}
-                      title={folder.officialName}
-                      type={folder.type}
-                      showDate={folder.showDate}
-                      colorBar={folder.colorBar}
-                    />
-                  )
-                }): (<Text>ไม่พบแฟ้ม</Text>)}
+                {folderResult ? (
+                  folderResult.map((folder: any) => {
+                    return (
+                      <DocumentBox
+                        id={folder.id}
+                        title={folder.officialName}
+                        type={folder.type}
+                        showDate={true}
+                        createdDate={folder.date}
+                        colorBar={folder.colorBar}
+                      />
+                    )
+                  })
+                ) : (
+                  <Text>ไม่พบแฟ้ม</Text>
+                )}
               </Flex>
             ) : (
               <Text>กดเพื่อแสดงผลการค้นหาแฟ้ม</Text>
@@ -141,19 +99,24 @@ const SearchPage = () => {
                 ผลการค้นหาเอกสาร
               </Text>
             </Checkbox>
-            {showFile  ? (
+            {showFile ? (
               <Flex sx={childrenFlex}>
-                {fileResult != null ? fileResult.map((file: any) => {
-                  return (
-                    <DocumentBox
-                      id={file.id}
-                      title={file.officialName}
-                      type={file.type}
-                      showDate={file.showDate}
-                      colorBar={file.colorBar}
-                    />
-                  )
-                }): <Text>ไม่พบเอกสาร</Text>}
+                {fileResult != null ? (
+                  fileResult.map((file: any) => {
+                    return (
+                      <DocumentBox
+                        id={file.id}
+                        title={file.officialName ?? file.name}
+                        type={file.type}
+                        showDate={true}
+                        createdDate={file.date}
+                        colorBar={file.colorBar}
+                      />
+                    )
+                  })
+                ) : (
+                  <Text>ไม่พบเอกสาร</Text>
+                )}
               </Flex>
             ) : (
               <Text>กดเพื่อแสดงผลการค้นหาเอกสาร</Text>
@@ -164,8 +127,6 @@ const SearchPage = () => {
     </VStack>
   )
 }
-
-
 
 export default SearchPage
 

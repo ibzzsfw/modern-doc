@@ -17,6 +17,7 @@ class FileRouter {
     this.router.get('/get-by-id/:type/:id', this.controller.getFileById)
     this.router.get('/latest-files/:type', this.controller.getLatestFiles)
     this.router.get('/search/:name', this.controller.searchByName)
+    this.router.get('/search/', this.controller.getAll)
     this.router.post(
       '/new/generatedFile/:fileId',
       this.controller.newGeneratedFile
@@ -25,7 +26,10 @@ class FileRouter {
       '/new/uploadedFile/:fileId',
       this.controller.newUploadedFile
     )
-    this.router.put('/add-note/:type/:id', this.controller.addNote)
+    this.router.put('/add-note/:type/:fileId', this.controller.addNote)
+    this.router.put('/share/:type/:fileId', this.controller.shareFile)
+    this.router.put('/unshare/:type/:fileId', this.controller.unShareFile)
+    this.router.delete('/delete/:type/:fileId', this.controller.deleteFile)
   }
 }
 
