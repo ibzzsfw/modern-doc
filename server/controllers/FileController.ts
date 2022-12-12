@@ -31,6 +31,9 @@ class FileController {
   deleteFile = async (req: Request, res: Response) => {
     File.deleteFile(req, res)
   }
+  newUserFreeUploadFile = async (req: Request, res: Response) => {
+    File.newUserFreeUploadFile(req, res)
+  }
 }
 
 export default new FileController()

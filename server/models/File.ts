@@ -175,12 +175,6 @@ class File {
           orderBy: {
             date: 'desc',
           },
-          select: {
-            date: true,
-            officialName: true,
-            note: true,
-            isShared: true,
-          },
         })
     }
   }
@@ -299,6 +293,7 @@ class File {
         ,null as "description",null as "dayLifeSpan",'userFreeUploadFile' as "type",
         "UserFreeUploadFile"."date" as "date"
          FROM "UserFreeUploadFile"
+        WHERE "UserFreeUploadFile"."userId" = ${userId}::uuid
       `
       res.status(200).json(file)
     } catch (err) {
@@ -522,6 +517,34 @@ class File {
           break
         }
       }
+    } catch (err) {
+      res.status(400).json(err)
+    }
+  }
+
+  static newUserFreeUploadFile = async (req: Request, res: Response) => {
+    const { officialName, note, expirationDate, URI } = req.body
+    const userId = req.headers['user-id'] as string
+
+    console.log(officialName, note, expirationDate, URI, userId)
+    const schema = z.object({
+      officialName: z.string(),
+      note: z.string(),
+      userId: z.string().uuid(),
+      URI: z.string(),
+    })
+    try {
+      schema.parse({ officialName, note, userId, URI })
+
+      const expired = expirationDate ? new Date(expirationDate) : null
+
+      const result = await Prisma.$queryRaw`
+        INSERT INTO "UserFreeUploadFile" ("id","userId", "uploadedDate", "expirationDate", "note", "URI",
+        "isShared", "officialName","date")
+        VALUES (gen_random_uuid(), ${userId}::uuid, now(), ${expired}, ${note}, ${URI}, false, ${officialName}, now())
+        RETURNING "id"
+     `
+      res.status(200).json({ message: 'success', id: result[0].id })
     } catch (err) {
       res.status(400).json(err)
     }
