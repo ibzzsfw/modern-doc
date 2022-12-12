@@ -311,7 +311,6 @@ class File {
   }
 
   static async newGeneratedFile(req: Request, res: Response) {
-    console.log('man')
     const { fileId } = req.params
     const { fields } = req.body as {
       fields: {
@@ -340,7 +339,6 @@ class File {
         VALUES ((SELECT gen_random_uuid()),${userId}::uuid, ${fileId}::uuid, ${new Date()})
         ON CONFLICT ("userId", "generatedFileId") DO UPDATE SET "date" = ${new Date()}
       `
-      console.log(fields)
       const promise = await async.map(fields, async (field) => {
         const { name, userValue } = field
         const updateField = await Prisma.$queryRaw`
@@ -361,7 +359,6 @@ class File {
   }
 
   static async newUploadedFile(req: Request, res: Response) {
-    console.log('here')
     const { fileId } = req.params
     const { URI, note, expiredDate } = req.body
     const expired = expiredDate ? new Date(expiredDate) : null
@@ -434,7 +431,6 @@ class File {
       type: z.enum(fileType),
       userId: z.string().uuid(),
     })
-    console.log(fileId, type, userId)
     try {
       schema.parse({ fileId, type, userId })
       switch (type) {

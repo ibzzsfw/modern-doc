@@ -12,21 +12,6 @@ const DocumentBar = ({
   children,
   onAddonButtonClick,
 }: propsType) => {
-  let layout = {
-    padding: '24px 0',
-    gap: '24px',
-    flexDirection: 'column',
-    width: '100%',
-    // margin: 'auto',
-  }
-
-  let childrenFlex = {
-    width: '100%',
-    flexWrap: 'wrap',
-    // justifyContent: 'space-evenly',
-    margin: 'auto',
-    gap: '32px',
-  }
 
   return (
     <>
@@ -44,9 +29,7 @@ const DocumentBar = ({
             rightIcon={<AiOutlineDoubleRight />}
             variant="ghost"
             colorScheme="gray"
-            onClick={() => {
-              onAddonButtonClick && onAddonButtonClick()
-            }}
+            onClick={() => onAddonButtonClick && onAddonButtonClick()}
           >
             ดูเพิ่มเติม
           </Button>
@@ -60,3 +43,17 @@ const DocumentBar = ({
 }
 
 export default DocumentBar
+
+let layout = {
+  padding: '24px 0',
+  gap: '24px',
+  flexDirection: 'column',
+  width: '100%',
+}
+
+let childrenFlex = {
+  width: '100%',
+  flexWrap: 'wrap',
+  margin: 'auto',
+  gap: '32px',
+}

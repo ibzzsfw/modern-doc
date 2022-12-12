@@ -1,17 +1,22 @@
 import create from 'zustand'
 
-type RegisterStore = {
+/**
+ * @interface IRegisterModel
+ * @description RegisterModel interface for register page
+ * @property {number} page - current page tab
+ */
+interface IRegisterModel {
   page: number
-  setPage: (value: number) => void
   title: string[]
-  setTitle: (value: string[]) => void
   sex: string[]
+  setPage: (value: number) => void
+  setTitle: (value: string[]) => void
 }
 
-export const useRegisterStore = create<RegisterStore>((set) => ({
+export const RegisterModel = create<IRegisterModel>((set) => ({
   page: 1,
-  setPage: (value) => set({ page: value }),
   title: ['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง'],
-  setTitle: (value) => set({ title: value }),
   sex: ['ชาย', 'หญิง'],
+  setTitle: (value) => set({ title: value }),
+  setPage: (value) => set({ page: value }),
 }))

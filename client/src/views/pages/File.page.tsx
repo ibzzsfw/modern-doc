@@ -30,10 +30,7 @@ const File = () => {
   if (data) {
     setFile(data)
     viewController.setDocumentType('file')
-    console.log(data)
   }
-
-  console.log('which', userPdf ? userPdf : file.URI ?? file.previewURI)
 
   if (data)
     return (

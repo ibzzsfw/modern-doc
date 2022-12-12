@@ -51,7 +51,6 @@ class User {
   }
 
   static addUser = async (req: Request, res: Response) => {
-    console.log(req.body)
     const schema = z.object({
       title: z.string(),
       firstName: z.string(),
@@ -99,7 +98,6 @@ class User {
         'birthdate_personal',
         'lastname_personal',
       ]
-      console.log(createUser)
       const getFieldId = await Prisma.field.findMany({
         where: {
           name: {
@@ -128,7 +126,6 @@ class User {
 
       res.status(201).json({ message: 'success' })
     } catch (err) {
-      console.log(err)
       res.status(400).json({ message: err })
     }
   }
@@ -154,8 +151,6 @@ class User {
       if (!getUser) {
         return res.status(404).json({ message: 'ไม่พบข้อมูลผู้ใช้งาน' })
       }
-
-      console.log(getUser.hashedPassword, password)
 
       const isPasswordMatch = await bcrypt.compare(
         password,
@@ -454,8 +449,6 @@ class User {
         birthDate
       )} WHERE "id" = ${userId}::uuid RETURNING *
       `
-
-      console.log(editProfile)
 
       res.status(200).json(editProfile)
     } catch (err) {

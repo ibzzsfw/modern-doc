@@ -1,9 +1,11 @@
 import create from 'zustand'
-import { persist, PersistOptions } from 'zustand/middleware'
 
-type FamilyPageStore = {
+/**
+ * @interface IFamilyPageModel
+ * @description store for family page 
+ */
+interface IFamilyPageModel {
   page: number
-  setPage: (value: number) => void
   title: ['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง']
   relationship: [
     'บิดา',
@@ -15,14 +17,14 @@ type FamilyPageStore = {
     'ผู้อาศัย'
   ]
   mode: 'add' | 'edit'
-  setMode: (value: 'add' | 'edit') => void
   hideChilden: boolean
+  setPage: (value: number) => void
+  setMode: (value: 'add' | 'edit') => void
   setHideChildren: (value: boolean) => void
 }
 
-export const useFamilyPageStore = create<FamilyPageStore>((set) => ({
+export const FamilyPageModel = create<IFamilyPageModel>((set) => ({
   page: 1,
-  setPage: (value) => set({ page: value }),
   title: ['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง'],
   relationship: [
     'บิดา',
@@ -34,7 +36,8 @@ export const useFamilyPageStore = create<FamilyPageStore>((set) => ({
     'ผู้อาศัย',
   ],
   mode: 'edit',
-  setMode: (value) => set({ mode: value }),
   hideChilden: false,
+  setPage: (value) => set({ page: value }),
+  setMode: (value) => set({ mode: value }),
   setHideChildren: (value) => set({ hideChilden: value }),
 }))

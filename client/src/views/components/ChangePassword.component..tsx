@@ -1,8 +1,7 @@
-import { Button, Flex } from '@chakra-ui/react'
+import { Button } from '@chakra-ui/react'
 import FormInput from '@components/FormInput.component'
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
-
 import {
   Modal,
   ModalOverlay,
@@ -10,7 +9,6 @@ import {
   ModalHeader,
   ModalFooter,
   ModalBody,
-  ModalCloseButton,
   useDisclosure,
   useToast,
   ButtonGroup,
@@ -21,17 +19,24 @@ const ChangePassword = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const toast = useToast()
 
+  /**
+   * @function ChangePasswordSchema
+   * @description Yup schema for change password form
+   */
   const ChangePasswordSchema = Yup.object().shape({
     oldPassword: Yup.string().required('กรุณากรอกรหัสผ่านเดิม'),
     newPassword: Yup.string().required('กรุณากรอกรหัสผ่านใหม่'),
     confirmPassword: Yup.string().required('กรุณากรอกรหัสผ่านใหม่อีกครั้ง'),
   })
-  //-------------api change password----------------
+
+  /**
+   * @function setNewPassword
+   * @description Set new password
+   * @param {any} values - form values of new password
+   * @returns {void}
+   */
   const setNewPassword = async (values: any) => {
-    console.log('api process')
     if (values.newPassword == values.confirmPassword) {
-      console.log(values.newPassword)
-      console.log(values.confirmPassword)
       toast({
         title: 'เปลี่ยนรหัสผ่านสำเร็จ',
         status: 'success',
@@ -81,7 +86,6 @@ const ChangePassword = () => {
               onClose()
             }}
             onSubmit={(values) => {
-              //-----------------api process-----------------
               setNewPassword(values)
             }}
           >

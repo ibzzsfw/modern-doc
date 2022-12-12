@@ -1,11 +1,6 @@
-
-//----------------------------not use
-
-
 import { Button, Flex } from '@chakra-ui/react'
 import FormInput from '@components/FormInput.component'
 import { Formik, Form } from 'formik'
-import * as Yup from 'yup'
 import {
   Modal,
   ModalOverlay,
@@ -16,18 +11,11 @@ import {
   useToast,
   useDisclosure
 } from '@chakra-ui/react'
-import { IoSpeedometerOutline } from 'react-icons/io5'
-import { useMyProfileStore } from '@models/MyProfilePageStore.model'
-type porpTypes = {
-  isOpen?: boolean
-  toggleModal?: (values: boolean) => boolean
-}
 
-const ConfirmPassword = ({  toggleModal }: porpTypes) => {
+const ConfirmPassword = () => {
   const toast = useToast()
   const {isOpen, onOpen, onClose} = useDisclosure()
   const submitForm = () => {
-    console.log('api process')
     toast({
       title: 'แก้ไขข้อมูลส่วนตัวสำเร็จ',
       status: 'success',
@@ -48,17 +36,9 @@ const ConfirmPassword = ({  toggleModal }: porpTypes) => {
         <ModalOverlay />
         <ModalContent justifyContent="center">
           <Formik
-            initialValues={{
-              password: '',
-            }}
-            onReset={(values) => {
-              console.log(values)
-              onClose()
-            }}
-            onSubmit={(values) => {
-              console.log(values)
-              submitForm()
-            }}
+            initialValues={{password: '',}}
+            onReset={() => onClose()}
+            onSubmit={() => submitForm()}
           >
             <Form>
               <ModalHeader>ยืนยันการแก้ไขข้อมูล</ModalHeader>

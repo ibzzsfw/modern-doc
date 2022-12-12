@@ -11,7 +11,6 @@ import {
 } from '@chakra-ui/react'
 import { ErrorMessage, Field } from 'formik'
 
-//proptype
 type propsType = {
   label: string
   name: string

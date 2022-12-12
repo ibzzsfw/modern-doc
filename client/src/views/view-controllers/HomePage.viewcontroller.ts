@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { useLoginDataStore } from "@models/LoginDataStore.model";
-import { useSearchBoxStore } from "@models/SearchBoxStore.model";
+import { LoginDataModel } from "@models/LoginDataStore.model";
+import { SearchBoxModel } from "@models/SearchBoxStore.model";
 
 class HomePageViewController {
 
-  private user = useLoginDataStore.getState().user
-  searchBoxStore = useSearchBoxStore()
+  private user = LoginDataModel.getState().user
+  searchBoxStore = SearchBoxModel()
   searchValueState = useState('')
 
   constructor() {

@@ -12,7 +12,6 @@ import {
   GridItem,
   Center,
 } from '@chakra-ui/react'
-import { getDate } from 'date-fns'
 
 type propsType = {
   type: 'generatedFolder' | 'generatedFile' | 'uploadedFile' | 'sharedFile'
@@ -46,22 +45,28 @@ const TableListItem = ({
   showDate,
   url,
 }: propsType) => {
+  
   const getImageUrl = () => {
+
+    let path = ''
+
     if (image) {
       return image
     }
     if (type === 'generatedFolder') {
-      return '/assets/folder_logo.png'
+      path = 'folder_logo'
     }
     if (type === 'generatedFile') {
-      return '/assets/file_logo.png'
+      path = 'file_logo'
     }
     if (type === 'uploadedFile') {
-      return '/assets/card_logo.png'
+      path = 'card_logo'
     }
     if (type === 'sharedFile') {
-      return '/assets/shared_logo.png'
+      path = 'shared_logo'
     }
+
+    return `/assets/${path}.png`
   }
 
   const getSubText = () => {
@@ -151,22 +156,6 @@ const TableListItem = ({
 }
 
 export default TableListItem
-
-let layout = {
-  width: '320px',
-  boxShadow: '5px 5px 3px -2px rgba(0, 0, 0, 0.1)',
-  borderRadius: '16px',
-  backgroundColor: 'background.white',
-  position: 'relative',
-  padding: '20px',
-  cursor: 'pointer',
-  transition: 'all 0.1s ease-in-out',
-  _hover: {
-    cursor: 'pointer',
-    boxShadow: '10px 10px 7px -5px rgba(0, 0, 0, 0.2)',
-    transform: 'translate(-2px, -2px)',
-  },
-}
 
 let boxLayout = {
   width: '95%',

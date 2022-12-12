@@ -78,10 +78,6 @@ const ShareModal = ({ customButton }: propsTypes) => {
             <Button
               colorScheme="blue"
               marginLeft="12px"
-              onClick={() => {
-                console.log(value)
-                console.log(noteType)
-              }}
             >
               บันทึก
             </Button>

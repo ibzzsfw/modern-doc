@@ -23,21 +23,18 @@ import {
   ModalFooter,
   ModalBody,
   Button,
-  ModalCloseButton,
-  useToast,
   Link,
 } from '@chakra-ui/react'
+import UserController from '@view-models/UserController'
 import { BsPersonCircle } from 'react-icons/bs'
 import { IoChevronDownOutline, IoChevronForwardOutline } from 'react-icons/io5'
 import { MdGroups } from 'react-icons/md'
 import { BiLogOutCircle } from 'react-icons/bi'
 import { useState, useEffect } from 'react'
-import { useLoginDataStore } from '@models/LoginDataStore.model'
-import getRelationshipText from '@utils/getRelationshipText'
+import { LoginDataModel } from '@models/LoginDataStore.model'
 import shallow from 'zustand/shallow'
 import User from '@view-models/User'
 import { useNavigate } from 'react-router-dom'
-import UserController from '@view-models/UserController'
 import { useMutation } from '@tanstack/react-query'
 
 const NavbarAvatar = () => {
@@ -56,16 +53,16 @@ const NavbarAvatar = () => {
     lastName: '',
   })
 
-  const userJson = useLoginDataStore((state) => state.user, shallow)
-  const setUserData = useLoginDataStore((state) => state.setUserData, shallow)
-  const setFamilyMembers = useLoginDataStore(
+  const userJson = LoginDataModel((state) => state.user, shallow)
+  const setUserData = LoginDataModel((state) => state.setUserData, shallow)
+  const setFamilyMembers = LoginDataModel(
     (state) => state.setFamilyMembers,
     shallow
   )
 
   const user = userJson ? new User(userJson) : null
 
-  const familyMembers = useLoginDataStore(
+  const familyMembers = LoginDataModel(
     (state) => state.familyMembers,
     shallow
   )
@@ -74,7 +71,6 @@ const NavbarAvatar = () => {
     async (id: string) => UserController.switchMember(id),
     {
       onSuccess: (data) => {
-        console.log(data)
         setUserData(
           new User({
             id: data.id,
@@ -88,6 +84,8 @@ const NavbarAvatar = () => {
             token: data.token,
             relationship: data.relationship,
             profileURI: data.profileURI,
+            email: data.email,
+            birthDate: data.birthDate,
           })
         )
         setFamilyMembers(data.familyMembers)
@@ -185,7 +183,6 @@ const NavbarAvatar = () => {
                                   <Button
                                     sx={submitButton}
                                     onClick={() => {
-                                      console.log(member)
                                       switchMember(selectedMember.id)
                                     }}
                                   >
@@ -333,23 +330,3 @@ const memberAvatar = {
   width: '24px',
   height: '24px',
 }
-/*
-members.map((member)=>{
-  return(
-    <Flex as="button" sx={memberList}>
-    <Avatar sx={memberAvatar} src = {member.url}/>
-    <Text sx={memberNameText}>{member.name}</Text>
-  </Flex>
-  )
-})
-
-members.filter((member)=>{
-                      return member.id > 0
-                    }).map((member)=>{
-                      return(
-                        <Flex as="button" sx={memberList}>
-                        <Avatar sx={memberAvatar} src = {member.url}/>
-                        <Text sx={memberNameText}>{member.name}</Text>
-                      </Flex>
-                      )
-                    }*/

@@ -8,7 +8,6 @@ type propsType = {
   children: React.ReactNode | React.ReactNode[]
 }
 
-//frame component use for change DocumentBar and TableList.
 
 const Frame = ({ title, view, children }: propsType) => {
   return view === 'box' ? (

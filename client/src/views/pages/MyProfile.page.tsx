@@ -1,9 +1,6 @@
 import { Box, Center, HStack } from '@chakra-ui/react'
 import ProfileFormInput from 'src/views/components/ProfileFormInput.component'
 import ProfilePicture from 'src/views/components/ProfilePicture.component'
-import { useLoginDataStore } from '@models/LoginDataStore.model'
-import { useFamilyDataStore } from '@models/FamilyDataStore.model'
-import { useProfiledataStore } from '@models/MyProfiledataStore.model'
 import MyProfileViewController from '../view-controllers/MyProfile.viewcontroller'
 
 const MyProfile = () => {

@@ -1,9 +1,9 @@
-import { useSearchBoxStore } from "@models/SearchBoxStore.model";
+import { SearchBoxModel } from "@models/SearchBoxStore.model";
 import { useState } from "react";
 
 class SearchPageViewController {
 
-  searchBoxStore = useSearchBoxStore()
+  searchBoxStore = SearchBoxModel()
   showFileState = useState(true)
   showFolderState = useState(true)
 

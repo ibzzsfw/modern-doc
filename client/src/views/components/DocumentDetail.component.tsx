@@ -9,9 +9,9 @@ import {
   Text,
 } from '@chakra-ui/react'
 import GeneratedDocumentBadge from '@components/DocumentBadge.component'
-import Status from 'src/view-models/DocumentStatus'
-import { useFilePageStore } from '@models/FilePageStore.model'
-import { useFormPageStore } from '@models/FormPageStore.model'
+import Status from '@view-models/DocumentStatus'
+import { FilePageModel } from '@models/FilePageStore.model'
+import { FormPageModel } from '@models/FormPageStore.model'
 import Markdown from 'marked-react'
 import { useNavigate } from 'react-router-dom'
 import shallow from 'zustand/shallow'
@@ -44,7 +44,7 @@ const FolderDetail = ({
     description: '',
   })
 
-  const { file, setFile } = useFilePageStore((state) => {
+  const { file, setFile } = FilePageModel((state) => {
     return {
       file: state.file,
       setFile: state.setFile,
@@ -59,7 +59,7 @@ const FolderDetail = ({
     generatedFiles,
     setGeneratedFiles,
     selectedDocument,
-  } = useFormPageStore((state) => {
+  } = FormPageModel((state) => {
     return {
       setField: state.setField,
       document: state.document,
@@ -71,72 +71,6 @@ const FolderDetail = ({
     }
   }, shallow)
 
-  // const generateForm = () => {
-  //   let fieldsUnique: Field[] = []
-  //   generatedFile
-  //     .filter((file) => file instanceof GeneratedFile)
-  //     .map((file) => (fieldsUnique = [...fieldsUnique, ...file.field]))
-  //   // unique by field id
-  //   fieldsUnique = fieldsUnique.filter(
-  //     (field, index, self) => index === self.findIndex((t) => t.id === field.id)
-  //   )
-  //   setGeneratedFileField(fieldsUnique)
-  //   navigate('/form')
-  // }
-
-  let detailsBox = {
-    width: '520px',
-    flexDirection: 'column',
-    rowGap: '1rem',
-    height: '768px',
-    marginRight: '2rem',
-    transition: 'width 0.5s',
-  }
-
-  let abstractBox = {
-    borderRadius: '6px',
-    backgroundColor: 'background.white',
-    width: 'inherit',
-    padding: '16px 32px',
-  }
-
-  let descriptionBox = {
-    ...abstractBox,
-    flexDirection: 'column',
-    rowGap: '8px',
-    height: 'fit-content',
-  }
-
-  let markdownBox = {
-    maxHeight: '400px',
-    overflowY: 'scroll',
-    overflowWrap: 'break-word',
-    whiteSpaec: 'initial',
-    wordWrap: 'break-word',
-    textOverflow: 'ellipsis',
-  }
-
-  let noteBox = {
-    ...abstractBox,
-    width: 'inherit',
-    height: 'fit-content',
-    maxHeight: '200px',
-    overflow: 'auto',
-  }
-
-  let titleText = {
-    fontSize: '20px',
-    fontWeight: 'semibold',
-  }
-
-  let newDocumentBtn = {
-    width: '232px',
-  }
-
-  let editDocumentBtn = {
-    width: '232px',
-  }
-
   const keepField = [
     'firstname_personal',
     'lastname_personal',
@@ -146,8 +80,6 @@ const FolderDetail = ({
     'email_personal',
     'title_personal',
   ]
-
-  console.log('file', document)
 
   if (file)
     return (
@@ -162,18 +94,7 @@ const FolderDetail = ({
           <Box sx={markdownBox}>
             <Markdown value={markdown} />
           </Box>
-          <Box textAlign="end">
-            {/* <Button
-            size="sm"
-            borderColor="accent.blue"
-            variant="outline"
-            rightIcon={!isExpand ? <AiOutlineDoubleRight /> : undefined}
-            leftIcon={isExpand ? <AiOutlineDoubleLeft /> : undefined}
-            onClick={() => setIsExpand(!isExpand)}
-          ></Button> */}
-          </Box>
         </Flex>
-
         <Box sx={noteBox}>
           <Heading sx={titleText}>บันทึกเตือนความจำ</Heading>
           {description}
@@ -257,7 +178,6 @@ const FolderDetail = ({
                     ),
                   })
                   setGeneratedFiles(temp)
-
                   setConfirmModal(true)
                 }}
               >
@@ -323,3 +243,56 @@ const FolderDetail = ({
 }
 
 export default FolderDetail
+
+let detailsBox = {
+  width: '520px',
+  flexDirection: 'column',
+  rowGap: '1rem',
+  height: '768px',
+  marginRight: '2rem',
+  transition: 'width 0.5s',
+}
+
+let abstractBox = {
+  borderRadius: '6px',
+  backgroundColor: 'background.white',
+  width: 'inherit',
+  padding: '16px 32px',
+}
+
+let descriptionBox = {
+  ...abstractBox,
+  flexDirection: 'column',
+  rowGap: '8px',
+  height: 'fit-content',
+}
+
+let markdownBox = {
+  maxHeight: '400px',
+  overflowY: 'scroll',
+  overflowWrap: 'break-word',
+  whiteSpaec: 'initial',
+  wordWrap: 'break-word',
+  textOverflow: 'ellipsis',
+}
+
+let noteBox = {
+  ...abstractBox,
+  width: 'inherit',
+  height: 'fit-content',
+  maxHeight: '200px',
+  overflow: 'auto',
+}
+
+let titleText = {
+  fontSize: '20px',
+  fontWeight: 'semibold',
+}
+
+let newDocumentBtn = {
+  width: '232px',
+}
+
+let editDocumentBtn = {
+  width: '232px',
+}

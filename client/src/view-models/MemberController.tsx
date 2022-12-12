@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { useLoginDataStore } from '@models/LoginDataStore.model'
+import { LoginDataModel } from '@models/LoginDataStore.model'
 
 interface MemberData {
   id: string
@@ -11,10 +11,10 @@ interface MemberData {
 
 class MemberController {
   static editMember = async (memberId: string, memberData: MemberData) => {
-    const token = useLoginDataStore.getState().user?.token
-    const userId = useLoginDataStore.getState().user?.id
-    const setFamilyMembers = useLoginDataStore.getState().setFamilyMembers
-    const householdId = useLoginDataStore.getState().user?.householdId
+    const token = LoginDataModel.getState().user?.token
+    const userId = LoginDataModel.getState().user?.id
+    const setFamilyMembers = LoginDataModel.getState().setFamilyMembers
+    const householdId = LoginDataModel.getState().user?.householdId
 
     let response = await axios.put(
       `${process.env.VITE_API_ENDPOINT}/member/${memberId}`,
@@ -37,7 +37,6 @@ class MemberController {
           },
         }
       )
-      console.log(updatedMember.data)
       setFamilyMembers(updatedMember.data)
       window.location.reload()
     }
@@ -45,9 +44,9 @@ class MemberController {
   }
 
   static getAvailableUploadedFile = async (fileId: string) => {
-    const token = useLoginDataStore.getState().user?.token
-    const userId = useLoginDataStore.getState().user?.id
-    const householdId = useLoginDataStore.getState().user?.householdId
+    const token = LoginDataModel.getState().user?.token
+    const userId = LoginDataModel.getState().user?.id
+    const householdId = LoginDataModel.getState().user?.householdId
 
     let response = await axios.get(
       `${process.env.VITE_API_ENDPOINT}/member/available-uploadedFile/${fileId}`,

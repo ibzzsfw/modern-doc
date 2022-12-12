@@ -141,16 +141,8 @@ let breadcrumbConfig = [
 ]
 
 const getBreadcrumbFromPath = (path: string) => {
-  let config = []
-  // while (path !== '/') {
-  //   config.push(breadcrumbConfig.find((item) => item.path === path))
-  //   console.log(path)
-  //   path = path.substring(0, path.lastIndexOf('/')) + '/'
-  // }
-  // config.push(breadcrumbConfig.find((item) => item.path === '/'))
-  // return []
+
   let current = breadcrumbConfig.filter((item) => item.path === path)[0]
-  //reverse current.history
   let history = [...current.history, current]
   return history
 }

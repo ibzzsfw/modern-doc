@@ -1,4 +1,4 @@
-import Sharable from "src/view-models/Sharable";
+import Sharable from "@view-models/Sharable";
 class Note implements Sharable {
 
   id: string;

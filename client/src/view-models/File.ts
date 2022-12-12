@@ -1,5 +1,5 @@
-import Tag from 'src/view-models/Tag'
-import Field from 'src/view-models/Field'
+import Tag from '@view-models/Tag'
+import Field from '@view-models/Field'
 
 class File {
   id: string = ''

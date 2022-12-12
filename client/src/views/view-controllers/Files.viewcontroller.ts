@@ -1,7 +1,7 @@
 import Field from "src/view-models/Field";
 import FileData from 'src/view-models/File'
-import { useFilePageStore } from "@models/FilePageStore.model";
-import { useFormPageStore } from "@models/FormPageStore.model";
+import { FilePageModel } from "@models/FilePageStore.model";
+import { FormPageModel } from "@models/FormPageStore.model";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import shallow from "zustand/shallow";
@@ -12,13 +12,13 @@ class FileViewController {
 
   param = useParams<{ id: string; type: string }>()
   userPdfState: [any, (userPdf: any) => void] = useState<any>(null)
-  filePageStore = useFilePageStore((state) => {
+  filePageStore = FilePageModel((state) => {
     return {
       file: state.file,
       setFile: state.setFile,
     }
   }, shallow)
-  setDocumentType = useFormPageStore((state) => state.setDocumentType)
+  setDocumentType = FormPageModel((state) => state.setDocumentType)
 
   constructor() {
     this.userPdfState = useState<any>(null)

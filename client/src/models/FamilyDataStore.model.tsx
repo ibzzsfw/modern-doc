@@ -1,13 +1,17 @@
 import create from 'zustand'
-import { persist, PersistOptions } from 'zustand/middleware'
-import User from '@view-models/User'
 
-type FamilyDataStore = {
+/**
+ * @interface IFamilyDataModel
+ * @description Family data interface
+ * @property {User} user - User data
+ * @property {Function} setUser - Set user data
+ */
+interface IFamilyDataModel {
   user: any
   setUser: (value: any) => void
 }
 
-export const useFamilyDataStore = create<FamilyDataStore>((set) => ({
+export const FamilyDataModel = create<IFamilyDataModel>((set) => ({
   user: {
     userId: '',
     householdId: '',

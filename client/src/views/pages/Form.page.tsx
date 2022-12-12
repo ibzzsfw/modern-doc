@@ -52,14 +52,6 @@ const FormPage = () => {
     }
   }, [])
 
-  // const formik = useFormik({
-  //   initialValues: initialValuesExraction(),
-  //   validationSchema: Yup.object(validationSchemaExraction()),
-  //   onSubmit: values => {
-  //     alert(JSON.stringify(values, null, 2));
-  //   },
-  // });
-
   const renderField = (field: Fields, disable: boolean = false) => {
     switch (field.type) {
       case 'text':
@@ -72,9 +64,6 @@ const FormPage = () => {
             showCorrectBorder
             required={field.isRequired}
             disable={disable}
-            onChange={(e) => {
-              console.log('abraham')
-            }}
           />
         )
       case 'number':
@@ -87,9 +76,6 @@ const FormPage = () => {
             showCorrectBorder
             required={field.isRequired}
             disable={disable}
-            onChange={(e) => {
-              console.log('abraham')
-            }}
           />
         )
       case 'date':
@@ -102,9 +88,6 @@ const FormPage = () => {
             showCorrectBorder
             required={field.isRequired}
             disable={disable}
-            onChange={(e) => {
-              console.log('abraham')
-            }}
           />
         )
       case 'email':
@@ -132,7 +115,6 @@ const FormPage = () => {
           />
         )
       case 'singleSelect': {
-        console.log(field.fieldChoice)
         return (
           <FormInput
             label={field.officialName}
@@ -172,8 +154,6 @@ const FormPage = () => {
       </Box>
     )
   }
-
-  console.log(requiredCount)
 
   if (documentType == 'file')
     return (
@@ -258,9 +238,6 @@ const FormPage = () => {
       </Box>
     )
 
-  console.log('doccc', document)
-
-  //folder
   return (
     <Box sx={formLayout}>
       <Formik

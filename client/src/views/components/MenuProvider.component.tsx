@@ -35,74 +35,10 @@ const MenuProvider = ({
 }: propsType) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const navbarAvatar = {
-    width: '48px',
-    height: '48px',
-    cursor: 'pointer',
-    borderRadius: '100%',
-  }
-
   const menuLayout = {
     top: top,
     left: left,
     width: width,
-  }
-
-  const menuAvatar = {
-    width: '64px',
-    height: '64px',
-    borderRadius: '100%',
-  }
-
-  const nameText = {
-    fontSize: '14px',
-    fontWeight: 'semibold',
-  }
-
-  const memberNameText = {
-    fontSize: '14px',
-    fontWeight: 'normal',
-  }
-
-  const relationText = {
-    fontSize: '12px',
-    fontWeight: 'normal',
-  }
-
-  const menuText = {
-    fontSize: '14px',
-    fontWeight: 'semibold',
-  }
-
-  const menuButton = {
-    width: '100%',
-    textAlign: 'left',
-    padding: '8px 16px',
-    alignItems: 'center',
-    height: '40px',
-    gap: '12px',
-    borderRadius: '4px',
-    _hover: {
-      background: 'background.gray',
-    },
-  }
-
-  const memberList = {
-    width: '100%',
-    textAlign: 'left',
-    padding: '8px 24px',
-    alignItems: 'center',
-    height: '36px',
-    gap: '12px',
-    borderRadius: '4px',
-    _hover: {
-      background: 'background.gray',
-    },
-  }
-
-  const memberAvatar = {
-    width: '24px',
-    height: '24px',
   }
 
   return (
@@ -160,3 +96,21 @@ const MenuProvider = ({
 }
 
 export default MenuProvider
+
+const menuText = {
+  fontSize: '14px',
+  fontWeight: 'semibold',
+}
+
+const menuButton = {
+  width: '100%',
+  textAlign: 'left',
+  padding: '8px 16px',
+  alignItems: 'center',
+  height: '40px',
+  gap: '12px',
+  borderRadius: '4px',
+  _hover: {
+    background: 'background.gray',
+  },
+}

@@ -3,14 +3,13 @@ import DocumentBar from 'src/views/components/DocumentBar.component'
 import DocumentBlankBox from 'src/views/components/DocumentBlankBox.component'
 import DocumentBox from 'src/views/components/DocumentBox.component'
 import SearchBox from 'src/views/components/SearchBox.component'
-import ShareModal from 'src/views/components/ShareModal.component'
 import TakeNote from 'src/views/components/TakeNote.component'
 import UploadFile from 'src/views/components/UploadFile.component'
 import File from 'src/view-models/File'
 import FileController from 'src/view-models/FileController'
 import FolderController from 'src/view-models/FolderController'
 import NoteController from 'src/view-models/NoteController'
-import { useLoginDataStore } from '@models/LoginDataStore.model'
+import { LoginDataModel } from '@models/LoginDataStore.model'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { AiFillPlusCircle } from 'react-icons/ai'
@@ -20,8 +19,7 @@ const MyDocument = () => {
   //const { search, setSearch } = useSearchBoxStore()
   const [search, setSearch] = useState('')
   const navigate = useNavigate()
-  const user = useLoginDataStore.getState().user
-  console.log('token', user?.token)
+  const user = LoginDataModel.getState().user
   const [shareFile, setShareFile] = useState([])
   const [myFile, setMyFile] = useState([])
   const [myFolder, setMyFolder] = useState([])
@@ -98,10 +96,7 @@ const MyDocument = () => {
           </Flex>
           <SearchBox
             value={search}
-            onSearchClick={(params) => {
-              console.log('search', params)
-              setSearch(params)
-            }}
+            onSearchClick={(params) => setSearch(params)}
           />
         </Flex>
         <DocumentBar
@@ -156,7 +151,6 @@ const MyDocument = () => {
                 file.officialName.toLowerCase().includes(search)
               )
               .map((file: any) => {
-                console.log('mygod', file)
                 return (
                   <DocumentBox
                     id={file.id}
@@ -255,7 +249,6 @@ const MyDocument = () => {
                 file.officialName.toLowerCase().includes(search)
               )
               .map((file: any) => {
-                console.log('here', file)
                 return (
                   <DocumentBox
                     id={file.id}

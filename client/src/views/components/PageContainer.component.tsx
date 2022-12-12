@@ -10,7 +10,7 @@ import {
 import Navbar from 'src/views/components/Navbar.component'
 import { IoChevronForward } from 'react-icons/io5'
 import getBreadcrumbFromPath from '@utils/getBreadcrumbFromPath'
-import { useLoginDataStore } from '@models/LoginDataStore.model'
+import { LoginDataModel } from '@models/LoginDataStore.model'
 
 type propsType = {
   children: JSX.Element | JSX.Element[]
@@ -25,7 +25,7 @@ const PageContainer = ({
   style,
   isProtected,
 }: propsType) => {
-  const { user } = useLoginDataStore()
+  const { user } = LoginDataModel()
 
   if (isProtected && !user?.token) {
     window.location.href = '/'

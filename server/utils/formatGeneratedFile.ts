@@ -20,8 +20,6 @@ const formatGeneratedFile = async (file: any) => {
     }
   )
 
-  console.log(file)
-
   let result = {
     id: file.id,
     name: file.name,

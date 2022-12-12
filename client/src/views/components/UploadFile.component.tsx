@@ -10,7 +10,6 @@ import {
   ModalCloseButton,
   Center,
   Image,
-  Select,
   Input,
   Checkbox,
   Box,
@@ -22,16 +21,15 @@ import {
 } from '@chakra-ui/react'
 import { AiOutlineDelete } from 'react-icons/ai'
 import { useState, useEffect } from 'react'
-import UploadedFile from '@view-models/dyl/UploadedFile'
 import FileController from '@view-models/FileController'
 import { uploadFile } from '@firebase'
 import { v4 as uuidv4 } from 'uuid'
-import File from '@view-models/File'
+import Files from '@view-models/File'
 
 type propsType = {
   open?: boolean
   setOpen?: (open: boolean) => void
-  file?: File | null
+  file?: Files | null
   customButton?: JSX.Element
 }
 
@@ -92,50 +90,6 @@ const UploadFile = ({ open, setOpen, file, customButton }: propsType) => {
           <ModalHeader>อัพโหลดเอกสาร {file?.officialName}</ModalHeader>
           <ModalCloseButton />
           <ModalBody sx={modalBody}>
-            {/* <HStack>
-              <Text as="b">Click to experiment</Text>
-              <Spacer />
-              <Button
-                variant="outline"
-                colorScheme={fileExists ? 'green' : 'red'}
-                onClick={() => setFileExists(!fileExists)}
-              >
-                File {!fileExists && 'not'} exists
-              </Button>
-              <Button
-                variant="outline"
-                colorScheme={fileType == 'upload' ? 'orange' : 'blue'}
-                onClick={() => {
-                  if (fileType == 'upload') {
-                    setFileType('generate')
-                  } else {
-                    setFileType('upload')
-                  }
-                }}
-              >
-                {fileType} file
-              </Button>
-            </HStack> */}
-            {/* <Input
-              placeholder="พิมพ์เพื่อค้นหาเอกสาร"
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            <Select
-              placeholder="เลือกเอกสาร"
-              onChange={(e) => setSelectedFile(e.target.value)}
-            >
-              <option value="outsideFile">เอกสารภายนอก</option>
-              {file && (
-                <option value={file.id} selected>
-                  {file.officialName}
-                </option>
-              )}
-              {[1, 2, 3, 4].map((i) => {
-                return (
-                  <option value={`system_file_${i}`}>System file {i}</option>
-                )
-              })}
-            </Select> */}
             {fileType != 'generate' && (
               <Center sx={dropFile}>
                 {fileExists ? (
@@ -154,7 +108,7 @@ const UploadFile = ({ open, setOpen, file, customButton }: propsType) => {
                       />
                     ) : (
                       <Text as="b">
-                        {uploadedFile?.size ? uploadedFile?.size / 1000 : 0} KB
+                        {(uploadedFile as any)?.size ? (uploadedFile as any)?.size / 1000 : 0} KB
                       </Text>
                     )}
                   </Box>
@@ -188,7 +142,6 @@ const UploadFile = ({ open, setOpen, file, customButton }: propsType) => {
                   type="date"
                   width="30%"
                   onChange={(e) => {
-                    console.log(e.target.value)
                     setExpiredDate(new Date(e.target.value))
                   }}
                 />
@@ -209,8 +162,9 @@ const UploadFile = ({ open, setOpen, file, customButton }: propsType) => {
                       type="date"
                       width="30%"
                       onChange={(e) => {
-                        if (e.target.files) console.log(e.target.value)
-                        setExpiredDate(new Date(e.target.value))
+                        if (e.target.files) {
+                          setExpiredDate(new Date(e.target.value))
+                        }
                       }}
                     />
                   )}
@@ -242,7 +196,6 @@ const UploadFile = ({ open, setOpen, file, customButton }: propsType) => {
               ml="12px"
               onClick={async () => {
                 if (fileType != 'generate') {
-                  console.log(expiredDate)
                   FileController.newUploadedFile(
                     file?.id,
                     await uploadFile(
@@ -300,7 +253,6 @@ let fileExistsBox = {
   borderColor: 'accent.gray',
   backgroundColor: '#F1F3F5',
   _hover: {
-    // backgroundColor light red
     backgroundColor: '#FDE8E8',
     borderColor: 'accent.red',
   },

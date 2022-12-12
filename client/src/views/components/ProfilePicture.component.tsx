@@ -1,21 +1,15 @@
 import {
-  Avatar,
   Box,
   Image,
   Text,
-  Center,
   VStack,
   Icon,
   Input,
-  FormControl,
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import { AiOutlineUpload } from 'react-icons/ai'
-import { useMyProfileStore } from '@models/MyProfilePageStore.model'
-import { v4 as uuidv4 } from 'uuid'
-import { useFamilyDataStore } from '@models/FamilyDataStore.model'
-import { useProfiledataStore } from '@models/MyProfiledataStore.model'
-import { useFilePageStore } from '@models/FilePageStore.model'
+import { MyProfilePageModel } from '@models/MyProfilePageStore.model'
+import { MyProfiledataModel } from '@models/MyProfiledataStore.model'
 import { uploadFile } from '@firebase'
 
 type propTypes = {
@@ -23,9 +17,9 @@ type propTypes = {
 }
 
 const ProfilePicture = ({ url }: propTypes) => {
-  const { isEdit, setEdit } = useMyProfileStore()
-  const {user,setUser,setUrl,profileUrl} = useProfiledataStore()
-  
+  const { isEdit, setEdit } = MyProfilePageModel()
+  const { user, setUser, setUrl, profileUrl } = MyProfiledataModel()
+
 
   const [image, setImage] = useState<any>(null)
 
@@ -60,11 +54,9 @@ const ProfilePicture = ({ url }: propTypes) => {
               accept="image/*"
               onChange={(e) => {
                 setImage(e.target.files![0])
-                console.log(e.target.files![0])
-                uploadFile('images/',e.target.files![0]).then((url) => {setUrl(url)  
-                 console.log(url)})
-                
-                
+                uploadFile('images/', e.target.files![0]).then((url) => {
+                  setUrl(url)
+                })
               }}
             />
             <Icon
@@ -86,19 +78,6 @@ const ProfilePicture = ({ url }: propTypes) => {
 
 export default ProfilePicture
 
-let submitButton = {
-  height: '40px',
-  backgroundColor: 'accent.blue',
-  color: 'white',
-  variant: 'outline',
-  _hover: {
-    backgroundColor: 'hover.blue',
-  },
-  _active: {
-    backgroundColor: 'hover.white',
-  },
-}
-
 let uploadImagelayout = {
   width: '365px',
   height: '365px',
@@ -119,52 +98,3 @@ let backgroundHover = {
     },
   },
 }
-
-let boxLayout = {
-  backgroundColor: 'background.white',
-  margin: 'auto',
-  borderRadius: '8px',
-  position: 'relative',
-  padding: '20px',
-  width: '909px',
-}
-
-/** <Box sx={uploadImagelayout}>
-            <Image
-              src="https://bit.ly/sage-adebayo"
-              boxSize="206px"
-              borderRadius="8px"
-              position="absolute"
-            ></Image>
-
-            <Box
-              width="206px"
-              height="206px"
-              sx={
-                isAdd
-                  ? backgroundHover
-                  : isEdit
-                  ? backgroundHover
-                  : { opacity: 0 }
-              }
-            >
-              <Input
-                type="file"
-                position="absolute"
-                height="100%"
-                opacity="0"
-                aria-hidden="true"
-                display={isAdd ? 'block' : isEdit ? 'block' : 'none'}
-                accept="image/*"
-              />
-              <Icon
-                as={AiOutlineUpload}
-                top="71.5px"
-                left="71.5px"
-                position="absolute"
-                boxSize="60px"
-                color="white"
-                aria-hidden="true"
-              />
-            </Box>
-          </Box> */

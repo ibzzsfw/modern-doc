@@ -5,12 +5,10 @@ import {
   ModalHeader,
   ModalFooter,
   ModalBody,
-  ModalCloseButton,
   Button,
   ListItem,
   UnorderedList,
   useDisclosure,
-  Center,
 } from '@chakra-ui/react'
 import { useEffect } from 'react'
 

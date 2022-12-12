@@ -4,63 +4,30 @@ import {
   chakra,
   Icon,
   Text,
-  useTimeout,
   useToast,
   VStack,
 } from '@chakra-ui/react'
 import FormInput from '@components/FormInput.component'
-import User from 'src/view-models/User'
-import { useLoginDataStore } from '@models/LoginDataStore.model'
-import { useLoginPageStore } from '@models/LoginPageStore.model'
+import OTPVerify from '@components/OTPVerify.component'
+import User from '@view-models/User'
+import UserController from '@view-models/UserController'
+import { LoginDataModel } from '@models/LoginDataStore.model'
+import { LoginPageModel } from '@models/LoginPageStore.model'
 import { useMutation } from '@tanstack/react-query'
-import axios, { AxiosError } from 'axios'
 import { Form, Formik } from 'formik'
 import { AiFillLock, AiFillPhone } from 'react-icons/ai'
 import * as Yup from 'yup'
-import UserController from '@view-models/UserController'
 import { phoneLogin, validateOTP } from '@firebase'
 import { withCountryCode, withoutCountryCode } from '@utils/formatPhoneNumber'
-import OTPVerify from '@components/OTPVerify.component'
 import { useState } from 'react'
-import { useTime } from 'framer-motion'
-import getRelationshipText from '@utils/getRelationshipText'
+import { AxiosError } from 'axios'
 
 const Login = () => {
-  let layout = {
-    width: '100%',
-    margin: 'auto',
-  }
-
-  let logoBar = {
-    justifyContent: 'space-around',
-    marginBottom: '28px',
-  }
-
-  let providerLogo = {
-    width: '48px',
-    height: '48px',
-    cursor: 'pointer',
-    borderRadius: '100%',
-  }
-
-  let submitButton = {
-    width: '102px',
-    height: '40px',
-    backgroundColor: 'accent.blue',
-    color: 'white',
-    margin: 'auto',
-    _hover: {
-      backgroundColor: 'hover.blue',
-    },
-    _active: {
-      backgroundColor: 'hover.blue',
-    },
-  }
 
   const toast = useToast()
-  const setUserData = useLoginDataStore((state) => state.setUserData)
-  const setFamilyMembers = useLoginDataStore((state) => state.setFamilyMembers)
-  const setTabIndex = useLoginPageStore((state) => state.setTabIndex)
+  const setUserData = LoginDataModel((state) => state.setUserData)
+  const setFamilyMembers = LoginDataModel((state) => state.setFamilyMembers)
+  const setTabIndex = LoginPageModel((state) => state.setTabIndex)
 
   const loginSchema = Yup.object().shape({
     phoneNumber: Yup.string()
@@ -80,7 +47,6 @@ const Login = () => {
     },
     {
       onSuccess: (data: any) => {
-        console.log(data)
         toast({
           title: 'เข้าสู่ระบบสำเร็จ',
           description: `ยินดีต้อนรับสู่ระบบนะคุณ ${data.firstName}`,
@@ -111,7 +77,6 @@ const Login = () => {
         }, 1500)
       },
       onError: (error: AxiosError) => {
-        console.log(error.message)
         toast({
           title: 'เข้าสู่ระบบไม่สำเร็จ',
           description: 'กรุณาตรวจสอบเบอร์โทรศัพท์หรือรหัสผ่าน',
@@ -134,13 +99,10 @@ const Login = () => {
       UserController.checkPhonePassword({ phoneNumber, password }),
     {
       onSuccess: async (data: any) => {
-        console.log(data)
         let phoneNumber = data.phoneNumber
-        console.log(phoneNumber, withCountryCode(phoneNumber))
         setConfirmationResult(await phoneLogin(withCountryCode(phoneNumber)))
       },
       onError: (error: AxiosError) => {
-        console.log(error?.message)
         toast({
           title: 'เข้าสู่ระบบไม่สำเร็จ',
           description: 'กรุณาตรวจสอบเบอร์โทรศัพท์หรือรหัสผ่าน',
@@ -239,3 +201,22 @@ const Login = () => {
 }
 
 export default Login
+
+let layout = {
+  width: '100%',
+  margin: 'auto',
+}
+
+let submitButton = {
+  width: '102px',
+  height: '40px',
+  backgroundColor: 'accent.blue',
+  color: 'white',
+  margin: 'auto',
+  _hover: {
+    backgroundColor: 'hover.blue',
+  },
+  _active: {
+    backgroundColor: 'hover.blue',
+  },
+}

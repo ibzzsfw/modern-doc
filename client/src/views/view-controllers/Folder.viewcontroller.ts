@@ -1,10 +1,10 @@
-import { useFormPageStore } from "@models/FormPageStore.model"
+import { FormPageModel } from "@models/FormPageStore.model"
 import { useState } from "react"
 import { useParams } from "react-router-dom"
 
 class FolderViewController {
   param = useParams<{ id: string }>()
-  formPageStore = useFormPageStore()
+  formPageStore = FormPageModel()
   generateFileListState = useState<any[]>([])
   uploadedFileListState = useState<any[]>([])
   filledGeneratedFileState = useState<Uint8Array[]>([])

@@ -35,11 +35,11 @@ import { BsThreeDots, BsTrash } from 'react-icons/bs'
 import { GrDocumentText, GrDownload } from 'react-icons/gr'
 import { IoChevronDownOutline } from 'react-icons/io5'
 import { useParams } from 'react-router-dom'
-import AllAllDocumentPageViewController from '../view-controllers/AllDocumentPage.viewcontroller'
+import AllDocumentPageViewController from '../view-controllers/AllDocumentPage.viewcontroller'
 
 const AllDocumentPage = () => {
 
-  const viewController = new AllAllDocumentPageViewController()
+  const viewController = new AllDocumentPageViewController()
 
   const { category } = viewController.param
   const [view, setView] = viewController.viewState
@@ -180,7 +180,6 @@ const AllDocumentPage = () => {
                   title="เรียงลำดับด้วย"
                   onChange={(value) => {
                     setSortMenu({ sort: value, order: sortMenu.order })
-                    console.log(sortMenu)
                   }}
                 >
                   <MenuItemOption value="title">ชื่อ</MenuItemOption>
@@ -196,9 +195,6 @@ const AllDocumentPage = () => {
                   defaultValue=""
                   title="เรียงลำดับจาก"
                   type="radio"
-                  onChange={(value) => {
-                    console.log(value)
-                  }}
                 >
                   <MenuItemOption value="ASC">{sortMenu.sort}</MenuItemOption>
                   <MenuItemOption value="DESC">{sortMenu.sort}</MenuItemOption>

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import {
   Box,
   Button,
@@ -13,11 +14,14 @@ import {
 } from '@chakra-ui/react'
 import MenuProvider from '@components/MenuProvider.component'
 import UploadFile from '@components/UploadFile.component'
+import DocumentBadge from '@components/DocumentBadge.component'
+import ImportFromFamily from '@components/ImportFromFamily.component'
 import GeneratedFile from '@view-models/GeneratedFile'
-// import UploadedFile from '@models/UploadedFile'
-import { useGeneratedFileStore } from '@models/GeneratedFile.model'
-import { useFormPageStore } from '@models/FormPageStore.model'
-import { useEffect, useState } from 'react'
+import UploadedFile from '@view-models/dyl/UploadedFile'
+import File from '@view-models/File'
+import FileController from '@view-models/FileController'
+import Field from '@view-models/Field'
+import { FormPageModel } from '@models/FormPageStore.model'
 import {
   AiFillClockCircle,
   AiFillTag,
@@ -29,17 +33,10 @@ import { BsThreeDots } from 'react-icons/bs'
 import { GrUpload } from 'react-icons/gr'
 import { HiArrowDownRight } from 'react-icons/hi2'
 import { RiFileSearchLine } from 'react-icons/ri'
-import DocumentBadge from '@components/DocumentBadge.component'
-import UploadedFile from '@view-models/dyl/UploadedFile'
-import File from '@view-models/File'
-import FileController from '@view-models/FileController'
 import { useNavigate } from 'react-router-dom'
-import download from 'downloadjs'
 import { PDFDocument } from 'pdf-lib'
 import fontkit from '@pdf-lib/fontkit'
 import PDFMerger from 'pdf-merger-js'
-import Field from '@view-models/Field'
-import ImportFromFamily from '@components/ImportFromFamily.component'
 
 type propsType = {
   files: any[]
@@ -54,7 +51,7 @@ const FileList = ({ files }: propsType) => {
     setDocumentType,
     generatedFiles,
     setGeneratedFiles,
-  } = useFormPageStore()
+  } = FormPageModel()
   const [open, setOpen] = useState(false)
   const [file, setFile] = useState<File | null>(null)
   const [fileMenu, setFileMenu] = useState<File | null>(null)
@@ -106,7 +103,6 @@ const FileList = ({ files }: propsType) => {
 
       file.fields.map((field: Field) => {
         if (form.getFieldMaybe(field.name)) {
-          console.log(field.name, field.userValue)
           switch (field.type) {
             case 'text':
               form.getTextField(field.name).setText(field.userValue)
@@ -156,9 +152,6 @@ const FileList = ({ files }: propsType) => {
     })
     await Promise.all(pdfListPromise)
     await Promise.all(uploadedListPromise)
-
-    const testMergePdf = await merger.save('testMergePdf.pdf')
-    console.log(pdfList)
   }
 
   useEffect(() => {
@@ -171,7 +164,6 @@ const FileList = ({ files }: propsType) => {
           return result
         })
       const result = await Promise.all(promise)
-      console.log('result', result)
       setGeneratedFiles(result)
     }
     getGeneratedFileField()
@@ -195,7 +187,6 @@ const FileList = ({ files }: propsType) => {
         title: 'อัพโหลดไฟล์ใหม่',
         icon: <Icon as={GrUpload} />,
         onClick: () => {
-          //---------function upload file if you want you can delete this because have button upload file
           setOpen(true)
           setFile(fileMenu)
         },
@@ -215,14 +206,11 @@ const FileList = ({ files }: propsType) => {
         title: 'นำเข้าจากสมาชิก',
         icon: <Icon as={HiArrowDownRight} />,
         onClick: () => {
-          //-------- function import from member
           onOpenImport()
         },
       },
     ],
   ]
-
-  console.log('files', files)
 
   return (
     <>
@@ -284,7 +272,6 @@ const FileList = ({ files }: propsType) => {
                     <Box sx={simpleBox}>{file.officialName}</Box>
                     <Box sx={simpleBox}>{file.amount}</Box>
                     <Box sx={simpleBox}>
-                      {/* {'API'} */}
                       <DocumentBadge status={file.getStatus()} />
                     </Box>
                     <Box sx={simpleBox}>{file.remark}</Box>
@@ -342,6 +329,8 @@ const FileList = ({ files }: propsType) => {
     </>
   )
 }
+
+export default FileList
 
 let abstractBox = {
   borderRadius: '6px',
@@ -416,4 +405,3 @@ let threeDot = {
   },
 }
 
-export default FileList

@@ -15,7 +15,6 @@ import {
 import { useState } from 'react'
 import FileViewer from '@components/FileViewer.component'
 import { AiOutlineLeft, AiOutlineRight } from 'react-icons/ai'
-import FolderUploadedFile from '@view-models/FolderUploadedFile'
 
 type propsType = {
   files: any[]

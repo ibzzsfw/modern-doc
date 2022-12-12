@@ -1,4 +1,3 @@
-import Relationship from '@view-models/Relationship'
 import getRelationshipText from '@utils/getRelationshipText'
 import UserType from '@view-models/UserType'
 class User implements UserType {

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   Box,
   Button,
@@ -22,21 +23,19 @@ import FolderController from '@view-models/FolderController'
 import NoteController from '@view-models/NoteController'
 import { useMutation } from '@tanstack/react-query'
 import { Field, Form, Formik } from 'formik'
-import { useState } from 'react'
 import { AiOutlineEdit } from 'react-icons/ai'
 import { MdLeakRemove } from 'react-icons/md'
 import { BsThreeDots, BsTrash, BsShareFill } from 'react-icons/bs'
 import { Link } from 'react-router-dom'
-import ConfirmationModal from 'src/views/components/ConfirmationModal.component'
 
 type propsType = {
   type:
-    | 'generatedFolder'
-    | 'generatedFile'
-    | 'uploadedFile'
-    | 'sharedFile'
-    | 'userFreeUploadFile'
-    | 'note'
+  | 'generatedFolder'
+  | 'generatedFile'
+  | 'uploadedFile'
+  | 'sharedFile'
+  | 'userFreeUploadFile'
+  | 'note'
   id: string
   isShared?: boolean
   title: string
@@ -89,37 +88,6 @@ const DocumentBox = ({
     onOpen: onOpenUnshared,
     onClose: onCloseUnshared,
   } = useDisclosure()
-  let layout = {
-    width: '320px',
-    boxShadow: '5px 5px 3px -2px rgba(0, 0, 0, 0.1)',
-    borderRadius: '16px',
-    backgroundColor: 'background.white',
-    position: 'relative',
-    padding: '20px',
-    cursor: 'pointer',
-    transition: 'all 0.1s ease-in-out',
-    _hover: {
-      cursor: 'pointer',
-      boxShadow: '10px 10px 7px -5px rgba(0, 0, 0, 0.2)',
-      transform: 'translate(-2px, -2px)',
-    },
-  }
-
-  let documentImage = {
-    width: '60px',
-  }
-
-  let titleText = {
-    fontSize: '16px',
-    fontWeight: 'bold',
-    color: 'accent.black',
-  }
-
-  let subText = {
-    fontSize: '14px',
-    fontWeight: 'bold',
-    color: 'accent.gray',
-  }
 
   let colorBarStyle = {
     width: '18px',
@@ -131,38 +99,30 @@ const DocumentBox = ({
     backgroundColor: colorBar,
   }
 
-  let submitButton = {
-    height: '40px',
-    backgroundColor: 'accent.blue',
-    color: 'white',
-    margin: 'auto',
-    _hover: {
-      backgroundColor: 'hover.blue',
-    },
-    _active: {
-      backgroundColor: 'hover.blue',
-    },
-  }
-
   const getImageUrl = () => {
+
+    let path = ''
+
     if (image) {
       return image
     }
     if (type === 'generatedFolder') {
-      return '/assets/folder_logo.png'
+      path = 'folder_logo'
     }
     if (type === 'generatedFile') {
-      return '/assets/file_logo.png'
+      path = 'file_logo'
     }
     if (type === 'uploadedFile' || type === 'userFreeUploadFile') {
-      return '/assets/card_logo.png'
+      path = 'card_logo'
     }
     if (type === 'sharedFile') {
-      return '/assets/shared_logo.png'
+      path = 'shared_logo'
     }
     if (type === 'note') {
-      return '/assets/note_logo.png'
+      path = 'note_logo'
     }
+
+    return `/assets/${path}.png`
   }
 
   const getSubText = () => {
@@ -184,7 +144,7 @@ const DocumentBox = ({
     if (type === 'sharedFile') {
       return `ผู้สร้าง : ${author}`
     }
-    if (type === 'note') {
+    if (type === 'note' && modifiedDate) {
       return `แก้ไขล่าสุดเมื่อ : ${new Date(modifiedDate).toLocaleDateString(
         'en-GB'
       )}`
@@ -223,48 +183,6 @@ const DocumentBox = ({
     return 'บันทึก'
   }
 
-  /*const deleteNote = async (id : string) => {
-    if (type === 'note') {
-      await 
-      window.location.reload()
-    }
-
-  }*/
-  /*
-  const getMenuItem = (): [] => {
-    let menu = [
-      {
-        title: 'รายละเอียด',
-        icon: <Icon as={GrDocumentText} />,
-        onClick: () => {},
-      },
-      {
-        title: `แก้ไข${getThaiName()}`,
-        icon: <Icon as={AiOutlineEdit} />,
-        onClick: () => {},
-      },
-      {
-        title: 'ดาวน์โหลด',
-        icon: <Icon as={GrDownload} />,
-        onClick: () => {},
-      },
-    ]
-    if (type === 'generatedFolder') {
-      return [menu[1],menu[2]]
-    }
-    if (type === 'generatedFile') {
-      return []
-    }
-    if (type === 'uploadedFile') {
-      return []
-    }
-    if (type === 'sharedFile') {
-      return []
-    }
-    if (type === 'note') {
-      return []
-    }
-  }*/
   const deleteNote = useMutation(
     (id: string | undefined) => {
       return NoteController.deleteNoteById(id)
@@ -347,7 +265,7 @@ const DocumentBox = ({
     },
     {
       onSuccess: () => {
-        ;async () => {
+        ; async () => {
           await toast({
             title: 'แก้ไขบันทึกสำเร็จ',
             status: 'success',
@@ -628,12 +546,47 @@ let threeDot = {
   color: 'accent.black',
 }
 
-/** <Editable
-            defaultValue={note}
-            
-          >
-            <EditablePreview />
-            <EditableTextarea _focusVisible={{ boxShadow: 'none' }} />
-            {EditableControls}
-            <Input as = {EditableInput}/>
-          </Editable> */
+let layout = {
+  width: '320px',
+  boxShadow: '5px 5px 3px -2px rgba(0, 0, 0, 0.1)',
+  borderRadius: '16px',
+  backgroundColor: 'background.white',
+  position: 'relative',
+  padding: '20px',
+  cursor: 'pointer',
+  transition: 'all 0.1s ease-in-out',
+  _hover: {
+    cursor: 'pointer',
+    boxShadow: '10px 10px 7px -5px rgba(0, 0, 0, 0.2)',
+    transform: 'translate(-2px, -2px)',
+  },
+}
+
+let documentImage = {
+  width: '60px',
+}
+
+let titleText = {
+  fontSize: '16px',
+  fontWeight: 'bold',
+  color: 'accent.black',
+}
+
+let subText = {
+  fontSize: '14px',
+  fontWeight: 'bold',
+  color: 'accent.gray',
+}
+
+let submitButton = {
+  height: '40px',
+  backgroundColor: 'accent.blue',
+  color: 'white',
+  margin: 'auto',
+  _hover: {
+    backgroundColor: 'hover.blue',
+  },
+  _active: {
+    backgroundColor: 'hover.blue',
+  },
+}

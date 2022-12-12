@@ -14,7 +14,6 @@ import {
   VStack,
   Button,
 } from '@chakra-ui/react'
-import React from 'react'
 import MemberController from '@view-models/MemberController'
 import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
@@ -38,8 +37,6 @@ const ImportFromFamily = ({
 }: propsType) => {
   const [selected, setSelected] = useState(null)
 
-  console.log('fileId', fileId)
-
   const { data, isLoading, error, refetch } = useQuery(
     ['getAvailableUploadedFile'],
     async () => {
@@ -50,54 +47,6 @@ const ImportFromFamily = ({
   useEffect(() => {
     refetch()
   }, [fileId])
-
-  const layout = {
-    width: '100%',
-    height: '100%',
-    maxHeight: '280px',
-    overflowY: 'scroll',
-  }
-
-  const memberBox = {
-    width: '90%',
-    height: '80px',
-    margin: 'auto',
-    padding: '8px 24px',
-    cursor: 'pointer',
-    background: '#ffffff',
-    border: '2px solid transparent',
-    _hover: {
-      background: '#0072F520',
-    },
-    flexDirection: 'column',
-  }
-
-  const disabledBox = {
-    cursor: 'not-allowed',
-    background: '#68707620',
-    border: '2px solid transparent',
-    _hover: {
-      background: '#68707620',
-    },
-  }
-
-  const selectedBox = {
-    background: '#0072F520',
-    border: '2px solid #0072F5',
-  }
-
-  let submitButton = {
-    height: '40px',
-    backgroundColor: 'accent.blue',
-    color: 'white',
-    margin: 'auto',
-    _hover: {
-      backgroundColor: 'hover.blue',
-    },
-    _active: {
-      backgroundColor: 'hover.blue',
-    },
-  }
 
   if (isLoading) return <div>Loading...</div>
 
@@ -169,3 +118,51 @@ const ImportFromFamily = ({
 }
 
 export default ImportFromFamily
+
+const layout = {
+  width: '100%',
+  height: '100%',
+  maxHeight: '280px',
+  overflowY: 'scroll',
+}
+
+const memberBox = {
+  width: '90%',
+  height: '80px',
+  margin: 'auto',
+  padding: '8px 24px',
+  cursor: 'pointer',
+  background: '#ffffff',
+  border: '2px solid transparent',
+  _hover: {
+    background: '#0072F520',
+  },
+  flexDirection: 'column',
+}
+
+const disabledBox = {
+  cursor: 'not-allowed',
+  background: '#68707620',
+  border: '2px solid transparent',
+  _hover: {
+    background: '#68707620',
+  },
+}
+
+const selectedBox = {
+  background: '#0072F520',
+  border: '2px solid #0072F5',
+}
+
+let submitButton = {
+  height: '40px',
+  backgroundColor: 'accent.blue',
+  color: 'white',
+  margin: 'auto',
+  _hover: {
+    backgroundColor: 'hover.blue',
+  },
+  _active: {
+    backgroundColor: 'hover.blue',
+  },
+}

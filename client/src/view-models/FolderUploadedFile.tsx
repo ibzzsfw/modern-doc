@@ -40,7 +40,6 @@ class FolderUploadedFile implements Document {
       return 'หมดอายุ'
     }
     if (differenceInDays(this.dateExpires, this.dateUploaded) <= 7) {
-      console.log(differenceInDays(this.dateUploaded, this.dateExpires))
       return 'ใกล้หมดอายุ'
     }
     return 'มีอยู่ในคลัง'

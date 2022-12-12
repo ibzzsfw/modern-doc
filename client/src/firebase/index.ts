@@ -40,7 +40,6 @@ const uploadFile = async (path: string, file: any): Promise<string> => {
 }
 
 const phoneLogin = async (phoneNumber: string) => {
-  console.log(phoneNumber)
   const auth = getAuth()
   const appVerifier = new RecaptchaVerifier('recaptcha-container', {}, auth)
   const confirmationResult = await signInWithPhoneNumber(

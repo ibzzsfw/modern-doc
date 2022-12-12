@@ -1,7 +1,6 @@
 import Relationship from 'src/view-models/Relationship'
 
 const getRelationshipText = (relationship: Relationship): string => {
-  console.log(relationship)
   switch (relationship) {
     case 'householder':
       return 'เจ้าของบัญชี'

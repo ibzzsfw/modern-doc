@@ -46,35 +46,8 @@ const TakeNote = ({
   const [selectedDocumentID, setSelectedDocumentID] = useState('')
   const [selectedNote, setSelectedNote] = useState<Note | null>(null)
   const [note, setNote] = useState<Note[]>([])
-  const [selectPlaceholder, setSelectPlaceholder] = useState('')
   const toast = useToast()
-  /*
-  useEffect(() => {
-    let notes = NoteController.getNotes(noteType)
-    switch (noteType) {
-      case 'free_note':
-        setSelectPlaceholder('เลือกบันทึก')
-        break
-      case 'folder_note':
-        setSelectPlaceholder('เลือกแฟ้ม')
-        break
-      case 'file_note':
-        setSelectPlaceholder('เลือกเอกสาร')
-        break
-      default:
-        setSelectPlaceholder('')
-        break
-    }
-    setNote(notes)
-  }, [noteType])
 
-  useEffect(() => {
-    if (selectedDocumentID) {
-      let findNote = Note.getNoteData(noteType, selectedDocumentID)
-      setSelectedNote(findNote)
-    }
-  }, [selectedDocumentID])
-*/
   const initialState = () => {
     onClose()
     setNoteType('')
@@ -128,7 +101,7 @@ const TakeNote = ({
           duration: 5000,
         })
       },
-      onError: (error) => {
+      onError: (error: any) => {
         toast({
           title: 'แก้ไขบันทึกไม่สำเร็จ',
           description: `${error.massage}`,
@@ -193,7 +166,7 @@ const TakeNote = ({
                 ? { content: noteContent }
                 : { heading: '', content: '' }
             }
-            onSubmit={(value) => {
+            onSubmit={(value: any) => {
               switch (type) {
                 case 'freeNote':
                   addFreeNote.mutate(value)
@@ -206,19 +179,16 @@ const TakeNote = ({
                   })
                   break
                 case 'folderNote':
-                  console.log(documentId)
                   editFolderNote.mutate({
                     content: value.content,
                     id: documentId,
                   })
                   break
                 default:
-                  console.log(value)
                   break
               }
             }}
             onReset={(value) => {
-              console.log('reset', value)
               initialState()
             }}
           >
@@ -228,7 +198,7 @@ const TakeNote = ({
                   {!documentTitle && (
                     <>
                       <Field name="heading">
-                        {({ field, form }) => (
+                        {({ field, form }: any) => (
                           <>
                             <FormLabel>หัวข้อ</FormLabel>
                             <Input
@@ -246,7 +216,7 @@ const TakeNote = ({
                   )}
 
                   <Field name="content">
-                    {({ field, form }) => (
+                    {({ field, form }: any) => (
                       <>
                         <FormLabel>เนื้อหา</FormLabel>
                         <Textarea

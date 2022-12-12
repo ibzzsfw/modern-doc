@@ -2,14 +2,12 @@ import {
   Center,
   Checkbox,
   Flex,
-  Highlight,
   Text,
   VStack,
 } from '@chakra-ui/react'
 import DocumentBox from 'src/views/components/DocumentBox.component'
 import SearchBox from 'src/views/components/SearchBox.component'
-import { useSearchBoxStore } from '@models/SearchBoxStore.model'
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import FolderController from 'src/view-models/FolderController'
 import FileController from 'src/view-models/FileController'
@@ -36,7 +34,6 @@ const SearchPage = () => {
   useEffect(() => {
     refetchFile()
     refetchFolder()
-    console.log('fetch by search', search)
   }, [search])
 
   return (

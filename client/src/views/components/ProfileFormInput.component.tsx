@@ -17,29 +17,19 @@ import {
 } from '@chakra-ui/react'
 import ChangePassword from '@components/ChangePassword.component.'
 import FormInput from '@components/FormInput.component'
-import UserType from '@view-models/UserType'
 import { Form, Formik } from 'formik'
-import { useState } from 'react'
 import { FiEdit } from 'react-icons/fi'
-import { useMyProfileStore } from '@models/MyProfilePageStore.model'
-import { updateCurrentUser } from 'firebase/auth'
-import { useEffect } from 'react'
-import { useFamilyDataStore } from '@models/FamilyDataStore.model'
-import User from '@view-models/User'
+import { MyProfilePageModel } from '@models/MyProfilePageStore.model'
 import { useMutation } from '@tanstack/react-query'
 import UserController from '@view-models/UserController'
-import { useProfiledataStore } from '@models/MyProfiledataStore.model'
-
-type propTypes = {
-  data: any
-}
+import { MyProfiledataModel } from '@models/MyProfiledataStore.model'
 
 const ProfileFormInput = ({ data }: any) => {
   const toast = useToast()
 
-  const { isEdit, setEdit } = useMyProfileStore()
+  const { isEdit, setEdit } = MyProfilePageModel()
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const { user, setUser } = useProfiledataStore()
+  const { user, setUser } = MyProfiledataModel()
 
   const selectOptions = {
     title: ['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง'],
@@ -49,24 +39,25 @@ const ProfileFormInput = ({ data }: any) => {
     province: ['กรุงเทพมหานคร'],
     postalCode: ['10600'],
   }
-  //------------confirm password and call update api
+
   const handleform = (values: any) => {
-    setUser({...user, ...values})
-    console.log(user)
+    setUser({ ...user, ...values })
   }
-  const updateUser = useMutation((value : any) => {return UserController.editProfile(value.title, value.firstName, value.lastName,value.sex,
-    value.phoneNumber,value.birthDate,value.profileURI,value.password)},{
-      onSuccess: (data) => {},
-      onError: (error) => {},
-    })
-    const confirmPassword = useMutation((value : {phoneNumber : string,password : string})=>{
-      return UserController.checkPhonePassword(value)
-    },{
-      onSuccess: (data) => {return true},
-      onError: (error) => {return false},
-    })
-  //---------------handale values for wait to confirm password
-  const updateProfile = (values: any) => {}
+  const updateUser = useMutation((value: any) => {
+    return UserController.editProfile(value.title, value.firstName, value.lastName, value.sex,
+      value.phoneNumber, value.birthDate, value.profileURI, value.password)
+  }, {
+    onSuccess: (data) => { },
+    onError: (error) => { },
+  })
+  const confirmPassword = useMutation((value: { phoneNumber: string, password: string }) => {
+    return UserController.checkPhonePassword(value)
+  }, {
+    onSuccess: (data) => { return true },
+    onError: (error) => { return false },
+  })
+
+  const updateProfile = (values: any) => { }
 
   const confirmPasswordModal = (
     <>
@@ -86,21 +77,9 @@ const ProfileFormInput = ({ data }: any) => {
               password: '',
             }}
             onReset={(values) => {
-              console.log(values)
               onClose()
             }}
             onSubmit={(values, actions) => {
-             
-               if(confirmPassword.mutate({phoneNumber : user.phoneNumber,password : values.password})){
-                updateUser.mutate()
-               }else{
-                console.log("pass ผิด")
-               }
-
-              
-             
-              
-              
             }}
           >
             <Form>
@@ -155,9 +134,6 @@ const ProfileFormInput = ({ data }: any) => {
           setEdit(false)
         }}
         onSubmit={(values) => {
-          //console.log(values)
-          //--------------------do something for handle value
-          //----------next Open modal for confirm password
           handleform(values)
           onOpen()
         }}
@@ -238,98 +214,6 @@ const ProfileFormInput = ({ data }: any) => {
               />
               {!isEdit && <ChangePassword />}
             </Flex>
-            {/* <Text as="b">ที่อยู่ตามทะเบียนบ้าน</Text>
-            <Divider />
-            <Flex gap="16px">
-              <FormInput
-                label="บ้านเลขที่"
-                name="้houseNumber"
-                type="text"
-                placeholder="กรอกบ้านเลขที่"
-                width="121px"
-                disable={!isEdit}
-              />
-              <FormInput
-                label="หมู่บ้าน"
-                name="villageName"
-                type="text"
-                placeholder="กรอกหมู่บ้าน"
-                width="213px"
-                disable={!isEdit}
-              />
-              <FormInput
-                label="หมู่ที่"
-                name="swineNumber"
-                type="text"
-                placeholder="กรอกหมู่ที่"
-                width="67px"
-                disable={!isEdit}
-              />
-              <FormInput
-                label="ตรอก"
-                name="alley"
-                type="text"
-                placeholder="กรอกนามสกุล"
-                width="160px"
-                disable={!isEdit}
-              />
-            </Flex>
-            <Flex gap="16px">
-              <FormInput
-                label="ซอย"
-                name="lane"
-                type="text"
-                placeholder="กรอกซอย"
-                width="153px"
-                disable={!isEdit}
-              />
-              <FormInput
-                label="ถนน"
-                name="road"
-                type="text"
-                placeholder="กรอกถนน"
-                width="232px"
-                disable={!isEdit}
-              />
-              <FormInput
-                label="ตำบล/แขวง"
-                name="subDistrict"
-                type="select"
-                options={selectOptions.subDistrict}
-                placeholder="กรอกตำบล/แขวง"
-                width="192px"
-                disable={!isEdit}
-              />
-            </Flex>
-            <Flex gap="16px">
-              <FormInput
-                label="อำเภอ/เขต"
-                name="district"
-                type="select"
-                options={selectOptions.district}
-                placeholder="กรอกอำเภอ/เขต"
-                width="209px"
-                disable={!isEdit}
-              />
-              <FormInput
-                label="จังหวัด"
-                name="province"
-                type="select"
-                options={selectOptions.province}
-                placeholder="กรอกจังหวัด"
-                width="222px"
-                disable={!isEdit}
-              />
-              <FormInput
-                label="รหัสไปรษณีย์"
-                name="postalCode"
-                type="select"
-                options={selectOptions.postalCode}
-                placeholder="กรอกรหัสไปรษณีย์"
-                width="146px"
-                disable={!isEdit}
-              />
-            </Flex> */}
             <Box height="40px" textAlign="right" width="100%">
               <HStack
                 gap="22px"
@@ -351,24 +235,3 @@ const ProfileFormInput = ({ data }: any) => {
 }
 
 export default ProfileFormInput
-
-/*const ProfileSchema = Yup.object().shape({
-        title: Yup.mixed().oneOf(['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง']),
-        firstName: Yup.string().required('จำเป็นต้องกรอก'),
-        lastName: Yup.string().required('จำเป็นต้องกรอก'),
-        sex: Yup.mixed().oneOf(sex).required('จำเป็นต้องกรอก'),
-        birthDate: Yup.string().required('จำเป็นต้องกรอก'),
-        citizenId: Yup.string()
-          .matches(/^[0-9]+$/, 'กรุณากรอกเฉพาะตัวเลข')
-          .length(13, 'เบอร์โทรศัพท์จำเป็นต้องมี 10 หลัก')
-          .required('จำเป็นต้องกรอก'),
-        phoneNumber: Yup.string()
-          .matches(/^[0-9]+$/, 'กรุณากรอกเฉพาะตัวเลข')
-          .length(10, 'เบอร์โทรศัพท์จำเป็นต้องมี 10 หลัก')
-          .required('จำเป็นต้องกรอก'),
-        password: Yup.string()
-          .min(6, 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร')
-          .required('จำเป็นต้องกรอก'),
-        confirmPassword: Yup.string().required('จำเป็นต้องกรอก'),
-      })
-    */

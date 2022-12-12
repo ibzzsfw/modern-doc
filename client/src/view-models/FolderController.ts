@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { useLoginDataStore } from '@models/LoginDataStore.model'
-import Field from 'src/view-models/Field'
+import { LoginDataModel } from '@models/LoginDataStore.model'
+import Field from '@view-models/Field'
 
 class FolderController {
   static async getFolderById(id: string | undefined) {
@@ -8,8 +8,8 @@ class FolderController {
       `${process.env.VITE_API_ENDPOINT}/folder/get-by-id/${id}`,
       {
         headers: {
-          'user-id': useLoginDataStore.getState()?.user?.id,
-          token: useLoginDataStore.getState()?.user?.token,
+          'user-id': LoginDataModel.getState()?.user?.id,
+          token: LoginDataModel.getState()?.user?.token,
         },
       }
     )
@@ -21,8 +21,8 @@ class FolderController {
       `${process.env.VITE_API_ENDPOINT}/folder/latest-folders`,
       {
         headers: {
-          'user-id': useLoginDataStore.getState()?.user?.id,
-          token: useLoginDataStore.getState()?.user?.token,
+          'user-id': LoginDataModel.getState()?.user?.id,
+          token: LoginDataModel.getState()?.user?.token,
         },
       }
     )
@@ -34,8 +34,8 @@ class FolderController {
       `${process.env.VITE_API_ENDPOINT}/folder/search/${name}`,
       {
         headers: {
-          'user-id': useLoginDataStore.getState()?.user?.id,
-          token: useLoginDataStore.getState()?.user?.token,
+          'user-id': LoginDataModel.getState()?.user?.id,
+          token: LoginDataModel.getState()?.user?.token,
         },
       }
     )
@@ -47,8 +47,8 @@ class FolderController {
       `${process.env.VITE_API_ENDPOINT}/folder/get-field`,
       {
         headers: {
-          'user-id': useLoginDataStore.getState()?.user?.id,
-          token: useLoginDataStore.getState()?.user?.token,
+          'user-id': LoginDataModel.getState()?.user?.id,
+          token: LoginDataModel.getState()?.user?.token,
           'generated-file-ids': JSON.stringify(idArr),
         },
       }
@@ -57,7 +57,6 @@ class FolderController {
   }
 
   static async editNote(content: string, id: string | undefined) {
-    console.log(content, id)
     let response = await axios.put(
       `${process.env.VITE_API_ENDPOINT}/folder/add-note/${id}`,
       {
@@ -65,8 +64,8 @@ class FolderController {
       },
       {
         headers: {
-          'user-id': useLoginDataStore.getState()?.user?.id,
-          token: useLoginDataStore.getState()?.user?.token,
+          'user-id': LoginDataModel.getState()?.user?.id,
+          token: LoginDataModel.getState()?.user?.token,
         },
       }
     )
@@ -87,8 +86,8 @@ class FolderController {
       },
       {
         headers: {
-          'user-id': useLoginDataStore.getState()?.user?.id,
-          token: useLoginDataStore.getState()?.user?.token,
+          'user-id': LoginDataModel.getState()?.user?.id,
+          token: LoginDataModel.getState()?.user?.token,
         },
       }
     )

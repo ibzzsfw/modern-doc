@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { useLoginDataStore } from '@models/LoginDataStore.model'
+import { LoginDataModel } from '@models/LoginDataStore.model'
 import Field from '@view-models/Field'
 interface RegisterForm {
   title: string
@@ -36,24 +36,22 @@ class FileController {
       )}/${id}`,
       {
         headers: {
-          'user-id': useLoginDataStore.getState()?.user?.id,
-          token: useLoginDataStore.getState()?.user?.token,
+          'user-id': LoginDataModel.getState()?.user?.id,
+          token: LoginDataModel.getState()?.user?.token,
         },
       }
     )
 
-    console.log('file', response.data)
     return response.data
   }
 
   static async getLatestFile(type: string = 'generatedFile') {
-    console.log('typetype', type)
     let response = await axios.get(
       `${process.env.VITE_API_ENDPOINT}/file/latest-files/${type}`,
       {
         headers: {
-          'user-id': useLoginDataStore.getState()?.user?.id,
-          token: useLoginDataStore.getState()?.user?.token,
+          'user-id': LoginDataModel.getState()?.user?.id,
+          token: LoginDataModel.getState()?.user?.token,
         },
       }
     )
@@ -65,8 +63,8 @@ class FileController {
       `${process.env.VITE_API_ENDPOINT}/file/search/${name}`,
       {
         headers: {
-          'user-id': useLoginDataStore.getState()?.user?.id,
-          token: useLoginDataStore.getState()?.user?.token,
+          'user-id': LoginDataModel.getState()?.user?.id,
+          token: LoginDataModel.getState()?.user?.token,
         },
       }
     )
@@ -81,8 +79,8 @@ class FileController {
       },
       {
         headers: {
-          'user-id': useLoginDataStore.getState()?.user?.id,
-          token: useLoginDataStore.getState()?.user?.token,
+          'user-id': LoginDataModel.getState()?.user?.id,
+          token: LoginDataModel.getState()?.user?.token,
         },
       }
     )
@@ -95,7 +93,6 @@ class FileController {
     note: string,
     expiredDate: Date | null
   ) => {
-    console.log('newUploadedFile', fileId, URI, note, expiredDate)
     let response = await axios.post(
       `${process.env.VITE_API_ENDPOINT}/file/new/uploadedFile/${fileId}`,
       {
@@ -105,8 +102,8 @@ class FileController {
       },
       {
         headers: {
-          'user-id': useLoginDataStore.getState()?.user?.id,
-          token: useLoginDataStore.getState()?.user?.token,
+          'user-id': LoginDataModel.getState()?.user?.id,
+          token: LoginDataModel.getState()?.user?.token,
         },
       }
     )
@@ -119,7 +116,6 @@ class FileController {
     type: string | undefined,
     id: string | undefined
   ) {
-    console.log('editNote', content, type, id)
     let response = await axios.put(
       `${process.env.VITE_API_ENDPOINT}/file/add-note/${type}/${id}`,
       {
@@ -127,8 +123,8 @@ class FileController {
       },
       {
         headers: {
-          'user-id': useLoginDataStore.getState()?.user?.id,
-          token: useLoginDataStore.getState()?.user?.token,
+          'user-id': LoginDataModel.getState()?.user?.id,
+          token: LoginDataModel.getState()?.user?.token,
         },
       }
     )
@@ -141,8 +137,8 @@ class FileController {
       `${process.env.VITE_API_ENDPOINT}/file/delete/${type}/${id}`,
       {
         headers: {
-          'user-id': useLoginDataStore.getState()?.user?.id,
-          token: useLoginDataStore.getState()?.user?.token,
+          'user-id': LoginDataModel.getState()?.user?.id,
+          token: LoginDataModel.getState()?.user?.token,
         },
       }
     )
@@ -156,8 +152,8 @@ class FileController {
       {},
       {
         headers: {
-          'user-id': useLoginDataStore.getState()?.user?.id,
-          token: useLoginDataStore.getState()?.user?.token,
+          'user-id': LoginDataModel.getState()?.user?.id,
+          token: LoginDataModel.getState()?.user?.token,
         },
       }
     )
@@ -171,8 +167,8 @@ class FileController {
       {},
       {
         headers: {
-          'user-id': useLoginDataStore.getState()?.user?.id,
-          token: useLoginDataStore.getState()?.user?.token,
+          'user-id': LoginDataModel.getState()?.user?.id,
+          token: LoginDataModel.getState()?.user?.token,
         },
       }
     )

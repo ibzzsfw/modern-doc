@@ -26,7 +26,6 @@ class Folder {
         WHERE "UserFolder"."folderId" = ${id}::uuid AND "UserFolder"."userId" = ${userId}::uuid
       `
 
-      console.log(userFolder)
       const file = await Prisma.$queryRaw`
         SELECT "GeneratedFile"."id","GeneratedFile"."officialName"
         ,"FolderGeneratedFile"."amount","FolderGeneratedFile"."remark",
@@ -202,7 +201,6 @@ class Folder {
           AND ("UserField"."userId" = ${userId}::uuid OR "UserField"."userId" IS NULL)
         ) AS "fields" FROM "GeneratedFileField" WHERE id = ${generatedFileId}::uuid
         `
-        console.log(field)
         arr.push(field[0])
       })
       await Promise.all(promise)
@@ -247,7 +245,6 @@ class Folder {
 
       const promise = await async.map(generatedFiles, async (generatedFile) => {
         const { id } = generatedFile
-        console.log(id)
         const updateGeneratedFile = await Prisma.$queryRaw`
           INSERT INTO "UserGeneratedFile" ("id","userId","generatedFileId","date")
           VALUES (

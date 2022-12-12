@@ -6,6 +6,7 @@ type propTypes = {
 }
 
 const DocumentBadge = ({ status }: propTypes) => {
+
   const getColor = () => {
     switch (status) {
       case 'หมดอายุ':

@@ -1,15 +1,12 @@
 import {
-  Box,
   PinInput,
   PinInputField,
-  Heading,
   Text,
   Button,
   useToast,
   Link,
   VStack,
   HStack,
-  Center,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -26,15 +23,6 @@ type propsType = {
 }
 
 const OTPVerify = ({ phoneNumber, onSubmit }: propsType) => {
-  const toast = useToast()
-  let shadow = {
-    height: '396px',
-    width: '320px',
-    backgroundColor: 'white',
-    borderRadius: '8px',
-    boxShadow: '0px 5px 10px 2px rgba(0, 0, 0, 0.1)',
-    border: '1px solid accent.lightGray',
-  }
 
   const [otp, setOtp] = useState('')
 

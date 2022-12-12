@@ -34,9 +34,9 @@ import UserController from '@view-models/UserController'
 type propsType = {
   data?: any
   isAdd: boolean
-  onCancelButtonClick?: () => void //------cancel button close the form
-  getId?: (id: string | null) => void //------send id to parent for handle form
-  handleForm?: boolean //------handleForm is when click edit button another form will be can't edit
+  onCancelButtonClick?: () => void
+  getId?: (id: string | null) => void
+  handleForm?: boolean
 }
 
 const FamilyInfoBox = ({
@@ -47,24 +47,9 @@ const FamilyInfoBox = ({
   handleForm,
 }: propsType) => {
   const [isEdit, setEdit] = useState(false)
-  const [mouseOnImage, setmouseOnImage] = useState(false)
   const { isOpen, onOpen, onClose } = useDisclosure()
   const toast = useToast()
-  const controls = useAnimation()
-  const startAnimation = () => controls.start('hover')
-  const stopAnimation = () => controls.stop()
 
-  //------------api zone---------
-  const addFamily = async (values: any) => {
-    console.log('add')
-  }
-  const editFamily = async (values: any) => {
-    MemberController.editMember(data.id, values)
-  }
-  const deleteFamily = async () => {
-    console.log('delete')
-  }
-  //-----------------------------
   const familyschema = Yup.object().shape({
     id: Yup.string(),
     firstName: Yup.string().required('กรุณากรอกชื่อ'),
@@ -98,7 +83,6 @@ const FamilyInfoBox = ({
             icon: <Icon as={BiEdit} />,
             onClick: () => {
               if (!handleForm) {
-                console.log(`edit ${data?.firstName + ' ' + data?.lastName}`)
                 if (data?.relationship !== 'householder') {
                   if (getId) getId(data?.id)
                   setEdit(true)
@@ -121,8 +105,7 @@ const FamilyInfoBox = ({
             icon: <Icon as={BsTrash} color="accent.red" />,
             onClick: () => {
               if (!handleForm) {
-                console.log(`delete ${data?.firstName + ' ' + data?.lastName}`)
-                onOpen() // open delete modal
+                onOpen()
               }
             },
             style: {
@@ -162,8 +145,6 @@ const FamilyInfoBox = ({
               variant="solid"
               colorScheme="red"
               onClick={() => {
-                //delete api
-                deleteFamily()
                 toast(deleteFamilySuccess)
                 onClose()
               }}
@@ -192,7 +173,6 @@ const FamilyInfoBox = ({
     status: 'success',
     duration: 3000,
   }
-  //-------------------------------------
 
   return (
     <Box sx={boxLayout}>
@@ -205,8 +185,7 @@ const FamilyInfoBox = ({
               borderRadius="8px"
               position="absolute"
               fallbackSrc="https://via.placeholder.com/365x365"
-            ></Image>
-
+            />
             <Box
               width="206px"
               height="206px"
@@ -263,8 +242,6 @@ const FamilyInfoBox = ({
                   if (
                     checkCitizenIdStatus.message === 'Citizen ID is available'
                   ) {
-                    console.log(values)
-                    addFamily(values)
                     toast(addFamilySuccess)
                     if (onCancelButtonClick) onCancelButtonClick()
                   } else {
@@ -371,13 +348,10 @@ const FamilyInfoBox = ({
                 }}
                 validationSchema={familyschema}
                 onReset={(values, actions) => {
-                  console.log(values)
                   setEdit(false)
                   if (getId) getId(null)
                 }}
                 onSubmit={(values) => {
-                  console.log(values)
-                  editFamily(values)
 
                   toast(editFamilySuccess)
                   setEdit(false)
@@ -472,6 +446,8 @@ const FamilyInfoBox = ({
   )
 }
 
+export default FamilyInfoBox
+
 let boxLayout = {
   backgroundColor: 'background.white',
   margin: 'auto',
@@ -520,165 +496,3 @@ let backgroundHover = {
     },
   },
 }
-
-export default FamilyInfoBox
-
-/**(
-    <VStack>
-      <Box textAlign="end" width="100%">
-        {menu}
-      </Box>
-
-      <Formik
-        initialValues={formikintialValues}
-        validationSchema={familyschema}
-        onSubmit={(values) => {
-          console.log(values)
-          if(APIaction) APIaction(values)
-          if(closeBTN) closeBTN()
-        }}
-      >
-        <Form>
-          <VStack alignItems="start">
-            <Flex gap="16px">
-              <FormInput
-                label="คำนำหน้า"
-                name="title"
-                type="select"
-                options={['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง']}
-                placeholder="เลือกคำนำหน้า"
-                
-                width="139.2px"
-                disable={disable}
-              />
-              <FormInput
-                label="ชื่อ"
-                name="firstName"
-                type="text"
-                placeholder="กรอกชื่อ"
-                
-                width="219.08px"
-                disable={disable}
-              />
-              <FormInput
-                label="นามสกุล"
-                name="lastName"
-                type="text"
-                placeholder="กรอกนามสกุล"
-                
-                width="238.45px"
-                disable={disable}
-              />
-            </Flex>
-            <Flex gap="16px">
-              <FormInput
-                label="เกี่ยวข้องเป็น"
-                name="relationship"
-                type="select"
-                options={[
-                  'บิดา',
-                  'มารดา',
-                  'พี่',
-                  'น้อง',
-                  'อื่นๆ',
-                  'เจ้าของบ้าน',
-                  'ผู้อาศัย'
-                ]}
-                placeholder="เลือกความเกี่ยวข้อง"
-                
-                width="120px"
-                disable={disable}
-              />
-              <FormInput
-                label="เลขบัตรประจำตัวประชาชน"
-                name="citizenId"
-                type="text"
-                placeholder="กรอกเลขบัตรประจำตัวประชาชน"
-                
-                width="250px"
-                disable={citizenIdDisable}
-              />
-            </Flex>
-            {disable ? (
-              <></>
-            ) : (
-              <Flex justifyContent='flex-end' alignItems='center' columnGap='1rem' width="100%">
-                <Button
-                  onClick={() => {
-                    if (closeBTN) closeBTN()
-                  }}
-                >
-                  ยกเลิก
-                </Button>
-                <Button sx={submitButton} type="submit">
-                  ตกลง
-                </Button>
-              </Flex>
-            )}
-          </VStack>
-        </Form>
-      </Formik>
-      {modal}
-    </VStack>
-  ) */
-
-/**{boxMode === 'add' ? (
-            <FamilyInputform
-              disable={false}
-              formikintialValues={{}}
-              citizenIdDisable={false}
-              closeBTN={() => {
-                if (closeBTN) closeBTN()
-              }}
-              APIaction={(values) => {
-                addFamily()
-                //wait api add family
-                toast(addFamilySuccess)
-                if (closeBTN) closeBTN()
-              }}
-            />
-          ) : (
-            <FamilyInputform
-              disable={!editMember}
-              citizenIdDisable={true}
-              closeBTN={() => {
-                setEditMember(false)
-              }}
-              toastDiscription={editFamilySuccess}
-              modal={deleteModal}
-              formikintialValues={data}
-              menu={menu}
-              APIaction={() => {
-                editFamily()
-                toast(editFamilySuccess)
-                setEditMember(false)
-              }}
-            />
-          )} */
-
-/** {isAdd
-              ? mouseOnImage && (
-                  <Icon
-                    as={AiOutlineUpload}
-                    top="71.5px"
-                    left="71.5px"
-                    position="absolute"
-                    boxSize="60px"
-                    color="white"
-                    background="rgba(0, 0, 0, 0.2)"
-                    aria-hidden="true"
-                  />
-                )
-              : isEdit &&
-                mouseOnImage && (
-                  <Icon
-                    as={AiOutlineUpload}
-                    top="71.5px"
-                    left="71.5px"
-                    position="absolute"
-                    boxSize="60px"
-                    color="white"
-                    background="rgba(0, 0, 0, 0.2)"
-                    aria-hidden="true"
-                  />
-                )} */

@@ -1,13 +1,13 @@
 import { useDisclosure } from "@chakra-ui/react";
-import { useFormPageStore } from "@models/FormPageStore.model";
+import { FormPageModel } from "@models/FormPageStore.model";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Fields from 'src/view-models/Field'
+import Fields from '@view-models/Field'
 import * as Yup from 'yup'
 
 class FormPageController {
 
-  formPageStore = useFormPageStore()
+  formPageStore = FormPageModel()
   disclosure = useDisclosure()
   navigate = useNavigate()
   formValuesState = useState<any>({})

@@ -1,7 +1,7 @@
-import { HStack, VStack, Text, Button, Icon, Flex } from '@chakra-ui/react'
+import { VStack, Text, Button, Icon, Flex } from '@chakra-ui/react'
 import { TiThLargeOutline } from 'react-icons/ti'
 import { useNavigate } from 'react-router-dom'
-import { useSearchBoxStore } from '@models/SearchBoxStore.model'
+import { SearchBoxModel } from '@models/SearchBoxStore.model'
 
 type propsType = {
   title: string
@@ -10,13 +10,8 @@ type propsType = {
 }
 
 const PopularBar = ({ title, children, url }: propsType) => {
-  const { setSearch } = useSearchBoxStore()
+  const { setSearch } = SearchBoxModel()
   const navigate = useNavigate()
-  let seeAllIcon = {
-    boxShadow: '0px 5px 5px 1px rgba(0, 0, 0, 0.1)',
-    borderRadius: '8px',
-    // backgroundColor: 'background.white',
-  }
 
   return (
     <>
@@ -47,3 +42,8 @@ const PopularBar = ({ title, children, url }: propsType) => {
   )
 }
 export default PopularBar
+
+let seeAllIcon = {
+  boxShadow: '0px 5px 5px 1px rgba(0, 0, 0, 0.1)',
+  borderRadius: '8px',
+}

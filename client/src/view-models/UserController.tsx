@@ -1,5 +1,5 @@
-import axios, { AxiosError } from 'axios'
-import { useLoginDataStore } from '@models/LoginDataStore.model'
+import axios from 'axios'
+import { LoginDataModel } from '@models/LoginDataStore.model'
 interface RegisterForm {
   title: string
   firstName: string
@@ -57,7 +57,7 @@ class UserController {
   }
 
   static logout = async () => {
-    useLoginDataStore.setState({
+    LoginDataModel.setState({
       user: null,
     })
     window.location.pathname = '/'
@@ -70,7 +70,6 @@ class UserController {
       )
       return response.data
     } catch (err: any) {
-      console.log(err.response.data.message)
       return err.response.data
     }
   }
@@ -84,16 +83,6 @@ class UserController {
     profileURI: string,
     password: string
   ) {
-    console.log(
-      title,
-      fistName,
-      lastName,
-      sex,
-      phoneNumber,
-      birthDate,
-      profileURI,
-      password
-    )
     let response = await axios.put(
       `${process.env.VITE_API_ENDPOINT}/user/edit-profile`,
       {
@@ -108,8 +97,8 @@ class UserController {
       },
       {
         headers: {
-          'user-id': useLoginDataStore.getState()?.user?.id,
-          token: useLoginDataStore.getState()?.user?.token,
+          'user-id': LoginDataModel.getState()?.user?.id,
+          token: LoginDataModel.getState()?.user?.token,
         },
       }
     )

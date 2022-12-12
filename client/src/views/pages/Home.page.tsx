@@ -33,8 +33,6 @@ const Home = () => {
     error: latestFolderError,
   } = useQuery(['latestFolder', user?.id], FolderController.getLatestFolder)
 
-  console.log('folder', user?.id, latestFolder)
-
   if (latestFilesLoading || latestFolderLoading) return <div>Loading...</div>
 
   if (latestFilesError || latestFolderError) return <div>Error</div>

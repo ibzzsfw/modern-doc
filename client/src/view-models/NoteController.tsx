@@ -1,4 +1,4 @@
-import { useLoginDataStore } from '@models/LoginDataStore.model'
+import { LoginDataModel } from '@models/LoginDataStore.model'
 import axios from 'axios'
 
 class NoteController {
@@ -7,12 +7,11 @@ class NoteController {
       `${import.meta.env.VITE_API_ENDPOINT}/note/all`,
       {
         headers: {
-          'user-id': useLoginDataStore.getState()?.user?.id,
-          token: useLoginDataStore.getState()?.user?.token,
+          'user-id': LoginDataModel.getState()?.user?.id,
+          token: LoginDataModel.getState()?.user?.token,
         },
       }
     )
-    console.log('note', response.data)
     return response.data
   }
 
@@ -21,8 +20,8 @@ class NoteController {
       `${import.meta.env.VITE_API_ENDPOINT}/note/delete/${id}`,
       {
         headers: {
-          'user-id': useLoginDataStore.getState()?.user?.id,
-          token: useLoginDataStore.getState()?.user?.token,
+          'user-id': LoginDataModel.getState()?.user?.id,
+          token: LoginDataModel.getState()?.user?.token,
         },
       }
     )
@@ -31,7 +30,6 @@ class NoteController {
   }
 
   static async addFreeNote(heading: string, content: string) {
-    console.log(heading, content)
     let response = await axios.post(
       `${import.meta.env.VITE_API_ENDPOINT}/note/add`,
       {
@@ -40,8 +38,8 @@ class NoteController {
       },
       {
         headers: {
-          'user-id': useLoginDataStore.getState()?.user?.id,
-          token: useLoginDataStore.getState()?.user?.token,
+          'user-id': LoginDataModel.getState()?.user?.id,
+          token: LoginDataModel.getState()?.user?.token,
         },
       }
     )
@@ -50,7 +48,6 @@ class NoteController {
   }
 
   static async editNote(heding: string, content: string, id: string | undefined) {
-    console.log(heding, content, id)
     let response = await axios.put(
       `${import.meta.env.VITE_API_ENDPOINT}/note/edit/${id}`,
       {
@@ -59,8 +56,8 @@ class NoteController {
       },
       {
         headers: {
-          'user-id': useLoginDataStore.getState()?.user?.id,
-          token: useLoginDataStore.getState()?.user?.token,
+          'user-id': LoginDataModel.getState()?.user?.id,
+          token: LoginDataModel.getState()?.user?.token,
         }
       }
     )

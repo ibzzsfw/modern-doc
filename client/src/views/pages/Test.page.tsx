@@ -1,11 +1,7 @@
 import { VStack, Heading, Text, Button } from '@chakra-ui/react'
 import { Link } from 'react-router-dom'
-import { useParams } from 'react-router-dom'
 
 const Error = () => {
-  const { test } = useParams()
-
-  console.log(test)
 
   return (
     <VStack>

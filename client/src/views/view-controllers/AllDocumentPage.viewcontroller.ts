@@ -2,7 +2,7 @@ import { useDisclosure } from "@chakra-ui/react"
 import { useState } from "react"
 import { useParams } from "react-router-dom"
 
-class AllAllDocumentPageViewController {
+class AllDocumentPageViewController {
 
   param = useParams<{ category: string }>()
   viewState = useState<'box' | 'table'>('box')
@@ -14,4 +14,4 @@ class AllAllDocumentPageViewController {
   constructor() {}
 }
 
-export default AllAllDocumentPageViewController;
+export default AllDocumentPageViewController;
