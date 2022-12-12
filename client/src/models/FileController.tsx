@@ -179,6 +179,32 @@ class FileController {
     window.location.reload()
     return response.data
   }
+
+  static async newUserFreeUploadedFile(
+    officialName: string,
+    URI: string,
+    expiredDate: Date | null,
+    note: string
+  ) {
+    console.log('newUserFreeUploadedFile', officialName, URI, expiredDate, note)
+    let response = await axios.post(
+      `${process.env.VITE_API_ENDPOINT}/file/new/userFreeUploadFile`,
+      {
+        officialName: officialName,
+        URI: URI,
+        expiredDate: expiredDate,
+        note: note,
+      },
+      {
+        headers: {
+          'user-id': useLoginDataStore.getState()?.user?.id,
+          token: useLoginDataStore.getState()?.user?.token,
+        },
+      }
+    )
+    return response.data
+    window.location.reload()
+  }
 }
 
 export default FileController

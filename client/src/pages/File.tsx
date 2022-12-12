@@ -25,6 +25,8 @@ import FileData from '@models/File'
 const File = () => {
   const { id, type } = useParams<{ id: string; type: string }>()
   const [userPdf, setUserPdf] = useState<any>(null)
+  const [filePdf, setFilePdf] = useState<any>(null)
+  const [previewPdf, setPreviewPdf] = useState<any>(null)
 
   const { file, setFile } = useFilePageStore((state) => {
     return {
@@ -34,6 +36,29 @@ const File = () => {
   }, shallow)
 
   const setDocumentType = useFormPageStore((state) => state.setDocumentType)
+
+  const loadPDFfile = async (URI: string) => {
+    const response = await axios.get(URI, {
+      responseType: 'blob',
+    })
+    const file = new Blob([response.data], { type: 'application/pdf' })
+    const fileURL = URL.createObjectURL(file)
+    return fileURL
+  }
+
+  useEffect(() => {
+    const setPDF = async () => {
+      if (file.URI) {
+        const fileURL = await loadPDFfile(file.URI)
+        setFilePdf(fileURL)
+      }
+      if (file.previewURI) {
+        const fileURL = await loadPDFfile(file.previewURI)
+        setFilePdf(fileURL)
+      }
+    }
+    setPDF()
+  }, [])
 
   const fillForm = async (fields: Field[], file: FileData) => {
     const formUrl = file?.URI ? file.URI : ''
@@ -120,10 +145,10 @@ const File = () => {
           status={file.date ? 'มีอยู่ในคลัง' : 'ไม่มีอยู่ในคลัง'}
           type={file.type}
         />
-        {file.URI ? (
-          <FileViewer fileUrl={userPdf ? userPdf : file.URI} />
+        {filePdf ? (
+          <FileViewer fileUrl={userPdf ? userPdf : filePdf} />
         ) : (
-          <FileViewer fileUrl={file.previewURI ?? BlankPdf} />
+          <FileViewer fileUrl={previewPdf ? previewPdf : BlankPdf} />
         )}
       </Flex>
     )

@@ -234,6 +234,12 @@ const Register = () => {
                   <OTPVerify
                     phoneNumber="0939465199"
                     onSubmit={async (otp) => {
+                      const result = await UserController.checkCitizenIdStatus(
+                        citizenId
+                      )
+                      if (result.data.status === 'not found') {
+                      }
+
                       try {
                         await validateOTP(otp, confirmationResult)
                         if (registerData) {

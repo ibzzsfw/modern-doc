@@ -53,6 +53,7 @@ const AllDocumentPage = () => {
   }>({ sort: '', order: '' })
   const [documents, setDocuments] = useState([])
   const [data, setData] = useState([])
+  const [userFreeUploadFiles, setUserFreeUploadFiles] = useState([])
 
   useEffect(() => {
     if (category === 'note') {
@@ -67,6 +68,9 @@ const AllDocumentPage = () => {
     } else {
       FileController.getLatestFile(category).then((res) => {
         setData(res)
+      })
+      FileController.getLatestFile('userFreeUploadFile').then((res) => {
+        setUserFreeUploadFiles(res)
       })
     }
   }, [category])

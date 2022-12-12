@@ -33,9 +33,10 @@ type propsType = {
   setOpen?: (open: boolean) => void
   file?: File | null
   customButton?: JSX.Element
+  type?: string
 }
 
-const UploadFile = ({ open, setOpen, file, customButton }: propsType) => {
+const UploadFile = ({ open, setOpen, file, customButton, type }: propsType) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [fileExists, setFileExists] = useState(false)
   const [search, setSearch] = useState('')
@@ -46,6 +47,7 @@ const UploadFile = ({ open, setOpen, file, customButton }: propsType) => {
   const [wannaRemove, setWannaRemove] = useState(false)
   const [note, setNote] = useState('')
   const [expiredDate, setExpiredDate] = useState<null | Date>(null)
+  const [officialName, setOfficialName] = useState('')
 
   useEffect(() => {
     if (open) {
@@ -136,6 +138,7 @@ const UploadFile = ({ open, setOpen, file, customButton }: propsType) => {
                 )
               })}
             </Select> */}
+
             {fileType != 'generate' && (
               <Center sx={dropFile}>
                 {fileExists ? (
@@ -194,6 +197,16 @@ const UploadFile = ({ open, setOpen, file, customButton }: propsType) => {
                 />
               )}
             </Box>
+            {type === 'userFreeUploadFile' ? (
+              <>
+                <Input
+                  placeholder="ตั้งชื่อไฟล์"
+                  onChange={(e) => {
+                    setOfficialName(e.target.value)
+                  }}
+                />
+              </>
+            ) : null}
             {selectedFile === 'outsideFile' ? (
               <>
                 <Input placeholder="ตั้งชื่อไฟล์" />
@@ -240,8 +253,19 @@ const UploadFile = ({ open, setOpen, file, customButton }: propsType) => {
             <Button
               colorScheme="green"
               ml="12px"
+              disabled={fileType == 'generate' ? false : !fileExists}
               onClick={async () => {
-                if (fileType != 'generate') {
+                if (type == 'userFreeUploadFile') {
+                  FileController.newUserFreeUploadedFile(
+                    officialName,
+                    await uploadFile(
+                      `userUploads/${uuidv4()}.pdf`,
+                      uploadedFile
+                    ),
+                    isExpirable ? expiredDate : null,
+                    note
+                  )
+                } else if (fileType != 'generate') {
                   console.log(expiredDate)
                   FileController.newUploadedFile(
                     file?.id,

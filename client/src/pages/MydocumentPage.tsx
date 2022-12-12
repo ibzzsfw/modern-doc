@@ -42,12 +42,21 @@ const MyDocument = () => {
   } = useQuery(['uploadedFile', user?.id], async () => {
     return await FileController.getLatestFile('uploadedFile')
   })
+
   const {
     data: latestSharedFiles,
     isLoading: latestSharedFilesLoading,
     error: latestSharedFilesError,
   } = useQuery(['sharedFile', user?.id], async () => {
     return await FileController.getLatestFile('sharedFile')
+  })
+
+  const {
+    data: latestUserFreeUploadFiles,
+    isLoading: latestUserFreeUploadFilesLoading,
+    error: latestUserFreeUploadFilesError,
+  } = useQuery(['userFreeUploadFile', user?.id], async () => {
+    return await FileController.getLatestFile('userFreeUploadFile')
   })
 
   const {
@@ -67,7 +76,8 @@ const MyDocument = () => {
     latestUploadedFilesLoading ||
     latestFolderLoading ||
     latestNoteLoading ||
-    latestSharedFilesLoading
+    latestSharedFilesLoading ||
+    latestUserFreeUploadFilesLoading
   )
     return <div>Loading...</div>
 
@@ -76,11 +86,20 @@ const MyDocument = () => {
     latestUploadedFilesError ||
     latestFolderError ||
     latestNoteError ||
-    latestSharedFilesError
+    latestSharedFilesError ||
+    latestUserFreeUploadFilesError
   )
     return <div>Error</div>
 
-  if (latestGeneratedFiles || latestUploadedFiles || latestFolder || latestNote)
+  console.log('bro', latestUserFreeUploadFiles)
+
+  if (
+    latestGeneratedFiles ||
+    latestUploadedFiles ||
+    latestFolder ||
+    latestNote ||
+    latestUserFreeUploadFiles
+  )
     return (
       <Box sx={layout}>
         <Flex
@@ -248,9 +267,10 @@ const MyDocument = () => {
                   color={'gray.500'}
                 />
               }
+              type="userFreeUploadFile"
             />
 
-            {latestUploadedFiles
+            {[...latestUploadedFiles, ...latestUserFreeUploadFiles]
               .filter((file: File) =>
                 file.officialName.toLowerCase().includes(search)
               )

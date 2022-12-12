@@ -206,6 +206,9 @@ const DocumentBox = ({
     if (type === 'sharedFile') {
       return `/file/3/${id}`
     }
+    if (type === 'userFreeUploadFile') {
+      return `/file/4/${id}`
+    }
     return ''
   }
 

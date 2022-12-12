@@ -30,6 +30,10 @@ class FileRouter {
     this.router.put('/share/:type/:fileId', this.controller.shareFile)
     this.router.put('/unshare/:type/:fileId', this.controller.unShareFile)
     this.router.delete('/delete/:type/:fileId', this.controller.deleteFile)
+    this.router.post(
+      '/new/userFreeUploadFile',
+      this.controller.newUserFreeUploadFile
+    )
   }
 }
 
