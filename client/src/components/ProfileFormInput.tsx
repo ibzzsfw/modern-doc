@@ -14,16 +14,17 @@ import {
   ModalBody,
   useToast,
   useDisclosure,
+  ButtonGroup
 } from '@chakra-ui/react'
 import ChangePassword from '@components/ChangePassword'
 import FormInput from '@components/FormInput'
 import UserType from '@models/UserType'
 import { Form, Formik } from 'formik'
-import { useState } from 'react'
+
 import { FiEdit } from 'react-icons/fi'
 import { useMyProfileStore } from '@stores/MyProfilePageStore'
 import { updateCurrentUser } from 'firebase/auth'
-import { useEffect } from 'react'
+import { useEffect,useState } from 'react'
 import { useFamilyDataStore } from '@stores/FamilyDataStore'
 import User from '@models/User'
 import { useMutation } from '@tanstack/react-query'
@@ -40,7 +41,7 @@ const ProfileFormInput = ({ data }: any) => {
   const { isEdit, setEdit } = useMyProfileStore()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { user, setUser } = useProfiledataStore()
-
+  const [userInfo, setUserInfo] = useState<any>(null)
   const selectOptions = {
     title: ['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง'],
     sex: ['ชาย', 'หญิง'],
@@ -50,10 +51,9 @@ const ProfileFormInput = ({ data }: any) => {
     postalCode: ['10600'],
   }
   //------------confirm password and call update api
-  const handleform = (values: any) => {
-    setUser({...user, ...values})
-    console.log(user)
-  }
+  
+  
+
   const updateUser = useMutation((value : any) => {return UserController.editProfile(value.title, value.firstName, value.lastName,value.sex,
     value.phoneNumber,value.birthDate,value.profileURI,value.password)},{
       onSuccess: (data) => {},
@@ -89,10 +89,10 @@ const ProfileFormInput = ({ data }: any) => {
               console.log(values)
               onClose()
             }}
-            onSubmit={(values, actions) => {
+            onSubmit={async (values) => {
              
                if(confirmPassword.mutate({phoneNumber : user.phoneNumber,password : values.password})){
-                updateUser.mutate()
+                console.log("pass ถูก")
                }else{
                 console.log("pass ผิด")
                }
@@ -113,15 +113,15 @@ const ProfileFormInput = ({ data }: any) => {
                 />
               </ModalBody>
 
-              <ModalFooter justifyContent="center">
-                <Flex gap="22px">
-                  <Button variant="outliวัยne" type="reset">
+              <ModalFooter justifyContent="flex-end">
+                <ButtonGroup gap="10px">
+                  <Button variant='outline' type="reset">
                     ยกเลิก
                   </Button>
                   <Button variant="solid" colorScheme="blue" type="submit">
                     ตกลง
                   </Button>
-                </Flex>
+                </ButtonGroup>
               </ModalFooter>
             </Form>
           </Formik>
@@ -154,15 +154,18 @@ const ProfileFormInput = ({ data }: any) => {
         onReset={(values) => {
           setEdit(false)
         }}
-        onSubmit={(values) => {
+        onSubmit={ (value) => {
           //console.log(values)
           //--------------------do something for handle value
           //----------next Open modal for confirm password
-          handleform(values)
-          onOpen()
+         
+          
+          
         }}
+        
+
       >
-        <Form>
+        <Form >
           <VStack align="flex-start">
             <FormInput
               label="เลขบัตรประจำตัวประชาชน"
@@ -181,6 +184,8 @@ const ProfileFormInput = ({ data }: any) => {
                 placeholder="เลือกคำนำหน้า"
                 width="143px"
                 disable={!isEdit}
+                
+               
               />
               <FormInput
                 label="ชื่อ"
@@ -189,6 +194,7 @@ const ProfileFormInput = ({ data }: any) => {
                 placeholder="กรอกชื่อไม่ต้องระบุคำนำหน้า"
                 width="208px"
                 disable={!isEdit}
+                onChange={Formik.handleChange}
               />
               <FormInput
                 label="นามสกุล"
@@ -197,6 +203,7 @@ const ProfileFormInput = ({ data }: any) => {
                 placeholder="กรอกนามสกุล"
                 width="226px"
                 disable={!isEdit}
+                
               />
             </Flex>
             <Flex gap="16px">
@@ -208,6 +215,7 @@ const ProfileFormInput = ({ data }: any) => {
                 options={selectOptions.sex}
                 width="111px"
                 disable={!isEdit}
+               
               />
               <FormInput
                 label="วัน/เดือน/ปีเกิด"
@@ -216,6 +224,7 @@ const ProfileFormInput = ({ data }: any) => {
                 placeholder="XX/XX/XXXX"
                 width="214px"
                 disable={!isEdit}
+              
               />
               <FormInput
                 label="หมายเลขโทรศัพท์"
@@ -224,6 +233,7 @@ const ProfileFormInput = ({ data }: any) => {
                 placeholder="08XXXXXXXX"
                 width="252px"
                 disable={!isEdit}
+              
               />
             </Flex>
 
@@ -235,6 +245,7 @@ const ProfileFormInput = ({ data }: any) => {
                 placeholder="example@moderndoc.angel.com"
                 width="238px"
                 disable={!isEdit}
+            
               />
               {!isEdit && <ChangePassword />}
             </Flex>
@@ -336,7 +347,7 @@ const ProfileFormInput = ({ data }: any) => {
                 justifyContent="flex-end"
                 display={isEdit ? 'unset' : 'none'}
               >
-                <Button type="reset">ยกเลิก</Button>
+                <Button variant='outline' type="reset">ยกเลิก</Button>
                 <Button type="submit" colorScheme="blue">
                   ตกลง
                 </Button>
