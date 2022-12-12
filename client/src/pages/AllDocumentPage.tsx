@@ -123,7 +123,7 @@ const AllDocumentPage = () => {
       />
     </MenuProvider>
   )
-/*
+  /*
   const sorting = (option: {
     sort: string | string[]
     order: string | string[]
@@ -246,7 +246,6 @@ const AllDocumentPage = () => {
                   onChange={(value) => {
                     setSortMenu({ sort: value, order: sortMenu.order })
                     console.log(sortMenu)
-                    
                   }}
                 >
                   <MenuItemOption value="title">ชื่อ</MenuItemOption>
@@ -262,7 +261,6 @@ const AllDocumentPage = () => {
                   onChange={(value) => {
                     setSortMenu({ sort: sortMenu.sort, order: value })
                     console.log(value)
-                    
                   }}
                 >
                   <MenuItemOption value="ASC">
@@ -304,12 +302,12 @@ const AllDocumentPage = () => {
                 note={file.note ?? file.content}
                 title={file.officialName ?? file.heading}
                 isShared={file.isShared}
-                showDate
+                showDate={getType(category) !== 'note'}
                 modifiedDate={
-                  (getType(category) === 'note') && new Date(file.modifiedDate)
+                  getType(category) === 'note' && new Date(file.modifiedDate)
                 }
                 createdDate={
-                  (getType(category) !== 'note') && new Date(file.date)
+                  getType(category) !== 'note' && new Date(file.date)
                 }
                 amount={
                   getType(category) !== 'note' &&
@@ -326,33 +324,32 @@ const AllDocumentPage = () => {
               />
             ) : (
               <TableListItem
-              id={file.id}
-              type={getType(category)}
-              showMenu={true}
-              showNote
-              note={file.note ?? file.content}
-              title={file.officialName ?? file.heading}
-              isShared={file.isShared}
-              showDate
-              modifiedDate={
-                (getType(category) === 'note') && new Date(file.modifiedDate)
-              }
-              createdDate={
-                (getType(category) !== 'note') && new Date(file.createdDate)
-              }
-              amount={
-                getType(category) !== 'note' &&
-                getType(category) !== 'sharedFile' &&
-                file.amount
-              }
-              author={
-                getType(category) === 'note'
-                  ? file.autor
-                  : getType(category) === 'sharedFile'
-                  ? file.firstName + ' ' + file.lastName
-                  : null
-              }
-                
+                id={file.id}
+                type={getType(category)}
+                showMenu={true}
+                showNote
+                note={file.note ?? file.content}
+                title={file.officialName ?? file.heading}
+                isShared={file.isShared}
+                showDate={getType(category) !== 'note'}
+                modifiedDate={
+                  getType(category) === 'note' && new Date(file.modifiedDate)
+                }
+                createdDate={
+                  getType(category) !== 'note' && new Date(file.date)
+                }
+                amount={
+                  getType(category) !== 'note' &&
+                  getType(category) !== 'sharedFile' &&
+                  file.amount
+                }
+                author={
+                  getType(category) === 'note'
+                    ? file.autor
+                    : getType(category) === 'sharedFile'
+                    ? file.firstName + ' ' + file.lastName
+                    : null
+                }
               />
             )
           })}

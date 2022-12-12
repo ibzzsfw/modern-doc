@@ -132,11 +132,9 @@ const TableListItem = ({
     }
   }
   const getModifieDate = () => {
-    if(showDate){
-      if(modifiedDate) {
-        return `${new Date(modifiedDate).toLocaleDateString(
-          'en-GB'
-        )}`
+    if (showDate) {
+      if (modifiedDate) {
+        return `${new Date(modifiedDate).toLocaleDateString('en-GB')}`
       }
     }
   }
@@ -447,15 +445,15 @@ const TableListItem = ({
   )
 
   return (
-    <Box sx={boxLayout} alignItems="center" margin='auto' >
-      <SimpleGrid columns={10} alignItems="center" minHeight = '110px' >
+    <Box sx={boxLayout} alignItems="center" margin="auto">
+      <SimpleGrid columns={10} alignItems="center" minHeight="110px">
         <GridItem colSpan={3}>
           <HStack spacing="10px">
             <Image src={getImageUrl()} sx={documentImage} />
             <Flex direction="column">
               <Link to={getUrl()}>
                 <Text sx={titleText}>{title}</Text>
-                <Text sx={subText}>{getSubText()} </Text>
+                <Text sx={subText}>{/*getSubText()*/} </Text>
               </Link>
             </Flex>
           </HStack>
@@ -467,48 +465,55 @@ const TableListItem = ({
               fontSize="16px"
               textAlign="center"
               margin="auto"
-            >{getModifieDate()}</Badge>
+            >
+              {showDate
+                ? `สร้างเมื่อ ${new Date(createdDate).toLocaleDateString(
+                    'en-GB'
+                  )}`
+                : `แก้ไขล่าสุดเมื่อ ${new Date(modifiedDate).toLocaleDateString(
+                    'en-GB'
+                  )}`}
+            </Badge>
           </Center>
         </GridItem>
 
         <GridItem colSpan={3}>
-          
-            {showNote && (
-              <Box textAlign='center' height= '100%'>
-                <Formik
-                  initialValues={{ content: note || '' }}
-                  onSubmit={(value: { content: string }) => {
-                    switch (type) {
-                      case 'note':
-                        updateFreeNote.mutate({
-                          heading: title,
-                          content: value.content,
-                          id: id,
-                        })
-                        break
-                      case 'generatedFolder':
-                        editFolderNote.mutate({
-                          content: value.content,
-                          id: id,
-                        })
-                        break
-                      case 'generatedFile':
-                        editFileNote.mutate({
-                          content: value.content,
-                          type: type,
-                          id: id,
-                        })
-                        break
-                    }
+          {showNote && (
+            <Box textAlign="center" height="100%">
+              <Formik
+                initialValues={{ content: note || '' }}
+                onSubmit={(value: { content: string }) => {
+                  switch (type) {
+                    case 'note':
+                      updateFreeNote.mutate({
+                        heading: title,
+                        content: value.content,
+                        id: id,
+                      })
+                      break
+                    case 'generatedFolder':
+                      editFolderNote.mutate({
+                        content: value.content,
+                        id: id,
+                      })
+                      break
+                    case 'generatedFile':
+                      editFileNote.mutate({
+                        content: value.content,
+                        type: type,
+                        id: id,
+                      })
+                      break
+                  }
 
-                    setEditNote(false)
-                  }}
-                  onReset={(value) => {
-                    setEditNote(false)
-                  }}
-                >
-                  <Form>
-                    <HStack sx = {{'text-align': 'center'}}>
+                  setEditNote(false)
+                }}
+                onReset={(value) => {
+                  setEditNote(false)
+                }}
+              >
+                <Form>
+                  <HStack sx={{ 'text-align': 'center' }}>
                     <Field name="content">
                       {({ field, form }: any) => (
                         <Textarea
@@ -516,7 +521,7 @@ const TableListItem = ({
                           {...field}
                           sx={noteText}
                           disabled={!editNote}
-                          resize = {!editNote ? 'none' : 'vertical'}
+                          resize={!editNote ? 'none' : 'vertical'}
                         />
                       )}
                     </Field>
@@ -535,15 +540,11 @@ const TableListItem = ({
                         </Button>
                       </ButtonGroup>
                     )}
-                    </HStack>
-                   
-                    
-                    
-                  </Form>
-                </Formik>
-              </Box>
-            )}
-          
+                  </HStack>
+                </Form>
+              </Formik>
+            </Box>
+          )}
         </GridItem>
         <GridItem colSpan={1}>
           <Box position="relative">{showMenu && menu}</Box>
@@ -636,6 +637,6 @@ let textareaLayout = {
 }
 
 let noteText = {
-  fontSize:"14px",
-  color:"accent.gray"
+  fontSize: '14px',
+  color: 'accent.gray',
 }
