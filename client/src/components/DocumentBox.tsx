@@ -154,8 +154,11 @@ const DocumentBox = ({
     if (type === 'generatedFile') {
       return '/assets/file_logo.png'
     }
-    if (type === 'uploadedFile' || type === 'userFreeUploadFile') {
+    if (type === 'uploadedFile') {
       return '/assets/card_logo.png'
+    }
+    if (type === 'userFreeUploadFile') {
+      return '/assets/freeupload_logo.png'
     }
     if (type === 'sharedFile') {
       return '/assets/shared_logo.png'
@@ -171,7 +174,6 @@ const DocumentBox = ({
         return `สร้างเมื่อ ${new Date(createdDate).toLocaleDateString('en-GB')}`
       }
       return 'ยังไม่ได้สร้าง'
-     
     }
     if (type === 'generatedFolder') {
       return `${amount} เอกสาร`
@@ -190,7 +192,6 @@ const DocumentBox = ({
         'en-GB'
       )}`
     }
-    
   }
 
   const getUrl = (): string => {
