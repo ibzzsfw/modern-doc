@@ -126,10 +126,11 @@ class UserController {
       }
     )
     if (response.status === 200) {
+      console.log('bad bro', response.data[0])
       useLoginDataStore.setState({
         user: {
           ...useLoginDataStore.getState().user,
-          ...response.data.data,
+          ...response.data,
         },
       })
       window.location.reload()

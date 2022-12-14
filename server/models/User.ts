@@ -476,7 +476,12 @@ class User {
 
       console.log(editProfile)
 
-      res.status(200).json(editProfile)
+      console.log((editProfile as any).sex)
+
+      res.status(200).json({
+        ...editProfile[0],
+        sex: getSexText(editProfile[0].sex),
+      })
     } catch (err) {
       res.status(400).json({ message: err })
     }
