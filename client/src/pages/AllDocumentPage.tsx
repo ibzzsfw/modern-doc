@@ -61,9 +61,13 @@ const AllDocumentPage = () => {
     const sortedData = data.sort((a: any, b: any) => {
       if (sortBy === 'name') {
         if (sortOrder === 'asc') {
-          return a.officialName.localeCompare(b.name)
+          return a.officialName
+            ? a.officialName.localeCompare(b.name)
+            : a.heading.localeCompare(b.heading)
         } else {
-          return b.officialName.localeCompare(a.name)
+          return b.officialName
+            ? b.officialName.localeCompare(a.name)
+            : b.heading.localeCompare(a.heading)
         }
       } else {
         if (sortOrder === 'asc') {
@@ -279,10 +283,10 @@ const AllDocumentPage = () => {
                   }}
                 >
                   <MenuItemOption value="asc">
-                    {sortMenu.sort === 'title' ? 'ก - ฮ' : 'เก่าสุด - ใหม่สุด'}
+                    {sortBy === 'name' ? 'ก - ฮ' : 'เก่าสุด - ใหม่สุด'}
                   </MenuItemOption>
                   <MenuItemOption value="desc">
-                    {sortMenu.sort === 'title' ? 'ฮ - ก' : 'ใหม่สุด - เก่าสุด'}
+                    {sortBy === 'name' ? 'ฮ - ก' : 'ใหม่สุด - เก่าสุด'}
                   </MenuItemOption>
                 </MenuOptionGroup>
               </MenuList>
