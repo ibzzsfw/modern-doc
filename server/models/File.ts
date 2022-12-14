@@ -58,9 +58,10 @@ class File {
           )
           FROM "GeneratedFileField" 
           LEFT JOIN "Field" ON "Field"."id" = "GeneratedFileField"."fieldId"
-          LEFT JOIN "UserField" ON "UserField"."fieldId" = "Field"."id"
+          LEFT JOIN "UserField" ON ("UserField"."fieldId" = "Field"."id"
+              AND "UserField"."userId" = ${userId}::uuid 
+          )
           WHERE "GeneratedFileField"."generatedFileId" = ${id}::uuid
-          AND ("UserField"."userId" = ${userId}::uuid OR "UserField"."userId" IS NULL)
         ) AS "fields" FROM "GeneratedFile" WHERE id = ${id}::uuid
         `
       }

@@ -283,38 +283,42 @@ const FolderDetail = ({
               >
                 แก้ไขเอกสารเดิม
               </Button>
-            </ButtonGroup><Flex justify= 'flex-start'>
-            <TakeNote
-              doucmentType={document?.type}
-              documentId={document?.id}
-              noteContent={document?.note}
-              documentTitle={title}
-              type={'folderNote'}
-              customButton={
-                <Button colorScheme="gray"  variant="outline">
-                  แก้ไขบันทึก
-                </Button>
-              }
-            />
+            </ButtonGroup>
+            <Flex justify="flex-start">
+              <TakeNote
+                doucmentType={document?.type}
+                documentId={document?.id}
+                noteContent={document?.note}
+                documentTitle={title}
+                type={'folderNote'}
+                customButton={
+                  <Button colorScheme="gray" variant="outline">
+                    แก้ไขบันทึก
+                  </Button>
+                }
+              />
             </Flex>
-           
           </>
-        ) : type === 'uploadedFile' && (<Flex justify= 'flex-start'>
-        <TakeNote
-          doucmentType={document?.type}
-          documentId={document?.id}
-          noteContent={document?.note}
-          documentTitle={title}
-          type={'folderNote'}
-          customButton={
-            <Button colorScheme="gray"  variant="outline">
-              แก้ไขบันทึก
-            </Button>
-          }
-        />
-        </Flex>)}
+        ) : (
+          type === 'uploadedFile' && (
+            <Flex justify="flex-start">
+              <TakeNote
+                doucmentType={document?.type}
+                documentId={document?.id}
+                noteContent={document?.note}
+                documentTitle={title}
+                type={'folderNote'}
+                customButton={
+                  <Button colorScheme="gray" variant="outline">
+                    แก้ไขบันทึก
+                  </Button>
+                }
+              />
+            </Flex>
+          )
+        )}
         <Flex justifyContent="flex-start">
-          {status === 'ไม่มีอยู่ในคลัง' && (
+          {file.type === 'uploadedFile' && (
             <UploadFile
               customButton={<Button colorScheme="green">อัปโหลดไฟล์</Button>}
             />
