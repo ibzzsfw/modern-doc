@@ -254,6 +254,7 @@ const Register = () => {
               />
             </VStack>
           )}
+          <div id="recaptcha-container"></div>
 
           <HStack marginTop="24px" justifyContent="space-between">
             <Button
@@ -277,7 +278,6 @@ const Register = () => {
               </Button>
             ) : (
               <>
-                <div id="recaptcha-container"></div>
                 {confirmationResult && (
                   <OTPVerify
                     phoneNumber={registerData!.phoneNumber}

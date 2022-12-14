@@ -41,7 +41,7 @@ class MemberController {
           headers: {
             token: token,
             'user-id': userId,
-            'household-id': memberData.householdId,
+            'household-id': householdId,
           },
         }
       )
