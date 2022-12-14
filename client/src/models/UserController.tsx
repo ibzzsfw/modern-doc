@@ -129,7 +129,7 @@ class UserController {
     return response.data
   }
 
- static async changePassword(oldPassword:any,newPassword:any){
+  static async changePassword(oldPassword: any, newPassword: any) {
     let response = await axios.post(
       `${process.env.VITE_API_ENDPOINT}/user/change-password`,
       {
@@ -146,7 +146,6 @@ class UserController {
 
     return response.data
   }
-
 }
 
 export default UserController
