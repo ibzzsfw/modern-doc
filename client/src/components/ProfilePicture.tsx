@@ -62,6 +62,7 @@ const ProfilePicture = ({ url }: propTypes) => {
                 console.log(e.target.files![0])
                 uploadFile('images/', e.target.files![0]).then((url) => {
                   setUser({ ...user, profileURI: url })
+                  setUrl(url)
                 })
               }}
             />

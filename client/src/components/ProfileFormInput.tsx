@@ -38,11 +38,12 @@ type propTypes = {
 
 const ProfileFormInput = ({ data }: any) => {
   const toast = useToast()
+  const {user:loginInfo,setUserData} = useLoginDataStore()
 
   const { isEdit, setEdit } = useMyProfileStore()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { user, setUser, profileUrl } = useProfiledataStore()
-  const [userInfo, setUserInfo] = useState<any>(null)
+  
   const selectOptions = {
     title: ['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง'],
     sex: ['ชาย', 'หญิง'],
@@ -52,6 +53,7 @@ const ProfileFormInput = ({ data }: any) => {
     postalCode: ['10600'],
   }
   //------------confirm password and call update api
+  console.log( 'user.profileUrl',user.profileUrl,"profileUrl",profileUrl)
 
   const updateUser = useMutation(
     (value: any) => {
@@ -73,6 +75,12 @@ const ProfileFormInput = ({ data }: any) => {
           status: 'success',
           duration: 3000,
         })
+        setUserData(
+          new User({
+            ...user,
+            profileURI: profileUrl,
+
+          }))
         window.location.reload()
       },
       onError: (error) => {
@@ -110,7 +118,7 @@ const ProfileFormInput = ({ data }: any) => {
               onClose()
             }}
             onSubmit={async (values) => {
-              updateUser.mutate({ ...user, password: values.password })
+              updateUser.mutate({ ...user,profileUrl : profileUrl, password: values.password })
             }}
           >
             <Form>
@@ -161,12 +169,13 @@ const ProfileFormInput = ({ data }: any) => {
 
       <Formik
         initialValues={data}
+        enableReinitialize = {true}
         onReset={(values) => {
           setEdit(false)
         }}
         onSubmit={(values) => {
-          console.log({ ...values, profileURI: profileUrl })
-          setUser({ ...values, profileURI: profileUrl })
+          console.log({ ...values })
+          setUser({ ...values })
           onOpen()
           //--------------------do something for handle value
           //----------next Open modal for confirm password
