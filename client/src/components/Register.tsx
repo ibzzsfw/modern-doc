@@ -33,7 +33,12 @@ const Register = () => {
     firstName: Yup.string().required('จำเป็นต้องกรอก'),
     lastName: Yup.string().required('จำเป็นต้องกรอก'),
     sex: Yup.mixed().oneOf(sex).required('จำเป็นต้องกรอก'),
-    birthDate: Yup.date().required('จำเป็นต้องกรอก'),
+    birthDate: Yup.date()
+      .required('จำเป็นต้องกรอก')
+      .max(
+        new Date(new Date().setFullYear(new Date().getFullYear() - 12)),
+        'อายุต้องมากกว่า 12 ปี'
+      ),
     citizenId: Yup.string()
       .matches(/^[0-9]+$/, 'กรุณากรอกเฉพาะตัวเลข')
       .length(13, 'รหัสบัตรประชาชนต้องมี 13 หลัก')
@@ -249,6 +254,7 @@ const Register = () => {
               />
             </VStack>
           )}
+          <div id="recaptcha-container"></div>
 
           <HStack marginTop="24px" justifyContent="space-between">
             <Button
@@ -272,7 +278,6 @@ const Register = () => {
               </Button>
             ) : (
               <>
-                <div id="recaptcha-container"></div>
                 {confirmationResult && (
                   <OTPVerify
                     phoneNumber={registerData!.phoneNumber}

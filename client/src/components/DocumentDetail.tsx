@@ -147,7 +147,7 @@ const FolderDetail = ({
     'title_personal',
   ]
 
-  console.log('file', document)
+  console.log('tyoe', type)
 
   if (file)
     return (
@@ -320,10 +320,28 @@ const FolderDetail = ({
             </Flex>
           )
         )}
+
+        {type === 'userFreeUploadFile' && (
+          <Flex justify="flex-start">
+            <TakeNote
+              doucmentType={file.type}
+              documentId={file.id}
+              noteContent={file.note}
+              documentTitle={title}
+              type={'fileNote'}
+              customButton={
+                <Button colorScheme="gray" variant="outline">
+                  แก้ไขบันทึก
+                </Button>
+              }
+            />
+          </Flex>
+        )}
         <Flex justifyContent="flex-start">
           {file.type === 'uploadedFile' && (
             <UploadFile
               customButton={<Button colorScheme="green">อัปโหลดไฟล์</Button>}
+              file={file}
             />
           )}
           <ConfirmationModal

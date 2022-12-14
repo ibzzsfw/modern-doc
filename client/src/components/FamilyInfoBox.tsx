@@ -30,6 +30,7 @@ import * as Yup from 'yup'
 import MemberController from '@models/MemberController'
 import getRelationshipText from '@utils/getRelationshipText'
 import UserController from '@models/UserController'
+import { useLoginDataStore } from '@stores/LoginDataStore'
 
 type propsType = {
   data?: any
@@ -54,15 +55,17 @@ const FamilyInfoBox = ({
   const startAnimation = () => controls.start('hover')
   const stopAnimation = () => controls.stop()
 
+  const user = useLoginDataStore((state) => state.user)
+
   //------------api zone---------
   const addFamily = async (values: any) => {
-    console.log('add')
+    MemberController.addMember(values)
   }
   const editFamily = async (values: any) => {
     MemberController.editMember(data.id, values)
   }
-  const deleteFamily = async () => {
-    console.log('delete')
+  const deleteFamily = async (id: string) => {
+    MemberController.deleteMember(id)
   }
   //-----------------------------
   const familyschema = Yup.object().shape({
@@ -162,8 +165,7 @@ const FamilyInfoBox = ({
               variant="solid"
               colorScheme="red"
               onClick={() => {
-                //delete api
-                deleteFamily()
+                deleteFamily(data.id)
                 toast(deleteFamilySuccess)
                 onClose()
               }}
