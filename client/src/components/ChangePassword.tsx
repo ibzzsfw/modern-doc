@@ -2,6 +2,8 @@ import { Button, Flex } from '@chakra-ui/react'
 import FormInput from '@components/FormInput'
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
+import {useMutation} from '@tanstack/react-query'
+import UserController from '@models/UserController'
 
 import {
   Modal,
@@ -27,21 +29,33 @@ const ChangePassword = () => {
     confirmPassword: Yup.string().required('กรุณากรอกรหัสผ่านใหม่อีกครั้ง'),
   })
   //-------------api change password----------------
-  const setNewPassword = async (values: any) => {
-    console.log('api process')
-    if (values.newPassword == values.confirmPassword) {
-      console.log(values.newPassword)
-      console.log(values.confirmPassword)
+  const changePassword = useMutation((values:{oldPassword:any,newPassword:any}) => {
+    return UserController.changePassword(values.oldPassword,values.newPassword)
+  },{
+    onSuccess: (data:any) => {
       toast({
         title: 'เปลี่ยนรหัสผ่านสำเร็จ',
         status: 'success',
         duration: 5000,
       })
-      onClose()
-    } else {
+      window.location.reload()
+    },
+    onError: (error:any) => {
       toast({
         title: 'เปลี่ยนรหัสผ่านไม่สำเร็จ',
         status: 'error',
+        duration: 5000,
+      })
+    }
+  })
+  const setNewPassword = async (values: {oldPassword:any,confirmPassword:any,newPassword:any}) => {
+    console.log('api process')
+    if (values.newPassword == values.confirmPassword) {
+      await changePassword.mutateAsync({...values})
+    } else {
+      toast({
+        title: 'รหัสผ่านไม่ตรงกัน',
+        status: 'warning',
         duration: 5000,
       })
     }
