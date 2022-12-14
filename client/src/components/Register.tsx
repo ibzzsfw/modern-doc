@@ -70,18 +70,24 @@ const Register = () => {
           title: 'สมัครสมาชิกสำเร็จ',
           description: 'กรุณาเข้าสู่ระบบ',
           status: 'success',
-          duration: 5000,
+          duration: 2000,
           isClosable: true,
         })
+        setTimeout(() => {
+          window.location.href = '/'
+        }, 2000)
       },
       onError: (error: AxiosError) => {
         toast({
           title: 'สมัครสมาชิกไม่สำเร็จ',
           description: error.message,
           status: 'error',
-          duration: 5000,
+          duration: 2000,
           isClosable: true,
         })
+        setTimeout(() => {
+          window.location.href = '/'
+        }, 2000)
       },
     }
   )
@@ -275,7 +281,7 @@ const Register = () => {
                         registerData!.citizenId
                       )
                       try {
-                        console.log('registerData', registerData)
+                        register(registerData as RegisterForm)
                       } catch (e) {
                         toast({
                           title: 'สมัครสมาชิกไม่สำเร็จ',
