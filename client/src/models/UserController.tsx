@@ -125,7 +125,15 @@ class UserController {
         },
       }
     )
-
+    if (response.status === 200) {
+      useLoginDataStore.setState({
+        user: {
+          ...useLoginDataStore.getState().user,
+          ...response.data.data,
+        },
+      })
+      window.location.reload()
+    }
     return response.data
   }
 }

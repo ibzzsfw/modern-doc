@@ -75,12 +75,6 @@ const ProfileFormInput = ({ data }: any) => {
           status: 'success',
           duration: 3000,
         })
-        setUserData(
-          new User({
-           ...user,
-          })
-        )
-        window.location.reload()
       },
       onError: (error) => {
         toast({
