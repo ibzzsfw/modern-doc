@@ -388,6 +388,8 @@ class User {
           citizenId: true,
           relationship: true,
           profileURI: true,
+          birthDate: true,
+          sex: true,
         },
       })
 

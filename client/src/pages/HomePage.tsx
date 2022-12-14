@@ -39,6 +39,8 @@ const Home = () => {
 
   if (latestFilesError || latestFolderError) return <div>Error</div>
 
+  console.log('user', user)
+
   if (latestFiles && latestFolder)
     return (
       <VStack marginTop="4px">
