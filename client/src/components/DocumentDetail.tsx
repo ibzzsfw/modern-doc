@@ -178,7 +178,7 @@ const FolderDetail = ({
           <Heading sx={titleText}>บันทึกเตือนความจำ</Heading>
           {description}
         </Box>
-        {type === 'generatedFile' ? (
+        {type === 'generatedFile' ? (<>
           <ButtonGroup
             gap="24px"
             marginTop="24px"
@@ -213,7 +213,10 @@ const FolderDetail = ({
             >
               แก้ไขเอกสารเดิม
             </Button>
-            <TakeNote
+            
+          </ButtonGroup>
+          <Flex justify="flex-start">
+          <TakeNote
               doucmentType={file.type}
               documentId={file.id}
               noteContent={file.note}
@@ -225,8 +228,8 @@ const FolderDetail = ({
                 </Button>
               }
             />
-          </ButtonGroup>
-        ) : null}
+            </Flex>
+       </> ) : null}
         {type === 'folder' ? (
           <>
             <ButtonGroup
