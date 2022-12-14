@@ -64,7 +64,7 @@ class NoteController {
         }
       }
     )
-
+    window.location.reload()
     return response.data
   }
 }
