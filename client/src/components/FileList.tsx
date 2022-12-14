@@ -285,7 +285,9 @@ const FileList = ({ files }: propsType) => {
                       {/* {'API'} */}
                       <DocumentBadge status={file.getStatus()} />
                     </Box>
-                    <Box sx={simpleBox}>{file.remark}</Box>
+                    <Box sx={{ ...simpleBox, fontSize: '14px' }}>
+                      {file.remark}
+                    </Box>
                     <Box sx={simpleBox}>
                       <Box
                         position="absolute"

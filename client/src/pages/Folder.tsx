@@ -182,7 +182,7 @@ const Folder = (
           title={folderData.officialName}
           description={folderData.note}
           markdown={folderData.description}
-          status="มีอยู่ในคลัง"
+          status={folderData.date ? 'มีอยู่ในคลัง' : 'ไม่มีอยู่ในคลัง'}
           type="folder"
         />
         <FileList files={folderData.file} />
