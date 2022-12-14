@@ -50,6 +50,25 @@ class User {
     }
   }
 
+  static checkPhoneStatus = async (req: Request, res: Response) => {
+    const phone = req.params.phone
+    const schema = z.string().regex(/^[0-9]{10}$/)
+    try {
+      schema.parse(phone)
+      const user = await Prisma.user.findUnique({
+        where: {
+          phoneNumber: phone,
+        },
+      })
+      if (user) {
+        return res.status(400).json({ message: 'Phone number already exists' })
+      }
+      return res.status(200).json({ message: 'Phone number is available' })
+    } catch (err) {
+      return res.status(500).json({ message: err })
+    }
+  }
+
   static addUser = async (req: Request, res: Response) => {
     console.log(req.body)
     const schema = z.object({

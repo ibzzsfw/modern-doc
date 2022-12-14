@@ -120,9 +120,46 @@ const Register = () => {
           confirmPassword: '',
         }}
         validationSchema={registerSchema}
-        onSubmit={(values) => {
-          verifyPhone(values.phoneNumber)
+        onSubmit={async (values) => {
           setRegisterData(values)
+          const checkCitizenId = await UserController.checkCitizenIdStatus(
+            values!.citizenId
+          )
+          const checkPhoneNumber = await UserController.checkPhoneNumberStatus(
+            values!.phoneNumber
+          )
+          if (
+            checkCitizenId.message === 'Citizen ID is available' &&
+            checkPhoneNumber.message === 'Phone number is available'
+          ) {
+            try {
+              verifyPhone(values.phoneNumber)
+            } catch (e) {
+              toast({
+                title: 'สมัครสมาชิกไม่สำเร็จ',
+                status: 'error',
+                duration: 5000,
+                isClosable: true,
+              })
+              setTimeout(() => {
+                window.location.reload()
+              }, 2000)
+            }
+          } else if (checkCitizenId.message !== 'Citizen ID is available') {
+            toast({
+              title: 'ไม่สามารถใช้เลขบัตรประชาชนนี้ได้',
+              status: 'error',
+              duration: 5000,
+              description: checkCitizenId.message,
+            })
+          } else {
+            toast({
+              title: 'ไม่สามารถใช้เบอร์โทรศัพท์นี้ได้',
+              status: 'error',
+              duration: 5000,
+              description: checkPhoneNumber.message,
+            })
+          }
         }}
       >
         <Form>
@@ -232,19 +269,13 @@ const Register = () => {
                 <div id="recaptcha-container"></div>
                 {confirmationResult && (
                   <OTPVerify
-                    phoneNumber="0939465199"
+                    phoneNumber={registerData!.phoneNumber}
                     onSubmit={async (otp) => {
                       const result = await UserController.checkCitizenIdStatus(
-                        citizenId
+                        registerData!.citizenId
                       )
-                      if (result.data.status === 'not found') {
-                      }
-
                       try {
-                        await validateOTP(otp, confirmationResult)
-                        if (registerData) {
-                          register(registerData)
-                        }
+                        console.log('registerData', registerData)
                       } catch (e) {
                         toast({
                           title: 'สมัครสมาชิกไม่สำเร็จ',

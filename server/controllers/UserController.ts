@@ -7,6 +7,9 @@ class UserController {
   checkCitizenIdStatus = async (req: Request, res: Response) => {
     User.checkCitizenIdStatus(req, res)
   }
+  checkPhoneStatus = async (req: Request, res: Response) => {
+    User.checkPhoneStatus(req, res)
+  }
   checkPhonePassword = async (req: Request, res: Response) => {
     User.checkPhonePassword(req, res)
   }

@@ -20,6 +20,7 @@ class UserRouter {
       '/citizenId-status/:citizenId',
       this.controller.checkCitizenIdStatus
     )
+    this.router.get('/phone-status/:phone', this.controller.checkPhoneStatus)
 
     this.router.post(
       '/check-phone-password',

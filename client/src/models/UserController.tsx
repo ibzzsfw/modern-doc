@@ -74,6 +74,18 @@ class UserController {
       return err.response.data
     }
   }
+  static checkPhoneNumberStatus = async (phoneNumber: string) => {
+    try {
+      let response = await axios.get(
+        `${process.env.VITE_API_ENDPOINT}/user/phone-status/${phoneNumber}`
+      )
+      return response.data
+    } catch (err: any) {
+      console.log(err.response.data.message)
+      return err.response.data
+    }
+  }
+
   static async editProfile(
     title: string,
     fistName: string,
