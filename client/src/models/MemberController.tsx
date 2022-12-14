@@ -52,6 +52,38 @@ class MemberController {
     return response.data
   }
 
+  static deleteMember = async (memberId: string) => {
+    const token = useLoginDataStore.getState().user?.token
+    const userId = useLoginDataStore.getState().user?.id
+    const setFamilyMembers = useLoginDataStore.getState().setFamilyMembers
+    const householdId = useLoginDataStore.getState().user?.householdId
+
+    let response = await axios.delete(
+      `${process.env.VITE_API_ENDPOINT}/member/${memberId}`,
+      {
+        headers: {
+          token: token,
+          'user-id': userId,
+        },
+      }
+    )
+    if (response.status === 200) {
+      let updatedMember = await axios.get(
+        `${process.env.VITE_API_ENDPOINT}/member`,
+        {
+          headers: {
+            token: token,
+            'user-id': userId,
+            'household-id': householdId,
+          },
+        }
+      )
+      setFamilyMembers(updatedMember.data)
+      window.location.reload()
+    }
+    return response.data
+  }
+
   static editMember = async (memberId: string, memberData: EditMemberData) => {
     const token = useLoginDataStore.getState().user?.token
     const userId = useLoginDataStore.getState().user?.id

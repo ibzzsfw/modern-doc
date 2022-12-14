@@ -64,8 +64,8 @@ const FamilyInfoBox = ({
   const editFamily = async (values: any) => {
     MemberController.editMember(data.id, values)
   }
-  const deleteFamily = async () => {
-    console.log('delete')
+  const deleteFamily = async (id: string) => {
+    MemberController.deleteMember(id)
   }
   //-----------------------------
   const familyschema = Yup.object().shape({
@@ -165,8 +165,7 @@ const FamilyInfoBox = ({
               variant="solid"
               colorScheme="red"
               onClick={() => {
-                //delete api
-                deleteFamily()
+                deleteFamily(data.id)
                 toast(deleteFamilySuccess)
                 onClose()
               }}
