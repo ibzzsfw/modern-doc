@@ -42,18 +42,20 @@ import { GrDocumentText, GrDownload } from 'react-icons/gr'
 import { IoChevronDownOutline } from 'react-icons/io5'
 import { useParams } from 'react-router-dom'
 
+interface SortOption {
+  sort : string | string[],
+  order : string | string[]
+}
+
 const AllDocumentPage = () => {
   const { category } = useParams<{ category: string }>()
   const [view, setView] = useState<'box' | 'table'>('box')
   const [search, setSearch] = useState('')
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const [sortMenu, setSortMenu] = useState<{
-    sort: string | string[]
-    order: string | string[]
-  }>({ sort: '', order: '' })
+  const [sortMenu, setSortMenu] = useState<SortOption>({ sort: '', order: '' })
   const [documents, setDocuments] = useState([])
   const [data, setData] = useState([])
-  const [userFreeUploadFiles, setUserFreeUploadFiles] = useState([])
+  const [userFreeUploadFiles, setUserFreeUploadFiles] = useState([])  // mearge in data
 
   useEffect(() => {
     if (category === 'note') {
@@ -150,7 +152,30 @@ const AllDocumentPage = () => {
     return
   }
 */
-  const getType = (category: string | undefined) => {
+useEffect(()=>{
+  if(sortMenu.sort && sortMenu.order){
+    sorting(sortMenu)
+  }
+},[sortMenu])
+
+
+  const sorting =(option : SortOption) =>{
+    const { sort, order } = option
+    let sorted : any = [...data]
+    switch(order){
+      case 'ASC':
+        sorted = [...data].sort((a,b) => a[sort].toLowerCase() > b[sort].toLowerCase() ? 1 : -1)
+        setData(sorted)
+        break
+      case 'DESC':
+        sorted = [...data].sort((a,b) => a[sort].toLowerCase() < b[sort].toLowerCase() ? 1 : -1)
+        setData(sorted)
+        break
+    }
+    
+  }
+
+  const getType = (category: string | undefined)  => {
     switch (category) {
       case 'note':
         return 'note'
@@ -223,9 +248,10 @@ const AllDocumentPage = () => {
     <>
       <VStack gap="30px">
         <Flex width="100%" justifyContent="space-between">
-          <SearchBox
+        <SearchBox
             value={search}
             onSearchClick={(params) => {
+              console.log('search', params)
               setSearch(params)
             }}
           />
@@ -245,11 +271,11 @@ const AllDocumentPage = () => {
                   title="เรียงลำดับด้วย"
                   onChange={(value) => {
                     setSortMenu({ sort: value, order: sortMenu.order })
-                    console.log(sortMenu)
+                    
                   }}
                 >
-                  <MenuItemOption value="title">ชื่อ</MenuItemOption>
-                  <MenuItemOption value="modifiedDate">
+                  <MenuItemOption value= {getType(category) !== 'note' ? 'officialName' : 'heading' }>ชื่อ</MenuItemOption>
+                  <MenuItemOption value= {getType(category) !== 'note' ? "date": "modifiedDate"  }>
                     วันที่แก้ไขล่าสุด
                   </MenuItemOption>
                 </MenuOptionGroup>
@@ -260,14 +286,14 @@ const AllDocumentPage = () => {
                   type="radio"
                   onChange={(value) => {
                     setSortMenu({ sort: sortMenu.sort, order: value })
-                    console.log(value)
+                    console.log(sortMenu)
                   }}
                 >
                   <MenuItemOption value="ASC">
-                    {sortMenu.sort === 'title' ? 'ก - ฮ' : 'เก่าสุด - ใหม่สุด'}
+                    {(sortMenu.sort === 'note') ? 'ก - ฮ' : 'เก่าสุด - ใหม่สุด'}
                   </MenuItemOption>
                   <MenuItemOption value="DESC">
-                    {sortMenu.sort === 'title' ? 'ฮ - ก' : 'ใหม่สุด - เก่าสุด'}
+                    {(sortMenu.sort === 'note') ? 'ฮ - ก' : 'ใหม่สุด - เก่าสุด'}
                   </MenuItemOption>
                 </MenuOptionGroup>
               </MenuList>
@@ -292,7 +318,12 @@ const AllDocumentPage = () => {
         </Flex>
 
         <Frame view={view} title={getThaiName(category)}>
-          {data.map((file: any) => {
+          {data.filter((file: any) =>{
+              const title = getType(category) !== 'note' ? 'officialName' : 'heading' 
+              file.officialName.toLowerCase().includes(search)
+            }
+          )
+          .map((file: any) => {
             return view === 'box' ? (
               <DocumentBox
                 id={file.id}
