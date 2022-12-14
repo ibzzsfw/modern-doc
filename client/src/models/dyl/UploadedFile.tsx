@@ -13,6 +13,7 @@ type arg = {
   amount?: string
   type?: string
   date?: Date
+  remark?: string
 }
 class UploadedFile {
   isShare: boolean = false
@@ -27,6 +28,7 @@ class UploadedFile {
   amount?: string
   type?: string
   date?: Date
+  remark?: string
 
   constructor({
     id,
@@ -40,6 +42,7 @@ class UploadedFile {
     amount,
     type,
     date,
+    remark,
   }: arg) {
     this.id = id
     this.lastModified = lastModified
@@ -52,6 +55,7 @@ class UploadedFile {
     this.amount = amount
     this.type = type
     this.date = date
+    this.remark = remark
   }
 
   getStatus(): DocumentStatus {
