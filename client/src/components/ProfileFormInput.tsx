@@ -38,12 +38,12 @@ type propTypes = {
 
 const ProfileFormInput = ({ data }: any) => {
   const toast = useToast()
-  const {user:loginInfo,setUserData} = useLoginDataStore()
+  const { user: loginInfo, setUserData } = useLoginDataStore()
 
   const { isEdit, setEdit } = useMyProfileStore()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { user, setUser, profileUrl } = useProfiledataStore()
-  
+
   const selectOptions = {
     title: ['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง'],
     sex: ['ชาย', 'หญิง'],
@@ -53,7 +53,7 @@ const ProfileFormInput = ({ data }: any) => {
     postalCode: ['10600'],
   }
   //------------confirm password and call update api
-  console.log( 'user.profileUrl',user.profileUrl,"profileUrl",profileUrl)
+  console.log('user.profileURI', user.profileURI, loginInfo?.profileURI)
 
   const updateUser = useMutation(
     (value: any) => {
@@ -77,10 +77,9 @@ const ProfileFormInput = ({ data }: any) => {
         })
         setUserData(
           new User({
-            ...user,
-            profileURI: profileUrl,
-
-          }))
+           ...user,
+          })
+        )
         window.location.reload()
       },
       onError: (error) => {
@@ -118,7 +117,7 @@ const ProfileFormInput = ({ data }: any) => {
               onClose()
             }}
             onSubmit={async (values) => {
-              updateUser.mutate({ ...user,profileUrl : profileUrl, password: values.password })
+              updateUser.mutate({ ...user, password: values.password })
             }}
           >
             <Form>
@@ -169,13 +168,22 @@ const ProfileFormInput = ({ data }: any) => {
 
       <Formik
         initialValues={data}
-        enableReinitialize = {true}
+        enableReinitialize
         onReset={(values) => {
           setEdit(false)
         }}
         onSubmit={(values) => {
           console.log({ ...values })
-          setUser({ ...values })
+          setUser({
+            ...user,
+            title: values.title,
+            firstName: values.firstName,
+            lastName: values.lastName,
+            sex: values.sex,
+            phoneNumber: values.phoneNumber,
+            birthDate: values.birthDate,
+            password: values.password,
+          })
           onOpen()
           //--------------------do something for handle value
           //----------next Open modal for confirm password

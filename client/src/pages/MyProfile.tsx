@@ -3,16 +3,13 @@ import ProfileFormInput from '@components/ProfileFormInput'
 import ProfilePicture from '@components/ProfilePicture'
 import { useLoginDataStore } from '@stores/LoginDataStore'
 import { useFamilyDataStore } from '@stores/FamilyDataStore'
-import { useProfiledataStore } from '@stores/MyProfiledataStore'
 import { useEffect } from 'react'
+
 const MyProfile = () => {
   const user = useLoginDataStore.getState().user
-  const { setUser } = useFamilyDataStore()
+  const {setUser} = useFamilyDataStore()
 
-useEffect(() => {
-    setUser(user)
-}, [user])
-
+ 
   return (
     <Box sx={myprofileLayout}>
       <Center>
