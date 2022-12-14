@@ -46,19 +46,24 @@ const File = () => {
     return fileURL
   }
 
+  console.log('file', file)
+
   useEffect(() => {
     const setPDF = async () => {
-      if (file.URI) {
+      if (userPdf) {
+        setFilePdf(userPdf)
+      } else if (file.URI) {
         const fileURL = await loadPDFfile(file.URI)
         setFilePdf(fileURL)
-      }
-      if (file.previewURI) {
+      } else if (file.previewURI) {
         const fileURL = await loadPDFfile(file.previewURI)
         setFilePdf(fileURL)
+      } else {
+        setFilePdf(BlankPdf)
       }
     }
     setPDF()
-  }, [])
+  }, [file, userPdf])
 
   const fillForm = async (fields: Field[], file: FileData) => {
     const formUrl = file?.URI ? file.URI : ''
@@ -145,11 +150,7 @@ const File = () => {
           status={file.date ? 'มีอยู่ในคลัง' : 'ไม่มีอยู่ในคลัง'}
           type={file.type}
         />
-        {filePdf ? (
-          <FileViewer fileUrl={userPdf ? userPdf : filePdf} />
-        ) : (
-          <FileViewer fileUrl={previewPdf ? previewPdf : BlankPdf} />
-        )}
+        <FileViewer fileUrl={filePdf ? filePdf : BlankPdf} />
       </Flex>
     )
   else return <div>loading</div>
