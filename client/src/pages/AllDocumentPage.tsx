@@ -42,40 +42,79 @@ import { GrDocumentText, GrDownload } from 'react-icons/gr'
 import { IoChevronDownOutline } from 'react-icons/io5'
 import { useParams } from 'react-router-dom'
 
-interface SortOption {
-  sort : string | string[],
-  order : string | string[]
-}
-
 const AllDocumentPage = () => {
   const { category } = useParams<{ category: string }>()
   const [view, setView] = useState<'box' | 'table'>('box')
   const [search, setSearch] = useState('')
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const [sortMenu, setSortMenu] = useState<SortOption>({ sort: '', order: '' })
+  const [sortMenu, setSortMenu] = useState<{
+    sort: string | string[]
+    order: string | string[]
+  }>({ sort: '', order: '' })
   const [documents, setDocuments] = useState([])
   const [data, setData] = useState([])
-  const [userFreeUploadFiles, setUserFreeUploadFiles] = useState([])  // mearge in data
+  const [userFreeUploadFiles, setUserFreeUploadFiles] = useState([])
+  const [sortBy, setSortBy] = useState<'name' | 'date'>('name')
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
+
+  const handleSort = (data: any) => {
+    const sortedData = data.sort((a: any, b: any) => {
+      if (sortBy === 'name') {
+        if (sortOrder === 'asc') {
+          return a.officialName.localeCompare(b.name)
+        } else {
+          return b.officialName.localeCompare(a.name)
+        }
+      } else {
+        if (sortOrder === 'asc') {
+          return a.date
+            ? new Date(a.date).getTime() - new Date(b.date).getTime()
+            : new Date(a.modifiedDate).getTime() -
+                new Date(b.modifiedDate).getDate()
+        } else {
+          return new Date(b.date).getTime() - new Date(a.date).getTime()
+        }
+      }
+    })
+    setData(sortedData)
+  }
 
   useEffect(() => {
     if (category === 'note') {
       NoteController.getLastestNote().then((res) => {
-        setData(res)
+        handleSort(res)
       })
-    }
-    if (category === 'folder') {
+    } else if (category === 'folder') {
       FolderController.getLatestFolder().then((res) => {
-        setData(res)
+        handleSort(res)
+      })
+    } else if (category === 'uploadedFile') {
+      FileController.getLatestFile(category).then((res) => {
+        FileController.getLatestFile('userFreeUploadFile').then((res2) => {
+          const merged = [...res, ...res2]
+          console.log('merged', merged)
+          handleSort(merged)
+        })
       })
     } else {
       FileController.getLatestFile(category).then((res) => {
-        setData(res)
-      })
-      FileController.getLatestFile('userFreeUploadFile').then((res) => {
-        setUserFreeUploadFiles(res)
+        handleSort(res)
       })
     }
-  }, [category])
+    console.log('data', sortBy, sortOrder, data)
+  }, [category, sortBy, sortOrder])
+
+  useEffect(() => {
+    let temp = data
+    if (category !== 'note')
+      temp = temp.filter((item: any) => item.officialName.includes(search))
+    else
+      temp = temp.filter(
+        (item: any) =>
+          item.heading.includes(search) || item.content.includes(search)
+      )
+    setData(temp)
+  }, [search])
 
   let menu = (
     <MenuProvider
@@ -125,57 +164,8 @@ const AllDocumentPage = () => {
       />
     </MenuProvider>
   )
-  /*
-  const sorting = (option: {
-    sort: string | string[]
-    order: string | string[]
-  }) => {
-    let sorted: any = [...documents]
-    switch (option.order) {
-      case 'ASC':
-        sorted = [...documents].sort((a, b) =>
-          a[option.sort].toLowerCase() > b[option.sort].toLowerCase() ? 1 : -1
-        )
-        setData(sorted)
-        break
-      case 'DESC':
-        sorted = [...documents].sort((a, b) =>
-          a[option.sort].toLowerCase() < b[option.sort].toLowerCase() ? 1 : -1
-        )
-        setData(sorted)
-        break
-    }
-  }*/ /*
-  const multipleSorting = (values: String | String[]) => {
-    let sorted: any = [...documents]
-    sorted = [...documents].sort((a, b) => (a[values] < b[values] ? 1 : -1))
-    return
-  }
-*/
-useEffect(()=>{
-  if(sortMenu.sort && sortMenu.order){
-    sorting(sortMenu)
-  }
-},[sortMenu])
 
-
-  const sorting =(option : SortOption) =>{
-    const { sort, order } = option
-    let sorted : any = [...data]
-    switch(order){
-      case 'ASC':
-        sorted = [...data].sort((a,b) => a[sort].toLowerCase() > b[sort].toLowerCase() ? 1 : -1)
-        setData(sorted)
-        break
-      case 'DESC':
-        sorted = [...data].sort((a,b) => a[sort].toLowerCase() < b[sort].toLowerCase() ? 1 : -1)
-        setData(sorted)
-        break
-    }
-    
-  }
-
-  const getType = (category: string | undefined)  => {
+  const getType = (category: string | undefined) => {
     switch (category) {
       case 'note':
         return 'note'
@@ -248,10 +238,9 @@ useEffect(()=>{
     <>
       <VStack gap="30px">
         <Flex width="100%" justifyContent="space-between">
-        <SearchBox
+          <SearchBox
             value={search}
             onSearchClick={(params) => {
-              console.log('search', params)
               setSearch(params)
             }}
           />
@@ -270,12 +259,12 @@ useEffect(()=>{
                   type="radio"
                   title="เรียงลำดับด้วย"
                   onChange={(value) => {
-                    setSortMenu({ sort: value, order: sortMenu.order })
-                    
+                    setSortBy(value as any)
+                    console.log(sortMenu)
                   }}
                 >
-                  <MenuItemOption value= {getType(category) !== 'note' ? 'officialName' : 'heading' }>ชื่อ</MenuItemOption>
-                  <MenuItemOption value= {getType(category) !== 'note' ? "date": "modifiedDate"  }>
+                  <MenuItemOption value="name">ชื่อ</MenuItemOption>
+                  <MenuItemOption value="date">
                     วันที่แก้ไขล่าสุด
                   </MenuItemOption>
                 </MenuOptionGroup>
@@ -285,15 +274,15 @@ useEffect(()=>{
                   title="เรียงลำดับจาก"
                   type="radio"
                   onChange={(value) => {
-                    setSortMenu({ sort: sortMenu.sort, order: value })
-                    console.log(sortMenu)
+                    setSortOrder(value as any)
+                    console.log(value)
                   }}
                 >
-                  <MenuItemOption value="ASC">
-                    {(sortMenu.sort === 'note') ? 'ก - ฮ' : 'เก่าสุด - ใหม่สุด'}
+                  <MenuItemOption value="asc">
+                    {sortMenu.sort === 'title' ? 'ก - ฮ' : 'เก่าสุด - ใหม่สุด'}
                   </MenuItemOption>
-                  <MenuItemOption value="DESC">
-                    {(sortMenu.sort === 'note') ? 'ฮ - ก' : 'ใหม่สุด - เก่าสุด'}
+                  <MenuItemOption value="desc">
+                    {sortMenu.sort === 'title' ? 'ฮ - ก' : 'ใหม่สุด - เก่าสุด'}
                   </MenuItemOption>
                 </MenuOptionGroup>
               </MenuList>
@@ -318,16 +307,11 @@ useEffect(()=>{
         </Flex>
 
         <Frame view={view} title={getThaiName(category)}>
-          {data.filter((file: any) =>{
-              const title = getType(category) !== 'note' ? 'officialName' : 'heading' 
-              file.officialName.toLowerCase().includes(search)
-            }
-          )
-          .map((file: any) => {
+          {data.map((file: any) => {
             return view === 'box' ? (
               <DocumentBox
                 id={file.id}
-                type={getType(category)}
+                type={file.type ?? getType(category)}
                 showMenu={true}
                 showNote
                 note={file.note ?? file.content}
