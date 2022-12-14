@@ -16,8 +16,8 @@ Tonight:
   
 
   [x] sort
-  [] merge 
-  [] reset login store data
-  [] change password
-  [] search all page
-  [] province
+  [x] merge 
+  [x] reset login store data
+  [x] change password
+  [x] search all page
+  

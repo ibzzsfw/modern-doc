@@ -504,6 +504,27 @@ const TableListItem = ({
                         id: id,
                       })
                       break
+                    case 'userFreeUploadFile':
+                      editFileNote.mutate({
+                        content: value.content,
+                        type: type,
+                        id: id,
+                      })
+                      break
+                    case 'sharedFile':
+                      editFileNote.mutate({
+                        content: value.content,
+                        type: type,
+                        id: id,
+                      })
+                      break
+                    case 'uploadedFile':
+                      editFileNote.mutate({
+                        content: value.content,
+                        type: type,
+                        id: id,
+                      })
+                      break
                   }
 
                   setEditNote(false)
