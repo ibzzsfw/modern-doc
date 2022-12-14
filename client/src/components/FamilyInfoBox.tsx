@@ -30,6 +30,7 @@ import * as Yup from 'yup'
 import MemberController from '@models/MemberController'
 import getRelationshipText from '@utils/getRelationshipText'
 import UserController from '@models/UserController'
+import { useLoginDataStore } from '@stores/LoginDataStore'
 
 type propsType = {
   data?: any
@@ -54,9 +55,11 @@ const FamilyInfoBox = ({
   const startAnimation = () => controls.start('hover')
   const stopAnimation = () => controls.stop()
 
+  const user = useLoginDataStore((state) => state.user)
+
   //------------api zone---------
   const addFamily = async (values: any) => {
-    console.log('add')
+    MemberController.addMember(values)
   }
   const editFamily = async (values: any) => {
     MemberController.editMember(data.id, values)
