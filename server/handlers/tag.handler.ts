@@ -1,28 +1,32 @@
 import { Request, Response } from 'express'
-import Tag from '@models/Tag'
-class TagController {
+import TagController from '../controllers/tag.controller'
+
+class TagHandler {
+
+  private controller = new TagController()
+
   createTag = async (req: Request, res: Response) => {
-    Tag.addTag(req, res)
+    this.controller.addTag(req, res)
   }
   createTagMany = async (req: Request, res: Response) => {
-    Tag.addTagMany(req, res)
+    this.controller.addTagMany(req, res)
   }
 
   getAllTag = async (req: Request, res: Response) => {
-    Tag.getAllTag(req, res)
+    this.controller.getAllTag(req, res)
   }
 
   getTagByName = async (req: Request, res: Response) => {
-    Tag.getTagByName(req, res)
+    this.controller.getTagByName(req, res)
   }
 
   getTagById = async (req: Request, res: Response) => {
-    Tag.getTagById(req, res)
+    this.controller.getTagById(req, res)
   }
 
   editTagName = async (req: Request, res: Response) => {
-    Tag.editTagName(req, res)
+    this.controller.editTagName(req, res)
   }
 }
 
-export default new TagController()
+export default TagHandler

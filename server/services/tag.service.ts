@@ -2,9 +2,9 @@ import { Request, Response } from 'express'
 import { z } from 'zod'
 import Prisma from '@utils/prisma'
 
-class Tag {
-  static addTag = async (req: Request, res: Response) => {
-    const { name } = req.body
+class TagService {
+  addTag = async (name: string) => {
+
     const schema = z.string()
     try {
       schema.parse(name)
@@ -13,14 +13,20 @@ class Tag {
           name,
         },
       })
-      return res.status(200).json(tag)
+      return {
+        status: 200,
+        json: tag,
+      }
     } catch (err) {
-      return res.status(500).json({ message: err })
+      return {
+        status: 500,
+        json: { message: err },
+      }
     }
   }
 
-  static addTagMany = async (req: Request, res: Response) => {
-    const { tags } = req.body
+  addTagMany = async (tags: any) => {
+
     const schema = z.array(z.string())
     try {
       schema.parse(tags)
@@ -31,23 +37,34 @@ class Tag {
           }
         }),
       })
-      return res.status(200).json(tag)
+      return {
+        status: 200,
+        json: tag,
+      }
     } catch (err) {
-      return res.status(500).json({ message: err })
+      return {
+        status: 500,
+        json: { message: err },
+      }
     }
   }
 
-  static getAllTag = async (req: Request, res: Response) => {
+  getAllTag = async () => {
     try {
       const tags = await Prisma.tag.findMany()
-      return res.status(200).json(tags)
+      return {
+        status: 200,
+        json: tags,
+      }
     } catch (err) {
-      return res.status(500).json({ message: err })
+      return {
+        status: 500,
+        json: { message: err },
+      }
     }
   }
 
-  static getTagByName = async (req: Request, res: Response) => {
-    let { name } = req.params
+  getTagByName = async (name: any) => {
 
     const schema = z.string()
     try {
@@ -59,14 +76,19 @@ class Tag {
           },
         },
       })
-      return res.status(200).json(tag)
+      return {
+        status: 200,
+        json: tag,
+      }
     } catch (err) {
-      return res.status(500).json({ message: err })
+      return {
+        status: 500,
+        json: { message: err },
+      }
     }
   }
 
-  static getTagById = async (req: Request, res: Response) => {
-    const { id } = req.params
+  getTagById = async (id: string) => {
     const schema = z.string().uuid()
     try {
       schema.parse(id)
@@ -75,14 +97,19 @@ class Tag {
           id: id,
         },
       })
-      return res.status(200).json(tag)
+      return {
+        status: 200,
+        json: tag,
+      }
     } catch (err) {
-      return res.status(500).json({ message: err })
+      return {
+        status: 500,
+        json: { message: err },
+      }
     }
   }
 
-  static editTagName = async (req: Request, res: Response) => {
-    const { id, name } = req.body
+  editTagName = async (id: string, name: string) => {
 
     const schema = z.object({
       id: z.string().uuid(),
@@ -98,11 +125,17 @@ class Tag {
           name,
         },
       })
-      return res.status(200).json(editTag)
+      return {
+        status: 200,
+        json: editTag,
+      }
     } catch (err) {
-      return res.status(500).json({ message: err })
+      return {
+        status: 500,
+        json: { message: err },
+      }
     }
   }
 }
 
-export default Tag
+export default TagService

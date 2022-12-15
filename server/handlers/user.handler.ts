@@ -1,33 +1,37 @@
 import { Request, Response } from 'express'
-import User from '@models/User'
-class UserController {
+import UserController from '@controllers/user.controller'
+
+class UserHandler {
+
+  private controller = new UserController()
+
   addUser = async (req: Request, res: Response) => {
-    User.addUser(req, res)
+    this.controller.addUser(req, res)
   }
   checkCitizenIdStatus = async (req: Request, res: Response) => {
-    User.checkCitizenIdStatus(req, res)
+    this.controller.checkCitizenIdStatus(req, res)
   }
   checkPhonePassword = async (req: Request, res: Response) => {
-    User.checkPhonePassword(req, res)
+    this.controller.checkPhonePassword(req, res)
   }
   login = async (req: Request, res: Response) => {
-    User.login(req, res)
+    this.controller.login(req, res)
   }
   getFolders = async (req: Request, res: Response) => {
-    User.getFolders(req, res)
+    this.controller.getFolders(req, res)
   }
   getFiles = async (req: Request, res: Response) => {
-    User.getFiles(req, res)
+    this.controller.getFiles(req, res)
   }
   switchMember = async (req: Request, res: Response) => {
-    User.switchMember(req, res)
+    this.controller.switchMember(req, res)
   }
   editProfile = async (req: Request, res: Response) => {
-    User.editProfile(req, res)
+    this.controller.editProfile(req, res)
   }
   changePassword = async (req: Request, res: Response) => {
-    User.changePassword(req, res)
+    this.controller.changePassword(req, res)
   }
 }
 
-export default new UserController()
+export default UserController

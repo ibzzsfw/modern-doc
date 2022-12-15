@@ -3,7 +3,7 @@ import FieldHandler from '../handlers/field.handler'
 
 class UserRouter {
   private router = Router()
-  private controller = new FieldHandler()
+  private handler = new FieldHandler()
 
   constructor() {
     this.configureRoutes()
@@ -14,19 +14,19 @@ class UserRouter {
   }
 
   configureRoutes = (): void => {
-    this.router.post('/create', this.controller.createField)
-    this.router.post('/create-many', this.controller.createFieldMany)
-    this.router.get('/get-all', this.controller.getAllField)
+    this.router.post('/create', this.handler.createField)
+    this.router.post('/create-many', this.handler.createFieldMany)
+    this.router.get('/get-all', this.handler.getAllField)
     this.router.put(
       '/edit-official-name',
-      this.controller.editFieldOfficialName
+      this.handler.editFieldOfficialName
     )
-    this.router.post('/add-choice', this.controller.addFieldChoice)
+    this.router.post('/add-choice', this.handler.addFieldChoice)
     this.router.delete(
       '/delete-choice/:choiceId',
-      this.controller.deleteFieldChoice
+      this.handler.deleteFieldChoice
     )
   }
 }
 
-export default new UserRouter().getRouter()
+export default UserRouter

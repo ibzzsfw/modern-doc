@@ -1,30 +1,32 @@
 import { Request, Response } from 'express'
-import Field from '@models/Field'
+import FieldController from '@controllers/field.controller'
 
 class FieldHandler {
+
+  private controller = new FieldController()
   
   createField = async (req: Request, res: Response) => {
-    Field.createField(req, res)
+    this.controller.createField(req, res)
   }
   
   createFieldMany = async (req: Request, res: Response) => {
-    Field.createFieldMany(req, res)
+    this.controller.createFieldMany(req, res)
   }
 
   getAllField = async (req: Request, res: Response) => {
-    Field.getAllField(req, res)
+    this.controller.getAllField(req, res)
   }
 
   editFieldOfficialName = async (req: Request, res: Response) => {
-    Field.editFieldOfficialName(req, res)
+    this.controller.editFieldOfficialName(req, res)
   }
 
   addFieldChoice = async (req: Request, res: Response) => {
-    Field.addChoice(req, res)
+    this.controller.addChoice(req, res)
   }
 
   deleteFieldChoice = async (req: Request, res: Response) => {
-    Field.deleteChoice(req, res)
+    this.controller.deleteChoice(req, res)
   }
 }
 

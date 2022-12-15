@@ -37,4 +37,4 @@ class FileRouter {
   }
 }
 
-export default new FileRouter().getRouter()
+export default FileRouter

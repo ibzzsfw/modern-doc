@@ -1,17 +1,57 @@
 import { Request, Response } from 'express'
-import FieldService from "../services/field.service";
+import FieldService from "@services/field.service"
 
 class FieldController {
 
-  private service = new FieldService();
+  private service = new FieldService()
 
-    
-  getAllField = async (req: Request, res: Response) => {
-    try  {
-      const fields = await this.service.getAllField(req, res);
-      return res.status(200).json(fields);
-    } catch (err) {
-      return res.status(500).json({ message: err });
-    }
+
+  async createField(req: Request, res: Response) {
+
+    const { name, officialName, description, type } = req.body
+
+    const response = await this.service.createField(name, officialName, description, type)
+    res.status(response.status).json(response.json)
   }
+
+  async getAllField(req: Request, res: Response) {
+
+    const response = await this.service.getAllField()
+    res.status(response.status).json(response.json)
+  }
+
+  async createFieldMany(req: Request, res: Response) {
+
+    const { fields } = req.body
+
+    const response = await this.service.createFieldMany(fields)
+    res.status(response.status).json(response.json)
+  }
+
+  async editFieldOfficialName(req: Request, res: Response) {
+
+    let { id, officialName } = req.body
+
+    const response = await this.service.editFieldOfficialName(id, officialName)
+    res.status(response.status).json(response.json)
+  }
+
+  async addChoice(req: Request, res: Response) {
+
+    let { fieldId, name, officialName } = req.body
+
+    const response = await this.service.addChoice(fieldId, name, officialName)
+    res.status(response.status).json(response.json)
+  }
+
+  async deleteChoice(req: Request, res: Response) {
+
+    let { choiceId } = req.params
+
+    const response = await this.service.deleteChoice(choiceId)
+    res.status(response.status).json(response.json)
+  }
+
 }
+
+export default FieldController

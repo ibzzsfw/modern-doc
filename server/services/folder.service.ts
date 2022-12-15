@@ -1,12 +1,10 @@
 import Prisma from '@utils/prisma'
 import async from 'async'
-import { Request, Response } from 'express'
 import { z } from 'zod'
 
-class Folder {
-  static async getFolderById(req: Request, res: Response) {
-    const { id } = req.params
-    const userId = req.headers['user-id'] as string
+class FolderService {
+  async getFolderById(id: string, userId: string) {
+
     const schema = z.object({
       id: z.string().uuid(),
       userId: z.string().uuid(),
@@ -26,7 +24,6 @@ class Folder {
         WHERE "UserFolder"."folderId" = ${id}::uuid AND "UserFolder"."userId" = ${userId}::uuid
       `
 
-      console.log(userFolder)
       const file = await Prisma.$queryRaw`
         SELECT "GeneratedFile"."id","GeneratedFile"."officialName"
         ,"FolderGeneratedFile"."amount","FolderGeneratedFile"."remark",
@@ -54,20 +51,25 @@ class Folder {
         )
         WHERE "FolderUploadedFile"."folderId" = ${id}::uuid 
       `
-
-      res.json({
-        ...folder[0],
-        note: userFolder[0]?.note,
-        date: userFolder[0]?.date,
-        file,
-      })
+      return {
+        status: 200,
+        json: {
+          ...folder[0],
+          note: userFolder[0]?.note,
+          date: userFolder[0]?.date,
+          file,
+        }
+      }
     } catch (err) {
-      res.status(400).json(err)
+      return {
+        status: 400,
+        json: err
+      }
     }
   }
 
-  static async getLatestFolder(req: Request, res: Response) {
-    const userId = req.headers['user-id'] as string
+  async getLatestFolder(userId: string) {
+
     const schema = z.string().uuid()
 
     try {
@@ -79,15 +81,20 @@ class Folder {
         WHERE "UserFolder"."userId" = ${userId}::uuid
         ORDER BY "UserFolder"."date" DESC
       `
-      res.json(folder)
+      return {
+        status: 200,
+        json: folder
+      }
     } catch (err) {
-      res.status(400).json(err)
+      return {
+        status: 400,
+        json: err
+      }
     }
   }
 
-  static async searchByName(req: Request, res: Response) {
-    const { name } = req.params
-    const userId = req.headers['user-id'] as string
+  async searchByName(name: string, userId: string) {
+
     const schema = z.object({
       name: z.string(),
       userId: z.string().uuid(),
@@ -108,14 +115,20 @@ class Folder {
         OR "Tag"."name" ILIKE ${`%${name}%`})
         LIMIT 9
       `
-      res.json(folder)
+      return {
+        status: 200,
+        json: folder
+      }
     } catch (err) {
-      res.status(400).json(err)
+      return {
+        status: 400,
+        json: err
+      }
     }
   }
 
-  static async getAll(req: Request, res: Response) {
-    const userId = req.headers['user-id'] as string
+  async getAll(userId: string) {
+
     const schema = z.object({
       userId: z.string().uuid(),
     })
@@ -132,16 +145,20 @@ class Folder {
         )
         LIMIT 9
       `
-      res.json(folder)
+      return {
+        status: 200,
+        json: folder
+      }
     } catch (err) {
-      res.status(400).json(err)
+      return {
+        status: 400,
+        json: err
+      }
     }
   }
 
-  static addNote = async (req: Request, res: Response) => {
-    const { userFolderId } = req.params
-    const { note } = req.body
-    const userId = req.headers['user-id'] as string
+  addNote = async (userFolderId: string, note: string, userId: string) => {
+
     const schema = z.object({
       userFolderId: z.string().uuid(),
       note: z.string(),
@@ -155,17 +172,20 @@ class Folder {
         WHERE "folderId" = ${userFolderId}::uuid 
         AND "userId" = ${userId}::uuid
       `
-      res.json(folder)
+      return {
+        status: 200,
+        json: folder
+      }
     } catch (err) {
-      res.status(400).json(err)
+      return {
+        status: 400,
+        json: err
+      }
     }
   }
 
-  static getField = async (req: Request, res: Response) => {
-    const generatedFileIds = JSON.parse(
-      req.headers['generated-file-ids'] as string
-    )
-    const userId = req.headers['user-id'] as string
+  getField = async (generatedFileIds: any, userId: string) => {
+
     const schema = z.object({
       generatedFileIds: z.array(z.string().uuid()),
       userId: z.string().uuid(),
@@ -201,20 +221,23 @@ class Folder {
           AND ("UserField"."userId" = ${userId}::uuid OR "UserField"."userId" IS NULL)
         ) AS "fields" FROM "GeneratedFileField" WHERE id = ${generatedFileId}::uuid
         `
-        console.log(field)
         arr.push(field[0])
       })
       await Promise.all(promise)
-      res.json(arr)
+      return {
+        status: 200,
+        json: arr
+      }
     } catch (err) {
-      res.status(400).json(err)
+      return {
+        status: 400,
+        json: err
+      }
     }
   }
 
-  static saveFolder = async (req: Request, res: Response) => {
-    const { folderId } = req.params
-    const { fields, generatedFiles } = req.body
-    const userId = req.headers['user-id'] as string
+  saveFolder = async (folderId: string, fields: any, generatedFiles: any, userId: string) => {
+
     const schema = z.object({
       folderId: z.string().uuid(),
       fields: z.array(
@@ -272,11 +295,17 @@ class Folder {
       })
       await Promise.all(promise)
       await Promise.all(promise2)
-      res.json(arr)
+      return {
+        status: 200,
+        json: arr
+      }
     } catch (err) {
-      res.status(400).json(err)
+      return {
+        status: 400,
+        json: err
+      }
     }
   }
 }
 
-export default Folder
+export default FolderService

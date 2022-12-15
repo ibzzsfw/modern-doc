@@ -1,27 +1,38 @@
 import { Request, Response } from 'express'
-import Folder from '@models/Folder'
-class FolderController {
+import FolderController from '@controllers/folder.controller'
+
+class FolderHandler {
+
+  private controller = new FolderController()
+
   getFolderById = async (req: Request, res: Response) => {
-    Folder.getFolderById(req, res)
+    this.controller.getFolderById(req, res)
   }
+
   getLatestFolder = async (req: Request, res: Response) => {
-    Folder.getLatestFolder(req, res)
+    this.controller.getLatestFolder(req, res)
   }
+
   searchByName = async (req: Request, res: Response) => {
-    Folder.searchByName(req, res)
+    this.controller.searchByName(req, res)
   }
+
   getAll = async (req: Request, res: Response) => {
-    Folder.getAll(req, res)
+    this.controller.getAll(req, res)
   }
+
   addNote = async (req: Request, res: Response) => {
-    Folder.addNote(req, res)
+    this.controller.addNote(req, res)
   }
+
   getField = async (req: Request, res: Response) => {
-    Folder.getField(req, res)
+    this.controller.getField(req, res)
   }
+
   saveFolder = async (req: Request, res: Response) => {
-    Folder.saveFolder(req, res)
+    this.controller.saveFolder(req, res)
   }
+
 }
 
-export default new FolderController()
+export default FolderHandler

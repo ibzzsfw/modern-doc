@@ -13,8 +13,14 @@
       "@routers/*": [
         "./routers/*"
       ],
+      "@handlers/*": [
+        "./handlers/*"
+      ],
       "@controllers/*": [
         "./controllers/*"
+      ],
+      "@services/*": [
+        "./services/*"
       ],
       "@models/*": [
         "./models/*"

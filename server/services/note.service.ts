@@ -1,11 +1,8 @@
-import { Request, Response } from 'express'
 import { z } from 'zod'
 import Prisma from '@utils/prisma'
 
-class Note {
-  static addFreeNote = async (req: Request, res: Response) => {
-    const { heading, content } = req.body
-    const userId = req.headers['user-id'] as string
+class NoteService {
+  addFreeNote = async (heading: string, content: string, userId: string) => {
     const schema = z.object({
       heading: z.string(),
       content: z.string().optional(),
@@ -16,16 +13,20 @@ class Note {
         INSERT INTO "Note" ("id","userId","createdDate","modifiedDate","heading","content")
         VALUES (gen_random_uuid(),${userId}::uuid,NOW(),NOW(),${heading},${content})
       `
-      res.json(addNote)
+      return {
+        status: 200,
+        json: addNote,
+      }
     } catch (err) {
-      return res.status(500).json({ message: err })
+      return {
+        status: 500,
+        json: { message: err },
+      }
     }
   }
 
-  static editNote = async (req: Request, res: Response) => {
-    const { noteId } = req.params
-    const { heading, content } = req.body
-    const userId = req.headers['user-id'] as string
+  editNote = async (noteId: string, heading: string, content: string, userId: string) => {
+
     const schema = z.object({
       noteId: z.string().uuid(),
       heading: z.string(),
@@ -39,15 +40,20 @@ class Note {
         WHERE "id" = ${noteId}::uuid AND "userId" = ${userId}::uuid
         RETURNING *
       `
-      res.json(editNote)
+      return {
+        status: 200,
+        json: editNote,
+      }
     } catch (err) {
-      return res.status(500).json({ message: err })
+      return {
+        status: 500,
+        json: { message: err },
+      }
     }
   }
 
-  static deleteNote = async (req: Request, res: Response) => {
-    const { noteId } = req.params
-    const userId = req.headers['user-id'] as string
+  deleteNote = async (noteId: string, userId: string) => {
+
     const schema = z.object({
       noteId: z.string().uuid(),
     })
@@ -58,14 +64,20 @@ class Note {
         WHERE id = ${noteId}::uuid AND "userId" = ${userId}::uuid
         RETURNING *
       `
-      res.json(deleteNote)
+      return {
+        status: 200,
+        json: deleteNote,
+      }
     } catch (err) {
-      return res.status(500).json({ message: err })
+      return {
+        status: 500,
+        json: { message: err },
+      }
     }
   }
 
-  static getAllNote = async (req: Request, res: Response) => {
-    const userId = req.headers['user-id'] as string
+  getAllNote = async (userId: string) => {
+
     try {
       const getAllNote = await Prisma.$queryRaw`
         SELECT *
@@ -73,11 +85,17 @@ class Note {
         WHERE "userId" = ${userId}::uuid
         ORDER BY "modifiedDate" DESC
       `
-      res.json(getAllNote)
+      return {
+        status: 200,
+        json: getAllNote,
+      }
     } catch (err) {
-      return res.status(500).json({ message: err })
+      return {
+        status: 500,
+        json: { message: err },
+      }
     }
   }
 }
 
-export default Note
+export default NoteService

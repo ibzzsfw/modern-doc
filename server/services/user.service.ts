@@ -8,8 +8,9 @@ import getSexEnum from '@utils/getSexEnum'
 import getSexText from '@utils/getSexText'
 import Prisma from '@utils/prisma'
 import async from 'async'
-class User {
-  static getFieldValue = (field: string, data: any): string => {
+
+class UserService {
+  private getFieldValue = (field: string, data: any): string => {
     switch (field) {
       case 'firstname_personal':
         return data.firstName
@@ -28,13 +29,16 @@ class User {
     }
   }
 
-  static checkCitizenIdStatus = async (req: Request, res: Response) => {
-    const citizenId = req.params.citizenId
+  checkCitizenIdStatus = async (citizenId: string) => {
+
     const schema = z.string().regex(/^[0-9]{13}$/)
     try {
       schema.parse(citizenId)
       if (!checkCitizenId(citizenId)) {
-        return res.status(400).json({ message: 'Citizen ID is not valid' })
+        return {
+          status: 400,
+          json: { message: 'Citizen ID is not valid' },
+        }
       }
       const user = await Prisma.user.findUnique({
         where: {
@@ -42,16 +46,25 @@ class User {
         },
       })
       if (user) {
-        return res.status(400).json({ message: 'Citizen ID already exists' })
+        return {
+          status: 400,
+          json: { message: 'Citizen ID already exists' },
+        }
       }
-      return res.status(200).json({ message: 'Citizen ID is available' })
+      return {
+        status: 200,
+        json: { message: 'Citizen ID is available' },
+      }
     } catch (err) {
-      return res.status(500).json({ message: err })
+      return {
+        status: 500,
+        json: { message: err },
+      }
     }
   }
 
-  static addUser = async (req: Request, res: Response) => {
-    console.log(req.body)
+  addUser = async (body: any) => {
+
     const schema = z.object({
       title: z.string(),
       firstName: z.string(),
@@ -63,9 +76,9 @@ class User {
       password: z.string().min(6),
     })
     try {
-      schema.parse(req.body)
-      req.body.sex = getSexEnum(req.body.sex)
-      let hashedPassword = await bcrypt.hash(req.body.password, 10)
+      schema.parse(body)
+      body.sex = getSexEnum(body.sex)
+      let hashedPassword = await bcrypt.hash(body.password, 10)
       let {
         title,
         firstName,
@@ -74,7 +87,7 @@ class User {
         birthDate,
         citizenId,
         phoneNumber,
-      } = req.body
+      } = body
 
       birthDate = new Date(birthDate)
 
@@ -99,7 +112,7 @@ class User {
         'birthdate_personal',
         'lastname_personal',
       ]
-      console.log(createUser)
+
       const getFieldId = await Prisma.field.findMany({
         where: {
           name: {
@@ -119,22 +132,26 @@ class User {
               data: {
                 userId: createUser.id,
                 fieldId: item.id,
-                rawValue: this.getFieldValue(field, req.body),
+                rawValue: this.getFieldValue(field, body),
               },
             })
           }
         })
       })
 
-      res.status(201).json({ message: 'success' })
+      return {
+        status: 201,
+        json: { message: 'success' },
+      }
     } catch (err) {
-      console.log(err)
-      res.status(400).json({ message: err })
+      return {
+        status: 400,
+        json: { message: err },
+      }
     }
   }
 
-  static checkPhonePassword = async (req: Request, res: Response) => {
-    let { phoneNumber, password } = req.body
+  checkPhonePassword = async (phoneNumber: any, password: any) => {
 
     const schema = z.object({
       phoneNumber: z.string().length(10),
@@ -152,27 +169,36 @@ class User {
         },
       })
       if (!getUser) {
-        return res.status(404).json({ message: 'ไม่พบข้อมูลผู้ใช้งาน' })
+        return {
+          status: 404,
+          json: { message: 'ไม่พบข้อมูลผู้ใช้งาน' },
+        }
       }
-
-      console.log(getUser.hashedPassword, password)
 
       const isPasswordMatch = await bcrypt.compare(
         password,
         getUser.hashedPassword
       )
       if (!isPasswordMatch) {
-        return res.status(403).json({ message: 'รหัสผ่านไม่ถูกต้อง' })
+        return {
+          status: 403,
+          json: { message: 'รหัสผ่านไม่ถูกต้อง' },
+        }
       }
 
-      res.status(200).json(getUser)
+      return {
+        status: 200,
+        json: getUser,
+      }
     } catch (err) {
-      res.status(400).json({ message: err })
+      return {
+        status: 400,
+        json: { message: err },
+      }
     }
   }
 
-  static login = async (req: Request, res: Response) => {
-    let { phoneNumber } = req.body
+  login = async (phoneNumber: string) => {
 
     const schema = z.string().length(10)
 
@@ -198,7 +224,10 @@ class User {
         },
       })
       if (!getUser) {
-        return res.status(404).json({ message: 'ไม่พบข้อมูลผู้ใช้งาน' })
+        return {
+          status: 404,
+          json: { message: 'ไม่พบข้อมูลผู้ใช้งาน' },
+        }
       }
       const token = jwt.sign({ id: getUser.id }, process.env.JWT_SECRET, {
         expiresIn: '1d',
@@ -230,14 +259,19 @@ class User {
         familyMembers: getFamilyMember,
       }
 
-      res.status(200).json(userData)
+      return {
+        status: 200,
+        json: userData,
+      }
     } catch (err) {
-      res.status(400).json({ message: err })
+      return {
+        status: 400,
+        json: { message: err },
+      }
     }
   }
 
-  static getFolders = async (req: Request, res: Response) => {
-    let { userId } = req.params
+  getFolders = async (userId: string) => {
 
     const schema = z.string()
 
@@ -255,15 +289,19 @@ class User {
       let folderArr = await async.map(folder, (folder: any, callback: any) => {
         callback(null, folder.folder)
       })
-
-      res.status(200).json(folderArr)
+      return {
+        status: 200,
+        json: folderArr,
+      }
     } catch (err) {
-      res.status(400).json({ message: err })
+      return {
+        status: 400,
+        json: { message: err },
+      }
     }
   }
 
-  static getFiles = async (req: Request, res: Response) => {
-    let { userId } = req.params
+  getFiles = async (userId: string) => {
 
     const schema = z.string()
 
@@ -317,14 +355,19 @@ class User {
         uploadedFile: uploadedFileArr,
         freeUploadFile: freeUploadFileArr,
       }
-      return res.json(files)
+      return {
+        status: 200,
+        json: files,
+      }
     } catch (err) {
-      res.status(400).json({ message: err })
+      return {
+        status: 400,
+        json: { message: err },
+      }
     }
   }
 
-  static switchMember = async (req: Request, res: Response) => {
-    let { userId } = req.body
+  switchMember = async (userId: string) => {
 
     const schema = z.string().uuid()
 
@@ -350,7 +393,10 @@ class User {
         },
       })
       if (!getUser) {
-        return res.status(404).json({ message: 'ไม่พบข้อมูลผู้ใช้งาน' })
+        return {
+          status: 404,
+          json: { message: 'ไม่พบข้อมูลผู้ใช้งาน' },
+        }
       }
 
       const getFamilyMember = await Prisma.user.findMany({
@@ -377,14 +423,19 @@ class User {
         sex: getSexText(getUser.sex),
         familyMembers: getFamilyMember,
       }
-
-      res.status(200).json(userData)
+      return {
+        status: 200,
+        json: userData,
+      }
     } catch (err) {
-      res.status(400).json({ message: err })
+      return {
+        status: 400,
+        json: { message: err },
+      }
     }
   }
 
-  static editProfile = async (req: Request, res: Response) => {
+  editProfile = async (userId: string, body: any) => {
     let {
       title,
       firstName,
@@ -394,9 +445,8 @@ class User {
       birthDate,
       profileURI,
       password,
-    } = req.body
+    } = body
 
-    const userId = req.headers['user-id'] as string
     const schema = z.object({
       userId: z.string().uuid(),
       title: z.string(),
@@ -432,7 +482,10 @@ class User {
       })
 
       if (!getUser) {
-        return res.status(404).json({ message: 'ไม่พบข้อมูลผู้ใช้งาน' })
+        return {
+          status: 404,
+          json: { message: 'ไม่พบข้อมูลผู้ใช้งาน' },
+        }
       }
 
       const isPasswordCorrect = await bcrypt.compare(
@@ -441,7 +494,10 @@ class User {
       )
 
       if (!isPasswordCorrect) {
-        return res.status(400).json({ message: 'รหัสผ่านไม่ถูกต้อง' })
+        return {
+          status: 400,
+          json: { message: 'รหัสผ่านไม่ถูกต้อง' },
+        }
       }
 
       const editProfile = await Prisma.$queryRaw`
@@ -455,18 +511,19 @@ class User {
       )} WHERE "id" = ${userId}::uuid RETURNING *
       `
 
-      console.log(editProfile)
-
-      res.status(200).json(editProfile)
+      return {
+        status: 200,
+        json: editProfile,
+      }
     } catch (err) {
-      res.status(400).json({ message: err })
+      return {
+        status: 400,
+        json: { message: err },
+      }
     }
   }
 
-  static changePassword = async (req: Request, res: Response) => {
-    let { oldPassword, newPassword } = req.body
-
-    const userId = req.headers['user-id'] as string
+  changePassword = async (userId: string, oldPassword: string, newPassword: string) => {
 
     const schema = z.object({
       userId: z.string().uuid(),
@@ -492,7 +549,10 @@ class User {
       })
 
       if (!getUser) {
-        return res.status(404).json({ message: 'ไม่พบข้อมูลผู้ใช้งาน' })
+        return {
+          status: 404,
+          json: { message: 'ไม่พบข้อมูลผู้ใช้งาน' },
+        }
       }
 
       const isPasswordCorrect = await bcrypt.compare(
@@ -501,7 +561,10 @@ class User {
       )
 
       if (!isPasswordCorrect) {
-        return res.status(400).json({ message: 'รหัสผ่านไม่ถูกต้อง' })
+        return {
+          status: 400,
+          json: { message: 'รหัสผ่านไม่ถูกต้อง' },
+        }
       }
 
       const hashedPassword = await bcrypt.hash(newPassword, 10)
@@ -509,11 +572,17 @@ class User {
       const changePassword = await Prisma.$queryRaw`
       UPDATE "User" SET "hashedPassword" = ${hashedPassword} WHERE "id" = ${userId}::uuid RETURNING *
       `
-      res.status(200).json(changePassword)
+      return {
+        status: 200,
+        json: changePassword,
+      }
     } catch (err) {
-      res.status(400).json({ message: err })
+      return {
+        status: 400,
+        json: { message: err },
+      }
     }
   }
 }
 
-export default User
+export default UserService

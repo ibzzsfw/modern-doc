@@ -1,11 +1,12 @@
-import { Relationship } from '@prisma/client'
-import { Request, Response } from 'express'
 import { z } from 'zod'
 import getRelationshipEnum from '@utils/getRelationshipEnum'
 import Prisma from '@utils/prisma'
 
-class Member {
-  public static getUserHouseholdId = async (userId: string) => {
+class MemberService {
+  static getUserHouseholdId(userId: string) {
+    throw new Error('Method not implemented.')
+  }
+  getUserHouseholdId = async (userId: string) => {
     const user = await Prisma.user.findUnique({
       where: { id: userId },
       select: { householdId: true },
@@ -13,9 +14,8 @@ class Member {
     return user.householdId
   }
 
-  static getAllMembers = async (req: Request, res: Response) => {
-    const householdId = req.headers['household-id'] as string
-    const userId = req.headers['user-id'] as string
+  getAllMembers = async (householdId: string, userId: string) => {
+
     const schema = z.string().uuid()
     try {
       schema.parse(householdId)
@@ -37,15 +37,20 @@ class Member {
           profileURI: true,
         },
       })
-      res.status(200).json(members)
+      return {
+        status: 200,
+        json: members,
+      }
     } catch (err) {
-      res.status(400).json(err)
+      return {
+        status: 400,
+        json: err,
+      }
     }
   }
 
-  static addMember = async (req: Request, res: Response) => {
-    const { householdId, title, firstName, lastName, citizenId, relationship } =
-      req.body
+  addMember = async (householdId: any, title: any, firstName: any, lastName: any, citizenId: any, relationship: any) => {
+
     const schema = z.object({
       householdId: z.string().uuid(),
       title: z.string(),
@@ -73,14 +78,20 @@ class Member {
           relationship: getRelationshipEnum(relationship),
         },
       })
-      res.json(addMember)
+      return {
+        status: 200,
+        json: addMember,
+      }
     } catch (err) {
-      res.status(400).json(err)
+      return {
+        status: 400,
+        json: err,
+      }
     }
   }
 
-  static editMember = async (req: Request, res: Response) => {
-    const { id } = req.params
+  editMember = async (id: string, body: any) => {
+
     const schema = z.object({
       title: z.string(),
       firstName: z.string(),
@@ -90,7 +101,7 @@ class Member {
     })
 
     try {
-      const data = schema.parse(req.body)
+      const data = schema.parse(body)
       const editMember = await Prisma.user.update({
         where: { id: id },
         data: {
@@ -101,14 +112,20 @@ class Member {
           profileURI: data.profileURI,
         },
       })
-      res.status(200).json({ editMember })
+      return {
+        status: 200,
+        json: { editMember },
+      }
     } catch (err) {
-      res.status(500).json({ message: err })
+      return {
+        status: 500,
+        json: { message: err },
+      }
     }
   }
 
-  static deleteMember = async (req: Request, res: Response) => {
-    const { id } = req.params
+  deleteMember = async (id: string) => {
+
     const schema = z.object({
       id: z.string().uuid(),
     })
@@ -117,25 +134,30 @@ class Member {
       const deleteMember = await Prisma.user.delete({
         where: { id: id },
       })
-      res.status(200).json({ deleteMember })
+      return {
+        status: 200,
+        json: { deleteMember },
+      }
     } catch (err) {
-      res.status(500).json({ message: err })
+      return {
+        status: 500,
+        json: { message: err },
+      }
     }
   }
 
-  static getMemberAvailableUploadedFile = async (
-    req: Request,
-    res: Response
+  getMemberAvailableUploadedFile = async (
+    fileId: string,
+    userId: string
   ) => {
-    const { fileId } = req.params
-    const userId = req.headers['user-id'] as string
+
     const schema = z.object({
       fileId: z.string().uuid(),
       userId: z.string().uuid(),
     })
     try {
       schema.parse({ fileId, userId: userId })
-      const familyId = await Member.getUserHouseholdId(userId)
+      const familyId = await this.getUserHouseholdId(userId)
       const fileAvailableMember = await Prisma.$queryRaw`
         SELECT "User"."id","User"."profileURI","User"."firstName",
         "User"."lastName","User"."relationship",
@@ -147,12 +169,17 @@ class Member {
         WHERE "User"."householdId" = ${familyId}::uuid
         AND "User"."id" != ${userId}::uuid
       `
-
-      res.status(200).json(fileAvailableMember)
+      return {
+        status: 200,
+        json: fileAvailableMember,
+      }
     } catch (err) {
-      res.status(500).json({ message: err })
+      return {
+        status: 500,
+        json: { message: err },
+      }
     }
   }
 }
 
-export default Member
+export default MemberService
