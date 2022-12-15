@@ -1,5 +1,3 @@
-import { Button } from '@chakra-ui/react'
-import FormInput from '@components/FormInput.component'
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import {
@@ -12,8 +10,10 @@ import {
   useDisclosure,
   useToast,
   ButtonGroup,
+  Button
 } from '@chakra-ui/react'
 import { HiKey } from 'react-icons/hi'
+import FormInput from '@components/FormInput.component'
 
 const ChangePassword = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()

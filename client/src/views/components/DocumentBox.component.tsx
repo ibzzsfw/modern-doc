@@ -17,15 +17,15 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react'
+import { AiOutlineEdit } from 'react-icons/ai'
+import { MdLeakRemove } from 'react-icons/md'
+import { BsThreeDots, BsTrash, BsShareFill } from 'react-icons/bs'
+import { useMutation } from '@tanstack/react-query'
+import { Field, Form, Formik } from 'formik'
 import MenuProvider from '@components/MenuProvider.component'
 import FileController from '@view-models/FileController'
 import FolderController from '@view-models/FolderController'
 import NoteController from '@view-models/NoteController'
-import { useMutation } from '@tanstack/react-query'
-import { Field, Form, Formik } from 'formik'
-import { AiOutlineEdit } from 'react-icons/ai'
-import { MdLeakRemove } from 'react-icons/md'
-import { BsThreeDots, BsTrash, BsShareFill } from 'react-icons/bs'
 import { Link } from 'react-router-dom'
 
 type propsType = {

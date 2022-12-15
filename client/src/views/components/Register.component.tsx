@@ -11,16 +11,16 @@ import {
 } from '@chakra-ui/react'
 import { RegisterModel } from '@models/RegisterStore.model'
 import FormInput from '@components/FormInput.component'
+import OTPVerify from '@components/OTPVerify.component'
+import UserController from '@view-models/UserController'
 import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
 import { IoChevronBack, IoChevronForward } from 'react-icons/io5'
 import { AiTwotoneCalendar } from 'react-icons/ai'
 import { useMutation } from '@tanstack/react-query'
-import UserController from '@view-models/UserController'
 import { useState } from 'react'
 import { withCountryCode } from '@utils/formatPhoneNumber'
 import { phoneLogin, validateOTP } from '@firebase'
-import OTPVerify from '@components/OTPVerify.component'
 import { AxiosError } from 'axios'
 
 const Register = () => {

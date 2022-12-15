@@ -3,9 +3,9 @@ import UserRouter from '@routers/UserRouter'
 import TestRouter from '@routers/TestRouter'
 import TagRouter from '@routers/TagRouter'
 import FieldRouter from '@routers/FieldRouter'
-import GeneratedFileRouter from '@routers/GeneratedFileRouter'
 import MemberRouter from '@routers/MemberRouter'
-import FileRouter from '@routers/FileRouter'
+// import FileRouter from '@routers/FileRouter'
+import FileRouter from './file.router'
 import FolderRouter from '@routers/FolderRouter'
 import NoteRouter from '@routers/NoteRouter'
 
@@ -22,7 +22,6 @@ class MasterRouter {
     this.router.use('/test', TestRouter)
     this.router.use('/tag', TagRouter)
     this.router.use('/field', FieldRouter)
-    this.router.use('/generated-file', GeneratedFileRouter)
     this.router.use('/member', MemberRouter)
     this.router.use('/file', FileRouter)
     this.router.use('/folder', FolderRouter)

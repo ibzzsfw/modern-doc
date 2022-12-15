@@ -15,10 +15,10 @@ import {
   Button,
 } from '@chakra-ui/react'
 import MemberController from '@view-models/MemberController'
+import FileController from '@view-models/FileController'
 import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import getRelationshipText from '@utils/getRelationshipText'
-import FileController from '@view-models/FileController'
 
 type propsType = {
   isOpen: boolean

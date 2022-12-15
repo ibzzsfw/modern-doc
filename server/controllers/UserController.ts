@@ -25,6 +25,9 @@ class UserController {
   editProfile = async (req: Request, res: Response) => {
     User.editProfile(req, res)
   }
+  changePassword = async (req: Request, res: Response) => {
+    User.changePassword(req, res)
+  }
 }
 
 export default new UserController()

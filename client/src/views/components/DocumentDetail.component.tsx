@@ -8,17 +8,17 @@ import {
   Spacer,
   Text,
 } from '@chakra-ui/react'
-import GeneratedDocumentBadge from '@components/DocumentBadge.component'
-import Status from '@view-models/DocumentStatus'
-import { FilePageModel } from '@models/FilePageStore.model'
-import { FormPageModel } from '@models/FormPageStore.model'
 import Markdown from 'marked-react'
 import { useNavigate } from 'react-router-dom'
 import shallow from 'zustand/shallow'
-import TakeNote from '@components/TakeNote.component'
-import ConfirmationModal from '@components/ConfirmationModal.component'
 import { useState } from 'react'
+import GeneratedDocumentBadge from '@components/DocumentBadge.component'
 import UploadFile from '@components/UploadFile.component'
+import ConfirmationModal from '@components/ConfirmationModal.component'
+import TakeNote from '@components/TakeNote.component'
+import Status from '@view-models/DocumentStatus'
+import { FilePageModel } from '@models/FilePageStore.model'
+import { FormPageModel } from '@models/FormPageStore.model'
 
 type propsType = {
   title: string

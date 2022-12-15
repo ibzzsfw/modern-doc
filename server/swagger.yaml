@@ -2,7 +2,6 @@ openapi: 3.0.0
 info:
   title: ModernDoc API
   description: API endpoint for ModernDoc
-  version: 0.1.9
 servers:
   - url: http://localhost:8080
     description: ModernDoc API
@@ -108,6 +107,174 @@ paths:
           description: User not found
         '403':
           description: Wrong Password
+  /user/switch-memeber:
+    post:
+      tags:
+        - User
+      summary: Switch member
+      operationId: switchMember
+      requestBody:
+        description: User object that needs to be added
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                userId:
+                  type: string
+                  description: User's id
+      responses:
+        '200':
+          description: User switched
+        '400':
+          description: Error switching user
+        '404':
+          description: User not found
+  /user/edit-profile:
+    put:
+      tags:
+        - User
+      summary: Edit user profile
+      operationId: editProfile
+      parameters:
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: User object that needs to be edited
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                title:
+                  type: string
+                  description: User's title
+                firstName:
+                  type: string
+                  description: User's first name
+                lastName:
+                  type: string
+                  description: User's last name
+                sex:
+                  type: string
+                  description: ชาย,หญิง
+                birthDate:
+                  type: string
+                  description: User's birth date ISO String
+                profileURI:
+                  type: string
+                  description: User's profile Image URI
+                password:
+                  type: string
+                  description: User's password to verify
+      responses:
+        '200':
+          description: User edited
+        '400':
+          description: Error editing user
+        '404':
+          description: User not found
+  /user/get-folders/{userId}:
+    get:
+      tags:
+        - User
+      summary: Get user's folders
+      operationId: getFolders
+      parameters:
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: User object that needs to be edited
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                userId:
+                  type: string
+                  description: User's id
+      responses:
+        '200':
+          description: Folders retrieved
+        '400':
+          description: Error retrieving folders
+  /user/get-files/{userId}:
+    get:
+      tags:
+        - User
+      summary: Get user's files
+      operationId: getFiles
+      parameters:
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: User object that needs to be edited
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                userId:
+                  type: string
+                  description: User's id
+        responses:
+          '200':
+            description: files retrieved
+          '400':
+            description: Error retrieving folders
+  /user/change-password:
+    post:
+      tags:
+        - User
+      summary: Change user password
+      operationId: changePassword
+      parameters:
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
+      parameters:
+        name: userId
+        in: path
+        description: User's id
+        required: true
+        schema:
+          type: string
+
+      requestBody:
+        description: User object that needs to be edited
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                oldPassword:
+                  type: string
+                  description: User's old password
+                newPassword:
+                  type: string
+                  description: User's new password
+      responses:
+        '200':
+          description: Password changed
+        '400':
+          description: Error changing password
+        '404':
+          description: User not found
 
   /tag/create:
     post:
@@ -290,7 +457,7 @@ paths:
                 fieldId:
                   type: string
                   description: Field's id
-                name: 
+                name:
                   type: string
                   description: Choice's name
                 officialName:
@@ -301,7 +468,7 @@ paths:
           description: Choice added
         '500':
           description: Choice add failed
-          
+
   /field/delete-choice/{choiceId}:
     delete:
       tags:
@@ -321,167 +488,785 @@ paths:
         '500':
           description: Choice delete failed
 
-  /generated-file/create:
+  /file/get-by-id/{type}/{id}:
+    get:
+      tags:
+        - File
+      summary: Get file by id
+      operationId: getFileById
+      parameters:
+        - name: type
+          in: path
+          description: file or folder
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: File's id
+          required: true
+          schema:
+            type: string
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: File retrieved
+        '500':
+          description: File retrieval failed
+  /file/latest-files/{type}:
+    get:
+      tags:
+        - File
+      summary: Get latest files
+      operationId: getLatestFiles
+      parameters:
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
+      parameters:
+        - name: type
+          in: path
+          description: file or folder
+          required: true
+          schema:
+            type: string
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Files retrieved
+        '500':
+          description: Files retrieval failed
+  /file/search/{name}:
+    get:
+      tags:
+        - File
+      summary: Search files
+      operationId: searchFiles
+      parameters:
+        - name: name
+          in: path
+          description: File's name
+          required: true
+          schema:
+            type: string
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Files retrieved
+        '500':
+          description: Files retrieval failed
+  /file/search:
+    get:
+      tags:
+        - File
+      summary: get all files
+      operationId: getAllFiles
+      parameters:
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Files retrieved
+        '500':
+          description: Files retrieval failed
+
+  /file/new/generatedFile/{fileId}:
     post:
       tags:
-        - GeneratedFile
-      summary: Create a new generated file
+        - File
+      summary: create generated file
       operationId: createGeneratedFile
+      parameters:
+        - name: fileId
+          in: path
+          description: File's id
+          required: true
+          schema:
+            type: string
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
       requestBody:
-        description: GeneratedFile object that needs to be added
+        description: File object that needs to be edited
         required: true
         content:
           application/json:
             schema:
               properties:
-                name:
-                  type: string
-                  description: GeneratedFile's name
-                officialName:
-                  type: string
-                  description: GeneratedFile's official name
-                description:
-                  type: string
-                  description: GeneratedFile's description
-                dayLifeSpan:
-                  type: integer
-                  description: GeneratedFile's day life span
+                fields:
+                  type: array
+                  description: Fields
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: Field's id
+                      name:
+                        type: string
+                        description: Field's name
+                      userValue:
+                        type: string
+                        description: Field's user value
+      responses:
+        '200':
+          description: File uploaded
+        '400':
+          description: File upload failed
+
+  /file/new/uploadedFile/{fileId}:
+    post:
+      tags:
+        - File
+      summary: add uploaded file
+      operationId: addUploadedFile
+      parameters:
+        - name: fileId
+          in: path
+          description: File's id
+          required: true
+          schema:
+            type: string
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: File object that needs to be edited
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
                 URI:
                   type: string
-                  description: GeneratedFile's URI
+                  description: File's URI
+                note:
+                  type: string
+                  description: File's note
+                expiredDate:
+                  type: string
+                  description: File's expired date
       responses:
         '200':
-          description: GeneratedFile created
-        '500':
-          description: GeneratedFile creation failed
-
-  /generated-file/get-all:
-    get:
+          description: File uploaded
+        '400':
+          description: File upload failed
+  /file/add-note/{type}/{fileId}:
+    put:
       tags:
-        - GeneratedFile
-      summary: Get all generated files
-      operationId: getGeneratedFiles
-      responses:
-        '200':
-          description: GeneratedFiles retrieved
-        '500':
-          description: GeneratedFiles retrieval failed
-
-  /generated-file/add-tag:
-    post:
-      tags:
-        - GeneratedFile
-      summary: Add tag to generated file
-      operationId: addTagToGeneratedFile
+        - File
+      summary: add note to file
+      operationId: addNoteToFile
+      parameters:
+        - name: type
+          in: path
+          description: file or folder
+          required: true
+          schema:
+            type: string
+        - name: fileId
+          in: path
+          description: File's id
+          required: true
+          schema:
+            type: string
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
       requestBody:
-        description: GeneratedFile object that needs to be edited
+        description: File object that needs to be edited
         required: true
         content:
           application/json:
             schema:
               properties:
-                generatedFileId:
+                note:
                   type: string
-                  description: GeneratedFile's id
-                tagId:
-                  type: string
-                  description: Tag's id
+                  description: File's note
       responses:
         '200':
-          description: Tag added to generated file
-        '500':
-          description: Tag addition to generated file failed
-
-  /generated-file/add-field:
+          description: Note added
+        '400':
+          description: Note add failed
+  /file/share/{type}/{fileId}:
+    put:
+      tags:
+        - File
+      summary: share file
+      operationId: shareFile
+      parameters:
+        - name: type
+          in: path
+          description: file or folder
+          required: true
+          schema:
+            type: string
+        - name: fileId
+          in: path
+          description: File's id
+          required: true
+          schema:
+            type: string
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: File shared
+        '400':
+          description: File share failed
+  /file/unshare/{type}/{fileId}:
+    put:
+      tags:
+        - File
+      summary: unshare file
+      operationId: unshareFile
+      parameters:
+        - name: type
+          in: path
+          description: file or folder
+          required: true
+          schema:
+            type: string
+        - name: fileId
+          in: path
+          description: File's id
+          required: true
+          schema:
+            type: string
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: File unshared
+        '400':
+          description: File unshare failed
+  /file/new/userFreeUploadFile:
     post:
       tags:
-        - GeneratedFile
-      summary: Add field to generated file
-      operationId: addFieldToGeneratedFile
+        - File
+      summary: add user free upload file
+      operationId: addUserFreeUploadFile
+      parameters:
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
       requestBody:
-        description: GeneratedFile object that needs to be edited
+        description: File object that needs to be added
         required: true
         content:
           application/json:
             schema:
               properties:
-                generatedFileId:
+                officialName:
                   type: string
-                  description: GeneratedFile's id
-                fieldId:
+                  description: File's officialName
+                URI:
                   type: string
-                  description: Field's id
+                  description: File's URI
+                note:
+                  type: string
+                  description: File's note
+                expirationDate:
+                  type: string
+                  description: File's expirationDate
       responses:
         '200':
-          description: Field added to generated file
-        '500':
-          description: Field addition to generated file failed
+          description: File added
+        '400':
+          description: File add failed
 
-  /generated-file/{generatedFileId}/{tagId}:
-    delete:
-      tags:
-        - GeneratedFile
-      summary: Delete tag from generated file
-      operationId: deleteTagFromGeneratedFile
-      parameters:
-        - name: generatedFileId
-          in: path
-          description: GeneratedFile's id
-          required: true
-          schema:
-            type: string
-        - name: tagId
-          in: path
-          description: Tag's id
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Tag deleted from generated file
-        '500':
-          description: Tag deletion from generated file failed
-
-  /generated-file/{generatedFileId}/{fieldId}:
-    delete:
-      tags:
-        - GeneratedFile
-      summary: Delete field from generated file
-      operationId: deleteFieldFromGeneratedFile
-      parameters:
-        - name: generatedFileId
-          in: path
-          description: GeneratedFile's id
-          required: true
-          schema:
-            type: string
-        - name: fieldId
-          in: path
-          description: Field's id
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Field deleted from generated file
-        '500':
-          description: Field deletion from generated file failed
-
-  /generated-file/get-by-id/{id}:
+  /folder/get-by-id/{id}:
     get:
       tags:
-        - GeneratedFile
-      summary: Get generated file by id
-      operationId: getGeneratedFileById
+        - Folder
+      summary: Get folder by id
+      operationId: getFolderById
       parameters:
         - name: id
           in: path
-          description: GeneratedFile's id
+          description: Folder's id
+          required: true
+          schema:
+            type: string
+        - name: user-id
+          in: headers
+          description: User's id
           required: true
           schema:
             type: string
       responses:
         '200':
-          description: GeneratedFile retrieved
-        '500':
-          description: GeneratedFile retrieval failed
+          description: Folder retrieved
+        '400':
+          description: Folder retrieval failed
+  /folder/latest-folders:
+    get:
+      tags:
+        - Folder
+      summary: Get latest folders
+      operationId: getLatestFolders
+      parameters:
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Folders retrieved
+        '400':
+          description: Folders retrieval failed
+  /folder/search/{name}:
+    get:
+      tags:
+        - Folder
+      summary: Search folder by name
+      operationId: searchFolderByName
+      parameters:
+        - name: name
+          in: path
+          description: Folder's name
+          required: true
+          schema:
+            type: string
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Folder retrieved
+        '400':
+          description: Folder retrieval failed
+  /folder/search:
+    get:
+      tags:
+        - Folder
+      summary: get all folders
+      operationId: getAllFolders
+      parameters:
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Folder retrieved
+        '400':
+          description: Folder retrieval failed
+  /folder/new/{folderId}:
+    post:
+      tags:
+        - Folder
+      summary: add folder
+      operationId: addFolder
+      parameters:
+        - name: folderId
+          in: path
+          description: Folder's id
+          required: true
+          schema:
+            type: string
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Folder object that needs to be added
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                fields:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: Field's id
+                      userValue:
+                        type: string
+                        description: Field's userValue
+                generatedFiles:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: GeneratedFile's id
+      responses:
+        '200':
+          description: Folder added
+        '400':
+          description: Folder add failed
+  /folder/add-note/{userFolderId}:
+    put:
+      tags:
+        - Folder
+      summary: add note to folder
+      operationId: addNoteToFolder
+      parameters:
+        - name: userFolderId
+          in: path
+          description: Folder's id
+          required: true
+          schema:
+            type: string
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Folder object that needs to be edited
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                note:
+                  type: string
+                  description: Folder's note
+      responses:
+        '200':
+          description: Note added
+        '400':
+          description: Note add failed
+  /folder/get-field:
+    get:
+      tags:
+        - Folder
+      summary: get all fields
+      operationId: getAllFields
+      parameters:
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
+        - name: generated-file-ids
+          in: headers
+          description: GeneratedFile's ids in JSON Stringified array
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Fields retrieved
+        '400':
+          description: Fields retrieval failed
+  /note/add:
+    post:
+      tags:
+        - Note
+      summary: add free note
+      operationId: addFreeNote
+      parameters:
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Note object that needs to be added
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                heading:
+                  type: string
+                  description: Note's heading
+                content:
+                  type: string
+                  description: Note's content
+      responses:
+        '200':
+          description: Note added
+        '400':
+          description: Note add failed
+  /note/edit/{noteId}:
+    put:
+      tags:
+        - Note
+      summary: edit free note
+      operationId: editFreeNote
+      parameters:
+        - name: noteId
+          in: path
+          description: Note's id
+          required: true
+          schema:
+            type: string
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Note object that needs to be edited
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                content:
+                  type: string
+                  description: Note's content
+      responses:
+        '200':
+          description: Note edited
+        '400':
+          description: Note edit failed
+  /note/delete/{noteId}:
+    delete:
+      tags:
+        - Note
+      summary: delete free note
+      operationId: deleteFreeNote
+      parameters:
+        - name: noteId
+          in: path
+          description: Note's id
+          required: true
+          schema:
+            type: string
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Note deleted
+        '400':
+          description: Note delete failed
+  /note/all:
+    get:
+      tags:
+        - Note
+      summary: get all free notes
+      operationId: getAllFreeNotes
+      parameters:
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Notes retrieved
+        '400':
+          description: Notes retrieval failed
+  /member:
+    get:
+      tags:
+        - Member
+      summary: get all members
+      operationId: getAllMembers
+      parameters:
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Members retrieved
+        '400':
+          description: Members retrieval failed
+    post:
+      tags:
+        - Member
+      summary: add member
+      operationId: addMember
+      parameters:
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Member object that needs to be added
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                householdId:
+                  type: string
+                  description: householdId
+                title:
+                  type: string
+                  description: Member's title
+                firstName:
+                  type: string
+                  description: Member's firstName
+                lastName:
+                  type: string
+                  description: Member's lastName
+                citizenId:
+                  type: string
+                  description: Member's citizenId
+                relationship:
+                  type: string
+                  description: Member's relationship
+      responses:
+        '200':
+          description: Member added
+        '400':
+          description: Member add failed
+  /member/{id}:
+    put:
+      tags:
+        - Member
+      summary: edit member
+      operationId: editMember
+      parameters:
+        - name: id
+          in: path
+          description: Member's id
+          required: true
+          schema:
+            type: string
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Member object that needs to be edited
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                title:
+                  type: string
+                  description: Member's title
+                firstName:
+                  type: string
+                  description: Member's firstName
+                lastName:
+                  type: string
+                  description: Member's lastName
+                relationship:
+                  type: string
+                  description: Member's relationship
+                profileURI:
+                  type: string
+                  description: Member's profile image URI
+      responses:
+        '200':
+          description: Member edited
+        '400':
+          description: Member edit failed
+    delete:
+      tags:
+        - Member
+      summary: delete member
+      operationId: deleteMember
+      parameters:
+        - name: id
+          in: path
+          description: Member's id
+          required: true
+          schema:
+            type: string
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Member deleted
+        '400':
+          description: Member delete failed
+  /member/available-uploadedFile/{fileId}:
+    get:
+      tags:
+        - Member
+      summary: get all members that have uploaded file
+      operationId: getAllMembersThatHaveUploadedFile
+      parameters:
+        - name: fileId
+          in: path
+          description: UploadedFile's id
+          required: true
+          schema:
+            type: string
+        - name: user-id
+          in: headers
+          description: User's id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Members retrieved
+        '400':
+          description: Members retrieval failed
+  

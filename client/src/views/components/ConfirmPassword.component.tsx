@@ -1,5 +1,3 @@
-import { Button, Flex } from '@chakra-ui/react'
-import FormInput from '@components/FormInput.component'
 import { Formik, Form } from 'formik'
 import {
   Modal,
@@ -9,8 +7,11 @@ import {
   ModalFooter,
   ModalBody,
   useToast,
-  useDisclosure
+  useDisclosure,
+  Button,
+  Flex
 } from '@chakra-ui/react'
+import FormInput from '@components/FormInput.component'
 
 const ConfirmPassword = () => {
   const toast = useToast()

@@ -26,14 +26,14 @@ import {
   Link,
 } from '@chakra-ui/react'
 import UserController from '@view-models/UserController'
+import User from '@view-models/User'
+import { LoginDataModel } from '@models/LoginDataStore.model'
 import { BsPersonCircle } from 'react-icons/bs'
 import { IoChevronDownOutline, IoChevronForwardOutline } from 'react-icons/io5'
 import { MdGroups } from 'react-icons/md'
 import { BiLogOutCircle } from 'react-icons/bi'
-import { useState, useEffect } from 'react'
-import { LoginDataModel } from '@models/LoginDataStore.model'
+import { useState } from 'react'
 import shallow from 'zustand/shallow'
-import User from '@view-models/User'
 import { useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 

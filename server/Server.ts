@@ -22,9 +22,11 @@ class Server {
     this.app.use(MasterRouter)
 
     this.app.listen(this.port, () => {
+      console.log(`Server running on port ${this.port}`)
     })
 
     process.on('uncaughtException', function (err) {
+      console.log(err)
     })
   }
 }

@@ -51,6 +51,7 @@ class User {
   }
 
   static addUser = async (req: Request, res: Response) => {
+    console.log(req.body)
     const schema = z.object({
       title: z.string(),
       firstName: z.string(),
@@ -98,6 +99,7 @@ class User {
         'birthdate_personal',
         'lastname_personal',
       ]
+      console.log(createUser)
       const getFieldId = await Prisma.field.findMany({
         where: {
           name: {
@@ -126,6 +128,7 @@ class User {
 
       res.status(201).json({ message: 'success' })
     } catch (err) {
+      console.log(err)
       res.status(400).json({ message: err })
     }
   }
@@ -151,6 +154,8 @@ class User {
       if (!getUser) {
         return res.status(404).json({ message: 'ไม่พบข้อมูลผู้ใช้งาน' })
       }
+
+      console.log(getUser.hashedPassword, password)
 
       const isPasswordMatch = await bcrypt.compare(
         password,
@@ -450,7 +455,61 @@ class User {
       )} WHERE "id" = ${userId}::uuid RETURNING *
       `
 
+      console.log(editProfile)
+
       res.status(200).json(editProfile)
+    } catch (err) {
+      res.status(400).json({ message: err })
+    }
+  }
+
+  static changePassword = async (req: Request, res: Response) => {
+    let { oldPassword, newPassword } = req.body
+
+    const userId = req.headers['user-id'] as string
+
+    const schema = z.object({
+      userId: z.string().uuid(),
+      oldPassword: z.string(),
+      newPassword: z.string(),
+    })
+
+    try {
+      schema.parse({
+        userId,
+        oldPassword,
+        newPassword,
+      })
+
+      const getUser = await Prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+        select: {
+          id: true,
+          hashedPassword: true,
+        },
+      })
+
+      if (!getUser) {
+        return res.status(404).json({ message: 'ไม่พบข้อมูลผู้ใช้งาน' })
+      }
+
+      const isPasswordCorrect = await bcrypt.compare(
+        oldPassword,
+        getUser.hashedPassword
+      )
+
+      if (!isPasswordCorrect) {
+        return res.status(400).json({ message: 'รหัสผ่านไม่ถูกต้อง' })
+      }
+
+      const hashedPassword = await bcrypt.hash(newPassword, 10)
+
+      const changePassword = await Prisma.$queryRaw`
+      UPDATE "User" SET "hashedPassword" = ${hashedPassword} WHERE "id" = ${userId}::uuid RETURNING *
+      `
+      res.status(200).json(changePassword)
     } catch (err) {
       res.status(400).json({ message: err })
     }

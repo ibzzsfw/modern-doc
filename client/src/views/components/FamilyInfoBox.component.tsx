@@ -18,18 +18,16 @@ import {
   UseToastOptions,
   VStack,
 } from '@chakra-ui/react'
-import FormInput from '@components/FormInput.component'
-import MenuProvider from '@components/MenuProvider.component'
 import { Form, Formik } from 'formik'
-import { useAnimation } from 'framer-motion'
 import { useState } from 'react'
 import { AiOutlineUpload } from 'react-icons/ai'
 import { BiEdit } from 'react-icons/bi'
 import { BsThreeDots, BsTrash } from 'react-icons/bs'
 import * as Yup from 'yup'
-import MemberController from '@view-models/MemberController'
 import getRelationshipText from '@utils/getRelationshipText'
 import UserController from '@view-models/UserController'
+import FormInput from '@components/FormInput.component'
+import MenuProvider from '@components/MenuProvider.component'
 
 type propsType = {
   data?: any

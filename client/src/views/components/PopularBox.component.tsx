@@ -1,4 +1,4 @@
-import { Box, Flex, Text, VStack } from '@chakra-ui/react'
+import { Box, Flex, Text } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom'
 import { SearchBoxModel } from '@models/SearchBoxStore.model'
 

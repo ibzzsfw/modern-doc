@@ -12,20 +12,18 @@ import {
   ModalHeader,
   ModalFooter,
   ModalBody,
-  useToast,
   useDisclosure,
 } from '@chakra-ui/react'
+import { FiEdit } from 'react-icons/fi'
 import ChangePassword from '@components/ChangePassword.component.'
 import FormInput from '@components/FormInput.component'
-import { Form, Formik } from 'formik'
-import { FiEdit } from 'react-icons/fi'
-import { MyProfilePageModel } from '@models/MyProfilePageStore.model'
-import { useMutation } from '@tanstack/react-query'
-import UserController from '@view-models/UserController'
 import { MyProfiledataModel } from '@models/MyProfiledataStore.model'
+import { MyProfilePageModel } from '@models/MyProfilePageStore.model'
+import UserController from '@view-models/UserController'
+import { Form, Formik } from 'formik'
+import { useMutation } from '@tanstack/react-query'
 
 const ProfileFormInput = ({ data }: any) => {
-  const toast = useToast()
 
   const { isEdit, setEdit } = MyProfilePageModel()
   const { isOpen, onOpen, onClose } = useDisclosure()

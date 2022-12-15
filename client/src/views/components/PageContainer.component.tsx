@@ -3,14 +3,12 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
-  Center,
   Icon,
-  Divider,
 } from '@chakra-ui/react'
-import Navbar from 'src/views/components/Navbar.component'
+import Navbar from '@components/Navbar.component'
+import { LoginDataModel } from '@models/LoginDataStore.model'
 import { IoChevronForward } from 'react-icons/io5'
 import getBreadcrumbFromPath from '@utils/getBreadcrumbFromPath'
-import { LoginDataModel } from '@models/LoginDataStore.model'
 
 type propsType = {
   children: JSX.Element | JSX.Element[]

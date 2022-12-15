@@ -24,6 +24,9 @@
       "@components/*": [
         "src/views/components/*"
       ],
+      "@view-controllers/*": [
+        "src/views/view-controllers/*"
+      ],
       "@view-models/*": [
         "src/view-models/*"
       ],
