@@ -179,13 +179,13 @@ const FolderDetail = ({
           {description}
         </Box>
         {type === 'generatedFile' ? (<>
-          <ButtonGroup
+          <Flex
             gap="24px"
             marginTop="24px"
-            isDisabled={file.fields.length === 0}
           >
             <Button
               sx={newDocumentBtn}
+              isDisabled={file.fields.length === 0}
               colorScheme="green"
               onClick={() => {
                 setField(
@@ -203,6 +203,7 @@ const FolderDetail = ({
             </Button>
             <Button
               sx={editDocumentBtn}
+              isDisabled={file.fields.length === 0}
               colorScheme="gray"
               variant="outline"
               onClick={() => {
@@ -213,9 +214,7 @@ const FolderDetail = ({
             >
               แก้ไขเอกสารเดิม
             </Button>
-            
-          </ButtonGroup>
-          <Flex justify="flex-start">
+
           <TakeNote
               doucmentType={file.type}
               documentId={file.id}
@@ -232,13 +231,13 @@ const FolderDetail = ({
        </> ) : null}
         {type === 'folder' ? (
           <>
-            <ButtonGroup
+            <Flex
               gap="24px"
               marginTop="24px"
-              isDisabled={selectedDocument.length == 0}
             >
               <Button
                 sx={newDocumentBtn}
+                isDisabled={selectedDocument.length == 0}
                 colorScheme="green"
                 onClick={() => {
                   let temp = generatedFiles.map((document) => {
@@ -268,6 +267,7 @@ const FolderDetail = ({
               </Button>
               <Button
                 sx={editDocumentBtn}
+                isDisabled={selectedDocument.length == 0}
                 colorScheme="gray"
                 variant="outline"
                 onClick={() => {
@@ -286,8 +286,6 @@ const FolderDetail = ({
               >
                 แก้ไขเอกสารเดิม
               </Button>
-            </ButtonGroup>
-            <Flex justify="flex-start">
               <TakeNote
                 doucmentType={document?.type}
                 documentId={document?.id}

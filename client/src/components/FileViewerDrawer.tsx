@@ -9,24 +9,23 @@ import {
   useDisclosure,
   Button,
   Spacer,
-  Highlight,
-  Text
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import FileViewer from '@components/FileViewer'
 import { AiOutlineLeft, AiOutlineRight } from 'react-icons/ai'
-import FolderUploadedFile from '@models/FolderUploadedFile'
 
 type propsType = {
-  files: any[]
+  files: any[],
+  index: number
 }
 
-const FileViewerDrawer = ({ files }: propsType) => {
+const FileViewerDrawer = ({ files, index }: propsType) => {
+
 
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const [isMyFile, setIsMyFile] = useState(false)
 
-  const [currentFileIndex, setCurrentFileIndex] = useState(0)
+  const [currentFileIndex, setCurrentFileIndex] = useState(index | 0)
+  console.table(files[currentFileIndex])
 
   const prevIndex = () => {
     if (currentFileIndex > 0) {
@@ -56,7 +55,7 @@ const FileViewerDrawer = ({ files }: propsType) => {
         onClick={() => setCurrentFileIndex(index)}
         {...iconProps}
       >
-        {files[index].name}
+        {files[index].officialName}
       </Button>
     )
   }
@@ -76,20 +75,11 @@ const FileViewerDrawer = ({ files }: propsType) => {
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader>
-            <Highlight query={['ของคุณ', 'ตัวอย่าง']} styles={highlight}>
-              {(isMyFile ? '' : 'ตัวอย่าง') + files[currentFileIndex].name + (isMyFile ? 'ของคุณ' : '')}
-            </Highlight>
+              {files[currentFileIndex].officialName}
             <Spacer />
-            <Button
-              colorScheme={isMyFile ? 'green' : 'red'}
-              onClick={() => setIsMyFile(!isMyFile)}
-            >
-              {isMyFile ? 'isMyFile' : 'notMyFile'}
-            </Button>
           </DrawerHeader>
           <DrawerBody>
-            <Text as='b'>{files[currentFileIndex].name} URI of {isMyFile ? 'user file' : 'example'}</Text>
-            <FileViewer fileUrl='/assets/kmutt_general_form.pdf' />
+            <FileViewer fileUrl={files[currentFileIndex].URI} />
           </DrawerBody>
           <DrawerFooter>
             {navigateButton('leftIcon', <AiOutlineLeft />, prevIndex)}
@@ -100,12 +90,6 @@ const FileViewerDrawer = ({ files }: propsType) => {
       </Drawer>
     </>
   )
-}
-
-let highlight = {
-  padding: '2 1',
-  rounded: 'full',
-  backgroundColor: 'teal.100'
 }
 
 export default FileViewerDrawer

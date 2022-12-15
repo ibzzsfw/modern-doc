@@ -605,7 +605,9 @@ const DocumentBox = ({
                     name="content"
                     {...field}
                     {...textareaLayout}
-                    disabled={!editNote}
+                    // disabled={!editNote}
+                    readOnly={!editNote}
+                    color='black'
                   />
                 )}
               </Field>

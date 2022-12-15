@@ -120,7 +120,7 @@ const FormPage = () => {
         case 'text':
           validationSchema[field.name] = addRequired(field, Yup.string())
           break
-        case 'text':
+        case 'number':
           validationSchema[field.name] = addRequired(
             field,
             Yup.string()
@@ -419,7 +419,7 @@ const FormPage = () => {
                 </Flex>
                 <Text as="b">{`${100 * percent} %`}</Text>
               </Flex> */}
-              <Button type="submit" colorScheme="green">
+              <Button type="submit" colorScheme="green" marginTop='1rem'>
                 ตรวจสอบ
               </Button>
             </Flex>
