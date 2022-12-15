@@ -279,15 +279,16 @@ const MyDocument = () => {
             />
 
             {[...latestUploadedFiles, ...latestUserFreeUploadFiles]
-              .filter((file: File) =>
-                file.officialName.toLowerCase().includes(search)
+              .filter(
+                (file: File) =>
+                  file.officialName.toLowerCase().includes(search) &&
+                  file.type !== 'uploadedFile'
               )
               .map((file: any) => {
-                console.log('here', file)
                 return (
                   <DocumentBox
                     id={file.id}
-                    type={file.type}
+                    type={file.type ?? 'uploadedFile'}
                     title={file.officialName}
                     image={file.image}
                     amount={file.amount}

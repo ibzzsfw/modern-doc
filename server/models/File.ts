@@ -71,6 +71,7 @@ class File {
           "UploadedFile"."URI" AS "previewURI",
           "UserUploadedFile"."date",
           "UserUploadedFile"."expirationDate",
+          ""
           array(
           SELECT (json_build_object(
               'id', "Tag"."id",
@@ -226,6 +227,7 @@ class File {
           ...file,
           ...file[type],
           [type]: undefined,
+          type: type === 'sharedFile' ? 'uploadedFile' : type,
         })
       })
       res.status(200).json(formattedResult)
