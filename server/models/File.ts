@@ -156,16 +156,27 @@ class File {
         return await Prisma.$queryRaw`
           SELECT "UserUploadedFile"."isShared",
           "UserUploadedFile"."date", "UserUploadedFile"."note",  
-         "UploadedFile"."name",
-         "UploadedFile"."officialName", "UploadedFile"."description",
-          "UploadedFile"."id" ,
-          "User"."firstName", "User"."lastName", "User"."id" 
+          "UploadedFile"."name",
+          "UploadedFile"."officialName", "UploadedFile"."description",
+          "UserUploadedFile"."id" ,
+          "User"."firstName", "User"."lastName",
+          'uploadedFile' AS "type" 
           FROM "UserUploadedFile"
           LEFT JOIN "UploadedFile" ON "UploadedFile"."id" = "UserUploadedFile"."uploadedFileId"
           LEFT JOIN "User" ON "User"."id" = "UserUploadedFile"."userId"
           WHERE "User"."householdId" = ${householdId}::uuid
           AND "UserUploadedFile"."isShared" = true
-          ORDER BY "UserUploadedFile"."date" DESC
+          UNION 
+          SELECT "UserFreeUploadFile"."isShared",
+          "UserFreeUploadFile"."date", "UserFreeUploadFile"."note",
+          NULL AS "name", "UserFreeUploadFile"."officialName",
+          NULL AS "description", "UserFreeUploadFile"."id",
+          "User"."firstName", "User"."lastName", 
+          'userFreeUploadFile' AS "type" 
+          FROM "UserFreeUploadFile"
+          LEFT JOIN "User" ON "User"."id" = "UserFreeUploadFile"."userId"
+          WHERE "User"."householdId" = ${householdId}::uuid
+          AND "UserFreeUploadFile"."isShared" = true
         `
 
       default:
@@ -215,7 +226,6 @@ class File {
           ...file,
           ...file[type],
           [type]: undefined,
-          type: type === 'sharedFile' ? 'uploadedFile' : type,
         })
       })
       res.status(200).json(formattedResult)
@@ -546,6 +556,59 @@ class File {
         RETURNING "id"
      `
       res.status(200).json({ message: 'success', id: result[0].id })
+    } catch (err) {
+      res.status(400).json(err)
+    }
+  }
+
+  static getFreeUploadFile = async (req: Request, res: Response) => {
+    const { fileId } = req.params
+    const schema = z.object({
+      fileId: z.string().uuid(),
+    })
+    try {
+      schema.parse({ fileId })
+      const result = await Prisma.$queryRaw`
+        SELECT * FROM "UserFreeUploadFile"
+        WHERE "id" = ${fileId}::uuid
+     `
+      res.status(200).json(result[0])
+    } catch (err) {
+      res.status(400).json(err)
+    }
+  }
+
+  static getSharedFile = async (req: Request, res: Response) => {
+    console.log(req.params)
+    const { fileId, type } = req.params
+    const schema = z.object({
+      fileId: z.string().uuid(),
+      type: z.enum(fileType),
+    })
+    try {
+      schema.parse({ fileId, type })
+      switch (type) {
+        case 'uploadedFile': {
+          const result = await Prisma.$queryRaw`
+            SELECT * FROM "UserUploadedFile"
+            LEFT JOIN "UploadedFile" ON "UserUploadedFile"."uploadedFileId" = "UploadedFile"."id"
+            WHERE "UserUploadedFile"."id" = ${fileId}::uuid
+         `
+          res.status(200).json(result[0])
+          break
+        }
+        case 'userFreeUploadFile': {
+          const result = await Prisma.$queryRaw`
+            SELECT * FROM "UserFreeUploadFile"
+            WHERE "id" = ${fileId}::uuid
+         `
+          res.status(200).json(result[0])
+          break
+        }
+        default: {
+          res.status(400).json({ message: 'invalid type' })
+        }
+      }
     } catch (err) {
       res.status(400).json(err)
     }

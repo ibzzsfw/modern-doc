@@ -34,6 +34,10 @@ class FileRouter {
       '/new/userFreeUploadFile',
       this.controller.newUserFreeUploadFile
     )
+    this.router.get(
+      '/get-shared-file/:type/:fileId',
+      this.controller.getSharedFile
+    )
   }
 }
 

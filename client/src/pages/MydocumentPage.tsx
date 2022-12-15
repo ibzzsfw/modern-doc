@@ -15,6 +15,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { AiFillPlusCircle } from 'react-icons/ai'
 import { useNavigate } from 'react-router-dom'
+import { useFilePageStore } from '@stores/FilePageStore'
 
 const MyDocument = () => {
   //const { search, setSearch } = useSearchBoxStore()
@@ -27,6 +28,7 @@ const MyDocument = () => {
   const [myFolder, setMyFolder] = useState([])
   const [note, setNote] = useState([])
   const [uploadedFile, setUploadedFile] = useState([])
+  const setSharedFileType = useFilePageStore((state) => state.setSharedFileType)
   const {
     data: latestGeneratedFiles,
     isLoading: latestGeneratedFilesLoading,
@@ -177,16 +179,22 @@ const MyDocument = () => {
               .map((file: any) => {
                 console.log('mygod', file)
                 return (
-                  <DocumentBox
-                    id={file.id}
-                    type={'sharedFile'}
-                    title={file.officialName}
-                    author={file.firstName + ' ' + file.lastName}
-                    showNote
-                    note={file.note}
-                    showMenu={true}
-                    isShared={file.isShared}
-                  />
+                  <Box
+                    onClick={() => {
+                      setSharedFileType(file.type)
+                    }}
+                  >
+                    <DocumentBox
+                      id={file.id}
+                      type={'sharedFile'}
+                      title={file.officialName}
+                      author={file.firstName + ' ' + file.lastName}
+                      showNote
+                      note={file.note}
+                      showMenu={true}
+                      isShared={file.isShared}
+                    />
+                  </Box>
                 )
               })
               .slice(0, 3)}

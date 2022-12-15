@@ -34,6 +34,9 @@ class FileController {
   newUserFreeUploadFile = async (req: Request, res: Response) => {
     File.newUserFreeUploadFile(req, res)
   }
+  getSharedFile = async (req: Request, res: Response) => {
+    File.getSharedFile(req, res)
+  }
 }
 
 export default new FileController()

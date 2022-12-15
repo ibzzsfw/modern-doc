@@ -28,10 +28,11 @@ const File = () => {
   const [filePdf, setFilePdf] = useState<any>(null)
   const [previewPdf, setPreviewPdf] = useState<any>(null)
 
-  const { file, setFile } = useFilePageStore((state) => {
+  const { file, setFile, sharedFileType } = useFilePageStore((state) => {
     return {
       file: state.file,
       setFile: state.setFile,
+      sharedFileType: state.sharedFileType,
     }
   }, shallow)
 
@@ -120,6 +121,11 @@ const File = () => {
   const { data, isLoading, error } = useQuery(
     ['getFileById', id, type],
     async () => {
+      if (id !== undefined && type === '3') {
+        console.log('sharedFileType', sharedFileType)
+        const fileType = sharedFileType === 'uploadedFile' ? '2' : '4'
+        return await FileController.getFileById(id, fileType, true)
+      }
       if (id !== undefined && type !== undefined) {
         return await FileController.getFileById(id, type)
       }
@@ -136,8 +142,6 @@ const File = () => {
     setDocumentType('file')
     console.log(data)
   }
-
-  console.log('which', userPdf ? userPdf : file.URI ?? file.previewURI)
 
   if (data)
     return (

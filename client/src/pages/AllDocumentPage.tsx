@@ -100,6 +100,11 @@ const AllDocumentPage = () => {
           handleSort(merged)
         })
       })
+    }
+    if (category === 'sharefile') {
+      FileController.getLatestFile('sharedFile').then((res) => {
+        handleSort(res)
+      })
     } else {
       FileController.getLatestFile(category).then((res) => {
         handleSort(res)
@@ -315,7 +320,11 @@ const AllDocumentPage = () => {
             return view === 'box' ? (
               <DocumentBox
                 id={file.id}
-                type={file.type ?? getType(category)}
+                type={
+                  category == 'sharefile'
+                    ? 'sharedFile'
+                    : file.type ?? getType(category)
+                }
                 showMenu={true}
                 showNote
                 note={file.note ?? file.content}

@@ -24,26 +24,49 @@ class FileController {
         return 'generatedFile'
       case '2':
         return 'uploadedFile'
+      case '3':
+        return 'sharedFile'
       default:
         return 'userFreeUploadFile'
     }
   }
 
-  static async getFileById(id: string, type: string) {
-    let response = await axios.get(
-      `${process.env.VITE_API_ENDPOINT}/file/get-by-id/${this.getTypeName(
-        type
-      )}/${id}`,
-      {
-        headers: {
-          'user-id': useLoginDataStore.getState()?.user?.id,
-          token: useLoginDataStore.getState()?.user?.token,
-        },
-      }
-    )
+  static async getFileById(
+    id: string,
+    type: string,
+    isSharedFile: boolean = false
+  ) {
+    if (isSharedFile) {
+      let response = await axios.get(
+        `${
+          process.env.VITE_API_ENDPOINT
+        }/file/get-shared-file/${this.getTypeName(type)}/${id}`,
+        {
+          headers: {
+            'user-id': useLoginDataStore.getState()?.user?.id,
+            token: useLoginDataStore.getState()?.user?.token,
+          },
+        }
+      )
 
-    console.log('file', response.data)
-    return response.data
+      console.log('file', response.data)
+      return response.data
+    } else {
+      let response = await axios.get(
+        `${process.env.VITE_API_ENDPOINT}/file/get-by-id/${this.getTypeName(
+          type
+        )}/${id}`,
+        {
+          headers: {
+            'user-id': useLoginDataStore.getState()?.user?.id,
+            token: useLoginDataStore.getState()?.user?.token,
+          },
+        }
+      )
+
+      console.log('file', response.data)
+      return response.data
+    }
   }
 
   static async getLatestFile(type: string = 'generatedFile') {
