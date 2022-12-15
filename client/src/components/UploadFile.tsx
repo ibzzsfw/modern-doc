@@ -245,9 +245,9 @@ const UploadFile = ({ open, setOpen, file, customButton, type }: propsType) => {
             />
           </ModalBody>
           <ModalFooter>
-            {fileExists && fileType != 'generate' && (
+            {/* {fileExists && fileType != 'generate' && (
               <Button colorScheme="blue">ตรวจสอบไฟล์ที่อัปโหลด</Button>
-            )}
+            )} */}
             <Spacer />
             <Button onClick={onClose}>ยกเลิก</Button>
             <Button

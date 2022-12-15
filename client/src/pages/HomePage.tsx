@@ -60,7 +60,12 @@ const Home = () => {
           })}
         </PopularBar>
 
-        <DocumentBar title="แฟ้มล่าสุด" onAddonButtonClick={() => {}}>
+        <DocumentBar
+          title="แฟ้มล่าสุด"
+          onAddonButtonClick={() => {
+            navigate('/alldocument/generatedFile')
+          }}
+        >
           {latestFolder.map((folder: any) => (
             <DocumentBox
               id={folder.id}
@@ -72,7 +77,12 @@ const Home = () => {
           ))}
         </DocumentBar>
 
-        <DocumentBar title="เอกสารล่าสุด" onAddonButtonClick={() => {}}>
+        <DocumentBar
+          title="เอกสารล่าสุด"
+          onAddonButtonClick={() => {
+            navigate('/alldocument/folder')
+          }}
+        >
           {latestFiles?.map((file: any) => (
             <DocumentBox
               id={file.id}
