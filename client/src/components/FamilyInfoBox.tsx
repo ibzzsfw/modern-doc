@@ -260,19 +260,29 @@ const FamilyInfoBox = ({
                   if (onCancelButtonClick) onCancelButtonClick()
                 }}
                 onSubmit={async (values, actions) => {
-                  const checkCitizenIdStatus =
-                    await UserController.checkCitizenIdStatus(values.citizenId)
-                  if (
-                    checkCitizenIdStatus.message === 'Citizen ID is available'
-                  ) {
-                    console.log(values)
-                    addFamily(values)
-                    toast(addFamilySuccess)
-                    if (onCancelButtonClick) onCancelButtonClick()
-                  } else {
+                  try {
+                    const checkCitizenIdStatus =
+                      await UserController.checkCitizenIdStatus(
+                        values.citizenId
+                      )
+                    if (
+                      checkCitizenIdStatus.message === 'Citizen ID is available'
+                    ) {
+                      console.log(values)
+                      addFamily(values)
+                      toast(addFamilySuccess)
+                      if (onCancelButtonClick) onCancelButtonClick()
+                    } else {
+                      toast({
+                        title: 'เพิ่มสมาชิกไม่สำเร็จ',
+                        description: checkCitizenIdStatus.message,
+                        status: 'error',
+                        duration: 3000,
+                      })
+                    }
+                  } catch (err) {
                     toast({
-                      title: 'เพิ่มสมาชิกไม่สำเร็จ',
-                      description: checkCitizenIdStatus.message,
+                      title: 'แก้ไขสมาชิกไม่สำเร็จ',
                       status: 'error',
                       duration: 3000,
                     })
@@ -378,12 +388,20 @@ const FamilyInfoBox = ({
                   if (getId) getId(null)
                 }}
                 onSubmit={(values) => {
-                  console.log(values)
-                  editFamily(values)
+                  try {
+                    console.log(values)
+                    editFamily(values)
 
-                  toast(editFamilySuccess)
-                  setEdit(false)
-                  if (getId) getId(null)
+                    toast(editFamilySuccess)
+                    setEdit(false)
+                    if (getId) getId(null)
+                  } catch (e) {
+                    toast({
+                      title: 'แก้ไขสมาชิกไม่สำเร็จ',
+                      status: 'error',
+                      duration: 3000,
+                    })
+                  }
                 }}
               >
                 <Form>
