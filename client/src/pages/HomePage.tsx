@@ -63,7 +63,7 @@ const Home = () => {
         <DocumentBar
           title="แฟ้มล่าสุด"
           onAddonButtonClick={() => {
-            navigate('/alldocument/generatedFile')
+            navigate('/alldocument/folder')
           }}
         >
           {latestFolder.map((folder: any) => (
@@ -80,7 +80,7 @@ const Home = () => {
         <DocumentBar
           title="เอกสารล่าสุด"
           onAddonButtonClick={() => {
-            navigate('/alldocument/folder')
+            navigate('/alldocument/generatedFile')
           }}
         >
           {latestFiles?.map((file: any) => (
