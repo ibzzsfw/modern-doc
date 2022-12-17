@@ -5,26 +5,26 @@ import {
   VStack,
   Text,
   Flex,
+  FormControl,
   Button,
   Icon,
   useToast,
 } from '@chakra-ui/react'
-import { RegisterModel } from '@models/RegisterStore.model'
+import { RegisterModel } from '../../models/RegisterStore.model'
 import FormInput from '@components/FormInput.component'
-import OTPVerify from '@components/OTPVerify.component'
-import UserController from '@view-models/UserController'
 import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
 import { IoChevronBack, IoChevronForward } from 'react-icons/io5'
 import { AiTwotoneCalendar } from 'react-icons/ai'
 import { useMutation } from '@tanstack/react-query'
+import axios, { AxiosError } from 'axios'
+import UserController from '../../mvvm/view-models/UserController'
 import { useState } from 'react'
 import { withCountryCode } from '@utils/formatPhoneNumber'
 import { phoneLogin, validateOTP } from '@firebase'
-import { AxiosError } from 'axios'
+import OTPVerify from '@components/OTPVerify.component'
 
 const Register = () => {
-  
   const { page, setPage, title, sex } = RegisterModel()
   const toast = useToast()
 
@@ -33,7 +33,12 @@ const Register = () => {
     firstName: Yup.string().required('จำเป็นต้องกรอก'),
     lastName: Yup.string().required('จำเป็นต้องกรอก'),
     sex: Yup.mixed().oneOf(sex).required('จำเป็นต้องกรอก'),
-    birthDate: Yup.date().required('จำเป็นต้องกรอก'),
+    birthDate: Yup.date()
+      .required('จำเป็นต้องกรอก')
+      .max(
+        new Date(new Date().setFullYear(new Date().getFullYear() - 12)),
+        'อายุต้องมากกว่า 12 ปี'
+      ),
     citizenId: Yup.string()
       .matches(/^[0-9]+$/, 'กรุณากรอกเฉพาะตัวเลข')
       .length(13, 'รหัสบัตรประชาชนต้องมี 13 หลัก')
@@ -70,24 +75,31 @@ const Register = () => {
           title: 'สมัครสมาชิกสำเร็จ',
           description: 'กรุณาเข้าสู่ระบบ',
           status: 'success',
-          duration: 5000,
+          duration: 2000,
           isClosable: true,
         })
+        setTimeout(() => {
+          window.location.href = '/'
+        }, 2000)
       },
       onError: (error: AxiosError) => {
         toast({
           title: 'สมัครสมาชิกไม่สำเร็จ',
           description: error.message,
           status: 'error',
-          duration: 5000,
+          duration: 2000,
           isClosable: true,
         })
+        setTimeout(() => {
+          window.location.href = '/'
+        }, 2000)
       },
     }
   )
 
   const verifyPhone = async (phoneNumber: string) => {
     try {
+      console.log(phoneNumber, withCountryCode(phoneNumber))
       setConfirmationResult(await phoneLogin(withCountryCode(phoneNumber)))
     } catch (e) {
       toast({
@@ -119,9 +131,46 @@ const Register = () => {
           confirmPassword: '',
         }}
         validationSchema={registerSchema}
-        onSubmit={(values) => {
-          verifyPhone(values.phoneNumber)
+        onSubmit={async (values) => {
           setRegisterData(values)
+          const checkCitizenId = await UserController.checkCitizenIdStatus(
+            values!.citizenId
+          )
+          const checkPhoneNumber = await UserController.checkPhoneNumberStatus(
+            values!.phoneNumber
+          )
+          if (
+            checkCitizenId.message === 'Citizen ID is available' &&
+            checkPhoneNumber.message === 'Phone number is available'
+          ) {
+            try {
+              verifyPhone(values.phoneNumber)
+            } catch (e) {
+              toast({
+                title: 'สมัครสมาชิกไม่สำเร็จ',
+                status: 'error',
+                duration: 5000,
+                isClosable: true,
+              })
+              setTimeout(() => {
+                window.location.reload()
+              }, 2000)
+            }
+          } else if (checkCitizenId.message !== 'Citizen ID is available') {
+            toast({
+              title: 'ไม่สามารถใช้เลขบัตรประชาชนนี้ได้',
+              status: 'error',
+              duration: 5000,
+              description: checkCitizenId.message,
+            })
+          } else {
+            toast({
+              title: 'ไม่สามารถใช้เบอร์โทรศัพท์นี้ได้',
+              status: 'error',
+              duration: 5000,
+              description: checkPhoneNumber.message,
+            })
+          }
         }}
       >
         <Form>
@@ -205,6 +254,7 @@ const Register = () => {
               />
             </VStack>
           )}
+          <div id="recaptcha-container"></div>
 
           <HStack marginTop="24px" justifyContent="space-between">
             <Button
@@ -228,16 +278,15 @@ const Register = () => {
               </Button>
             ) : (
               <>
-                <div id="recaptcha-container"></div>
                 {confirmationResult && (
                   <OTPVerify
-                    phoneNumber="0939465199"
+                    phoneNumber={registerData!.phoneNumber}
                     onSubmit={async (otp) => {
+                      const result = await UserController.checkCitizenIdStatus(
+                        registerData!.citizenId
+                      )
                       try {
-                        await validateOTP(otp, confirmationResult)
-                        if (registerData) {
-                          register(registerData)
-                        }
+                        register(registerData as RegisterForm)
                       } catch (e) {
                         toast({
                           title: 'สมัครสมาชิกไม่สำเร็จ',

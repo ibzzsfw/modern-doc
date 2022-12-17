@@ -34,8 +34,7 @@ import {
 import { BsThreeDots, BsTrash } from 'react-icons/bs'
 import { GrDocumentText, GrDownload } from 'react-icons/gr'
 import { IoChevronDownOutline } from 'react-icons/io5'
-import { useParams } from 'react-router-dom'
-import AllDocumentPageViewController from '../view-controllers/AllDocumentPage.viewcontroller'
+import AllDocumentPageViewController from '../view-controllers/AllDocument.page.viewcontroller'
 
 const AllDocumentPage = () => {
 
@@ -143,7 +142,6 @@ const AllDocumentPage = () => {
               variant="solid"
               colorScheme="red"
               onClick={() => {
-                //delete api
               }}
             >
               ลบ

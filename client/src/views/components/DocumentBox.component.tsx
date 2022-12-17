@@ -23,9 +23,9 @@ import { BsThreeDots, BsTrash, BsShareFill } from 'react-icons/bs'
 import { useMutation } from '@tanstack/react-query'
 import { Field, Form, Formik } from 'formik'
 import MenuProvider from '@components/MenuProvider.component'
-import FileController from '@view-models/FileController'
-import FolderController from '@view-models/FolderController'
-import NoteController from '@view-models/NoteController'
+import FileController from '../../mvvm/view-models/FileController'
+import FolderController from '../../mvvm/view-models/FolderController'
+import NoteController from '../../mvvm/view-models/NoteController'
 import { Link } from 'react-router-dom'
 
 type propsType = {

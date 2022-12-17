@@ -3,12 +3,16 @@ import DocumentViewModel from "./Document.viewmodel";
 
 abstract class FileViewModel extends DocumentViewModel implements FilesType {
   officialName;
-  lastModified;
+  URI
+  previewURI
+  // lastModified;
 
   constructor(arg: FilesType) {
     super(arg);
     this.officialName = arg.officialName;
-    this.lastModified = arg.lastModified;
+    this.URI = arg.URI;
+    this.previewURI = arg.previewURI;
+    // this.lastModified = arg.lastModified;
   }
 }
 

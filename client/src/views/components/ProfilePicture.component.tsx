@@ -9,8 +9,9 @@ import {
 import { useState } from 'react'
 import { AiOutlineUpload } from 'react-icons/ai'
 import { MyProfilePageModel } from '@models/MyProfilePageStore.model'
-import { MyProfiledataModel } from '@models/MyProfiledataStore.model'
+// import { MyProfiledataModel } from '@models/MyProfiledataStore.model'
 import { uploadFile } from '@firebase'
+import UserModel from '../../mvvm/models/User.model'
 
 type propTypes = {
   url: string | undefined
@@ -18,7 +19,7 @@ type propTypes = {
 
 const ProfilePicture = ({ url }: propTypes) => {
   const { isEdit, setEdit } = MyProfilePageModel()
-  const { user, setUser, setUrl, profileUrl } = MyProfiledataModel()
+  const { user, setUser } = UserModel()
 
 
   const [image, setImage] = useState<any>(null)
@@ -55,7 +56,9 @@ const ProfilePicture = ({ url }: propTypes) => {
               onChange={(e) => {
                 setImage(e.target.files![0])
                 uploadFile('images/', e.target.files![0]).then((url) => {
-                  setUrl(url)
+                  if (user) {
+                    user.profileURI = url
+                  }
                 })
               }}
             />

@@ -17,9 +17,10 @@ import {
 import { FiEdit } from 'react-icons/fi'
 import ChangePassword from '@components/ChangePassword.component.'
 import FormInput from '@components/FormInput.component'
-import { MyProfiledataModel } from '@models/MyProfiledataStore.model'
+// import { MyProfiledataModel } from '@models/MyProfiledataStore.model'
 import { MyProfilePageModel } from '@models/MyProfilePageStore.model'
-import UserController from '@view-models/UserController'
+import UserModel from '../../mvvm/models/User.model'
+import UserController from '../../mvvm/view-models/UserController'
 import { Form, Formik } from 'formik'
 import { useMutation } from '@tanstack/react-query'
 
@@ -27,7 +28,7 @@ const ProfileFormInput = ({ data }: any) => {
 
   const { isEdit, setEdit } = MyProfilePageModel()
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const { user, setUser } = MyProfiledataModel()
+  const { user, setUser } = UserModel()
 
   const selectOptions = {
     title: ['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง'],
@@ -49,7 +50,7 @@ const ProfileFormInput = ({ data }: any) => {
     onError: (error) => { },
   })
   const confirmPassword = useMutation((value: { phoneNumber: string, password: string }) => {
-    return UserController.checkPhonePassword(value)
+    return UserController.checkPhonePassword(value.phoneNumber, value.password)
   }, {
     onSuccess: (data) => { return true },
     onError: (error) => { return false },

@@ -21,15 +21,16 @@ import {
 } from '@chakra-ui/react'
 import { AiOutlineDelete } from 'react-icons/ai'
 import { useState, useEffect } from 'react'
-import FileController from '@view-models/FileController'
+import FileController from '../../mvvm/view-models/FileController'
 import { uploadFile } from '@firebase'
 import { v4 as uuidv4 } from 'uuid'
-import Files from '@view-models/File'
+// import Files from '@view-models/File'
+import FileViewModel from '../../mvvm/view-models/Files.viewmodel'
 
 type propsType = {
   open?: boolean
   setOpen?: (open: boolean) => void
-  file?: Files | null
+  file?: FileViewModel | null
   customButton?: JSX.Element
 }
 
@@ -174,7 +175,7 @@ const UploadFile = ({ open, setOpen, file, customButton }: propsType) => {
               selectedFile !== '' && (
                 <Input
                   variant="filled"
-                  value={`${selectedFile} จะหมดอายุในอีก ${file?.dayLifeSpan} หากท่านอัพโหลดวันนี้`}
+                  // value={`${selectedFile} จะหมดอายุในอีก ${file?.dayLifeSpan} หากท่านอัพโหลดวันนี้`}
                   isReadOnly
                 />
               )

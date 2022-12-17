@@ -25,7 +25,7 @@ import { BiEdit } from 'react-icons/bi'
 import { BsThreeDots, BsTrash } from 'react-icons/bs'
 import * as Yup from 'yup'
 import getRelationshipText from '@utils/getRelationshipText'
-import UserController from '@view-models/UserController'
+import UserController from '../../mvvm/view-models/UserController'
 import FormInput from '@components/FormInput.component'
 import MenuProvider from '@components/MenuProvider.component'
 

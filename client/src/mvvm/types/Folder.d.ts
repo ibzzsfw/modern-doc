@@ -1,20 +1,20 @@
-import UploadFileViewModel from "../viewmodels/UploadFile.viewmodel";
-import GenerateFileViewModel from "../viewmodels/GenerateFiles.viewmodel";
-import TagViewModel from "../viewmodels/Tag.viewmodel";
-
+import UploadFileViewModel from "../view-models/UploadFile.viewmodel";
+import GenerateFileViewModel from "../view-models/GenerateFiles.viewmodel";
+import TagViewModel from "../view-models/Tag.viewmodel";
+import DocumentsType from "../types/Document";
 
 type fileDetails = {
-  fileId: string[];
+  file: object[];
   amount: number;
   remark: string;
 }
 
-interface FolderType {
+interface FolderType extends DocumentsType {
   name?: string;
+  officialName?: string;
   file?: fileDetails[];
-  note?: string;
   tagId?: string[];
-  dateCreated?: string;
+  type?: string;
 }
 
 export default FolderType;

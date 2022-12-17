@@ -19,10 +19,10 @@ interface IMyProfilePageModel {
   district: []
   province: []
   postalCode: []
-  isModalOpen: boolean
+  // isModalOpen: boolean
   setEdit: (value: boolean) => void
-  setModalOpen: () => void
-  setModalClose: () => void
+  // setModalOpen: () => void
+  // setModalClose: () => void
 }
 
 export const MyProfilePageModel = create<IMyProfilePageModel>((set) => ({
@@ -33,6 +33,6 @@ export const MyProfilePageModel = create<IMyProfilePageModel>((set) => ({
   postalCode: [],
   isModalOpen: false,
   setEdit: (value) => set({ isEdit: value }),
-  setModalOpen: () => set({ isModalOpen: true }),
-  setModalClose: () => set({ isModalOpen: false }),
+  // setModalOpen: () => set({ isModalOpen: true }),
+  // setModalClose: () => set({ isModalOpen: false }),
 }))

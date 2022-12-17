@@ -36,4 +36,4 @@ class MasterRouter {
   }
 }
 
-export default MasterRouter
+export default new MasterRouter().getRouter()

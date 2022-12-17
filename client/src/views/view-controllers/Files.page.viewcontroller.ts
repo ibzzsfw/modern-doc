@@ -1,30 +1,41 @@
 import Field from "src/view-models/Field";
 import FileData from 'src/view-models/File'
-import { FilePageModel } from "@models/FilePageStore.model";
-import { FormPageModel } from "@models/FormPageStore.model";
+import FilePageModel from "../../mvvm/models/FilePage.model";
+import FormPageModel from "../../mvvm/models/FormPage.model";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import shallow from "zustand/shallow";
 import { PDFDocument } from 'pdf-lib'
 import fontkit from '@pdf-lib/fontkit'
+import GenerateFileViewModel from '../../mvvm/view-models/GenerateFiles.viewmodel'
+import axios from 'axios'
 
 class FileViewController {
 
   param = useParams<{ id: string; type: string }>()
   userPdfState: [any, (userPdf: any) => void] = useState<any>(null)
-  filePageStore = FilePageModel((state) => {
+  filePdfState: [any, (filePdf: any) => void] = useState<any>(null)
+  filePageModel = FilePageModel((state) => {
     return {
       file: state.file,
       setFile: state.setFile,
+      sharedFileType: state.sharedFileType,
     }
   }, shallow)
   setDocumentType = FormPageModel((state) => state.setDocumentType)
 
-  constructor() {
-    this.userPdfState = useState<any>(null)
+  constructor() { }
+
+  loadPDFfile = async (URI: string) => {
+    const response = await axios.get(URI, {
+      responseType: 'blob',
+    })
+    const file = new Blob([response.data], { type: 'application/pdf' })
+    const fileURL = URL.createObjectURL(file)
+    return fileURL
   }
 
-  fillForm = async (fields: Field[], file: FileData) => {
+  fillForm = async (file: GenerateFileViewModel) => {
     const formUrl = file?.URI ? file.URI : ''
     // Fetch the PDF with form fields
     const formBytes = await fetch(formUrl).then((res) => res.arrayBuffer())
@@ -42,7 +53,7 @@ class FileViewController {
 
     const form = pdfDoc.getForm()
 
-    fields.map((field: Field) => {
+    file.fields.map((field: Field) => {
       if (form.getFieldMaybe(field.name)) {
         switch (field.type) {
           case 'text':
@@ -57,7 +68,7 @@ class FileViewController {
           case 'singleSelect':
             form.getRadioGroup(field.name).select(field.userValue ?? '')
             break
-          case 'multiSelect':
+          case 'multipleSelect':
             form.getCheckBox('option1').check()
             break
           default:

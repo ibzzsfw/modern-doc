@@ -1,7 +1,7 @@
 import { VStack, Text, Button, Icon, Flex } from '@chakra-ui/react'
 import { TiThLargeOutline } from 'react-icons/ti'
 import { useNavigate } from 'react-router-dom'
-import { SearchBoxModel } from '@models/SearchBoxStore.model'
+import SearchModel from '../../mvvm/models/Search.model'
 
 type propsType = {
   title: string
@@ -10,7 +10,7 @@ type propsType = {
 }
 
 const PopularBar = ({ title, children, url }: propsType) => {
-  const { setSearch } = SearchBoxModel()
+  const { setSearch } = SearchModel()
   const navigate = useNavigate()
 
   return (

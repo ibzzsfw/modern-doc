@@ -1,6 +1,7 @@
 import { Box, Flex, Text } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom'
-import { SearchBoxModel } from '@models/SearchBoxStore.model'
+// import { SearchBoxModel } from '@models/SearchBoxStore.model'
+import SearchModel from '../../mvvm/models/Search.model'
 
 type propsType = {
   title: string
@@ -9,7 +10,7 @@ type propsType = {
 
 const PopularBox = ({ title, image }: propsType) => {
   const navigate = useNavigate()
-  const { search, setSearch, setSearchResult } = SearchBoxModel()
+  const { setSearch, setSearchResult } = SearchModel()
 
   const onSelectTag = (title: string) => {
     setSearch(title)

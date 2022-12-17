@@ -12,7 +12,6 @@ dotenv.config()
 class Server {
   public app: express.Application = express()
   private port: number = Number(process.env.PORT) || 8080
-  private masterRouter = new MasterRouter()
 
   start = (): void => {
     this.app.use('/api-docs', SwaggerUI.serve, SwaggerUI.setup(swaggerDocument))
@@ -20,7 +19,7 @@ class Server {
     this.app.use(express.json())
     this.app.use(cors())
     this.app.use(helmet())
-    this.app.use(this.masterRouter)
+    this.app.use(MasterRouter)
 
     this.app.listen(this.port, () => {
       console.log(`Server running on port ${this.port}`)

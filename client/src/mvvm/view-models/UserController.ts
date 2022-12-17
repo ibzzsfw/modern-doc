@@ -1,5 +1,7 @@
 import axios from 'axios'
-import { LoginDataModel } from '@models/LoginDataStore.model'
+import UserModel from '../models/User.model'
+import UserViewModel from './User.viewmodel'
+
 interface RegisterForm {
   title: string
   firstName: string
@@ -35,7 +37,7 @@ class UserController {
     return response.data
   }
 
-  static checkPhonePassword = async ({ phoneNumber, password }: loginForm) => {
+  static checkPhonePassword = async (phoneNumber: string, password: string) => {
     let response = await axios.post(
       `${process.env.VITE_API_ENDPOINT}/user/check-phone-password`,
       {
@@ -57,7 +59,7 @@ class UserController {
   }
 
   static logout = async () => {
-    LoginDataModel.setState({
+    UserModel.setState({
       user: null,
     })
     window.location.pathname = '/'
@@ -97,13 +99,24 @@ class UserController {
       },
       {
         headers: {
-          'user-id': LoginDataModel.getState()?.user?.id,
-          token: LoginDataModel.getState()?.user?.token,
+          'user-id': UserModel.getState()?.user?.id,
+          token: UserModel.getState()?.user?.token,
         },
       }
     )
 
     return response.data
+  }
+
+  static checkPhoneNumberStatus = async (phoneNumber: string) => {
+    try {
+      let response = await axios.get(
+        `${process.env.VITE_API_ENDPOINT}/user/phone-status/${phoneNumber}`
+      )
+      return response.data
+    } catch (err: any) {
+      return err.response.data
+    }
   }
 }
 

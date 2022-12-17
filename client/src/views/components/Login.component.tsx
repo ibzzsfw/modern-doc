@@ -9,10 +9,10 @@ import {
 } from '@chakra-ui/react'
 import FormInput from '@components/FormInput.component'
 import OTPVerify from '@components/OTPVerify.component'
-import User from '@view-models/User'
-import UserController from '@view-models/UserController'
-import { LoginDataModel } from '@models/LoginDataStore.model'
+import UserViewModel from '../../mvvm/view-models/User.viewmodel'
+import UserController from '../../mvvm/view-models/UserController'
 import { LoginPageModel } from '@models/LoginPageStore.model'
+import UserModel from '../../mvvm/models/User.model'
 import { useMutation } from '@tanstack/react-query'
 import { Form, Formik } from 'formik'
 import { AiFillLock, AiFillPhone } from 'react-icons/ai'
@@ -25,8 +25,8 @@ import { AxiosError } from 'axios'
 const Login = () => {
 
   const toast = useToast()
-  const setUserData = LoginDataModel((state) => state.setUserData)
-  const setFamilyMembers = LoginDataModel((state) => state.setFamilyMembers)
+  const setUser = UserModel((state) => state.setUser)
+  const setFamily = UserModel((state) => state.setFamily)
   const setTabIndex = LoginPageModel((state) => state.setTabIndex)
 
   const loginSchema = Yup.object().shape({
@@ -53,8 +53,8 @@ const Login = () => {
           status: 'success',
           duration: 5000,
         })
-        setUserData(
-          new User({
+        setUser(
+          new UserViewModel({
             id: data.id,
             householdId: data.householdId,
             title: data.title,
@@ -70,8 +70,23 @@ const Login = () => {
             birthDate: data.birthDate,
           })
         )
-
-        setFamilyMembers(data.familyMembers)
+        let familyArray: UserViewModel[] = []
+        data.familyMembers.map((member: any) => {
+          let { id, citizenId, firstName, lastName, phoneNumber, profileURI, title, relationship } = member
+          familyArray.push(
+            new UserViewModel({
+              id,
+              citizenId,
+              firstName,
+              lastName,
+              phoneNumber,
+              profileURI,
+              title,
+              relationship,
+            })
+          )
+        })
+        setFamily(familyArray)
         setTimeout(() => {
           window.location.pathname = '/home'
         }, 1500)
@@ -89,14 +104,13 @@ const Login = () => {
       },
     }
   )
-
   type loginForm = {
     phoneNumber: string
     password: string
   }
   const { mutate: onClickLogin } = useMutation(
     async ({ phoneNumber, password }: loginForm) =>
-      UserController.checkPhonePassword({ phoneNumber, password }),
+      UserController.checkPhonePassword(phoneNumber, password),
     {
       onSuccess: async (data: any) => {
         let phoneNumber = data.phoneNumber

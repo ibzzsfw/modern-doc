@@ -25,9 +25,9 @@ import {
   Button,
   Link,
 } from '@chakra-ui/react'
-import UserController from '@view-models/UserController'
-import User from '@view-models/User'
-import { LoginDataModel } from '@models/LoginDataStore.model'
+import UserController from '../../mvvm/view-models/UserController'
+import UserViewModel from '../../mvvm/view-models/User.viewmodel'
+import UserModel from '../../mvvm/models/User.model'
 import { BsPersonCircle } from 'react-icons/bs'
 import { IoChevronDownOutline, IoChevronForwardOutline } from 'react-icons/io5'
 import { MdGroups } from 'react-icons/md'
@@ -53,17 +53,17 @@ const NavbarAvatar = () => {
     lastName: '',
   })
 
-  const userJson = LoginDataModel((state) => state.user, shallow)
-  const setUserData = LoginDataModel((state) => state.setUserData, shallow)
-  const setFamilyMembers = LoginDataModel(
-    (state) => state.setFamilyMembers,
+  const userJson = UserModel((state) => state.user, shallow)
+  const setUserData = UserModel((state) => state.setUser, shallow)
+  const setFamily = UserModel(
+    (state) => state.setFamily,
     shallow
   )
 
-  const user = userJson ? new User(userJson) : null
+  const user = userJson ? new UserViewModel(userJson) : null
 
-  const familyMembers = LoginDataModel(
-    (state) => state.familyMembers,
+  const family = UserModel(
+    (state) => state.family,
     shallow
   )
 
@@ -72,7 +72,7 @@ const NavbarAvatar = () => {
     {
       onSuccess: (data) => {
         setUserData(
-          new User({
+          new UserViewModel({
             id: data.id,
             householdId: data.householdId,
             title: data.title,
@@ -88,7 +88,7 @@ const NavbarAvatar = () => {
             birthDate: data.birthDate,
           })
         )
-        setFamilyMembers(data.familyMembers)
+        setFamily(data.family)
         window.location.pathname = '/home'
       },
     }
@@ -139,7 +139,7 @@ const NavbarAvatar = () => {
                     </Flex>
                   </AccordionButton>
                   <AccordionPanel padding="0">
-                    {familyMembers.map((member, index) => {
+                    {family.map((member, index) => {
                       return (
                         <Link
                           onClick={() => {

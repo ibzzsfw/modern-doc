@@ -1,8 +1,8 @@
-import { LoginDataModel } from "@models/LoginDataStore.model";
+import UserModel from '../../mvvm/models/User.model'
 
 class MyProfileViewController {
 
-  private user = LoginDataModel.getState().user
+  private user = UserModel.getState().user
 
   constructor() {}
 

@@ -1,18 +1,19 @@
 import { Flex, Box } from '@chakra-ui/react'
 import FileList from 'src/views/components/FileList.component'
 import DocumentDetail from 'src/views/components/DocumentDetail.component'
-import FolderController from 'src/view-models/FolderController'
+import FolderController from '../../mvvm/view-models/FolderController'
 import { useQuery } from '@tanstack/react-query'
-import FolderViewController from '../view-controllers/Folder.viewcontroller'
+import FolderViewController from '../view-controllers/Folder.page.viewcontroller'
 
 const Folder = () => {
 
   const viewController = new FolderViewController()
 
   const { id } = viewController.param
-  const { setDocument } = viewController.formPageStore
-  const [generateFileList, setGenerateFileList] = viewController.generateFileListState
-  const [uploadedFileList, setUploadedFileList] = viewController.uploadedFileListState
+  const { setDocument } = viewController.formPageModel
+  const { file, setFile } = viewController.folderPageModel
+  // const [generateFileList, setGenerateFileList] = viewController.generateFileListState
+  // const [uploadedFileList, setUploadedFileList] = viewController.uploadedFileListState
 
   const { data: folderData } = useQuery(
     ['getFolderById', id],
@@ -24,20 +25,15 @@ const Folder = () => {
         let uploadedFile: any[] = []
         data.generateFile.map((file: any) => generateFile.push(file))
         data.uploadedFile.map((file: any) => uploadedFile.push(file))
+        setFile([...generateFile, ...uploadedFile])
 
-        setGenerateFileList(generateFile)
-        setUploadedFileList(uploadedFile)
+        // setGenerateFileList(generateFile)
+        // setUploadedFileList(uploadedFile)
       },
     }
   )
 
-  const [filledGeneratedFile, setFilledGeneratedFile] = viewController.filledGeneratedFileState
-
-  const testFillMultiForm = () => {
-    setFilledGeneratedFile([])
-  }
-
-  if (folderData && generateFileList && uploadedFileList) {
+  if (folderData && file) {
     return (
       <Flex sx={documentView}>
         <DocumentDetail

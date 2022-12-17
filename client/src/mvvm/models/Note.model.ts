@@ -1,5 +1,5 @@
 import create from "zustand/react";
-import NoteViewModel from "../viewmodels/Note.viewmodel";
+import NoteViewModel from "../view-models/Note.viewmodel";
 
 interface INoteModel {
   note: NoteViewModel[],

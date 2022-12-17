@@ -1,5 +1,5 @@
 interface DocumentsType {
-  id: string;
+  id?: string;
   officialName?: string;
   dateUpload?: Date;
   description?: string;

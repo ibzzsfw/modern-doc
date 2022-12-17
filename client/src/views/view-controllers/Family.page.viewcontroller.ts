@@ -1,14 +1,14 @@
 import { useState } from "react";
 import shallow from "zustand/shallow";
-import UserType from "src/view-models/UserType";
-import { LoginDataModel } from "@models/LoginDataStore.model";
+import UserModel from "../../mvvm/models/User.model";
+import UserViewModel from "../../mvvm/view-models/User.viewmodel";
 
 class FamilyPageViewController {
 
   lockEditState: [boolean, (lockEdit: boolean) => void] = useState(false)
   addMemberState: [boolean, (addMember: boolean) => void] = useState(false)
-  familyMembers: UserType[] = LoginDataModel(
-    (state) => state.familyMembers,
+  family: UserViewModel[] = UserModel(
+    (state) => state.family,
     shallow
   )
 

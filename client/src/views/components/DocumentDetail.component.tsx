@@ -17,8 +17,9 @@ import UploadFile from '@components/UploadFile.component'
 import ConfirmationModal from '@components/ConfirmationModal.component'
 import TakeNote from '@components/TakeNote.component'
 import Status from '@view-models/DocumentStatus'
-import { FilePageModel } from '@models/FilePageStore.model'
-import { FormPageModel } from '@models/FormPageStore.model'
+import FilePageModel from '../../mvvm/models/FilePage.model'
+import FormPageModel from '../../mvvm/models/FormPage.model'
+import FieldViewModel from '../../mvvm/view-models/Field.viewmodel'
 
 type propsType = {
   title: string
@@ -44,30 +45,30 @@ const FolderDetail = ({
     description: '',
   })
 
-  const { file, setFile } = FilePageModel((state) => {
+  const { file, field } = FilePageModel((state) => {
     return {
       file: state.file,
-      setFile: state.setFile,
+      field: state.field,
     }
   }, shallow)
 
   const {
-    setField,
+    documentType,
     document,
+    selectedFile,
+    generatedFile,
+    setField,
     setDocument,
-    setType,
-    generatedFiles,
-    setGeneratedFiles,
-    selectedDocument,
+    setGeneratedFile,
   } = FormPageModel((state) => {
     return {
       setField: state.setField,
       document: state.document,
+      selectedFile: state.selectedFile,
+      generatedFile: state.generatedFile,
       setDocument: state.setDocument,
-      setType: state.setType,
-      generatedFiles: state.generatedFiles,
-      setGeneratedFiles: state.setGeneratedFiles,
-      selectedDocument: state.selectedDocument,
+      documentType: state.documentType,
+      setGeneratedFile: state.setGeneratedFile,
     }
   }, shallow)
 
@@ -103,16 +104,17 @@ const FolderDetail = ({
           <ButtonGroup
             gap="24px"
             marginTop="24px"
-            isDisabled={file.fields.length === 0}
+            isDisabled={field.length === 0}
           >
             <Button
               sx={newDocumentBtn}
               colorScheme="green"
               onClick={() => {
                 setField(
-                  file.fields.map((field) => {
-                    if (keepField.includes(field.name) === false)
+                  field.map((field: FieldViewModel) => {
+                    if (keepField.includes(field.name) === false) {
                       field.userValue = ''
+                    }
                     return field
                   })
                 )
@@ -127,7 +129,7 @@ const FolderDetail = ({
               colorScheme="gray"
               variant="outline"
               onClick={() => {
-                setField(file.fields)
+                setField(field)
                 setDocument(file)
                 navigate('/form')
               }}
@@ -135,7 +137,7 @@ const FolderDetail = ({
               แก้ไขเอกสารเดิม
             </Button>
             <TakeNote
-              doucmentType={file.type}
+              doucmentType={documentType}
               documentId={file.id}
               noteContent={file.note}
               documentTitle={title}
@@ -153,13 +155,13 @@ const FolderDetail = ({
             <ButtonGroup
               gap="24px"
               marginTop="24px"
-              isDisabled={selectedDocument.length == 0}
+              isDisabled={selectedFile.length == 0}
             >
               <Button
                 sx={newDocumentBtn}
                 colorScheme="green"
                 onClick={() => {
-                  let temp = generatedFiles.map((document) => {
+                  let temp = generatedFile.map((document) => {
                     document.fields.map((field) => {
                       if (keepField.includes(field.name) === false)
                         field.userValue = ''
@@ -172,12 +174,12 @@ const FolderDetail = ({
                     description: (
                       <Text>
                         คุณต้องการสร้างเอกสารใหม่{' '}
-                        <Text as="b"> {selectedDocument.length} </Text>{' '}
+                        <Text as="b"> {selectedFile.length} </Text>{' '}
                         รายการหรือไม่
                       </Text>
                     ),
                   })
-                  setGeneratedFiles(temp)
+                  setGeneratedFile(temp)
                   setConfirmModal(true)
                 }}
               >
@@ -193,7 +195,7 @@ const FolderDetail = ({
                     description: (
                       <Text>
                         คุณต้องการแก้ไขเอกสาร{' '}
-                        <Text as="b"> {selectedDocument.length} </Text>{' '}
+                        <Text as="b"> {selectedFile.length} </Text>{' '}
                         รายการหรือไม่
                       </Text>
                     ),
@@ -205,7 +207,7 @@ const FolderDetail = ({
               </Button>
             </ButtonGroup>
             <TakeNote
-              doucmentType={document?.type}
+              doucmentType={documentType}
               documentId={document?.id}
               noteContent={document?.note}
               documentTitle={title}
@@ -231,7 +233,7 @@ const FolderDetail = ({
             }}
             title={infoModal.title}
             description={infoModal.description}
-            documentItem={selectedDocument}
+            documentItem={selectedFile}
             onClick={() => {
               navigate('/form')
             }}

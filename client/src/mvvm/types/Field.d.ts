@@ -7,13 +7,24 @@ type FieldList = 'text'
   | 'email'
   | 'age'
 
+type Choice = {
+  id: string;
+  name: string;
+  value: string;
+}
+
 interface FieldType {
   id: string;
-  name?: string;
+  name: string;
   type?: FieldList;
   officialName?: string;
   description?: string;
-  value?: string;
+  choices?: Choice[] | any;
+  userValue?: string;
+  date?: Date;
+  generatedFileId?: string;
+  isRequired?: boolean;
+  order?: number;
 }
 
 export default FieldType;

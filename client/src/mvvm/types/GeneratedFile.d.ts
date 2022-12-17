@@ -2,7 +2,7 @@ import SystemFileType from "./SystemFiles";
 import FieldViewModel from "./Field.viewmodel";
 
 interface GenerateFileType extends SystemFileType {
-  fieldId?: string[];
+  fields?: FieldViewModel[];
 }
 
 export default GenerateFileType;

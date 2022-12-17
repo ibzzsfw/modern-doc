@@ -14,8 +14,8 @@ import {
   VStack,
   Button,
 } from '@chakra-ui/react'
-import MemberController from '@view-models/MemberController'
-import FileController from '@view-models/FileController'
+import MemberController from '../../mvvm/view-models/MemberController'
+import FileController from '../../mvvm/view-models/FileController'
 import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import getRelationshipText from '@utils/getRelationshipText'

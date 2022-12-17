@@ -6,7 +6,8 @@ import {
   Icon,
 } from '@chakra-ui/react'
 import Navbar from '@components/Navbar.component'
-import { LoginDataModel } from '@models/LoginDataStore.model'
+// import { LoginDataModel } from '@models/LoginDataStore.model'
+import UserModel from '../../mvvm/models/User.model'
 import { IoChevronForward } from 'react-icons/io5'
 import getBreadcrumbFromPath from '@utils/getBreadcrumbFromPath'
 
@@ -23,7 +24,7 @@ const PageContainer = ({
   style,
   isProtected,
 }: propsType) => {
-  const { user } = LoginDataModel()
+  const { user } = UserModel()
 
   if (isProtected && !user?.token) {
     window.location.href = '/'

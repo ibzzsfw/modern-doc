@@ -1,16 +1,18 @@
-type Sex = 'ชาย' | 'หญิง' | 'ไม่ระบุ';
-
 interface UserType {
-  id: string;
-  houseId?: string;
+  id?: string;
+  householdId?: string;
   title?: string;
   firstName?: string;
   lastName?: string;
   citizenId?: string;
   phoneNumber?: string;
-  sex?: Sex;
+  sex?: 'ชาย' | 'หญิง' | 'ไม่ระบุ';
   relationship?: string;
   profileURI?: string;
+  password?: string;
+  token?: string;
+  email?: string;
+  birthDate?: string;
 }
 
 export default UserType;

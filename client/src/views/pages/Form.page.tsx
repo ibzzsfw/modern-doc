@@ -4,55 +4,68 @@ import {
   Flex,
   Button,
   Heading,
+  HStack,
+  Input,
   FormControl,
   FormLabel,
+  FormErrorMessage,
+  Select,
   CheckboxGroup,
   Checkbox,
+  Radio,
+  RadioGroup,
+  Stack,
   Modal,
   ModalOverlay,
   ModalContent,
   ModalCloseButton,
+  useDisclosure,
   ModalHeader,
   VStack,
 } from '@chakra-ui/react'
-import { useEffect } from 'react'
-import Fields from 'src/view-models/Field'
-import FormInput from 'src/views/components/FormInput.component'
-import { Form, Formik } from 'formik'
+import { useState, useEffect, useRef } from 'react'
+// import { useFormPageStore } from '@stores/FormPageStore'
+// import Fields from '@models/Field'
+import FieldViewModel from '../../mvvm/view-models/Field.viewmodel'
+import FormInput from '@components/FormInput.component'
+import { Field, Form, Formik, useFormik } from 'formik'
 import * as Yup from 'yup'
-import FileController from 'src/view-models/FileController'
-import FolderController from 'src/view-models/FolderController'
-import FormPageController from '../view-controllers/FormPage.viewcontroller'
+import { useNavigate } from 'react-router-dom'
+import FileController from '../../mvvm/view-models/FileController'
+import FolderController from '../../mvvm/view-models/FolderController'
+import FormPageController from '@view-controllers/Form.page.viewcontroller'
 
 const FormPage = () => {
 
   const viewController = new FormPageController()
-  
-  const navigate = viewController.navigate
-  const formRef = viewController.formRef
-  const { document, field, generatedFiles, selectedDocument, documentType } = viewController.formPageStore
-  const { isOpen, onOpen, onClose } = viewController.disclosure
+
+  const { document, field, generatedFile, selectedFile, documentType } = viewController.formPageModel
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const navigate = useNavigate()
   const [formValues, setFormValues] = viewController.formValuesState
   const [mergedField, setMergedField] = viewController.mergedFieldState
   const [requiredCount, setRequiredCount] = viewController.requiredCountState
 
+  const formRef = useRef<any>(null)
+
   useEffect(() => {
     let count = 0
-    field.map((field: Fields) => {
+    field.map((field: FieldViewModel) => {
       if (field.isRequired) count++
     })
     setRequiredCount(count)
 
     if (documentType === 'folder') {
-      let temp: Fields[] = []
-      for (let i = 0; i < generatedFiles.length; i++) {
-        temp = viewController.mergeField(temp, generatedFiles[i].fields)
+      let temp: FieldViewModel[] = []
+      for (let i = 0; i < generatedFile.length; i++) {
+        temp = viewController.mergeField(temp, generatedFile[i].fields)
       }
       setMergedField(temp)
     }
   }, [])
 
-  const renderField = (field: Fields, disable: boolean = false) => {
+
+  const renderField = (field: FieldViewModel, disable: boolean = false) => {
     switch (field.type) {
       case 'text':
         return (
@@ -64,6 +77,9 @@ const FormPage = () => {
             showCorrectBorder
             required={field.isRequired}
             disable={disable}
+            onChange={(e) => {
+              console.log('abraham')
+            }}
           />
         )
       case 'number':
@@ -76,6 +92,9 @@ const FormPage = () => {
             showCorrectBorder
             required={field.isRequired}
             disable={disable}
+            onChange={(e) => {
+              console.log('abraham')
+            }}
           />
         )
       case 'date':
@@ -88,6 +107,9 @@ const FormPage = () => {
             showCorrectBorder
             required={field.isRequired}
             disable={disable}
+            onChange={(e) => {
+              console.log('abraham')
+            }}
           />
         )
       case 'email':
@@ -115,6 +137,7 @@ const FormPage = () => {
           />
         )
       case 'singleSelect': {
+        console.log(field.choices)
         return (
           <FormInput
             label={field.officialName}
@@ -122,19 +145,19 @@ const FormPage = () => {
             type="select"
             showCorrectBorder
             placeholder="Select option"
-            options={field.fieldChoice.map((choice) => choice.officialName)}
-            optionsValue={field.fieldChoice.map((choice) => choice.name)}
+            options={field.choices.map((choice: any) => choice.officialName)}
+            optionsValue={field.choices.map((choice: any) => choice.name)}
             required={field.isRequired}
             disable={disable}
           />
         )
       }
-      case 'multiSelect':
+      case 'multipleSelect':
         return (
           <FormControl id={field.id}>
             <FormLabel>{field.officialName}</FormLabel>
             <CheckboxGroup>
-              {field.fieldChoice.map((choice) => (
+              {field.choices.map((choice: any) => (
                 <Checkbox value={choice.name}>{choice.officialName}</Checkbox>
               ))}
             </CheckboxGroup>
@@ -154,6 +177,8 @@ const FormPage = () => {
       </Box>
     )
   }
+
+  console.log(requiredCount)
 
   if (documentType == 'file')
     return (
@@ -194,7 +219,7 @@ const FormPage = () => {
                 </Flex>
                 <Text as="b">{`${100 * percent} %`}</Text>
               </Flex> */}
-              <Button type="submit" colorScheme="green">
+              <Button type="submit" colorScheme="green" marginTop='1rem'>
                 ตรวจสอบ
               </Button>
             </Flex>
@@ -238,6 +263,9 @@ const FormPage = () => {
       </Box>
     )
 
+  console.log('doccc', document)
+
+  //folder
   return (
     <Box sx={formLayout}>
       <Formik
@@ -266,27 +294,21 @@ const FormPage = () => {
             </Box>
 
             <Flex sx={formBox} ref={formRef}>
-              {generatedFiles.map((file, index) => (
+              {generatedFile.map((file, index) => (
                 <VStack alignItems="flex-start">
                   <Text fontSize="18px" fontWeight="bold">
                     {index + 1}. {file.officialName}
                   </Text>
-                  {file.fields.map((field) => renderField(field))}
+                  {
+                    file.fields &&
+                    file.fields.map((field) => renderField(field))
+                  }
                   <hr />
                 </VStack>
               ))}
             </Flex>
           </Flex>
           <Flex sx={buttomSection}>
-            {/* <Flex sx={progressSection}>
-              <Text>ความคืบหน้า</Text>
-              <Flex sx={progress}>
-                <Box sx={a} />
-                <Box sx={b} />
-              </Flex>
-              <Text as="b">{`${100 * percent} %`}</Text>
-            </Flex> */}
-
             <Button type="submit" colorScheme="green">
               ตรวจสอบ
             </Button>
@@ -307,11 +329,14 @@ const FormPage = () => {
               onClose()
               FolderController.saveFolder(
                 document?.id,
-                mergedField.map((f, index) => ({
+                mergedField.map((f) => ({
                   ...f,
                   userValue: values[f.name],
                 })),
-                generatedFiles
+                // generatedFiles: { id: string }[]
+                generatedFile.map((file) => ({
+                  id: file.id,
+                }))
               )
               navigate(-1)
             }}
@@ -331,6 +356,8 @@ const FormPage = () => {
   )
 }
 
+export default FormPage
+
 let formLayout = {
   display: 'flex',
   flexDirection: 'column',
@@ -340,39 +367,11 @@ let formLayout = {
   margin: 'auto',
 }
 
-let progress = {
-  width: '320px',
-  height: '16px',
-}
-
-let abstractBar = {
-  // smooth change width transition
-  transition: 'width 0.5s',
-}
-
-// let a = {
-//   ...abstractBar,
-//   width: `calc(${percent} * 100%)`,
-//   // bg color purple
-//   backgroundColor: '#6B46C1',
-// }
-
-// let b = {
-//   ...abstractBar,
-//   width: `calc(${1 - percent} * 100%)`,
-//   // bg color gray
-//   backgroundColor: '#E5E7EB',
-// }
-
 let buttomSection = {
   alignItems: 'center',
   justifyContent: 'flex-end',
 }
 
-let progressSection = {
-  columnGap: '1rem',
-  height: 'fit-content',
-}
 
 let formBox = {
   flexDirection: 'column',
@@ -411,5 +410,3 @@ let submitButton = {
     backgroundColor: 'hover.blue',
   },
 }
-
-export default FormPage

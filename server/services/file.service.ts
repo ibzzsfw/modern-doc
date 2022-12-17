@@ -55,9 +55,10 @@ class FileService {
           )
           FROM "GeneratedFileField" 
           LEFT JOIN "Field" ON "Field"."id" = "GeneratedFileField"."fieldId"
-          LEFT JOIN "UserField" ON "UserField"."fieldId" = "Field"."id"
+          LEFT JOIN "UserField" ON ("UserField"."fieldId" = "Field"."id"
+              AND "UserField"."userId" = ${userId}::uuid 
+          )
           WHERE "GeneratedFileField"."generatedFileId" = ${id}::uuid
-          AND ("UserField"."userId" = ${userId}::uuid OR "UserField"."userId" IS NULL)
         ) AS "fields" FROM "GeneratedFile" WHERE id = ${id}::uuid
         `
       }
@@ -67,6 +68,7 @@ class FileService {
           "UploadedFile"."URI" AS "previewURI",
           "UserUploadedFile"."date",
           "UserUploadedFile"."expirationDate",
+          ""
           array(
           SELECT (json_build_object(
               'id', "Tag"."id",
@@ -187,15 +189,10 @@ class FileService {
       let result = await this.getFile(id, type, userId)
       if (type === 'generatedFile') {
         result[0].fields.sort((a: any, b: any) => a.order - b.order)
-        return {
-          status: 200,
-          json: { ...result[0], type: type },
-        }
-      } else {
-        return {
-          status: 200,
-          json: { ...result[0], type: type },
-        }
+      }
+      return {
+        status: 200,
+        json: { ...result[0], type: type },
       }
     } catch (err) {
       return {

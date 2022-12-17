@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import {
   Box,
   Button,
@@ -14,14 +13,9 @@ import {
 } from '@chakra-ui/react'
 import MenuProvider from '@components/MenuProvider.component'
 import UploadFile from '@components/UploadFile.component'
-import DocumentBadge from '@components/DocumentBadge.component'
-import ImportFromFamily from '@components/ImportFromFamily.component'
-import GeneratedFile from '@view-models/GeneratedFile'
-import UploadedFile from '@view-models/dyl/UploadedFile'
-import File from '@view-models/File'
-import FileController from '@view-models/FileController'
-import Field from '@view-models/Field'
-import { FormPageModel } from '@models/FormPageStore.model'
+import GenerateFileViewModel from '../../mvvm/view-models/GenerateFiles.viewmodel'
+import FormPageModel from '../../mvvm/models/FormPage.model'
+import { useEffect, useState } from 'react'
 import {
   AiFillClockCircle,
   AiFillTag,
@@ -33,10 +27,16 @@ import { BsThreeDots } from 'react-icons/bs'
 import { GrUpload } from 'react-icons/gr'
 import { HiArrowDownRight } from 'react-icons/hi2'
 import { RiFileSearchLine } from 'react-icons/ri'
+import DocumentBadge from '@components/DocumentBadge.component'
+import UploadFileViewModel from '../../mvvm/view-models/UploadFile.viewmodel'
+import FileViewModel from '../../mvvm/view-models/Files.viewmodel'
+import FileController from '../../mvvm/view-models/FileController'
 import { useNavigate } from 'react-router-dom'
 import { PDFDocument } from 'pdf-lib'
 import fontkit from '@pdf-lib/fontkit'
 import PDFMerger from 'pdf-merger-js'
+import FieldViewModel from '../../mvvm/view-models/Field.viewmodel'
+import ImportFromFamily from '@components/ImportFromFamily.component'
 
 type propsType = {
   files: any[]
@@ -46,44 +46,44 @@ const FileList = ({ files }: propsType) => {
   const navigate = useNavigate()
   const {
     document,
-    setSelectedDocument,
-    selectedDocument,
+    setSelectedFile,
+    selectedFile,
     setDocumentType,
-    generatedFiles,
-    setGeneratedFiles,
+    generatedFile,
+    setGeneratedFile,
   } = FormPageModel()
   const [open, setOpen] = useState(false)
-  const [file, setFile] = useState<File | null>(null)
-  const [fileMenu, setFileMenu] = useState<File | null>(null)
+  const [file, setFile] = useState<FileViewModel | null>(null)
+  const [fileMenu, setFileMenu] = useState<FileViewModel | null>(null)
   const {
     isOpen: isOpenImport,
     onOpen: onOpenImport,
     onClose: onCloseImport,
   } = useDisclosure()
 
-  const onChangeCheckbox = (checked: boolean, file: File) => {
+  const onChangeCheckbox = (checked: boolean, file: FileViewModel) => {
     if (checked) {
-      setSelectedDocument([...selectedDocument, file])
+      setSelectedFile([...selectedFile, file])
     } else {
-      setSelectedDocument(selectedDocument.filter((f) => f.id !== file.id))
+      setSelectedFile(selectedFile.filter((f) => f.id !== file.id))
     }
   }
 
   const onChangeAllCheckbox = (checked: boolean) => {
     if (checked) {
-      setSelectedDocument(files.filter((file) => file.URI != null))
+      setSelectedFile(files.filter((file) => file.URI != null))
     } else {
-      setSelectedDocument([])
+      setSelectedFile([])
     }
   }
 
-  const isSelectedThisFile = (file: GeneratedFile) => {
-    return selectedDocument.filter((f) => f.id === file.id).length > 0
+  const isSelectedThisFile = (file: GenerateFileViewModel) => {
+    return selectedFile.filter((f) => f.id === file.id).length > 0
   }
 
   const fillFormFolder = async () => {
     const pdfList: any[] = []
-    let promise = generatedFiles.map(async (file) => {
+    let promise = generatedFile.map(async (file) => {
       const formUrl = file?.URI ? file.URI : ''
       // Fetch the PDF with form fields
       const formBytes = await fetch(formUrl).then((res) => res.arrayBuffer())
@@ -101,8 +101,9 @@ const FileList = ({ files }: propsType) => {
 
       const form = pdfDoc.getForm()
 
-      file.fields.map((field: Field) => {
+      file.fields.map((field: FieldViewModel) => {
         if (form.getFieldMaybe(field.name)) {
+          console.log(field.name, field.userValue)
           switch (field.type) {
             case 'text':
               form.getTextField(field.name).setText(field.userValue)
@@ -116,13 +117,11 @@ const FileList = ({ files }: propsType) => {
             case 'singleSelect':
               form.getRadioGroup(field.name).select(field.userValue ?? '')
               break
-            case 'multiSelect':
+            case 'multipleSelect':
               form.getCheckBox('option1').check()
               break
             default:
-              form
-                .getTextField(field.name)
-                .setText('ภาษาไทย ' + field.officialName)
+              form.getTextField(field.name).setText(field.userValue ?? '')
               break
           }
         }
@@ -143,7 +142,7 @@ const FileList = ({ files }: propsType) => {
       await merger.add(pdf)
     })
 
-    let uploadedListPromise = selectedDocument.map(async (file) => {
+    let uploadedListPromise = selectedFile.map(async (file) => {
       if (file.type == 'uploadedFile') {
         const formUrl = file?.URI ? file.URI : ''
         const formBytes = await fetch(formUrl).then((res) => res.arrayBuffer())
@@ -152,24 +151,28 @@ const FileList = ({ files }: propsType) => {
     })
     await Promise.all(pdfListPromise)
     await Promise.all(uploadedListPromise)
+
+    const testMergePdf = await merger.save(`${document?.officialName}`)
+    console.log(pdfList)
   }
 
   useEffect(() => {
     setDocumentType('folder')
     const getGeneratedFileField = async () => {
-      const promise = selectedDocument
+      const promise = selectedFile
         .filter((file) => file.type == 'generatedFile')
         .map(async (file) => {
           const result = await FileController.getFileById(file.id, '1')
           return result
         })
       const result = await Promise.all(promise)
-      setGeneratedFiles(result)
+      // console.log('result', result)
+      setGeneratedFile(result)
     }
     getGeneratedFileField()
 
-    console.table(selectedDocument)
-  }, [selectedDocument])
+    // console.table(selectedFile)
+  }, [selectedFile])
 
   const countGeneratedFile = () =>
     files.filter((file) => file.type == 'generatedFile').length
@@ -187,6 +190,7 @@ const FileList = ({ files }: propsType) => {
         title: 'อัพโหลดไฟล์ใหม่',
         icon: <Icon as={GrUpload} />,
         onClick: () => {
+          //---------function upload file if you want you can delete this because have button upload file
           setOpen(true)
           setFile(fileMenu)
         },
@@ -197,7 +201,7 @@ const FileList = ({ files }: propsType) => {
         title: 'ดูตัวอย่าง',
         icon: <Icon as={RiFileSearchLine} />,
         onClick: () => {
-          if (fileMenu?.type == 'generatedFile')
+          if (fileMenu instanceof GenerateFileViewModel)
             navigate(`/file/1/${fileMenu?.id}`)
           else navigate(`/file/2/${fileMenu?.id}`)
         },
@@ -206,11 +210,13 @@ const FileList = ({ files }: propsType) => {
         title: 'นำเข้าจากสมาชิก',
         icon: <Icon as={HiArrowDownRight} />,
         onClick: () => {
+          //-------- function import from member
           onOpenImport()
         },
       },
     ],
   ]
+
 
   return (
     <>
@@ -219,7 +225,7 @@ const FileList = ({ files }: propsType) => {
           <Grid templateColumns="1fr 3fr 2fr 2fr 1fr 1fr" sx={tableHead}>
             <Box sx={simpleBox}>
               <Checkbox
-                isChecked={selectedDocument.length === countGeneratedFile()}
+                isChecked={selectedFile.length === countGeneratedFile()}
                 onChange={(e) => onChangeAllCheckbox(e.target.checked)}
               />
             </Box>
@@ -237,7 +243,7 @@ const FileList = ({ files }: propsType) => {
           <Divider />
           <Box sx={tableContent}>
             {files.map((file) => {
-              file = new UploadedFile(file)
+              file = new UploadFileViewModel(file)
               return (
                 <>
                   <Grid
@@ -247,8 +253,8 @@ const FileList = ({ files }: propsType) => {
                   >
                     <Box sx={simpleBox}>
                       {file.type == 'generatedFile' ||
-                      (file.type == 'uploadedFile' &&
-                        file.getStatus() != 'ไม่มีอยู่ในคลัง') ? (
+                        (file.type == 'uploadedFile' &&
+                          file.getStatus() != 'ไม่มีอยู่ในคลัง') ? (
                         <Checkbox
                           isChecked={isSelectedThisFile(file)}
                           onChange={(e) =>
@@ -272,9 +278,12 @@ const FileList = ({ files }: propsType) => {
                     <Box sx={simpleBox}>{file.officialName}</Box>
                     <Box sx={simpleBox}>{file.amount}</Box>
                     <Box sx={simpleBox}>
-                      <DocumentBadge status={file.getStatus()} />
+                      {/* {'API'} */}
+                      {/* <DocumentBadge status={file.getStatus()} /> */}
                     </Box>
-                    <Box sx={simpleBox}>{file.remark}</Box>
+                    <Box sx={{ ...simpleBox, fontSize: '14px' }}>
+                      {file.remark}
+                    </Box>
                     <Box sx={simpleBox}>
                       <Box
                         position="absolute"
@@ -287,10 +296,10 @@ const FileList = ({ files }: propsType) => {
                             file.type == 'generatedFile'
                               ? [menuOption[0][0], menuOption[1][0]]
                               : [
-                                  menuOption[0][1],
-                                  menuOption[1][1],
-                                  menuOption[1][0],
-                                ],
+                                menuOption[0][1],
+                                menuOption[1][1],
+                                menuOption[1][0],
+                              ],
                           ]}
                         >
                           <Icon as={BsThreeDots} sx={threeDot} boxSize="18px" />
@@ -309,7 +318,7 @@ const FileList = ({ files }: propsType) => {
             colorScheme={'messenger'}
             size="sm"
             rightIcon={<AiOutlineDownload />}
-            disabled={selectedDocument.length == 0}
+            disabled={selectedFile.length == 0}
             onClick={() => {
               fillFormFolder()
             }}
@@ -329,8 +338,6 @@ const FileList = ({ files }: propsType) => {
     </>
   )
 }
-
-export default FileList
 
 let abstractBox = {
   borderRadius: '6px',
@@ -405,3 +412,4 @@ let threeDot = {
   },
 }
 
+export default FileList

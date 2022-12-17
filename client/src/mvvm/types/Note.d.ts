@@ -1,9 +1,9 @@
 interface NoteType {
   id: string;
-  title?: string;
+  heading?: string;
   content?: string;
-  dateCreated?: Date;
-  dateModified?: Date;
+  createdDate?: Date;
+  modifiedDate?: Date;
 }
 
 export default NoteType;

@@ -14,10 +14,11 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react'
-import FileController from '@view-models/FileController'
-import FolderController from '@view-models/FolderController'
-import Note from '@view-models/Note'
-import NoteController from '@view-models/NoteController'
+import FileController from '../../mvvm/view-models/FileController'
+import FolderController from '../../mvvm/view-models/FolderController'
+// import Note from '@view-models/Note'
+import NoteViewModel from '../../mvvm/view-models/Note.viewmodel'
+import NoteController from '../../mvvm/view-models/NoteController'
 import { useMutation } from '@tanstack/react-query'
 import { Field, Form, Formik } from 'formik'
 import { useState } from 'react'
@@ -44,8 +45,8 @@ const TakeNote = ({
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [noteType, setNoteType] = useState('')
   const [selectedDocumentID, setSelectedDocumentID] = useState('')
-  const [selectedNote, setSelectedNote] = useState<Note | null>(null)
-  const [note, setNote] = useState<Note[]>([])
+  const [selectedNote, setSelectedNote] = useState<NoteViewModel | null>(null)
+  const [note, setNote] = useState<NoteViewModel[]>([])
   const toast = useToast()
 
   const initialState = () => {

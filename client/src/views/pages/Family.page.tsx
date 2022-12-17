@@ -1,7 +1,7 @@
 import { Box, Button, Center, VStack, Wrap } from '@chakra-ui/react'
 import { AiOutlineUserAdd } from 'react-icons/ai'
 import FamilyInfoBox from 'src/views/components/FamilyInfoBox.component'
-import FamilyPageViewController from '../view-controllers/FamilyPage.viewcontroller'
+import FamilyPageViewController from '../view-controllers/Family.page.viewcontroller'
 
 const FamilyPage = () => {
 
@@ -17,16 +17,18 @@ const FamilyPage = () => {
             <Button
               disabled={addMember}
               variant="outline"
-              sx={addMemberButton}
+              sx={editButton}
               colorScheme="gray"
               leftIcon={<AiOutlineUserAdd />}
-              onClick={() => setAddMember(true)}
+              onClick={() => {
+                setAddMember(true)
+              }}
             >
               เพิ่มสมาชิก
             </Button>
           </Box>
           <Wrap spacing="28px">
-            {(addMember || viewController.familyMembers.length == 0) && (
+            {(addMember || viewController.family.length == 0) && (
               <FamilyInfoBox
                 onCancelButtonClick={() => {
                   setAddMember(false)
@@ -34,13 +36,13 @@ const FamilyPage = () => {
                 isAdd={addMember}
               />
             )}
-            {viewController.familyMembers.map((values, index) => {
+            {viewController.family.map((values) => {
               return (
                 <FamilyInfoBox
                   data={values}
                   isAdd={false}
-                  getId={(id: string | null) => viewController.lockId(id)}
-                  handleForm={lockEdit}
+                  getId={(id: string | null) => viewController.lockId(id)} //get id from child to parent
+                  handleForm={lockEdit}    //handle for one edit form at a time
                 />
               )
             })}
@@ -51,7 +53,7 @@ const FamilyPage = () => {
   )
 }
 
-let addMemberButton = {
+let editButton = {
   width: 'auto',
   height: '40px',
   backgroundColor: 'accent.white',

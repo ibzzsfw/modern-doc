@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react'
 import Login from 'src/views/components/Login.component'
 import Register from 'src/views/components/Register.component'
-import LoginPageViewController from '../view-controllers/LoginPage.viewcontroller'
+import LoginPageViewController from '../view-controllers/Login.page.viewcontroller'
 
 const LoginPage = () => {
 

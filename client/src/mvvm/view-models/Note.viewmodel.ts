@@ -3,22 +3,21 @@ import Sharable from "./Sharable";
 
 class NoteViewModel implements NoteType, Sharable {
   id
-  title
+  heading
   content
-  dateCreated
-  dateModified
+  createdDate
+  modifiedDate
   shareData: Date = new Date();
 
   constructor(arg: NoteType) {
     this.id = arg.id;
-    this.title = arg.title;
+    this.heading = arg.heading;
     this.content = arg.content;
-    this.dateCreated = arg.dateCreated;
-    this.dateModified = arg.dateModified;
+    this.createdDate = arg.createdDate;
+    this.modifiedDate = arg.modifiedDate;
   }
 
   share = () => {
-    this.shareData = new Date();
   }
   
   unshare = () => {

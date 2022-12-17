@@ -9,15 +9,15 @@ import DocumentBox from 'src/views/components/DocumentBox.component'
 import SearchBox from 'src/views/components/SearchBox.component'
 import { useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import FolderController from 'src/view-models/FolderController'
-import FileController from 'src/view-models/FileController'
-import SearchPageViewController from '../view-controllers/SearchPage.viewcontroller'
+import FolderController from '../../mvvm/view-models/FolderController'
+import FileController from '../../mvvm/view-models/FileController'
+import SearchPageViewController from '../view-controllers/Search.page.viewcontroller'
 
 const SearchPage = () => {
 
   const viewController = new SearchPageViewController()
 
-  const { search, setSearch, searchResult } = viewController.searchBoxStore
+  const { search, setSearch } = viewController.searchModel
   const [showFile, setShowFile] = viewController.showFileState
   const [showFolder, setShowFolder] = viewController.showFolderState
 
@@ -73,7 +73,7 @@ const SearchPage = () => {
                         title={folder.officialName}
                         type={folder.type}
                         showDate={true}
-                        createdDate={folder.date}
+                        createdDate={folder.dateUpload}
                         colorBar={folder.colorBar}
                       />
                     )
