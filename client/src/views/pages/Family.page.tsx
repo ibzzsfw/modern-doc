@@ -1,7 +1,7 @@
 import { Box, Button, Center, VStack, Wrap } from '@chakra-ui/react'
 import { AiOutlineUserAdd } from 'react-icons/ai'
-import FamilyInfoBox from 'src/views/components/FamilyInfoBox.component'
-import FamilyPageViewController from '../view-controllers/Family.page.viewcontroller'
+import FamilyInfoBox from '@components/FamilyInfoBox.component'
+import FamilyPageViewController from '@view-controllers/Family.page.viewcontroller'
 
 const FamilyPage = () => {
 

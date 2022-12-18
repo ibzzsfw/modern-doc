@@ -5,13 +5,13 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react'
-import DocumentBox from 'src/views/components/DocumentBox.component'
-import SearchBox from 'src/views/components/SearchBox.component'
+import DocumentBox from '@components/DocumentBox.component'
+import SearchBox from '@components/SearchBox.component'
 import { useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import FolderController from '../../mvvm/view-models/FolderController'
-import FileController from '../../mvvm/view-models/FileController'
-import SearchPageViewController from '../view-controllers/Search.page.viewcontroller'
+import FolderController from '@view-models/FolderController'
+import FileController from '@view-models/FileController'
+import SearchPageViewController from '@view-controllers/Search.page.viewcontroller'
 
 const SearchPage = () => {
 
@@ -110,7 +110,7 @@ const SearchPage = () => {
                         title={file.officialName ?? file.name}
                         type={file.type}
                         showDate={true}
-                        createdDate={file.date}
+                        createdDate={file.dateUpload}
                         colorBar={file.colorBar}
                       />
                     )

@@ -50,7 +50,8 @@ class FolderService {
           AND "UserUploadedFile"."userId" = ${userId}::uuid
         )
         WHERE "FolderUploadedFile"."folderId" = ${id}::uuid 
-      `
+        `
+
       return {
         status: 200,
         json: {

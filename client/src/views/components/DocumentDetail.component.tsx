@@ -1,36 +1,35 @@
 import {
   Box,
   Button,
-  ButtonGroup,
   Flex,
   Heading,
   HStack,
   Spacer,
   Text,
 } from '@chakra-ui/react'
+import GeneratedDocumentBadge from '@components/DocumentBadge.component'
+import FilePageModel from '@models/FilePage.model'
+import FormPageModel from '@models/FormPage.model'
 import Markdown from 'marked-react'
 import { useNavigate } from 'react-router-dom'
 import shallow from 'zustand/shallow'
-import { useState } from 'react'
-import GeneratedDocumentBadge from '@components/DocumentBadge.component'
-import UploadFile from '@components/UploadFile.component'
-import ConfirmationModal from '@components/ConfirmationModal.component'
 import TakeNote from '@components/TakeNote.component'
-import Status from '@view-models/DocumentStatus'
-import FilePageModel from '../../mvvm/models/FilePage.model'
-import FormPageModel from '../../mvvm/models/FormPage.model'
-import FieldViewModel from '../../mvvm/view-models/Field.viewmodel'
+import ConfirmationModal from '@components/ConfirmationModal.component'
+import { useState } from 'react'
+import UploadFile from '@components/UploadFile.component'
+import FieldViewModel from '@view-models/Field.viewmodel'
+import GenerateFileViewModel from '@view-models/GenerateFiles.viewmodel'
 
 type propsType = {
   title: string
-  status: Status
-  description: string | undefined | null
+  status: string
+  description: string | null
   markdown: string
   type?: 'generatedFile' | 'uploadedFile' | 'freeUploadFile' | 'folder' | string
   note?: string
 }
 
-const FolderDetail = ({
+const DocumentDetail = ({
   title,
   status,
   description,
@@ -38,6 +37,7 @@ const FolderDetail = ({
   type = 'uploadedFile',
   note,
 }: propsType) => {
+
   const navigate = useNavigate()
   const [comfirmModal, setConfirmModal] = useState(false)
   const [infoModal, setInfoModal] = useState<any>({
@@ -45,30 +45,30 @@ const FolderDetail = ({
     description: '',
   })
 
-  const { file, field } = FilePageModel((state) => {
+  const { file, setFile } = FilePageModel((state) => {
     return {
       file: state.file,
-      field: state.field,
+      setFile: state.setFile,
     }
   }, shallow)
 
   const {
-    documentType,
-    document,
-    selectedFile,
-    generatedFile,
     setField,
+    document,
     setDocument,
+    setDocumentType,
+    generatedFile,
     setGeneratedFile,
+    selectedFile,
   } = FormPageModel((state) => {
     return {
       setField: state.setField,
       document: state.document,
-      selectedFile: state.selectedFile,
-      generatedFile: state.generatedFile,
       setDocument: state.setDocument,
-      documentType: state.documentType,
+      setDocumentType: state.setDocumentType,
+      generatedFile: state.generatedFile,
       setGeneratedFile: state.setGeneratedFile,
+      selectedFile: state.selectedFile,
     }
   }, shallow)
 
@@ -81,6 +81,7 @@ const FolderDetail = ({
     'email_personal',
     'title_personal',
   ]
+
 
   if (file)
     return (
@@ -96,25 +97,25 @@ const FolderDetail = ({
             <Markdown value={markdown} />
           </Box>
         </Flex>
+
         <Box sx={noteBox}>
           <Heading sx={titleText}>บันทึกเตือนความจำ</Heading>
           {description}
         </Box>
-        {type === 'generatedFile' ? (
-          <ButtonGroup
+        {type === 'generatedFile' ? (<>
+          <Flex
             gap="24px"
             marginTop="24px"
-            isDisabled={field.length === 0}
           >
             <Button
               sx={newDocumentBtn}
+              isDisabled={file.fields.length === 0}
               colorScheme="green"
               onClick={() => {
                 setField(
-                  field.map((field: FieldViewModel) => {
-                    if (keepField.includes(field.name) === false) {
+                  file.fields.map((field: FieldViewModel) => {
+                    if (keepField.includes(field.name) === false)
                       field.userValue = ''
-                    }
                     return field
                   })
                 )
@@ -126,18 +127,20 @@ const FolderDetail = ({
             </Button>
             <Button
               sx={editDocumentBtn}
+              isDisabled={file.fields.length === 0}
               colorScheme="gray"
               variant="outline"
               onClick={() => {
-                setField(field)
+                setField(file.fields)
                 setDocument(file)
                 navigate('/form')
               }}
             >
               แก้ไขเอกสารเดิม
             </Button>
-            <TakeNote
-              doucmentType={documentType}
+
+          <TakeNote
+              doucmentType={file.type}
               documentId={file.id}
               noteContent={file.note}
               documentTitle={title}
@@ -148,20 +151,20 @@ const FolderDetail = ({
                 </Button>
               }
             />
-          </ButtonGroup>
-        ) : null}
+            </Flex>
+       </> ) : null}
         {type === 'folder' ? (
           <>
-            <ButtonGroup
+            <Flex
               gap="24px"
               marginTop="24px"
-              isDisabled={selectedFile.length == 0}
             >
               <Button
                 sx={newDocumentBtn}
+                isDisabled={selectedFile.length == 0}
                 colorScheme="green"
                 onClick={() => {
-                  let temp = generatedFile.map((document) => {
+                  let temp = generatedFile.map((document: GenerateFileViewModel) => {
                     document.fields.map((field) => {
                       if (keepField.includes(field.name) === false)
                         field.userValue = ''
@@ -180,6 +183,7 @@ const FolderDetail = ({
                     ),
                   })
                   setGeneratedFile(temp)
+
                   setConfirmModal(true)
                 }}
               >
@@ -187,6 +191,7 @@ const FolderDetail = ({
               </Button>
               <Button
                 sx={editDocumentBtn}
+                isDisabled={selectedFile.length == 0}
                 colorScheme="gray"
                 variant="outline"
                 onClick={() => {
@@ -205,25 +210,60 @@ const FolderDetail = ({
               >
                 แก้ไขเอกสารเดิม
               </Button>
-            </ButtonGroup>
+              <TakeNote
+                doucmentType={document?.type}
+                documentId={document?.id}
+                noteContent={document?.note}
+                documentTitle={title}
+                type={'folderNote'}
+                customButton={
+                  <Button colorScheme="gray" variant="outline">
+                    แก้ไขบันทึก
+                  </Button>
+                }
+              />
+            </Flex>
+          </>
+        ) : (
+          type === 'uploadedFile' && (
+            <Flex justify="flex-start">
+              <TakeNote
+                doucmentType={document?.type}
+                documentId={document?.id}
+                noteContent={document?.note}
+                documentTitle={title}
+                type={'folderNote'}
+                customButton={
+                  <Button colorScheme="gray" variant="outline">
+                    แก้ไขบันทึก
+                  </Button>
+                }
+              />
+            </Flex>
+          )
+        )}
+
+        {type === 'userFreeUploadFile' && (
+          <Flex justify="flex-start">
             <TakeNote
-              doucmentType={documentType}
-              documentId={document?.id}
-              noteContent={document?.note}
+              doucmentType={file.type}
+              documentId={file.id}
+              noteContent={file.note}
               documentTitle={title}
-              type={'folderNote'}
+              type={'fileNote'}
               customButton={
                 <Button colorScheme="gray" variant="outline">
                   แก้ไขบันทึก
                 </Button>
               }
             />
-          </>
-        ) : null}
+          </Flex>
+        )}
         <Flex justifyContent="flex-start">
-          {status === 'ไม่มีอยู่ในคลัง' && (
+          {file.type === 'uploadedFile' && (
             <UploadFile
               customButton={<Button colorScheme="green">อัปโหลดไฟล์</Button>}
+              file={file}
             />
           )}
           <ConfirmationModal
@@ -244,7 +284,7 @@ const FolderDetail = ({
   return <></>
 }
 
-export default FolderDetail
+export default DocumentDetail
 
 let detailsBox = {
   width: '520px',

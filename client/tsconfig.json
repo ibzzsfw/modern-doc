@@ -39,11 +39,11 @@
       "@models/*": [
         "src/models/*"
       ],
+      "@interfaces/*": [
+        "src/interfaces/*"
+      ],
       "@firebase": [
         "src/firebase/index"
-      ],
-      "@mvvm": [
-        "src/mvvm/*"
       ],
     }
   },

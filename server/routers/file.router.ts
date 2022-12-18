@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express'
-import FileHandler from '../handlers/file.handler'
+import FileHandler from '@handlers/file.handler'
 
 class FileRouter {
   private router = Router()
@@ -33,6 +33,10 @@ class FileRouter {
     this.router.post(
       '/new/userFreeUploadFile',
       this.handler.newUserFreeUploadFile
+    )
+    this.router.get(
+      '/get-shared-file/:type/:fileId',
+      this.handler.getSharedFile
     )
   }
 }

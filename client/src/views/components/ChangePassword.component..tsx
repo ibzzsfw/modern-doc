@@ -1,23 +1,74 @@
+import FormInput from '@components/FormInput.component'
 import { Formik, Form } from 'formik'
+import * as Yup from 'yup'
+import { useMutation } from '@tanstack/react-query'
+import UserController from '@view-models/UserController'
+
 import {
+  Button,
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
   ModalFooter,
   ModalBody,
+  useDisclosure,
+  useToast,
   ButtonGroup,
-  Button
 } from '@chakra-ui/react'
 import { HiKey } from 'react-icons/hi'
-import ChangePasswordViewController from '@view-controllers/ChangePassword.component.viewcontroller'
-import FormInput from '@components/FormInput.component'
 
 const ChangePassword = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const toast = useToast()
 
-  const viewController = new ChangePasswordViewController()
-  const { isOpen, onOpen, onClose } = viewController.disclosure
-
+  const ChangePasswordSchema = Yup.object().shape({
+    oldPassword: Yup.string().required('กรุณากรอกรหัสผ่านเดิม'),
+    newPassword: Yup.string().required('กรุณากรอกรหัสผ่านใหม่'),
+    confirmPassword: Yup.string().required('กรุณากรอกรหัสผ่านใหม่อีกครั้ง'),
+  })
+  //-------------api change password----------------
+  const changePassword = useMutation(
+    (values: { oldPassword: any; newPassword: any }) => {
+      return UserController.changePassword(
+        values.oldPassword,
+        values.newPassword
+      )
+    },
+    {
+      onSuccess: (data: any) => {
+        toast({
+          title: 'เปลี่ยนรหัสผ่านสำเร็จ',
+          status: 'success',
+          duration: 5000,
+        })
+        window.location.reload()
+      },
+      onError: (error: any) => {
+        toast({
+          title: 'เปลี่ยนรหัสผ่านไม่สำเร็จ',
+          status: 'error',
+          duration: 5000,
+        })
+      },
+    }
+  )
+  const setNewPassword = async (values: {
+    oldPassword: any
+    confirmPassword: any
+    newPassword: any
+  }) => {
+    console.log('api process')
+    if (values.newPassword == values.confirmPassword) {
+      await changePassword.mutateAsync({ ...values })
+    } else {
+      toast({
+        title: 'รหัสผ่านไม่ตรงกัน',
+        status: 'warning',
+        duration: 5000,
+      })
+    }
+  }
 
   return (
     <>
@@ -43,10 +94,19 @@ const ChangePassword = () => {
         <ModalContent justifyContent="center">
           <ModalHeader>เปลี่ยนรหัสผ่านใหม่</ModalHeader>
           <Formik
-            initialValues={viewController.initialValues}
-            validationSchema={viewController.schema}
-            onReset={() => onClose()}
-            onSubmit={(values) => viewController.setNewPassword(values)}
+            initialValues={{
+              oldPassword: '',
+              newPassword: '',
+              confirmPassword: '',
+            }}
+            validationSchema={ChangePasswordSchema}
+            onReset={(values) => {
+              onClose()
+            }}
+            onSubmit={(values) => {
+              //-----------------api process-----------------
+              setNewPassword(values)
+            }}
           >
             <Form>
               <ModalBody>
@@ -69,6 +129,7 @@ const ChangePassword = () => {
                   placeholder="ยืนยันรหัสผ่านใหม่"
                 />
               </ModalBody>
+
               <ModalFooter justifyContent="flex-end">
                 <ButtonGroup gap="10px" size="md">
                   <Button variant="outline" type="reset">

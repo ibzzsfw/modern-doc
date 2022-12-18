@@ -1,8 +1,7 @@
 import { Badge } from '@chakra-ui/react'
-import DocumentStatus from '@view-models/DocumentStatus'
 
 type propTypes = {
-  status: DocumentStatus
+  status: string
 }
 
 const DocumentBadge = ({ status }: propTypes) => {

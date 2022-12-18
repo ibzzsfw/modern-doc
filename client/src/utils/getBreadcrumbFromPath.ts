@@ -58,7 +58,7 @@ let breadcrumbConfig = [
   },
   {
     title: 'ไฟล์ของฉัน',
-    path: '/alldocument/file',
+    path: '/alldocument/generatedFile',
     history: [
       {
         title: 'หน้าหลัก',
@@ -72,7 +72,7 @@ let breadcrumbConfig = [
   },
   {
     title: 'เอกสารที่อัปโหลด',
-    path: '/alldocument/uploadfile',
+    path: '/alldocument/uploadedfile',
     history: [
       {
         title: 'หน้าหลัก',

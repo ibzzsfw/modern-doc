@@ -4,17 +4,10 @@ import {
   Flex,
   Button,
   Heading,
-  HStack,
-  Input,
   FormControl,
   FormLabel,
-  FormErrorMessage,
-  Select,
   CheckboxGroup,
   Checkbox,
-  Radio,
-  RadioGroup,
-  Stack,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -23,16 +16,14 @@ import {
   ModalHeader,
   VStack,
 } from '@chakra-ui/react'
-import { useState, useEffect, useRef } from 'react'
-// import { useFormPageStore } from '@stores/FormPageStore'
-// import Fields from '@models/Field'
-import FieldViewModel from '../../mvvm/view-models/Field.viewmodel'
+import { useEffect, useRef } from 'react'
+import FieldViewModel from '@view-models/Field.viewmodel'
 import FormInput from '@components/FormInput.component'
-import { Field, Form, Formik, useFormik } from 'formik'
+import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
 import { useNavigate } from 'react-router-dom'
-import FileController from '../../mvvm/view-models/FileController'
-import FolderController from '../../mvvm/view-models/FolderController'
+import FileController from '@view-models/FileController'
+import FolderController from '@view-models/FolderController'
 import FormPageController from '@view-controllers/Form.page.viewcontroller'
 
 const FormPage = () => {
@@ -58,7 +49,7 @@ const FormPage = () => {
     if (documentType === 'folder') {
       let temp: FieldViewModel[] = []
       for (let i = 0; i < generatedFile.length; i++) {
-        temp = viewController.mergeField(temp, generatedFile[i].fields)
+        temp = viewController.mergeField(temp, generatedFile[i].fields ?? [])
       }
       setMergedField(temp)
     }
@@ -70,7 +61,7 @@ const FormPage = () => {
       case 'text':
         return (
           <FormInput
-            label={field.officialName}
+            label={field.officialName ?? field.name}
             name={field.name}
             placeholder="string"
             type="text"
@@ -78,14 +69,13 @@ const FormPage = () => {
             required={field.isRequired}
             disable={disable}
             onChange={(e) => {
-              console.log('abraham')
             }}
           />
         )
       case 'number':
         return (
           <FormInput
-            label={field.officialName}
+            label={field.officialName ?? field.name}
             name={field.name}
             placeholder="number"
             type="text"
@@ -93,14 +83,13 @@ const FormPage = () => {
             required={field.isRequired}
             disable={disable}
             onChange={(e) => {
-              console.log('abraham')
             }}
           />
         )
       case 'date':
         return (
           <FormInput
-            label={field.officialName}
+            label={field.officialName ?? field.name}
             name={field.name}
             placeholder="date"
             type="date"
@@ -108,14 +97,13 @@ const FormPage = () => {
             required={field.isRequired}
             disable={disable}
             onChange={(e) => {
-              console.log('abraham')
             }}
           />
         )
       case 'email':
         return (
           <FormInput
-            label={field.officialName}
+            label={field.officialName ?? field.name}
             name={field.name}
             placeholder="email"
             type="text"
@@ -127,7 +115,7 @@ const FormPage = () => {
       case 'phoneNumber':
         return (
           <FormInput
-            label={field.officialName}
+            label={field.officialName ?? field.name}
             name={field.name}
             placeholder="0800000000"
             type="text"
@@ -140,7 +128,7 @@ const FormPage = () => {
         console.log(field.choices)
         return (
           <FormInput
-            label={field.officialName}
+            label={field.officialName ?? field.name}
             name={field.name}
             type="select"
             showCorrectBorder
@@ -211,14 +199,6 @@ const FormPage = () => {
               </Flex>
             </Flex>
             <Flex sx={buttomSection}>
-              {/* <Flex sx={progressSection}>
-                <Text>ความคืบหน้า</Text>
-                <Flex sx={progress}>
-                  <Box sx={a} />
-                  <Box sx={b} />
-                </Flex>
-                <Text as="b">{`${100 * percent} %`}</Text>
-              </Flex> */}
               <Button type="submit" colorScheme="green" marginTop='1rem'>
                 ตรวจสอบ
               </Button>
@@ -262,8 +242,6 @@ const FormPage = () => {
         </Modal>
       </Box>
     )
-
-  console.log('doccc', document)
 
   //folder
   return (
@@ -326,6 +304,11 @@ const FormPage = () => {
               viewController.validationSchemaExraction(mergedField)
             )}
             onSubmit={async (values) => {
+              console.log(generatedFile)
+              let ids: { id: string }[] = []
+              generatedFile.map((file) => {
+                ids.push({ id: file.id })
+              })
               onClose()
               FolderController.saveFolder(
                 document?.id,
@@ -333,10 +316,7 @@ const FormPage = () => {
                   ...f,
                   userValue: values[f.name],
                 })),
-                // generatedFiles: { id: string }[]
-                generatedFile.map((file) => ({
-                  id: file.id,
-                }))
+                ids
               )
               navigate(-1)
             }}

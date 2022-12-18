@@ -1,7 +1,7 @@
 import { useState } from "react";
 import shallow from "zustand/shallow";
-import UserModel from "../../mvvm/models/User.model";
-import UserViewModel from "../../mvvm/view-models/User.viewmodel";
+import UserModel from "../../models/User.model";
+import UserViewModel from "../../view-models/User.viewmodel";
 
 class FamilyPageViewController {
 

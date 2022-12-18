@@ -1,6 +1,4 @@
-import getRelationshipText from '@utils/getRelationshipText'
 import bcrypt from 'bcryptjs'
-import { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import { z } from 'zod'
 import checkCitizenId from '@utils/checkCitizenId'
@@ -62,6 +60,35 @@ class UserService {
       }
     }
   }
+
+  checkPhoneStatus = async (phone: string) => {
+
+    const schema = z.string().regex(/^[0-9]{10}$/)
+    try {
+      schema.parse(phone)
+      const user = await Prisma.user.findUnique({
+        where: {
+          phoneNumber: phone,
+        },
+      })
+      if (user) {
+        return {
+          status: 400,
+          json: { message: 'Phone number already exists' },
+        }
+      }
+      return {
+        status: 200,
+        json: { message: 'Phone number is available' },
+      }
+    } catch (err) {
+      return {
+        status: 500,
+        json: { message: err },
+      }
+    }
+  }
+
 
   addUser = async (body: any) => {
 

@@ -5,23 +5,22 @@ import {
   VStack,
   Text,
   Flex,
-  FormControl,
   Button,
   Icon,
   useToast,
 } from '@chakra-ui/react'
-import { RegisterModel } from '../../models/RegisterStore.model'
+import { RegisterModel } from '@models/Register.state.model'
 import FormInput from '@components/FormInput.component'
 import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
 import { IoChevronBack, IoChevronForward } from 'react-icons/io5'
 import { AiTwotoneCalendar } from 'react-icons/ai'
 import { useMutation } from '@tanstack/react-query'
-import axios, { AxiosError } from 'axios'
-import UserController from '../../mvvm/view-models/UserController'
+import { AxiosError } from 'axios'
+import UserController from '@view-models/UserController'
 import { useState } from 'react'
 import { withCountryCode } from '@utils/formatPhoneNumber'
-import { phoneLogin, validateOTP } from '@firebase'
+import { phoneLogin } from '@firebase'
 import OTPVerify from '@components/OTPVerify.component'
 
 const Register = () => {

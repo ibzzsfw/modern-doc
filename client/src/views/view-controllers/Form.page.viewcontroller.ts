@@ -1,8 +1,8 @@
 import { useDisclosure } from "@chakra-ui/react";
-import FormPageModel from "../../mvvm/models/FormPage.model"
+import FormPageModel from "../../models/FormPage.model"
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import FieldViewModel from "../../mvvm/view-models/Field.viewmodel";
+import FieldViewModel from "../../view-models/Field.viewmodel";
 
 class FormPageController {
 

@@ -113,6 +113,22 @@ class FileController {
     res.status(response.status).json(response.json)
   }
 
+  async getFreeUploadFile(req: Request, res: Response) {
+
+    const { fileId } = req.params
+
+    const response = await this.service.getFreeUploadFile(fileId)
+    res.status(response.status).json(response.json)
+  }
+
+  async getSharedFile(req: Request, res: Response) {
+
+    const { fileId, type } = req.params
+
+    const response = await this.service.getSharedFile(fileId, type)
+    res.status(response.status).json(response.json)
+  }
+
 
 }
 

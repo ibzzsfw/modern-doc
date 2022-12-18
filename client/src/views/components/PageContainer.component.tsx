@@ -6,8 +6,7 @@ import {
   Icon,
 } from '@chakra-ui/react'
 import Navbar from '@components/Navbar.component'
-// import { LoginDataModel } from '@models/LoginDataStore.model'
-import UserModel from '../../mvvm/models/User.model'
+import UserModel from '@models/User.model'
 import { IoChevronForward } from 'react-icons/io5'
 import getBreadcrumbFromPath from '@utils/getBreadcrumbFromPath'
 

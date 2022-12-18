@@ -12,20 +12,22 @@ import {
   ModalHeader,
   ModalFooter,
   ModalBody,
+  useToast,
   useDisclosure,
+  ButtonGroup,
 } from '@chakra-ui/react'
-import { FiEdit } from 'react-icons/fi'
 import ChangePassword from '@components/ChangePassword.component.'
 import FormInput from '@components/FormInput.component'
-// import { MyProfiledataModel } from '@models/MyProfiledataStore.model'
-import { MyProfilePageModel } from '@models/MyProfilePageStore.model'
-import UserModel from '../../mvvm/models/User.model'
-import UserController from '../../mvvm/view-models/UserController'
 import { Form, Formik } from 'formik'
+import { FiEdit } from 'react-icons/fi'
+import { MyProfilePageModel } from '../../models/MyProfilePage.state.model'
+import UserViewModel from '@view-models/User.viewmodel'
 import { useMutation } from '@tanstack/react-query'
+import UserController from '@view-models/UserController'
+import UserModel from '@models/User.model'
 
 const ProfileFormInput = ({ data }: any) => {
-
+  const toast = useToast()
   const { isEdit, setEdit } = MyProfilePageModel()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { user, setUser } = UserModel()
@@ -39,24 +41,39 @@ const ProfileFormInput = ({ data }: any) => {
     postalCode: ['10600'],
   }
 
-  const handleform = (values: any) => {
-    setUser({ ...user, ...values })
-  }
-  const updateUser = useMutation((value: any) => {
-    return UserController.editProfile(value.title, value.firstName, value.lastName, value.sex,
-      value.phoneNumber, value.birthDate, value.profileURI, value.password)
-  }, {
-    onSuccess: (data) => { },
-    onError: (error) => { },
-  })
-  const confirmPassword = useMutation((value: { phoneNumber: string, password: string }) => {
-    return UserController.checkPhonePassword(value.phoneNumber, value.password)
-  }, {
-    onSuccess: (data) => { return true },
-    onError: (error) => { return false },
-  })
+  const updateUser = useMutation(
+    (value: any) => {
+      return UserController.editProfile(
+        value.title,
+        value.firstName,
+        value.lastName,
+        value.sex,
+        value.phoneNumber,
+        value.birthDate,
+        value.profileURI,
+        value.password
+      )
+    },
+    {
+      onSuccess: (data) => {
+        toast({
+          title: 'แก้ไขข้อมูลสำเร็จ',
+          status: 'success',
+          duration: 3000,
+        })
+      },
+      onError: (error) => {
+        toast({
+          title: 'แก้ไขข้อมูลไม่สำเร็จ',
+          status: 'error',
+          duration: 3000,
+          description: `${error}`,
+        })
+      },
+    }
+  )
 
-  const updateProfile = (values: any) => { }
+  //---------------handale values for wait to confirm password
 
   const confirmPasswordModal = (
     <>
@@ -76,9 +93,11 @@ const ProfileFormInput = ({ data }: any) => {
               password: '',
             }}
             onReset={(values) => {
+              console.log(values)
               onClose()
             }}
-            onSubmit={(values, actions) => {
+            onSubmit={async (values) => {
+              updateUser.mutate({ ...user, password: values.password })
             }}
           >
             <Form>
@@ -91,15 +110,15 @@ const ProfileFormInput = ({ data }: any) => {
                 />
               </ModalBody>
 
-              <ModalFooter justifyContent="center">
-                <Flex gap="22px">
-                  <Button variant="outliวัยne" type="reset">
+              <ModalFooter justifyContent="flex-end">
+                <ButtonGroup gap="10px">
+                  <Button variant="outline" type="reset">
                     ยกเลิก
                   </Button>
                   <Button variant="solid" colorScheme="blue" type="submit">
                     ตกลง
                   </Button>
-                </Flex>
+                </ButtonGroup>
               </ModalFooter>
             </Form>
           </Formik>
@@ -129,12 +148,25 @@ const ProfileFormInput = ({ data }: any) => {
 
       <Formik
         initialValues={data}
+        enableReinitialize
         onReset={(values) => {
           setEdit(false)
         }}
         onSubmit={(values) => {
-          handleform(values)
+          // console.log({ ...values })
+          setUser(new UserViewModel({
+            ...user,
+            title: values.title,
+            firstName: values.firstName,
+            lastName: values.lastName,
+            sex: values.sex,
+            phoneNumber: values.phoneNumber,
+            birthDate: values.birthDate,
+            password: values.password,
+          }))
           onOpen()
+          //--------------------do something for handle value
+          //----------next Open modal for confirm password
         }}
       >
         <Form>
@@ -219,7 +251,9 @@ const ProfileFormInput = ({ data }: any) => {
                 justifyContent="flex-end"
                 display={isEdit ? 'unset' : 'none'}
               >
-                <Button type="reset">ยกเลิก</Button>
+                <Button variant="outline" type="reset">
+                  ยกเลิก
+                </Button>
                 <Button type="submit" colorScheme="blue">
                   ตกลง
                 </Button>

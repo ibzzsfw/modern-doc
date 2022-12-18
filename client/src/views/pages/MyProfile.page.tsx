@@ -1,7 +1,7 @@
 import { Box, Center, HStack } from '@chakra-ui/react'
-import ProfileFormInput from 'src/views/components/ProfileFormInput.component'
-import ProfilePicture from 'src/views/components/ProfilePicture.component'
-import MyProfileViewController from '../view-controllers/MyProfile.page.viewcontroller'
+import ProfileFormInput from '@components/ProfileFormInput.component'
+import ProfilePicture from '@components/ProfilePicture.component'
+import MyProfileViewController from '@view-controllers/MyProfile.page.viewcontroller'
 
 const MyProfile = () => {
   const viewController = new MyProfileViewController()
@@ -16,7 +16,7 @@ const MyProfile = () => {
           <ProfileFormInput
             data={{
               ...user,
-              birthDate: new Date(user!.birthDate).toISOString().split('T')[0],
+              birthDate: new Date(user?.birthDate ?? '').toISOString().split('T')[0] ?? '',
             }}
           />
         </HStack>

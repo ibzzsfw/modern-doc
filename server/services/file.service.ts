@@ -97,6 +97,7 @@ class FileService {
     }
   }
 
+
   private async getLatestFile(type: string, userId: string) {
     switch (type) {
       case 'generatedFile':
@@ -154,16 +155,27 @@ class FileService {
         return await Prisma.$queryRaw`
           SELECT "UserUploadedFile"."isShared",
           "UserUploadedFile"."date", "UserUploadedFile"."note",  
-         "UploadedFile"."name",
-         "UploadedFile"."officialName", "UploadedFile"."description",
-          "UploadedFile"."id" ,
-          "User"."firstName", "User"."lastName", "User"."id" 
+          "UploadedFile"."name",
+          "UploadedFile"."officialName", "UploadedFile"."description",
+          "UserUploadedFile"."id" ,
+          "User"."firstName", "User"."lastName",
+          'uploadedFile' AS "type" 
           FROM "UserUploadedFile"
           LEFT JOIN "UploadedFile" ON "UploadedFile"."id" = "UserUploadedFile"."uploadedFileId"
           LEFT JOIN "User" ON "User"."id" = "UserUploadedFile"."userId"
           WHERE "User"."householdId" = ${householdId}::uuid
           AND "UserUploadedFile"."isShared" = true
-          ORDER BY "UserUploadedFile"."date" DESC
+          UNION 
+          SELECT "UserFreeUploadFile"."isShared",
+          "UserFreeUploadFile"."date", "UserFreeUploadFile"."note",
+          NULL AS "name", "UserFreeUploadFile"."officialName",
+          NULL AS "description", "UserFreeUploadFile"."id",
+          "User"."firstName", "User"."lastName", 
+          'userFreeUploadFile' AS "type" 
+          FROM "UserFreeUploadFile"
+          LEFT JOIN "User" ON "User"."id" = "UserFreeUploadFile"."userId"
+          WHERE "User"."householdId" = ${householdId}::uuid
+          AND "UserFreeUploadFile"."isShared" = true
         `
 
       default:
@@ -283,28 +295,28 @@ class FileService {
     try {
       schema.parse({ userId })
       const file = await Prisma.$queryRaw`
-        SELECT "GeneratedFile".*, 'generatedFile' as "type",
-        "UserGeneratedFile"."date"
-        FROM "GeneratedFile"
-        LEFT JOIN "GeneratedFileTag" ON "GeneratedFileTag"."generatedFileId" = "GeneratedFile"."id"
-        LEFT JOIN "Tag" ON "Tag"."id" = "GeneratedFileTag"."tagId"
-        LEFT JOIN "UserGeneratedFile" ON ("UserGeneratedFile"."generatedFileId" = "GeneratedFile"."id"
-        AND "UserGeneratedFile"."userId" = ${userId}::uuid)
-        UNION
-        SELECT "UploadedFile".*, 'uploadedFile' as "type",
-        "UserUploadedFile"."date"
-         FROM "UploadedFile"
-        LEFT JOIN "UploadedFileTag" ON "UploadedFileTag"."uploadedFileId" = "UploadedFile"."id"
-        LEFT JOIN "Tag" ON "Tag"."id" = "UploadedFileTag"."tagId"
-        LEFT JOIN "UserUploadedFile" ON ("UserUploadedFile"."uploadedFileId" = "UploadedFile"."id"
-        AND "UserUploadedFile"."userId" = ${userId}::uuid)
-        UNION
-        SELECT "UserFreeUploadFile"."id","UserFreeUploadFile"."officialName",null as "name","UserFreeUploadFile"."URI"
-        ,null as "description",null as "dayLifeSpan",'userFreeUploadFile' as "type",
-        "UserFreeUploadFile"."date" as "date"
-         FROM "UserFreeUploadFile"
-        WHERE "UserFreeUploadFile"."userId" = ${userId}::uuid
-      `
+      SELECT "GeneratedFile".*, 'generatedFile' as "type",
+      "UserGeneratedFile"."date"
+      FROM "GeneratedFile"
+      LEFT JOIN "GeneratedFileTag" ON "GeneratedFileTag"."generatedFileId" = "GeneratedFile"."id"
+      LEFT JOIN "Tag" ON "Tag"."id" = "GeneratedFileTag"."tagId"
+      LEFT JOIN "UserGeneratedFile" ON ("UserGeneratedFile"."generatedFileId" = "GeneratedFile"."id"
+      AND "UserGeneratedFile"."userId" = ${userId}::uuid)
+      UNION
+      SELECT "UploadedFile".*, 'uploadedFile' as "type",
+      "UserUploadedFile"."date"
+       FROM "UploadedFile"
+      LEFT JOIN "UploadedFileTag" ON "UploadedFileTag"."uploadedFileId" = "UploadedFile"."id"
+      LEFT JOIN "Tag" ON "Tag"."id" = "UploadedFileTag"."tagId"
+      LEFT JOIN "UserUploadedFile" ON ("UserUploadedFile"."uploadedFileId" = "UploadedFile"."id"
+      AND "UserUploadedFile"."userId" = ${userId}::uuid)
+      UNION
+      SELECT "UserFreeUploadFile"."id","UserFreeUploadFile"."officialName",null as "name","UserFreeUploadFile"."URI"
+      ,null as "description",null as "dayLifeSpan",'userFreeUploadFile' as "type",
+      "UserFreeUploadFile"."date" as "date"
+       FROM "UserFreeUploadFile"
+      WHERE "UserFreeUploadFile"."userId" = ${userId}::uuid
+    `
       return {
         status: 200,
         json: file,
@@ -336,7 +348,7 @@ class FileService {
         INSERT INTO "UserGeneratedFile" ( "id","userId", "generatedFileId", "date")
         VALUES ((SELECT gen_random_uuid()),${userId}::uuid, ${fileId}::uuid, ${new Date()})
         ON CONFLICT ("userId", "generatedFileId") DO UPDATE SET "date" = ${new Date()}
-      `
+        `
       const promise = await async.map(fields, async (field) => {
         const { name, userValue } = field
         const updateField = await Prisma.$queryRaw`
@@ -451,8 +463,8 @@ class FileService {
         }
         case 'userFreeUploadFile': {
           const result = await Prisma.$queryRaw`
-            UPDATE "UserFreeUploadFile" SET "isShared" = true
-            WHERE "id" = ${fileId}::uuid AND "userId" = ${userId}::uuid`
+          UPDATE "UserFreeUploadFile" SET "isShared" = true
+          WHERE "id" = ${fileId}::uuid AND "userId" = ${userId}::uuid`
           return {
             status: 200,
             json: { message: 'success' },
@@ -589,6 +601,75 @@ class FileService {
       }
     }
   }
+
+  getFreeUploadFile = async (fileId: string) => {
+
+    const schema = z.object({
+      fileId: z.string().uuid(),
+    })
+    try {
+      schema.parse({ fileId })
+      const result = await Prisma.$queryRaw`
+      SELECT * FROM "UserFreeUploadFile"
+      WHERE "id" = ${fileId}::uuid
+   `
+      return {
+        status: 200,
+        json: result[0],
+      }
+    } catch (err) {
+      return {
+        status: 400,
+        json: err,
+      }
+    }
+  }
+
+  getSharedFile = async (fileId: string, type: string) => {
+
+    const schema = z.object({
+      fileId: z.string().uuid(),
+      type: z.enum(fileType),
+    })
+    try {
+      schema.parse({ fileId, type })
+      switch (type) {
+        case 'uploadedFile': {
+          const result = await Prisma.$queryRaw`
+            SELECT * FROM "UserUploadedFile"
+            LEFT JOIN "UploadedFile" ON "UserUploadedFile"."uploadedFileId" = "UploadedFile"."id"
+            WHERE "UserUploadedFile"."id" = ${fileId}::uuid
+         `
+          return {
+            status: 200,
+            json: result[0],
+          }
+        }
+        case 'userFreeUploadFile': {
+          const result = await Prisma.$queryRaw`
+            SELECT * FROM "UserFreeUploadFile"
+            WHERE "id" = ${fileId}::uuid
+         `
+          return {
+            status: 200,
+            json: result[0],
+          }
+        }
+        default: {
+          return {
+            status: 400,
+            json: { message: 'invalid type' },
+          }
+        }
+      }
+    } catch (err) {
+      return {
+        status: 400,
+        json: err,
+      }
+    }
+  }
+
 }
 
 export default FileService

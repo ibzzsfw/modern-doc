@@ -5,10 +5,10 @@ import DocumentBox from '@components/DocumentBox.component'
 import SearchBox from '@components/SearchBox.component'
 import { VStack, Center } from '@chakra-ui/react'
 import { useQuery } from '@tanstack/react-query'
-import FileController from '../../mvvm/view-models/FileController'
-import FolderController from '../../mvvm/view-models/FolderController'
-import UserModel from '../../mvvm/models/User.model'
-import SearchModel from '../../mvvm/models/Search.model'
+import FileController from '@view-models/FileController'
+import FolderController from '@view-models/FolderController'
+import UserModel from '@models/User.model'
+import SearchModel from '@models/Search.model'
 import { useNavigate } from 'react-router-dom'
 
 const Home = () => {
@@ -63,7 +63,7 @@ const Home = () => {
               id={folder.id}
               title={folder.officialName}
               type="generatedFolder"
-              createdDate={folder.date}
+              createdDate={folder.dateUpload}
               showDate
             />
           ))}
@@ -81,7 +81,7 @@ const Home = () => {
               title={file.officialName}
               type={file.type ?? 'generatedFile'}
               showDate
-              createdDate={new Date(file.date)}
+              createdDate={new Date(file.dateUpload)}
             />
           ))}
         </DocumentBar>

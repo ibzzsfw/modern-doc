@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import {
   Modal,
   ModalOverlay,
@@ -11,6 +10,7 @@ import {
   UnorderedList,
   useDisclosure,
 } from '@chakra-ui/react'
+import { useEffect } from 'react'
 
 type propsType = {
   title?: string
@@ -75,7 +75,9 @@ const ConfirmationModal = ({
             <Button
               colorScheme="green"
               onClick={() => {
-                if (onClick) onClick()
+                if (onClick) {
+                  onClick()
+                }
                 onClose()
               }}
             >

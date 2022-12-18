@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import {
   Box,
   Button,
@@ -17,25 +16,26 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react'
+import MenuProvider from '@components/MenuProvider.component'
+import FileController from '@view-models/FileController'
+import FolderController from '@view-models/FolderController'
+import NoteController from '@view-models/NoteController'
+import { useMutation } from '@tanstack/react-query'
+import { Field, Form, Formik } from 'formik'
+import { useState } from 'react'
 import { AiOutlineEdit } from 'react-icons/ai'
 import { MdLeakRemove } from 'react-icons/md'
 import { BsThreeDots, BsTrash, BsShareFill } from 'react-icons/bs'
-import { useMutation } from '@tanstack/react-query'
-import { Field, Form, Formik } from 'formik'
-import MenuProvider from '@components/MenuProvider.component'
-import FileController from '../../mvvm/view-models/FileController'
-import FolderController from '../../mvvm/view-models/FolderController'
-import NoteController from '../../mvvm/view-models/NoteController'
 import { Link } from 'react-router-dom'
 
 type propsType = {
   type:
-  | 'generatedFolder'
-  | 'generatedFile'
-  | 'uploadedFile'
-  | 'sharedFile'
-  | 'userFreeUploadFile'
-  | 'note'
+    | 'generatedFolder'
+    | 'generatedFile'
+    | 'uploadedFile'
+    | 'sharedFile'
+    | 'userFreeUploadFile'
+    | 'note'
   id: string
   isShared?: boolean
   title: string
@@ -100,29 +100,27 @@ const DocumentBox = ({
   }
 
   const getImageUrl = () => {
-
-    let path = ''
-
     if (image) {
       return image
     }
     if (type === 'generatedFolder') {
-      path = 'folder_logo'
+      return '/assets/folder_logo.png'
     }
     if (type === 'generatedFile') {
-      path = 'file_logo'
+      return '/assets/file_logo.png'
     }
-    if (type === 'uploadedFile' || type === 'userFreeUploadFile') {
-      path = 'card_logo'
+    if (type === 'uploadedFile') {
+      return '/assets/card_logo.png'
+    }
+    if (type === 'userFreeUploadFile') {
+      return '/assets/freeupload_logo.png'
     }
     if (type === 'sharedFile') {
-      path = 'shared_logo'
+      return '/assets/shared_logo.png'
     }
     if (type === 'note') {
-      path = 'note_logo'
+      return '/assets/note_logo.png'
     }
-
-    return `/assets/${path}.png`
   }
 
   const getSubText = () => {
@@ -144,8 +142,8 @@ const DocumentBox = ({
     if (type === 'sharedFile') {
       return `ผู้สร้าง : ${author}`
     }
-    if (type === 'note' && modifiedDate) {
-      return `แก้ไขล่าสุดเมื่อ : ${new Date(modifiedDate).toLocaleDateString(
+    if (type === 'note') {
+      return `แก้ไขล่าสุดเมื่อ : ${new Date(modifiedDate ?? '').toLocaleDateString(
         'en-GB'
       )}`
     }
@@ -163,6 +161,9 @@ const DocumentBox = ({
     }
     if (type === 'sharedFile') {
       return `/file/3/${id}`
+    }
+    if (type === 'userFreeUploadFile') {
+      return `/file/4/${id}`
     }
     return ''
   }
@@ -265,7 +266,7 @@ const DocumentBox = ({
     },
     {
       onSuccess: () => {
-        ; async () => {
+        ;async () => {
           await toast({
             title: 'แก้ไขบันทึกสำเร็จ',
             status: 'success',
@@ -481,6 +482,27 @@ const DocumentBox = ({
                     id: id,
                   })
                   break
+                case 'userFreeUploadFile':
+                  editFileNote.mutate({
+                    content: value.content,
+                    type: type,
+                    id: id,
+                  })
+                  break
+                case 'sharedFile':
+                  editFileNote.mutate({
+                    content: value.content,
+                    type: type,
+                    id: id,
+                  })
+                  break
+                case 'uploadedFile':
+                  editFileNote.mutate({
+                    content: value.content,
+                    type: type,
+                    id: id,
+                  })
+                  break
               }
 
               setEditNote(false)
@@ -496,7 +518,9 @@ const DocumentBox = ({
                     name="content"
                     {...field}
                     {...textareaLayout}
-                    disabled={!editNote}
+                    // disabled={!editNote}
+                    readOnly={!editNote}
+                    color='black'
                   />
                 )}
               </Field>
@@ -546,22 +570,6 @@ let threeDot = {
   color: 'accent.black',
 }
 
-let layout = {
-  width: '320px',
-  boxShadow: '5px 5px 3px -2px rgba(0, 0, 0, 0.1)',
-  borderRadius: '16px',
-  backgroundColor: 'background.white',
-  position: 'relative',
-  padding: '20px',
-  cursor: 'pointer',
-  transition: 'all 0.1s ease-in-out',
-  _hover: {
-    cursor: 'pointer',
-    boxShadow: '10px 10px 7px -5px rgba(0, 0, 0, 0.2)',
-    transform: 'translate(-2px, -2px)',
-  },
-}
-
 let documentImage = {
   width: '60px',
 }
@@ -588,5 +596,21 @@ let submitButton = {
   },
   _active: {
     backgroundColor: 'hover.blue',
+  },
+}
+
+let layout = {
+  width: '320px',
+  boxShadow: '5px 5px 3px -2px rgba(0, 0, 0, 0.1)',
+  borderRadius: '16px',
+  backgroundColor: 'background.white',
+  position: 'relative',
+  padding: '20px',
+  cursor: 'pointer',
+  transition: 'all 0.1s ease-in-out',
+  _hover: {
+    cursor: 'pointer',
+    boxShadow: '10px 10px 7px -5px rgba(0, 0, 0, 0.2)',
+    transform: 'translate(-2px, -2px)',
   },
 }

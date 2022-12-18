@@ -25,9 +25,9 @@ import {
   Button,
   Link,
 } from '@chakra-ui/react'
-import UserController from '../../mvvm/view-models/UserController'
-import UserViewModel from '../../mvvm/view-models/User.viewmodel'
-import UserModel from '../../mvvm/models/User.model'
+import UserController from '@view-models/UserController'
+import UserViewModel from '@view-models/User.viewmodel'
+import UserModel from '@models/User.model'
 import { BsPersonCircle } from 'react-icons/bs'
 import { IoChevronDownOutline, IoChevronForwardOutline } from 'react-icons/io5'
 import { MdGroups } from 'react-icons/md'

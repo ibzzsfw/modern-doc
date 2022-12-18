@@ -1,7 +1,6 @@
 import { Box, Flex, Text } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom'
-// import { SearchBoxModel } from '@models/SearchBoxStore.model'
-import SearchModel from '../../mvvm/models/Search.model'
+import SearchModel from '@models/Search.model'
 
 type propsType = {
   title: string

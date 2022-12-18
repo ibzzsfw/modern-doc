@@ -14,11 +14,10 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react'
-import FileController from '../../mvvm/view-models/FileController'
-import FolderController from '../../mvvm/view-models/FolderController'
-// import Note from '@view-models/Note'
-import NoteViewModel from '../../mvvm/view-models/Note.viewmodel'
-import NoteController from '../../mvvm/view-models/NoteController'
+import FileController from '@view-models/FileController'
+import FolderController from '@view-models/FolderController'
+import NoteViewModel from '@view-models/Note.viewmodel'
+import NoteController from '@view-models/NoteController'
 import { useMutation } from '@tanstack/react-query'
 import { Field, Form, Formik } from 'formik'
 import { useState } from 'react'

@@ -18,23 +18,25 @@ import {
   UseToastOptions,
   VStack,
 } from '@chakra-ui/react'
+import FormInput from '@components/FormInput.component'
+import MenuProvider from '@components/MenuProvider.component'
 import { Form, Formik } from 'formik'
+import { useAnimation } from 'framer-motion'
 import { useState } from 'react'
 import { AiOutlineUpload } from 'react-icons/ai'
 import { BiEdit } from 'react-icons/bi'
 import { BsThreeDots, BsTrash } from 'react-icons/bs'
 import * as Yup from 'yup'
-import getRelationshipText from '@utils/getRelationshipText'
-import UserController from '../../mvvm/view-models/UserController'
-import FormInput from '@components/FormInput.component'
-import MenuProvider from '@components/MenuProvider.component'
+import MemberController from '@view-models/MemberController'
+import UserController from '@view-models/UserController'
+import UserModel from '@models/User.model'
 
 type propsType = {
   data?: any
   isAdd: boolean
-  onCancelButtonClick?: () => void
-  getId?: (id: string | null) => void
-  handleForm?: boolean
+  onCancelButtonClick?: () => void //------cancel button close the form
+  getId?: (id: string | null) => void //------send id to parent for handle form
+  handleForm?: boolean //------handleForm is when click edit button another form will be can't edit
 }
 
 const FamilyInfoBox = ({
@@ -45,9 +47,26 @@ const FamilyInfoBox = ({
   handleForm,
 }: propsType) => {
   const [isEdit, setEdit] = useState(false)
+  const [mouseOnImage, setmouseOnImage] = useState(false)
   const { isOpen, onOpen, onClose } = useDisclosure()
   const toast = useToast()
+  const controls = useAnimation()
+  const startAnimation = () => controls.start('hover')
+  const stopAnimation = () => controls.stop()
 
+  const user = UserModel((state) => state.user)
+
+  //------------api zone---------
+  const addFamily = async (values: any) => {
+    MemberController.addMember(values)
+  }
+  const editFamily = async (values: any) => {
+    MemberController.editMember(data.id, values)
+  }
+  const deleteFamily = async (id: string) => {
+    MemberController.deleteMember(id)
+  }
+  //-----------------------------
   const familyschema = Yup.object().shape({
     id: Yup.string(),
     firstName: Yup.string().required('กรุณากรอกชื่อ'),
@@ -81,6 +100,7 @@ const FamilyInfoBox = ({
             icon: <Icon as={BiEdit} />,
             onClick: () => {
               if (!handleForm) {
+                console.log(`edit ${data?.firstName + ' ' + data?.lastName}`)
                 if (data?.relationship !== 'householder') {
                   if (getId) getId(data?.id)
                   setEdit(true)
@@ -103,7 +123,7 @@ const FamilyInfoBox = ({
             icon: <Icon as={BsTrash} color="accent.red" />,
             onClick: () => {
               if (!handleForm) {
-                onOpen()
+                onOpen() // open delete modal
               }
             },
             style: {
@@ -143,6 +163,7 @@ const FamilyInfoBox = ({
               variant="solid"
               colorScheme="red"
               onClick={() => {
+                deleteFamily(data.id)
                 toast(deleteFamilySuccess)
                 onClose()
               }}
@@ -171,6 +192,7 @@ const FamilyInfoBox = ({
     status: 'success',
     duration: 3000,
   }
+  //-------------------------------------
 
   return (
     <Box sx={boxLayout}>
@@ -183,7 +205,8 @@ const FamilyInfoBox = ({
               borderRadius="8px"
               position="absolute"
               fallbackSrc="https://via.placeholder.com/365x365"
-            />
+            ></Image>
+
             <Box
               width="206px"
               height="206px"
@@ -235,17 +258,29 @@ const FamilyInfoBox = ({
                   if (onCancelButtonClick) onCancelButtonClick()
                 }}
                 onSubmit={async (values, actions) => {
-                  const checkCitizenIdStatus =
-                    await UserController.checkCitizenIdStatus(values.citizenId)
-                  if (
-                    checkCitizenIdStatus.message === 'Citizen ID is available'
-                  ) {
-                    toast(addFamilySuccess)
-                    if (onCancelButtonClick) onCancelButtonClick()
-                  } else {
+                  try {
+                    const checkCitizenIdStatus =
+                      await UserController.checkCitizenIdStatus(
+                        values.citizenId
+                      )
+                    if (
+                      checkCitizenIdStatus.message === 'Citizen ID is available'
+                    ) {
+                      console.log(values)
+                      addFamily(values)
+                      toast(addFamilySuccess)
+                      if (onCancelButtonClick) onCancelButtonClick()
+                    } else {
+                      toast({
+                        title: 'เพิ่มสมาชิกไม่สำเร็จ',
+                        description: checkCitizenIdStatus.message,
+                        status: 'error',
+                        duration: 3000,
+                      })
+                    }
+                  } catch (err) {
                     toast({
-                      title: 'เพิ่มสมาชิกไม่สำเร็จ',
-                      description: checkCitizenIdStatus.message,
+                      title: 'แก้ไขสมาชิกไม่สำเร็จ',
                       status: 'error',
                       duration: 3000,
                     })
@@ -342,18 +377,29 @@ const FamilyInfoBox = ({
               <Formik
                 initialValues={{
                   ...data,
-                  relationship: getRelationshipText(data?.relationship),
+                  relationship: data.getRelationshipText(),
                 }}
                 validationSchema={familyschema}
                 onReset={(values, actions) => {
+                  console.log(values)
                   setEdit(false)
                   if (getId) getId(null)
                 }}
                 onSubmit={(values) => {
+                  try {
+                    console.log(values)
+                    editFamily(values)
 
-                  toast(editFamilySuccess)
-                  setEdit(false)
-                  if (getId) getId(null)
+                    toast(editFamilySuccess)
+                    setEdit(false)
+                    if (getId) getId(null)
+                  } catch (e) {
+                    toast({
+                      title: 'แก้ไขสมาชิกไม่สำเร็จ',
+                      status: 'error',
+                      duration: 3000,
+                    })
+                  }
                 }}
               >
                 <Form>
@@ -444,8 +490,6 @@ const FamilyInfoBox = ({
   )
 }
 
-export default FamilyInfoBox
-
 let boxLayout = {
   backgroundColor: 'background.white',
   margin: 'auto',
@@ -494,3 +538,5 @@ let backgroundHover = {
     },
   },
 }
+
+export default FamilyInfoBox

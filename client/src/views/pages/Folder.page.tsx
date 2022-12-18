@@ -1,19 +1,20 @@
 import { Flex, Box } from '@chakra-ui/react'
-import FileList from 'src/views/components/FileList.component'
-import DocumentDetail from 'src/views/components/DocumentDetail.component'
-import FolderController from '../../mvvm/view-models/FolderController'
+import FileList from '@components/FileList.component'
+import DocumentDetail from '@components/DocumentDetail.component'
+import { useState } from 'react'
+import FolderController from '@view-models/FolderController'
 import { useQuery } from '@tanstack/react-query'
-import FolderViewController from '../view-controllers/Folder.page.viewcontroller'
+import FormPageModel from '@models/FormPage.model'
+import { useParams } from 'react-router-dom'
 
 const Folder = () => {
+  const { id } = useParams<{ id: string }>()
+  const {
+    setDocument,
+  } = FormPageModel()
 
-  const viewController = new FolderViewController()
-
-  const { id } = viewController.param
-  const { setDocument } = viewController.formPageModel
-  const { file, setFile } = viewController.folderPageModel
-  // const [generateFileList, setGenerateFileList] = viewController.generateFileListState
-  // const [uploadedFileList, setUploadedFileList] = viewController.uploadedFileListState
+  const [generateFileList, setGenerateFileList] = useState<any[]>([])
+  const [uploadedFileList, setUploadedFileList] = useState<any[]>([])
 
   const { data: folderData } = useQuery(
     ['getFolderById', id],
@@ -21,38 +22,39 @@ const Folder = () => {
     {
       onSuccess: async (data) => {
         setDocument(data)
-        let generateFile: any[] = []
-        let uploadedFile: any[] = []
-        data.generateFile.map((file: any) => generateFile.push(file))
-        data.uploadedFile.map((file: any) => uploadedFile.push(file))
-        setFile([...generateFile, ...uploadedFile])
-
-        // setGenerateFileList(generateFile)
-        // setUploadedFileList(uploadedFile)
+        if (data.file) {
+          data.file.map((file: any) => {
+            if (file.file.type === 'generatedFile') {
+              setGenerateFileList([...generateFileList, file])
+            } else {
+              setUploadedFileList([...uploadedFileList, file])
+            }
+          })
+        }
       },
     }
   )
 
-  if (folderData && file) {
+  if (folderData && generateFileList && uploadedFileList) {
+    console.log('folderData', folderData)
     return (
       <Flex sx={documentView}>
         <DocumentDetail
           title={folderData.officialName}
           description={folderData.note}
           markdown={folderData.description}
-          status="มีอยู่ในคลัง"
+          status={folderData.dateUpload ? 'มีอยู่ในคลัง' : 'ไม่มีอยู่ในคลัง'}
           type="folder"
         />
-        <FileList files={folderData.file} />
+        <FileList files={folderData.file?.map(file => file.file)} />
       </Flex>
     )
   }
   return <></>
 }
+export default Folder
 
 let documentView = {
   justifyContent: 'space-evenly',
   height: '768px',
 }
-
-export default Folder

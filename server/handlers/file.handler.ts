@@ -49,6 +49,13 @@ class FileHandler {
     this.controller.newUserFreeUploadFile(req, res)
   }
   
+  getFreeUploadFile = async (req: Request, res: Response) => {
+    this.controller.getFreeUploadFile(req, res)
+  }
+
+  getSharedFile = async (req: Request, res: Response) => {
+    this.controller.getSharedFile(req, res)
+  }
 }
 
 export default FileHandler

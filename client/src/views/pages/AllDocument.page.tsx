@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import {
   Button,
   ButtonGroup,
@@ -12,7 +11,6 @@ import {
   MenuList,
   MenuOptionGroup,
   VStack,
-  useDisclosure,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -20,11 +18,11 @@ import {
   ModalFooter,
   ModalBody,
 } from '@chakra-ui/react'
-import DocumentBox from 'src/views/components/DocumentBox.component'
-import Frame from 'src/views/components/Frame.component'
-import MenuProvider from 'src/views/components/MenuProvider.component'
-import SearchBox from 'src/views/components/SearchBox.component'
-import TableListItem from 'src/views/components/TableListItem.component'
+import DocumentBox from '@components/DocumentBox.component'
+import Frame from '@components/Frame.component'
+import MenuProvider from '@components/MenuProvider.component'
+import SearchBox from '@components/SearchBox.component'
+import TableListItem from '@components/TableListItem.component'
 import {
   AiFillPrinter,
   AiOutlineAppstore,
@@ -93,31 +91,7 @@ const AllDocumentPage = () => {
       />
     </MenuProvider>
   )
-  /*
-  const sorting = (option: String | String[]) => {
-    let sorted: any = [...documents]
-    switch (option) {
-      case 'ASC':
-        sorted = [...documents].sort((a, b) =>
-          a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1
-        )
-        setDocuments(sorted)
-        break
-      case 'DESC':
-        sorted = [...documents].sort((a, b) =>
-          a.title.toLowerCase() < b.title.toLowerCase() ? 1 : -1
-        )
-        setDocuments(sorted)
-        break
-    }
-    
-  }*/ /*
-  const multipleSorting = (values: String | String[]) => {
-    let sorted: any = [...documents]
-    sorted = [...documents].sort((a, b) => (a[values] < b[values] ? 1 : -1))
-    return
-  }
-*/
+
   let deleteModal = (
     <Modal
       isOpen={isOpen}

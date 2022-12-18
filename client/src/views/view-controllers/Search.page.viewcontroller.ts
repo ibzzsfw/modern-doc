@@ -1,4 +1,4 @@
-import SearchModel from '../../mvvm/models/Search.model';
+import SearchModel from '../../models/Search.model';
 import { useState } from "react";
 
 class SearchPageViewController {

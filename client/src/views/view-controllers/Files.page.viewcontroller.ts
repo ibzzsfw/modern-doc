@@ -1,13 +1,13 @@
 import Field from "src/view-models/Field";
 import FileData from 'src/view-models/File'
-import FilePageModel from "../../mvvm/models/FilePage.model";
-import FormPageModel from "../../mvvm/models/FormPage.model";
+import FilePageModel from "../../models/FilePage.model";
+import FormPageModel from "../../models/FormPage.model";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import shallow from "zustand/shallow";
 import { PDFDocument } from 'pdf-lib'
 import fontkit from '@pdf-lib/fontkit'
-import GenerateFileViewModel from '../../mvvm/view-models/GenerateFiles.viewmodel'
+import GenerateFileViewModel from '../../view-models/GenerateFiles.viewmodel'
 import axios from 'axios'
 
 class FileViewController {

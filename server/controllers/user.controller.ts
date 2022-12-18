@@ -79,6 +79,15 @@ class UserController {
     res.status(response.status).json(response.json)
   }
 
+  checkPhoneStatus = async (req: Request, res: Response) => {
+
+    const phone = req.params.phone
+
+    const response = await this.service.checkPhoneStatus(phone)
+    res.status(response.status).json(response.json)
+  }
+
+
 }
 
 export default UserController

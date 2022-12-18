@@ -8,10 +8,9 @@ import {
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import { AiOutlineUpload } from 'react-icons/ai'
-import { MyProfilePageModel } from '@models/MyProfilePageStore.model'
-// import { MyProfiledataModel } from '@models/MyProfiledataStore.model'
+import { MyProfilePageModel } from '@models/MyProfilePage.state.model'
 import { uploadFile } from '@firebase'
-import UserModel from '../../mvvm/models/User.model'
+import UserModel from '@models/User.model'
 
 type propTypes = {
   url: string | undefined

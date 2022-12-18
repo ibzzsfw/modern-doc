@@ -13,8 +13,8 @@ import {
 } from '@chakra-ui/react'
 import MenuProvider from '@components/MenuProvider.component'
 import UploadFile from '@components/UploadFile.component'
-import GenerateFileViewModel from '../../mvvm/view-models/GenerateFiles.viewmodel'
-import FormPageModel from '../../mvvm/models/FormPage.model'
+import GenerateFileViewModel from '@view-models/GenerateFiles.viewmodel'
+import FormPageModel from '@models/FormPage.model'
 import { useEffect, useState } from 'react'
 import {
   AiFillClockCircle,
@@ -28,14 +28,14 @@ import { GrUpload } from 'react-icons/gr'
 import { HiArrowDownRight } from 'react-icons/hi2'
 import { RiFileSearchLine } from 'react-icons/ri'
 import DocumentBadge from '@components/DocumentBadge.component'
-import UploadFileViewModel from '../../mvvm/view-models/UploadFile.viewmodel'
-import FileViewModel from '../../mvvm/view-models/Files.viewmodel'
-import FileController from '../../mvvm/view-models/FileController'
+import UploadFileViewModel from '@view-models/UploadFile.viewmodel'
+import FileViewModel from '@view-models/Files.viewmodel'
+import FileController from '@view-models/FileController'
 import { useNavigate } from 'react-router-dom'
 import { PDFDocument } from 'pdf-lib'
 import fontkit from '@pdf-lib/fontkit'
 import PDFMerger from 'pdf-merger-js'
-import FieldViewModel from '../../mvvm/view-models/Field.viewmodel'
+import FieldViewModel from '@view-models/Field.viewmodel'
 import ImportFromFamily from '@components/ImportFromFamily.component'
 
 type propsType = {
@@ -43,6 +43,7 @@ type propsType = {
 }
 
 const FileList = ({ files }: propsType) => {
+  console.log ('files', files)
   const navigate = useNavigate()
   const {
     document,
@@ -279,7 +280,7 @@ const FileList = ({ files }: propsType) => {
                     <Box sx={simpleBox}>{file.amount}</Box>
                     <Box sx={simpleBox}>
                       {/* {'API'} */}
-                      {/* <DocumentBadge status={file.getStatus()} /> */}
+                      <DocumentBadge status={file.getStatus()} />
                     </Box>
                     <Box sx={{ ...simpleBox, fontSize: '14px' }}>
                       {file.remark}

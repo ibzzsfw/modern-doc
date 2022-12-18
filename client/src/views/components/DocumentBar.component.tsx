@@ -7,11 +7,20 @@ type propsType = {
   onAddonButtonClick?: () => void
 }
 
-const DocumentBar = ({
-  title,
-  children,
-  onAddonButtonClick,
-}: propsType) => {
+const DocumentBar = ({ title, children, onAddonButtonClick }: propsType) => {
+  let layout = {
+    padding: '24px 0',
+    gap: '24px',
+    flexDirection: 'column',
+    width: '100%',
+  }
+
+  let childrenFlex = {
+    width: '100%',
+    flexWrap: 'wrap',
+    margin: 'auto',
+    gap: '32px',
+  }
 
   return (
     <>
@@ -26,15 +35,16 @@ const DocumentBar = ({
           </Text>
           {onAddonButtonClick && (
             <Button
-            rightIcon={<AiOutlineDoubleRight />}
-            variant="ghost"
-            colorScheme="gray"
-            onClick={() => onAddonButtonClick && onAddonButtonClick()}
-          >
-            ดูเพิ่มเติม
-          </Button>
+              rightIcon={<AiOutlineDoubleRight />}
+              variant="ghost"
+              colorScheme="gray"
+              onClick={() => {
+                onAddonButtonClick && onAddonButtonClick()
+              }}
+            >
+              ดูเพิ่มเติม
+            </Button>
           )}
-          
         </Flex>
         <Flex sx={childrenFlex}>{children}</Flex>
       </Flex>
@@ -43,17 +53,3 @@ const DocumentBar = ({
 }
 
 export default DocumentBar
-
-let layout = {
-  padding: '24px 0',
-  gap: '24px',
-  flexDirection: 'column',
-  width: '100%',
-}
-
-let childrenFlex = {
-  width: '100%',
-  flexWrap: 'wrap',
-  margin: 'auto',
-  gap: '32px',
-}

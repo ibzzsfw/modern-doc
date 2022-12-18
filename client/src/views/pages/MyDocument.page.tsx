@@ -5,21 +5,22 @@ import DocumentBox from 'src/views/components/DocumentBox.component'
 import SearchBox from 'src/views/components/SearchBox.component'
 import TakeNote from 'src/views/components/TakeNote.component'
 import UploadFile from 'src/views/components/UploadFile.component'
-import File from 'src/view-models/File'
-import FileController from '../../mvvm/view-models/FileController'
-import FolderController from '../../mvvm/view-models/FolderController'
-import NoteController from '../../mvvm/view-models/NoteController'
-import { LoginDataModel } from '@models/LoginDataStore.model'
+import FileController from '@view-models/FileController'
+import FolderController from '@view-models/FolderController'
+import NoteController from '@view-models/NoteController'
+import UserModel from '@models/User.model'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { AiFillPlusCircle } from 'react-icons/ai'
 import { useNavigate } from 'react-router-dom'
+import GenerateFileViewModel from '@view-models/GenerateFiles.viewmodel'
+import UploadFileViewModel from '@view-models/UploadFile.viewmodel'
 
 const MyDocument = () => {
-  //const { search, setSearch } = useSearchBoxStore()
+
   const [search, setSearch] = useState('')
   const navigate = useNavigate()
-  const user = LoginDataModel.getState().user
+  const { user } = UserModel()
   const [shareFile, setShareFile] = useState([])
   const [myFile, setMyFile] = useState([])
   const [myFolder, setMyFolder] = useState([])
@@ -146,7 +147,7 @@ const MyDocument = () => {
           }}
         >
           <>
-            {latestSharedFiles
+            {latestSharedFiles && latestSharedFiles
               .filter((file: any) =>
                 file.officialName.toLowerCase().includes(search)
               )
@@ -173,7 +174,7 @@ const MyDocument = () => {
             navigate('/alldocument/folder')
           }}
         >
-          {latestFolder
+          {latestFolder && latestFolder
             .filter((folder: any) =>
               folder.officialName.toLowerCase().includes(search)
             )
@@ -199,11 +200,11 @@ const MyDocument = () => {
         <DocumentBar
           title="ไฟล์ของฉัน"
           onAddonButtonClick={() => {
-            navigate('/alldocument/file')
+            navigate('/alldocument/generatedFile')
           }}
         >
-          {latestGeneratedFiles
-            .filter((file: File) =>
+          {latestGeneratedFiles && latestGeneratedFiles
+            .filter((file: GenerateFileViewModel) =>
               file.officialName.toLowerCase().includes(search)
             )
             .map((file: any) => {
@@ -230,7 +231,7 @@ const MyDocument = () => {
         <DocumentBar
           title="เอกสารที่อัปโหลด"
           onAddonButtonClick={() => {
-            navigate('/alldocument/uploadfile')
+            navigate('/alldocument/uploadedfile')
           }}
         >
           <>
@@ -244,8 +245,8 @@ const MyDocument = () => {
               }
             />
 
-            {latestUploadedFiles
-              .filter((file: File) =>
+            {latestUploadedFiles && latestUploadedFiles
+              .filter((file: UploadFileViewModel) =>
                 file.officialName.toLowerCase().includes(search)
               )
               .map((file: any) => {
