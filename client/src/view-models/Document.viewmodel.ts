@@ -1,12 +1,12 @@
-import DocumentsType from "@interfaces/Document";
+import IDocument from "@interfaces/Document";
 
-abstract class DocumentViewModel implements DocumentsType {
+abstract class DocumentViewModel implements IDocument {
   id;
   dateUpload;
   description;
   note;
 
-  constructor(arg: DocumentsType) {
+  constructor(arg: IDocument) {
     this.id = arg.id;
     this.dateUpload = arg.dateUpload;
     this.description = arg.description;

@@ -75,7 +75,7 @@ const Home = () => {
             navigate('/alldocument/generatedFile')
           }}
         >
-          {latestFiles?.map((file: any) => (
+          {latestFiles.map((file: any) => (
             <DocumentBox
               id={file.id}
               title={file.officialName}

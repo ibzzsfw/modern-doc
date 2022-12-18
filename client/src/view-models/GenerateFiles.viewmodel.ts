@@ -1,19 +1,13 @@
-import GenerateFileType from "@interfaces/GeneratedFile";
+import IGenerateFile from "@interfaces/GeneratedFile";
 import SystemFileViewModel from "@view-models/SystemFile.viewmodel";
 
-class GenerateFileViewModel extends SystemFileViewModel implements GenerateFileType {
+class GenerateFileViewModel extends SystemFileViewModel implements IGenerateFile {
   fields
   
-  constructor(arg: GenerateFileType) {
+  constructor(arg: IGenerateFile) {
     super(arg);
     this.fields = arg.fields;
     this.type = 'generatedFile'
-  }
-
-  share = () => {
-  }
-
-  unshare = () => {
   }
 }
 

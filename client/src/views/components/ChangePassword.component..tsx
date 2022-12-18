@@ -58,7 +58,6 @@ const ChangePassword = () => {
     confirmPassword: any
     newPassword: any
   }) => {
-    console.log('api process')
     if (values.newPassword == values.confirmPassword) {
       await changePassword.mutateAsync({ ...values })
     } else {

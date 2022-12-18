@@ -1,6 +1,6 @@
-import UserType from '@interfaces/User';
+import IUser from '@interfaces/User';
 
-class UserViewModel implements UserType {
+class UserViewModel implements IUser {
   id
   householdId
   title
@@ -16,7 +16,7 @@ class UserViewModel implements UserType {
   email
   birthDate
 
-  constructor(arg: UserType) {
+  constructor(arg: IUser) {
     this.id = arg.id;
     this.householdId = arg.householdId;
     this.title = arg.title;

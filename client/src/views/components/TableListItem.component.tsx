@@ -43,6 +43,7 @@ type propsType = {
     | 'sharedFile'
     | 'userFreeUploadFile'
     | 'note'
+    | undefined
   id: string
   isShared?: boolean
   title: string
@@ -65,18 +66,13 @@ const TableListItem = ({
   id,
   isShared = false,
   title,
-  amount,
-  size,
-  author,
   image,
   showNote,
   note,
   showMenu = false,
-  colorBar,
   modifiedDate,
   createdDate,
   showDate,
-  url,
 }: propsType) => {
   const toast = useToast()
 
@@ -98,44 +94,6 @@ const TableListItem = ({
     }
     if (type === 'note') {
       return '/assets/note_logo.png'
-    }
-  }
-
-  const getSubText = () => {
-    if (showDate) {
-      if (createdDate) {
-        return `สร้างเมื่อ ${new Date(createdDate).toLocaleDateString('en-GB')}`
-      }
-      return 'ยังไม่ได้สร้าง'
-    }
-    if (type === 'generatedFolder') {
-      return `${amount} เอกสาร`
-    }
-    if (type === 'generatedFile') {
-      return `${size} MB`
-    }
-    if (type === 'uploadedFile') {
-      return `${size} MB`
-    }
-    if (type === 'sharedFile') {
-      return `ผู้สร้าง : ${author}`
-    }
-    if (type === 'note') {
-      return `แก้ไขล่าสุดเมื่อ : ${new Date(modifiedDate ?? '').toLocaleDateString(
-        'en-GB'
-      )}`
-    }
-    if (modifiedDate) {
-      return `แก้ไขล่าสุดเมื่อ : ${new Date(modifiedDate).toLocaleDateString(
-        'en-GB'
-      )}`
-    }
-  }
-  const getModifieDate = () => {
-    if (showDate) {
-      if (modifiedDate) {
-        return `${new Date(modifiedDate).toLocaleDateString('en-GB')}`
-      }
     }
   }
 

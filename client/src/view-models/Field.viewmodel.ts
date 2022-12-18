@@ -1,6 +1,6 @@
-import FieldType from "@interfaces/Field";
+import IField from "@interfaces/Field";
 
-abstract class FieldViewModel implements FieldType {
+abstract class FieldViewModel implements IField {
   id
   name
   type
@@ -13,7 +13,7 @@ abstract class FieldViewModel implements FieldType {
   isRequired
   order
 
-  constructor(arg: FieldType) {
+  constructor(arg: IField) {
     this.id = arg.id;
     this.name = arg.name;
     this.type = arg.type;

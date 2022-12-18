@@ -50,8 +50,6 @@ class FileController {
           },
         }
       )
-
-      console.log('file', responseTest.data)
     }
     let response = await axios.get(
       `${process.env.VITE_API_ENDPOINT}/file/get-by-id/${this.getTypeName(
@@ -145,7 +143,8 @@ class FileController {
     }
   }
 
-  static async getLatestFile(type: string = 'generatedFile') {
+  static async getLatestFile(type: string) {
+    console.log(`${process.env.VITE_API_ENDPOINT}/file/latest-files/${type}`)
     let response = await axios.get(
       `${process.env.VITE_API_ENDPOINT}/file/latest-files/${type}`,
       {
@@ -157,15 +156,18 @@ class FileController {
     )
     let files: any[] = []
     response.data.map((file: any) => {
-      let { date, description, name, note, officialName, id } = file
+      let { date, description, name, note, officialName, id, isShared, firstName, lastName } = file
       let fileArg = {
         id,
         dateUpload: date,
         description,
         note,
         officialName,
+        isShared
       }
-      switch (file.type) {
+      console.log(fileArg)
+      let owner = `${firstName} ${lastName}`
+      switch (type) {
         case 'userFreeUploadFile':
           files.push(new FreeUploadedFileViewModel(fileArg))
           break
@@ -179,11 +181,17 @@ class FileController {
             name,
           })))
           break
+        case 'sharedFile':
+          files.push({
+            file: new UploadFileViewModel(Object.assign(fileArg, {
+              name,
+            })),
+            owner
+          })
         default:
           break
       }
     })
-    console.log('files', files)
     return files
   }
 
@@ -342,7 +350,6 @@ class FileController {
     expiredDate: Date | null,
     note: string
   ) {
-    console.log('newUserFreeUploadedFile', officialName, URI, expiredDate, note)
     let response = await axios.post(
       `${process.env.VITE_API_ENDPOINT}/file/new/userFreeUploadFile`,
       {

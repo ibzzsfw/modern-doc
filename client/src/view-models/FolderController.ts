@@ -17,7 +17,6 @@ class FolderController {
       }
     )
     let { name, officialName, date, description, file, note } = response.data
-    console.log(response.data)
     let files: any[] = []
     file.map((file: any) => {
       let { amount, remark, file: fileData } = file

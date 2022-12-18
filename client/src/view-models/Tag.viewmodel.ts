@@ -1,10 +1,10 @@
-import TagType from "@interfaces/Tag";
+import ITag from "@interfaces/Tag";
 
-class TagViewModel implements TagType {
+class TagViewModel implements ITag {
   id
   name
 
-  constructor(arg: TagType) {
+  constructor(arg: ITag) {
     this.id = arg.id;
     this.name = arg.name;
   }

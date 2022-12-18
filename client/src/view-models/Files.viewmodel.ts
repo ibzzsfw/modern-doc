@@ -1,25 +1,24 @@
-import FilesType from "@interfaces/File";
+import IFile from "@interfaces/File";
 import DocumentViewModel from "@view-models/Document.viewmodel";
 
-type DocumentStatus =
-  | 'หมดอายุ'
+type DocumentStatus = 'หมดอายุ'
   | 'มีอยู่ในคลัง'
   | 'ใกล้หมดอายุ'
   | 'ไม่มีอยู่ในคลัง'
-abstract class FileViewModel extends DocumentViewModel implements FilesType {
+abstract class FileViewModel extends DocumentViewModel implements IFile {
   officialName;
   URI
   previewURI
   type
-  // lastModified;
+  isShared
 
-  constructor(arg: FilesType) {
+  constructor(arg: IFile) {
     super(arg);
     this.officialName = arg.officialName;
     this.URI = arg.URI;
     this.previewURI = arg.previewURI;
     this.type = arg.type;
-    // this.lastModified = arg.lastModified;
+    this.isShared = arg.isShared;
   }
 
   getStatus(): DocumentStatus {

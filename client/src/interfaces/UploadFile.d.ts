@@ -1,6 +1,6 @@
-import SystemFileType from "@interfaces/SystemFiles";
+import ISystemFile from "@interfaces/SystemFiles";
 
-interface UploadFileType extends SystemFileType {
+interface IUploadFile extends ISystemFile {
 }
 
-export default UploadFileType;
+export default IUploadFile;

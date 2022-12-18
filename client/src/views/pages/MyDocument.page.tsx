@@ -118,7 +118,7 @@ const MyDocument = () => {
                 />
               }
             />
-            {latestNote
+            {latestNote && latestNote
               .filter((note: any) =>
                 note.heading.toLowerCase().includes(search)
               )
@@ -128,7 +128,7 @@ const MyDocument = () => {
                     id={note.id}
                     type={'note'}
                     title={note.heading}
-                    author={note.author}
+                    // author={note.author}
                     showNote
                     note={note.content}
                     modifiedDate={new Date(note.modifiedDate)}
@@ -148,20 +148,21 @@ const MyDocument = () => {
         >
           <>
             {latestSharedFiles && latestSharedFiles
-              .filter((file: any) =>
-                file.officialName.toLowerCase().includes(search)
+              .filter((file) =>
+                file.file.officialName.toLowerCase().includes(search)
               )
               .map((file: any) => {
+                let {id, officialName, note, isShared} = file.file
                 return (
                   <DocumentBox
-                    id={file.id}
+                    id={id}
                     type={'sharedFile'}
-                    title={file.officialName}
-                    author={file.firstName + ' ' + file.lastName}
+                    title={officialName}
+                    author={file.owner}
                     showNote
-                    note={file.note}
+                    note={note}
                     showMenu={true}
-                    isShared={file.isShared}
+                    isShared={isShared}
                   />
                 )
               })
@@ -205,7 +206,7 @@ const MyDocument = () => {
         >
           {latestGeneratedFiles && latestGeneratedFiles
             .filter((file: GenerateFileViewModel) =>
-              file.officialName.toLowerCase().includes(search)
+              file.officialName?.toLowerCase().includes(search)
             )
             .map((file: any) => {
               return (
@@ -247,7 +248,7 @@ const MyDocument = () => {
 
             {latestUploadedFiles && latestUploadedFiles
               .filter((file: UploadFileViewModel) =>
-                file.officialName.toLowerCase().includes(search)
+                file.officialName?.toLowerCase().includes(search)
               )
               .map((file: any) => {
                 return (

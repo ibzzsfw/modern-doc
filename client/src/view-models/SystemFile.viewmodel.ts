@@ -1,24 +1,16 @@
-import Sharable from "@view-models/Sharable";
-import SystemFileType from "@interfaces/SystemFiles";
+import ISystemFile from "@interfaces/SystemFiles";
 import FileViewModel from "@view-models/Files.viewmodel";
 
-class SystemFileViewModel extends FileViewModel implements SystemFileType, Sharable {
+class SystemFileViewModel extends FileViewModel implements ISystemFile {
   name
   dayLifeSpan
   tag
-  shareData: Date = new Date();
 
-  constructor(arg: SystemFileType) {
+  constructor(arg: ISystemFile) {
     super(arg);
     this.name = arg.name;
     this.dayLifeSpan = arg.dayLifeSpan;
     this.tag = arg.tag
-  }
-
-  share = () => {
-  }
-
-  unshare = () => {
   }
 }
 

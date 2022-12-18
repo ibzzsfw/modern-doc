@@ -153,7 +153,6 @@ const ProfileFormInput = ({ data }: any) => {
           setEdit(false)
         }}
         onSubmit={(values) => {
-          // console.log({ ...values })
           setUser(new UserViewModel({
             ...user,
             title: values.title,

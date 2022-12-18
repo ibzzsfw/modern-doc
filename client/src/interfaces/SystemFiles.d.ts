@@ -1,10 +1,10 @@
 import TagViewModel from "@view-models/Tag.viewmodel";
-import FilesType from "@interfaces/File";
+import IFile from "@interfaces/File";
 
-interface SystemFileType extends FilesType {
+interface ISystemFile extends IFile {
   name?: string;
   dayLifeSpan?: number;
   tag?: TagViewModel[];
 }
 
-export default SystemFileType;
+export default ISystemFile;

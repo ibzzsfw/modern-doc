@@ -1,6 +1,5 @@
 import axios from 'axios'
 import UserModel from '@models/User.model'
-import UserViewModel from '@view-models/User.viewmodel'
 import NoteViewModel from '@view-models/Note.viewmodel'
 
 class NoteController {
@@ -14,21 +13,19 @@ class NoteController {
         },
       }
     )
-    let notes: object[] = []
+    let notes: NoteViewModel[] = []
     response.data.map((note: any) => {
       let { id, content, createdDate, heading, modifiedDate, userId } = note
-      notes.push({
-        note: new NoteViewModel({
+      notes.push(
+        new NoteViewModel({
           id,
           content,
           createdDate,
           heading,
           modifiedDate,
-        }),
-        user: new UserViewModel({ id: userId })
-      })
+        }))
     })
-    return response.data
+    return notes
   }
 
   static async deleteNoteById(id: string | undefined) {

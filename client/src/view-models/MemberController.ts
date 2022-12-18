@@ -111,7 +111,6 @@ class MemberController {
           },
         }
       )
-      console.log(updatedMember.data)
       setFamily(updatedMember.data)
       window.location.reload()
     }

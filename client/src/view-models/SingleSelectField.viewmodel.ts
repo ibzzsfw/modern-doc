@@ -1,5 +1,5 @@
 import FieldModel from "@view-models/Field.viewmodel";
-import FieldType from "@interfaces/Field";
+import IField from "@interfaces/Field";
 import * as Yup from "yup";
 
 type Choice = {
@@ -8,9 +8,9 @@ type Choice = {
   value: string;
 }
 
-class SingleSelectFieldViewModel extends FieldModel implements FieldType {
+class SingleSelectFieldViewModel extends FieldModel implements IField {
 
-  constructor(arg: FieldType) {
+  constructor(arg: IField) {
     super(arg);
     this.type = "singleSelect";
   }

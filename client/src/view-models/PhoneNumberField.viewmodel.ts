@@ -1,9 +1,9 @@
 import FieldModel from "@view-models/Field.viewmodel";
-import FieldType from "@interfaces/Field";
+import IField from "@interfaces/Field";
 import * as Yup from "yup";
 
-class PhoneNumberFieldViewModel extends FieldModel implements FieldType {
-  constructor(arg: FieldType) {
+class PhoneNumberFieldViewModel extends FieldModel implements IField {
+  constructor(arg: IField) {
     super(arg);
     this.type = "phoneNumber";
   }

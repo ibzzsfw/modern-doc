@@ -1,4 +1,4 @@
-interface NoteType {
+interface INote {
   id: string;
   heading?: string;
   content?: string;
@@ -6,4 +6,4 @@ interface NoteType {
   modifiedDate?: Date;
 }
 
-export default NoteType;
+export default INote;

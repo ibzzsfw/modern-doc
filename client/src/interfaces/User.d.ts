@@ -1,4 +1,4 @@
-interface UserType {
+interface IUser {
   id?: string;
   householdId?: string;
   title?: string;
@@ -15,4 +15,4 @@ interface UserType {
   birthDate?: string;
 }
 
-export default UserType;
+export default IUser;

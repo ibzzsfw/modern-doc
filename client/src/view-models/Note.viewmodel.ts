@@ -1,15 +1,13 @@
-import NoteType from "@interfaces/Note";
-import Sharable from "@view-models/Sharable";
+import INote from "@interfaces/Note";
 
-class NoteViewModel implements NoteType, Sharable {
+class NoteViewModel implements INote {
   id
   heading
   content
   createdDate
   modifiedDate
-  shareData: Date = new Date();
 
-  constructor(arg: NoteType) {
+  constructor(arg: INote) {
     this.id = arg.id;
     this.heading = arg.heading;
     this.content = arg.content;
@@ -17,11 +15,6 @@ class NoteViewModel implements NoteType, Sharable {
     this.modifiedDate = arg.modifiedDate;
   }
 
-  share = () => {
-  }
-  
-  unshare = () => {
-  }
 }
 
 export default NoteViewModel;

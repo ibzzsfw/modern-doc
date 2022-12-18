@@ -43,7 +43,6 @@ type propsType = {
 }
 
 const FileList = ({ files }: propsType) => {
-  console.log ('files', files)
   const navigate = useNavigate()
   const {
     document,
@@ -104,7 +103,6 @@ const FileList = ({ files }: propsType) => {
 
       file.fields.map((field: FieldViewModel) => {
         if (form.getFieldMaybe(field.name)) {
-          console.log(field.name, field.userValue)
           switch (field.type) {
             case 'text':
               form.getTextField(field.name).setText(field.userValue)
@@ -154,7 +152,6 @@ const FileList = ({ files }: propsType) => {
     await Promise.all(uploadedListPromise)
 
     const testMergePdf = await merger.save(`${document?.officialName}`)
-    console.log(pdfList)
   }
 
   useEffect(() => {
@@ -167,12 +164,10 @@ const FileList = ({ files }: propsType) => {
           return result
         })
       const result = await Promise.all(promise)
-      // console.log('result', result)
       setGeneratedFile(result)
     }
     getGeneratedFileField()
 
-    // console.table(selectedFile)
   }, [selectedFile])
 
   const countGeneratedFile = () =>

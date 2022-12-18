@@ -1,351 +1,47 @@
-import {
-  Box,
-  Avatar,
-  useDisclosure,
-  Popover,
-  PopoverContent,
-  PopoverHeader,
-  PopoverBody,
-  HStack,
-  VStack,
-  Text,
-  Flex,
-  Icon,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  Divider,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  Button,
-  Link,
-} from '@chakra-ui/react'
-import { BsPersonCircle } from 'react-icons/bs'
-import { IoChevronDownOutline, IoChevronForwardOutline } from 'react-icons/io5'
-import { MdGroups } from 'react-icons/md'
-import { BiLogOutCircle } from 'react-icons/bi'
-import { useState } from 'react'
-// import { useLoginDataStore } from '@stores/LoginDataStore'
-import UserModel from '../../models/User.model'
-import shallow from 'zustand/shallow'
-import UserViewModel from '../../view-models/User.viewmodel'
-import { useNavigate } from 'react-router-dom'
-import UserController from '../../view-models/UserController'
-import { useMutation } from '@tanstack/react-query'
+import { Avatar, Box, Flex, HStack, Image, Text } from '@chakra-ui/react'
+import { Link } from 'react-router-dom'
+import NavbarAvatar from '@components/NavbarAvatar.component'
 
-const NavbarAvatar = () => {
-  const navigate = useNavigate()
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const {
-    isOpen: isOpenModal,
-    onOpen: onOpenModal,
-    onClose: onCloseModal,
-  } = useDisclosure()
+const Navbar = () => {
 
-  const [isExpand, setIsExpand] = useState(false)
-  const [selectedMember, setSelectedMember] = useState<any>({
-    id: '',
-    firstName: '',
-    lastName: '',
-  })
-
-  const userJson = UserModel((state) => state.user, shallow)
-  const setUser = UserModel((state) => state.setUser, shallow)
-  const setFamily = UserModel(
-    (state) => state.setFamily,
-    shallow
-  )
-
-  const user = userJson ? new UserViewModel(userJson) : null
-
-  const family = UserModel(
-    (state) => state.family,
-    shallow
-  )
-
-  const { mutate: switchMember } = useMutation(
-    async (id: string) => UserController.switchMember(id),
-    {
-      onSuccess: (data) => {
-
-        setUser(
-          new UserViewModel({
-            id: data.id,
-            householdId: data.householdId,
-            title: data.title,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            citizenId: data.citizenId,
-            phoneNumber: data.phoneNumber,
-            sex: data.sex,
-            token: data.token,
-            relationship: data.relationship,
-            profileURI: data.profileURI,
-            email: data.email,
-            birthDate: data.birthDate,
-          })
-        )
-        let familyArray: UserViewModel[] = []
-        data.familyMembers.map((member: any) => {
-          let { id, citizenId, firstName, lastName, phoneNumber, profileURI, title, relationship } = member
-          familyArray.push(
-            new UserViewModel({
-              id,
-              citizenId,
-              firstName,
-              lastName,
-              phoneNumber,
-              profileURI,
-              title,
-              relationship,
-            })
-          )
-        })
-        setFamily(familyArray)
-        window.location.pathname = '/home'
-      },
-    }
-  )
-
-  if (!user) return null
   return (
-    <Box position="relative">
-      <Avatar
-        sx={navbarAvatar}
-        onClick={() => onOpen()}
-        src={user.profileURI}
-      />
-      <Popover isOpen={isOpen} onClose={onClose} placement="bottom-start">
-        <PopoverContent sx={menuLayout}>
-          <PopoverHeader>
-            <HStack justifyContent="space-around">
-              {/* <Avatar sx={menuAvatar} src={user.profileURI} /> */}
-              <VStack alignItems="flex-start">
-                <Text sx={nameText}>{user.getFullName()}</Text>
-                <Text sx={relationText}>{user.getRelationshipText()}</Text>
-              </VStack>
-            </HStack>
-          </PopoverHeader>
-          <PopoverBody padding="4px">
-            <Flex flexDirection="column" gap="2px">
-              <Flex as="button" sx={menuButton}>
-                <Icon as={BsPersonCircle} />
-                <Text sx={menuText} onClick={() => navigate('/myprofile')}>
-                  ข้อมูลส่วนตัว
-                </Text>
-              </Flex>
-              <Accordion allowToggle>
-                <AccordionItem border="none">
-                  <AccordionButton padding="2px" borderRadius="4px">
-                    <Flex
-                      as="button"
-                      sx={menuButton}
-                      justifyContent="space-between"
-                      onClick={() => setIsExpand(!isExpand)}
-                    >
-                      <Text sx={menuText}>สมาชิกครอบครัว</Text>
-                      {!isExpand ? (
-                        <Icon as={IoChevronForwardOutline} />
-                      ) : (
-                        <Icon as={IoChevronDownOutline} />
-                      )}
-                    </Flex>
-                  </AccordionButton>
-                  <AccordionPanel padding="0">
-                    {family.map((member, index) => {
-                      return (
-                        <Link
-                          onClick={() => {
-                            setSelectedMember(member)
-                            onOpenModal()
-                          }}
-                        >
-                          <Flex as="button" sx={memberList}>
-                            <Avatar sx={memberAvatar} src={member.profileURI} />
-                            <Text sx={memberNameText}>
-                              {member.firstName} {member.lastName}
-                            </Text>
-                          </Flex>
-
-                          <Modal
-                            isOpen={isOpenModal}
-                            onClose={onCloseModal}
-                            isCentered
-                          >
-                            <ModalOverlay />
-                            <ModalContent>
-                              <ModalHeader>สลับสมาชิก</ModalHeader>
-                              <ModalBody>
-                                <Text>
-                                  ต้องการสลับสมาชิกเป็น{' '}
-                                  <Text as="b">
-                                    {selectedMember.firstName}{' '}
-                                    {selectedMember.lastName}
-                                  </Text>{' '}
-                                  หรือไม่
-                                </Text>
-                              </ModalBody>
-                              <ModalFooter>
-                                <Flex gap="22px">
-                                  <Button
-                                    onClick={onCloseModal}
-                                    sx={editButton}
-                                  >
-                                    ยกเลิก
-                                  </Button>
-                                  <Button
-                                    sx={submitButton}
-                                    onClick={() => {
-                                      console.log(member)
-                                      switchMember(selectedMember.id)
-                                    }}
-                                  >
-                                    สลับ
-                                  </Button>
-                                </Flex>
-                              </ModalFooter>
-                            </ModalContent>
-                          </Modal>
-                        </Link>
-                      )
-                    })}
-                  </AccordionPanel>
-                </AccordionItem>
-              </Accordion>
-              <Divider />
-              <Box>
-                <Flex
-                  as="button"
-                  sx={menuButton}
-                  onClick={() => navigate('/family')}
-                >
-                  <Icon as={MdGroups} />
-                  <Text sx={menuText}>จัดการสมาชิกครอบครัว</Text>
-                </Flex>
-              </Box>
-              <Divider />
-              <Flex
-                as="button"
-                sx={menuButton}
-                onClick={() => UserController.logout()}
-              >
-                <Icon as={BiLogOutCircle} color="accent.red" />
-                <Text sx={menuText} color="accent.red">
-                  ออกจากระบบ
-                </Text>
-              </Flex>
-            </Flex>
-          </PopoverBody>
-        </PopoverContent>
-      </Popover>
+    <Box sx={layout}>
+      <Flex sx={navFlex}>
+        <Image src="/assets/ModernDoc.png" height="54px" />
+        <HStack gap="24px">
+          <Link to="/home">
+            <Text>หน้าหลัก</Text>
+          </Link>
+          <Link to="/mydocument">
+            <Text>แฟ้ม</Text>
+          </Link>
+        </HStack>
+        <NavbarAvatar />
+      </Flex>
     </Box>
   )
 }
 
-export default NavbarAvatar
+export default Navbar
 
-const navbarAvatar = {
-  width: '48px',
-  height: '48px',
-  cursor: 'pointer',
-  borderRadius: '100%',
+let layout = {
+  width: '100vw',
+  position: 'fixed',
+  top: '0px',
+  boxShadow:
+    '0px 10px 10px 2px rgba(0, 0, 0, 0.1), 0px 10px 10px -5px rgba(0, 0, 0, 0.04)',
+  zIndex: '1',
+  marginBottom: '20px',
+  backgroundColor: 'background.gray',
 }
 
-const menuLayout = {
-  top: '56px',
-  left: '-76%',
-  width: '224px',
-}
-
-const menuAvatar = {
-  width: '64px',
-  height: '64px',
-  borderRadius: '100%',
-}
-
-const nameText = {
-  fontSize: '14px',
-  fontWeight: 'semibold',
-}
-
-const memberNameText = {
-  fontSize: '14px',
-  fontWeight: 'normal',
-}
-
-const relationText = {
-  fontSize: '12px',
-  fontWeight: 'normal',
-}
-
-const menuText = {
-  fontSize: '14px',
-  fontWeight: 'semibold',
-}
-
-const menuButton = {
+let navFlex = {
   width: '100%',
-  textAlign: 'left',
-  padding: '8px 16px',
+  margin: 'auto',
+  padding: '0',
+  height: '76px',
   alignItems: 'center',
-  height: '40px',
-  gap: '12px',
-  borderRadius: '4px',
-  _hover: {
-    background: 'background.gray',
-  },
-}
-let editButton = {
-  width: 'auto',
-  height: '40px',
-  backgroundColor: 'accent.white',
-  color: 'black',
-  right: '0px',
-  variant: 'outline',
-  border: '1px solid',
-  borderColor: '#E2E8F0',
-
-  _hover: {
-    backgroundColor: 'hover.gray',
-    color: 'white',
-  },
-  _active: {
-    backgroundColor: 'hover.white',
-  },
-}
-let submitButton = {
-  height: '40px',
-  backgroundColor: 'accent.blue',
-  color: 'white',
-
-  variant: 'outline',
-  _hover: {
-    backgroundColor: 'hover.blue',
-  },
-  _active: {
-    backgroundColor: 'hover.white',
-  },
-}
-
-const memberList = {
-  width: '100%',
-  textAlign: 'left',
-  padding: '8px 24px',
-  alignItems: 'center',
-  height: '36px',
-  gap: '12px',
-  borderRadius: '4px',
-  _hover: {
-    background: 'background.gray',
-  },
-}
-
-const memberAvatar = {
-  width: '24px',
-  height: '24px',
+  backgroundColor: 'background.gray',
+  maxWidth: '1280px',
+  justifyContent: 'space-between',
 }

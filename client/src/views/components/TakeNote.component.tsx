@@ -29,7 +29,7 @@ type propsTypes = {
   doucmentType?: string | undefined
   type?: 'freeNote' | 'folderNote' | 'fileNote'
   noteContent?: String
-  documentTitle: String
+  documentTitle?: String
 }
 
 const TakeNote = ({

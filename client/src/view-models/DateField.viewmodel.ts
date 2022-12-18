@@ -1,9 +1,9 @@
 import FieldViewModel from "@view-models/Field.viewmodel";
-import FieldType from "@interfaces/Field";
+import IField from "@interfaces/Field";
 import * as Yup from "yup";
 
-class DateFieldViewModel extends FieldViewModel implements FieldType {
-  constructor(arg: FieldType) {
+class DateFieldViewModel extends FieldViewModel implements IField {
+  constructor(arg: IField) {
     super(arg);
     this.type = "date";
   }

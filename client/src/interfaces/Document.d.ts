@@ -1,4 +1,4 @@
-interface DocumentsType {
+interface IDocument {
   id?: string;
   officialName?: string;
   dateUpload?: Date;
@@ -6,4 +6,4 @@ interface DocumentsType {
   note?: string;
 }
 
-export default DocumentsType;
+export default IDocument;

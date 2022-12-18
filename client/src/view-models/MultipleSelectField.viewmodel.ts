@@ -1,10 +1,10 @@
 import FieldModel from "@view-models/Field.viewmodel";
-import FieldType from "@interfaces/Field";
+import IField from "@interfaces/Field";
 import * as Yup from "yup";
 
-class MultipleSelectFieldViewModel extends FieldModel implements FieldType {
+class MultipleSelectFieldViewModel extends FieldModel implements IField {
 
-  constructor(arg: FieldType) {
+  constructor(arg: IField) {
     super(arg);
     this.type = "multipleSelect";
   }

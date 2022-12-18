@@ -11,6 +11,7 @@ import {
   MenuList,
   MenuOptionGroup,
   VStack,
+  useDisclosure,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -23,6 +24,11 @@ import Frame from '@components/Frame.component'
 import MenuProvider from '@components/MenuProvider.component'
 import SearchBox from '@components/SearchBox.component'
 import TableListItem from '@components/TableListItem.component'
+import FileController from '@view-models/FileController'
+import FolderController from '@view-models/FolderController'
+import NoteController from '@view-models/NoteController'
+
+import { useState, useEffect } from 'react'
 import {
   AiFillPrinter,
   AiOutlineAppstore,
@@ -32,18 +38,86 @@ import {
 import { BsThreeDots, BsTrash } from 'react-icons/bs'
 import { GrDocumentText, GrDownload } from 'react-icons/gr'
 import { IoChevronDownOutline } from 'react-icons/io5'
-import AllDocumentPageViewController from '../view-controllers/AllDocument.page.viewcontroller'
+import { useParams } from 'react-router-dom'
 
 const AllDocumentPage = () => {
+  const { category } = useParams<{ category: string }>()
+  const [view, setView] = useState<'box' | 'table'>('box')
+  const [search, setSearch] = useState('')
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [sortMenu, setSortMenu] = useState<{
+    sort: string | string[]
+    order: string | string[]
+  }>({ sort: '', order: '' })
+  const [data, setData] = useState([])
+  const [sortBy, setSortBy] = useState<'name' | 'date'>('name')
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
 
-  const viewController = new AllDocumentPageViewController()
+  const handleSort = (data: any) => {
+    const sortedData = data.sort((a: any, b: any) => {
+      if (sortBy === 'name') {
+        if (sortOrder === 'asc') {
+          return a.officialName
+            ? a.officialName.localeCompare(b.name)
+            : a.heading.localeCompare(b.heading)
+        } else {
+          return b.officialName
+            ? b.officialName.localeCompare(a.name)
+            : b.heading.localeCompare(a.heading)
+        }
+      } else {
+        if (sortOrder === 'asc') {
+          return a.date
+            ? new Date(a.date).getTime() - new Date(b.date).getTime()
+            : new Date(a.modifiedDate).getTime() -
+            new Date(b.modifiedDate).getDate()
+        } else {
+          return new Date(b.date).getTime() - new Date(a.date).getTime()
+        }
+      }
+    })
+    setData(sortedData)
+  }
 
-  const { category } = viewController.param
-  const [view, setView] = viewController.viewState
-  const [search, setSearch] = viewController.searchState
-  const { isOpen, onOpen, onClose } = viewController.disclosure
-  const [sortMenu, setSortMenu] = viewController.sortMenuState
-  const [documents, setDocuments] = viewController.documentState
+  useEffect(() => {
+    if (category === 'note') {
+      NoteController.getLastestNote().then((res) => {
+        handleSort(res)
+      })
+    } else if (category === 'folder') {
+      FolderController.getLatestFolder().then((res) => {
+        handleSort(res)
+      })
+    } else if (category === 'uploadedFile') {
+      FileController.getLatestFile(category).then((res) => {
+        FileController.getLatestFile('userFreeUploadFile').then((res2) => {
+          const merged = [...res, ...res2]
+          handleSort(merged)
+        })
+      })
+    }
+    if (category === 'sharefile') {
+      FileController.getLatestFile('sharedFile').then((res) => {
+        handleSort(res)
+      })
+    } else {
+      FileController.getLatestFile(category as string).then((res) => {
+        handleSort(res)
+      })
+    }
+  }, [category, sortBy, sortOrder])
+
+  useEffect(() => {
+    let temp = data
+    if (category !== 'note')
+      temp = temp.filter((item: any) => item.officialName.includes(search))
+    else
+      temp = temp.filter(
+        (item: any) =>
+          item.heading.includes(search) || item.content.includes(search)
+      )
+    setData(temp)
+  }, [search])
 
   let menu = (
     <MenuProvider
@@ -52,22 +126,22 @@ const AllDocumentPage = () => {
           {
             title: 'รายละเอียด',
             icon: <Icon as={GrDocumentText} />,
-            onClick: () => {},
+            onClick: () => { },
           },
           {
             title: 'แก้ไขโน้ต',
             icon: <Icon as={AiOutlineEdit} />,
-            onClick: () => {},
+            onClick: () => { },
           },
           {
             title: 'ดาวน์โหลด',
             icon: <Icon as={GrDownload} />,
-            onClick: () => {},
+            onClick: () => { },
           },
           {
             title: 'พิมพ์',
             icon: <Icon as={AiFillPrinter} />,
-            onClick: () => {},
+            onClick: () => { },
           },
         ],
         [
@@ -91,6 +165,38 @@ const AllDocumentPage = () => {
       />
     </MenuProvider>
   )
+
+  const getType = (category: string | undefined) => {
+    switch (category) {
+      case 'note':
+        return 'note'
+      case 'sharefile':
+        return 'sharedFile'
+      case 'folder':
+        return 'generatedFolder'
+      case 'generatedFile':
+        return 'generatedFile'
+      case 'uploadedFile':
+        return 'uploadedFile'
+      case 'userFreeUploadFile':
+        return 'uploadedFile'
+    }
+  }
+
+  const getThaiName = (category: string | undefined) => {
+    switch (category) {
+      case 'note':
+        return 'บันทึกเตือนความจำของฉัน'
+      case 'sharefile':
+        return 'เอกสารที่แชร์ร่วมกัน'
+      case 'folder':
+        return 'แฟ้มเอกสารของฉัน'
+      case 'generatedFile':
+        return 'ไฟล์ของฉัน'
+      case 'uploadedFile':
+        return 'เอกสารที่อัปโหลด'
+    }
+  }
 
   let deleteModal = (
     <Modal
@@ -116,6 +222,7 @@ const AllDocumentPage = () => {
               variant="solid"
               colorScheme="red"
               onClick={() => {
+                //delete api
               }}
             >
               ลบ
@@ -151,15 +258,12 @@ const AllDocumentPage = () => {
                   type="radio"
                   title="เรียงลำดับด้วย"
                   onChange={(value) => {
-                    setSortMenu({ sort: value, order: sortMenu.order })
+                    setSortBy(value as any)
                   }}
                 >
-                  <MenuItemOption value="title">ชื่อ</MenuItemOption>
-                  <MenuItemOption value="lastModified">
+                  <MenuItemOption value="name">ชื่อ</MenuItemOption>
+                  <MenuItemOption value="date">
                     วันที่แก้ไขล่าสุด
-                  </MenuItemOption>
-                  <MenuItemOption value="dateCreate">
-                    วันที่สร้าง
                   </MenuItemOption>
                 </MenuOptionGroup>
                 <MenuDivider />
@@ -167,9 +271,16 @@ const AllDocumentPage = () => {
                   defaultValue=""
                   title="เรียงลำดับจาก"
                   type="radio"
+                  onChange={(value) => {
+                    setSortOrder(value as any)
+                  }}
                 >
-                  <MenuItemOption value="ASC">{sortMenu.sort}</MenuItemOption>
-                  <MenuItemOption value="DESC">{sortMenu.sort}</MenuItemOption>
+                  <MenuItemOption value="asc">
+                    {sortBy === 'name' ? 'ก - ฮ' : 'เก่าสุด - ใหม่สุด'}
+                  </MenuItemOption>
+                  <MenuItemOption value="desc">
+                    {sortBy === 'name' ? 'ฮ - ก' : 'ใหม่สุด - เก่าสุด'}
+                  </MenuItemOption>
                 </MenuOptionGroup>
               </MenuList>
             </Menu>
@@ -192,32 +303,72 @@ const AllDocumentPage = () => {
           </Flex>
         </Flex>
 
-        <Frame view={view} title={category}>
-          {documents
-            .filter((file) => file.title.toLowerCase().includes(search))
-            .map((file: any) => {
-              return view === 'box' ? (
-                <DocumentBox
-                  id={file.id}
-                  type={file.type}
-                  title={file.title}
-                  author={file.author}
-                  showNote
-                  showDate
-                  menu={menu}
-                />
-              ) : (
-                <TableListItem
-                  id={file.id}
-                  type={file.type}
-                  title={file.title}
-                  author={file.author}
-                  showNote
-                  showDate
-                  menu={menu}
-                />
-              )
-            })}
+        <Frame view={view} title={getThaiName(category) ?? ''}>
+          {data.map((file: any) => {
+            return view === 'box' ? (
+              <DocumentBox
+                id={file.id}
+                type={
+                  category == 'sharefile'
+                    ? 'sharedFile'
+                    : file.type ?? getType(category)
+                }
+                showMenu={true}
+                showNote
+                note={file.note ?? file.content}
+                title={file.officialName ?? file.heading}
+                isShared={file.isShared}
+                showDate={getType(category) !== 'note'}
+                modifiedDate={
+                  getType(category) === 'note' && new Date(file.modifiedDate)
+                }
+                createdDate={
+                  getType(category) !== 'note' && new Date(file.dateUpload)
+                }
+                amount={
+                  getType(category) !== 'note' &&
+                  getType(category) !== 'sharedFile' &&
+                  file.amount
+                }
+                author={
+                  getType(category) === 'note'
+                    ? file.autor
+                    : getType(category) === 'sharedFile'
+                      ? file.firstName + ' ' + file.lastName
+                      : null
+                }
+              />
+            ) : (
+              <TableListItem
+                id={file.id}
+                type={getType(category)}
+                showMenu={true}
+                showNote
+                note={file.note ?? file.content}
+                title={file.officialName ?? file.heading}
+                isShared={file.isShared}
+                showDate={getType(category) !== 'note'}
+                modifiedDate={
+                  getType(category) === 'note' && new Date(file.modifiedDate)
+                }
+                createdDate={
+                  getType(category) !== 'note' && new Date(file.dateUpload)
+                }
+                amount={
+                  getType(category) !== 'note' &&
+                  getType(category) !== 'sharedFile' &&
+                  file.amount
+                }
+                author={
+                  getType(category) === 'note'
+                    ? file.autor
+                    : getType(category) === 'sharedFile'
+                      ? file.firstName + ' ' + file.lastName
+                      : null
+                }
+              />
+            )
+          })}
         </Frame>
         {deleteModal}
       </VStack>

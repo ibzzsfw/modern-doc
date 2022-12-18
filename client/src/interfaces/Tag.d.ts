@@ -1,6 +1,6 @@
-interface TagType {
+interface ITag {
   id: string;
   name?: string;
 }
 
-export default TagType;
+export default ITag;

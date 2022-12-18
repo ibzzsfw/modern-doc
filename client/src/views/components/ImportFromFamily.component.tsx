@@ -18,7 +18,6 @@ import MemberController from '@view-models/MemberController'
 import FileController from '@view-models/FileController'
 import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import getRelationshipText from '@utils/getRelationshipText'
 
 type propsType = {
   isOpen: boolean
@@ -78,7 +77,7 @@ const ImportFromFamily = ({
                         {member.firstName} {member.lastName}
                       </Text>
                       <Text color="#718096">
-                        {getRelationshipText(member.relationship)}
+                        {member.getRelationshipText()}
                       </Text>
                     </VStack>
                   </HStack>

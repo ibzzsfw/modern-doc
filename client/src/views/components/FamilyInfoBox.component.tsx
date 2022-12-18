@@ -100,7 +100,6 @@ const FamilyInfoBox = ({
             icon: <Icon as={BiEdit} />,
             onClick: () => {
               if (!handleForm) {
-                console.log(`edit ${data?.firstName + ' ' + data?.lastName}`)
                 if (data?.relationship !== 'householder') {
                   if (getId) getId(data?.id)
                   setEdit(true)
@@ -266,7 +265,6 @@ const FamilyInfoBox = ({
                     if (
                       checkCitizenIdStatus.message === 'Citizen ID is available'
                     ) {
-                      console.log(values)
                       addFamily(values)
                       toast(addFamilySuccess)
                       if (onCancelButtonClick) onCancelButtonClick()
@@ -381,13 +379,11 @@ const FamilyInfoBox = ({
                 }}
                 validationSchema={familyschema}
                 onReset={(values, actions) => {
-                  console.log(values)
                   setEdit(false)
                   if (getId) getId(null)
                 }}
                 onSubmit={(values) => {
                   try {
-                    console.log(values)
                     editFamily(values)
 
                     toast(editFamilySuccess)

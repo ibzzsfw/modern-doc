@@ -1,8 +1,8 @@
-import SystemFileType from "@interfaces/SystemFiles";
+import ISystemFile from "@interfaces/SystemFiles";
 import FieldViewModel from "@view-models/Field.viewmodel";
 
-interface GenerateFileType extends SystemFileType {
+interface IGenerateFile extends ISystemFile {
   fields?: FieldViewModel[];
 }
 
-export default GenerateFileType;
+export default IGenerateFile;

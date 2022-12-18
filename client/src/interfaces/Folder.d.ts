@@ -1,7 +1,7 @@
 import UploadFileViewModel from "@view-models/UploadFile.viewmodel";
 import GenerateFileViewModel from "@view-models/GenerateFiles.viewmodel";
 import TagViewModel from "@view-models/Tag.viewmodel";
-import DocumentsType from "@interfaces/Document";
+import IDocument from "@interfaces/Document";
 
 type fileDetails = {
   file: UploadFileViewModel | GenerateFileViewModel;
@@ -9,12 +9,12 @@ type fileDetails = {
   remark: string;
 }
 
-interface FolderType extends DocumentsType {
+interface IFolder extends IDocument {
   name?: string;
   officialName?: string;
   file?: fileDetails[];
-  tagId?: string[];
+  tagId?: TagViewModel[];
   type?: string;
 }
 
-export default FolderType;
+export default IFolder;

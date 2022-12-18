@@ -1,14 +1,14 @@
-import FolderType from "@interfaces/Folder";
+import IFolder from "@interfaces/Folder";
 import DocumentViewModel from "@view-models/Document.viewmodel";
 
-class FolderViewModel extends DocumentViewModel implements FolderType {
+class FolderViewModel extends DocumentViewModel implements IFolder {
   name;
   officialName;
   file;
   tagId;
   type;
 
-  constructor(arg: FolderType) {
+  constructor(arg: IFolder) {
     super(arg);
     this.name = arg.name;
     this.officialName = arg.officialName;

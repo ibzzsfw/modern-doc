@@ -1,7 +1,7 @@
-import FilesType from "@interfaces/File";
+import IFile from "@interfaces/File";
 
-interface FreeUploadFileType extends FilesType {
+interface IFreeUploadFile extends IFile {
   dateExpired?: Date;
 }
 
-export default FreeUploadFileType;
+export default IFreeUploadFile;

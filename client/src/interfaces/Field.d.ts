@@ -13,7 +13,7 @@ type Choice = {
   value: string;
 }
 
-interface FieldType {
+interface IField {
   id: string;
   name: string;
   type?: FieldList;
@@ -27,4 +27,4 @@ interface FieldType {
   order?: number;
 }
 
-export default FieldType;
+export default IField;
