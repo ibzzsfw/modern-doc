@@ -1,16 +1,16 @@
 import {
   Box,
-  Image,
-  Text,
-  VStack,
   Icon,
+  Image,
   Input,
+  Text,
+  VStack
 } from '@chakra-ui/react'
+import { uploadFile } from '@firebase'
+import { MyProfilePageModel } from '@models/MyProfilePage.state.model'
+import UserModel from '@models/User.model'
 import { useState } from 'react'
 import { AiOutlineUpload } from 'react-icons/ai'
-import { MyProfilePageModel } from '@models/MyProfilePage.state.model'
-import { uploadFile } from '@firebase'
-import UserModel from '@models/User.model'
 
 type propTypes = {
   url: string | undefined

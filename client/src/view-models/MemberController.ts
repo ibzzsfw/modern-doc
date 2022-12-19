@@ -18,6 +18,15 @@ interface EditMemberData {
 }
 class MemberController {
 
+  private static instance: MemberController
+  private constructor() { }
+  static getInstance() {
+    if (!MemberController.instance) {
+      MemberController.instance = new MemberController()
+    }
+    return MemberController.instance
+  }
+
   static addMember = async (memberData: AddMemberData) => {
 
     const token = UserModel.getState().user?.token

@@ -1,8 +1,18 @@
-import axios from 'axios'
 import UserModel from '@models/User.model'
 import NoteViewModel from '@view-models/Note.viewmodel'
+import axios from 'axios'
 
 class NoteController {
+
+  private static instance: NoteController
+  private constructor() { }
+  static getInstance() {
+    if (!NoteController.instance) {
+      NoteController.instance = new NoteController()
+    }
+    return NoteController.instance
+  }
+
   static async getLastestNote() {
     let response = await axios.get(
       `${import.meta.env.VITE_API_ENDPOINT}/note/all`,

@@ -1,30 +1,30 @@
 import {
   Box,
   Button,
+  ButtonGroup,
   Divider,
   Flex,
   HStack,
-  Text,
-  VStack,
   Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
   ModalBody,
-  useToast,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Text,
   useDisclosure,
-  ButtonGroup,
+  useToast,
+  VStack
 } from '@chakra-ui/react'
 import ChangePassword from '@components/ChangePassword.component.'
 import FormInput from '@components/FormInput.component'
+import UserModel from '@models/User.model'
+import { useMutation } from '@tanstack/react-query'
+import UserViewModel from '@view-models/User.viewmodel'
+import UserController from '@view-models/UserController'
 import { Form, Formik } from 'formik'
 import { FiEdit } from 'react-icons/fi'
 import { MyProfilePageModel } from '../../models/MyProfilePage.state.model'
-import UserViewModel from '@view-models/User.viewmodel'
-import { useMutation } from '@tanstack/react-query'
-import UserController from '@view-models/UserController'
-import UserModel from '@models/User.model'
 
 const ProfileFormInput = ({ data }: any) => {
   const toast = useToast()
@@ -93,7 +93,6 @@ const ProfileFormInput = ({ data }: any) => {
               password: '',
             }}
             onReset={(values) => {
-              console.log(values)
               onClose()
             }}
             onSubmit={async (values) => {

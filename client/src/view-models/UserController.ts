@@ -1,5 +1,5 @@
-import axios from 'axios'
 import UserModel from '@models/User.model'
+import axios from 'axios'
 
 interface RegisterForm {
   title: string
@@ -14,6 +14,16 @@ interface RegisterForm {
 }
 
 class UserController {
+
+  private static instance: UserController
+  private constructor() { }
+  static getInstance() {
+    if (!UserController.instance) {
+      UserController.instance = new UserController()
+    }
+    return UserController.instance
+  }
+
   static register = async (data: RegisterForm): Promise<any> => {
     let response = await axios.post(
       `${process.env.VITE_API_ENDPOINT}/user`,
@@ -70,6 +80,7 @@ class UserController {
       return err.response.data
     }
   }
+  
   static async editProfile(
     title: string,
     fistName: string,

@@ -1,9 +1,9 @@
 interface IDocument {
-  id?: string;
-  officialName?: string;
-  dateUpload?: Date;
-  description?: string;
-  note?: string;
+  private id?: string;
+  private officialName?: string;
+  private dateUpload?: Date;
+  private description?: string;
+  private note?: string;
 }
 
 export default IDocument;

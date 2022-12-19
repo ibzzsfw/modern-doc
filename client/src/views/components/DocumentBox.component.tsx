@@ -14,18 +14,18 @@ import {
   Text,
   Textarea,
   useDisclosure,
-  useToast,
+  useToast
 } from '@chakra-ui/react'
 import MenuProvider from '@components/MenuProvider.component'
+import { useMutation } from '@tanstack/react-query'
 import FileController from '@view-models/FileController'
 import FolderController from '@view-models/FolderController'
 import NoteController from '@view-models/NoteController'
-import { useMutation } from '@tanstack/react-query'
 import { Field, Form, Formik } from 'formik'
 import { useState } from 'react'
 import { AiOutlineEdit } from 'react-icons/ai'
+import { BsShareFill, BsThreeDots, BsTrash } from 'react-icons/bs'
 import { MdLeakRemove } from 'react-icons/md'
-import { BsThreeDots, BsTrash, BsShareFill } from 'react-icons/bs'
 import { Link } from 'react-router-dom'
 
 type propsType = {
@@ -128,16 +128,12 @@ const DocumentBox = ({
       if (createdDate) {
         return `สร้างเมื่อ ${new Date(createdDate).toLocaleDateString('en-GB')}`
       }
+
+      
       return 'ยังไม่ได้สร้าง'
     }
     if (type === 'generatedFolder') {
       return `${amount} เอกสาร`
-    }
-    if (type === 'generatedFile') {
-      return `${size} MB`
-    }
-    if (type === 'uploadedFile') {
-      return `${size} MB`
     }
     if (type === 'sharedFile') {
       return `ผู้สร้าง : ${author}`

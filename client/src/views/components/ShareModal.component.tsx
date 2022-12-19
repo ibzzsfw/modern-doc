@@ -10,7 +10,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
-  useDisclosure,
+  useDisclosure
 } from '@chakra-ui/react'
 import { useState } from 'react'
 
@@ -18,7 +18,9 @@ type propsTypes = {
   customButton?: JSX.Element
 }
 
-const ShareModal = ({ customButton }: propsTypes) => {
+const 
+
+ShareModal = ({ customButton }: propsTypes) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [noteType, setNoteType] = useState('')
   const [officialName, setOfficialName] = useState([

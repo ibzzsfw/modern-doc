@@ -1,16 +1,12 @@
-import { NextFunction, Request, Response, Router } from 'express'
-import FieldHandler from '../handlers/field.handler'
+import FieldHandler from '@handlers/field.handler'
+import AbstractRouter from '@routers/abstract.router'
 
-class UserRouter {
-  private router = Router()
-  private handler = new FieldHandler()
+class FieldRouter extends AbstractRouter {
+  private handler =  new FieldHandler()
 
   constructor() {
+    super()
     this.configureRoutes()
-  }
-
-  getRouter = (): Router => {
-    return this.router
   }
 
   configureRoutes = (): void => {
@@ -29,4 +25,4 @@ class UserRouter {
   }
 }
 
-export default UserRouter
+export default FieldRouter

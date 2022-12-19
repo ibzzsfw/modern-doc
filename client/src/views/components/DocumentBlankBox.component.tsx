@@ -13,6 +13,8 @@ const DocumentBlankBox = ({
   onClick,
   icon,
   size,
+
+  
   color,
   children,
 }: propsTypes) => {

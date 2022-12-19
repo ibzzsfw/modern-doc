@@ -1,6 +1,6 @@
-import { Avatar, Box, Flex, HStack, Image, Text } from '@chakra-ui/react'
-import { Link } from 'react-router-dom'
+import { Box, Flex, HStack, Image, Text } from '@chakra-ui/react'
 import NavbarAvatar from '@components/NavbarAvatar.component'
+import { Link } from 'react-router-dom'
 
 const Navbar = () => {
 

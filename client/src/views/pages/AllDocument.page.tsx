@@ -10,14 +10,14 @@ import {
   MenuItemOption,
   MenuList,
   MenuOptionGroup,
-  VStack,
-  useDisclosure,
   Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
   ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure,
+  VStack
 } from '@chakra-ui/react'
 import DocumentBox from '@components/DocumentBox.component'
 import Frame from '@components/Frame.component'
@@ -27,13 +27,12 @@ import TableListItem from '@components/TableListItem.component'
 import FileController from '@view-models/FileController'
 import FolderController from '@view-models/FolderController'
 import NoteController from '@view-models/NoteController'
-
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import {
   AiFillPrinter,
   AiOutlineAppstore,
   AiOutlineEdit,
-  AiOutlineMenu,
+  AiOutlineMenu
 } from 'react-icons/ai'
 import { BsThreeDots, BsTrash } from 'react-icons/bs'
 import { GrDocumentText, GrDownload } from 'react-icons/gr'
@@ -45,10 +44,6 @@ const AllDocumentPage = () => {
   const [view, setView] = useState<'box' | 'table'>('box')
   const [search, setSearch] = useState('')
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const [sortMenu, setSortMenu] = useState<{
-    sort: string | string[]
-    order: string | string[]
-  }>({ sort: '', order: '' })
   const [data, setData] = useState([])
   const [sortBy, setSortBy] = useState<'name' | 'date'>('name')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')

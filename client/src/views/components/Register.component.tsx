@@ -1,27 +1,19 @@
 import {
-  Box,
-  HStack,
-  Progress,
-  VStack,
-  Text,
-  Flex,
-  Button,
-  Icon,
-  useToast,
+  Box, Button, Flex, HStack, Icon, Progress, Text, useToast, VStack
 } from '@chakra-ui/react'
-import { RegisterModel } from '@models/Register.state.model'
 import FormInput from '@components/FormInput.component'
-import { Form, Formik } from 'formik'
-import * as Yup from 'yup'
-import { IoChevronBack, IoChevronForward } from 'react-icons/io5'
-import { AiTwotoneCalendar } from 'react-icons/ai'
-import { useMutation } from '@tanstack/react-query'
-import { AxiosError } from 'axios'
-import UserController from '@view-models/UserController'
-import { useState } from 'react'
-import { withCountryCode } from '@utils/formatPhoneNumber'
-import { phoneLogin } from '@firebase'
 import OTPVerify from '@components/OTPVerify.component'
+import { phoneLogin } from '@firebase'
+import { RegisterModel } from '@models/Register.state.model'
+import { useMutation } from '@tanstack/react-query'
+import { withCountryCode } from '@utils/formatPhoneNumber'
+import UserController from '@view-models/UserController'
+import { AxiosError } from 'axios'
+import { Form, Formik } from 'formik'
+import { useState } from 'react'
+import { AiTwotoneCalendar } from 'react-icons/ai'
+import { IoChevronBack, IoChevronForward } from 'react-icons/io5'
+import * as Yup from 'yup'
 
 const Register = () => {
   const { page, setPage, title, sex } = RegisterModel()
@@ -98,7 +90,6 @@ const Register = () => {
 
   const verifyPhone = async (phoneNumber: string) => {
     try {
-      console.log(phoneNumber, withCountryCode(phoneNumber))
       setConfirmationResult(await phoneLogin(withCountryCode(phoneNumber)))
     } catch (e) {
       toast({

@@ -1,7 +1,7 @@
-import create from "zustand";
 import FolderViewModel from "@view-models/Folder.viewmodel";
-import UploadFileViewModel from '@view-models/UploadFile.viewmodel'
-import GenerateFileViewModel from '@view-models/GenerateFiles.viewmodel'
+import GenerateFileViewModel from '@view-models/GenerateFiles.viewmodel';
+import UploadFileViewModel from '@view-models/UploadFile.viewmodel';
+import create from "zustand";
 
 type fileType = GenerateFileViewModel | UploadFileViewModel
 

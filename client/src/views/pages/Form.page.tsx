@@ -166,8 +166,6 @@ const FormPage = () => {
     )
   }
 
-  console.log(requiredCount)
-
   if (documentType == 'file')
     return (
       <Box sx={formLayout}>
@@ -304,7 +302,6 @@ const FormPage = () => {
               viewController.validationSchemaExraction(mergedField)
             )}
             onSubmit={async (values) => {
-              console.log(generatedFile)
               let ids: { id: string }[] = []
               generatedFile.map((file) => {
                 ids.push({ id: file.id })

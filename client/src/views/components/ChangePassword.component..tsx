@@ -1,22 +1,21 @@
-import FormInput from '@components/FormInput.component'
-import { Formik, Form } from 'formik'
-import * as Yup from 'yup'
-import { useMutation } from '@tanstack/react-query'
-import UserController from '@view-models/UserController'
-
 import {
   Button,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  useDisclosure,
-  useToast,
   ButtonGroup,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure,
+  useToast
 } from '@chakra-ui/react'
+import FormInput from '@components/FormInput.component'
+import { useMutation } from '@tanstack/react-query'
+import UserController from '@view-models/UserController'
+import { Form, Formik } from 'formik'
 import { HiKey } from 'react-icons/hi'
+import * as Yup from 'yup'
 
 const ChangePassword = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()

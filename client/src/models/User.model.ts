@@ -1,6 +1,6 @@
+import UserViewModel from '@view-models/User.viewmodel'
 import create, { StateCreator } from 'zustand'
 import { persist, PersistOptions } from 'zustand/middleware'
-import UserViewModel from '@view-models/User.viewmodel'
 
 interface IUserModel {
   user: UserViewModel | null,

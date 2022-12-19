@@ -1,7 +1,7 @@
-import UploadFileViewModel from "@view-models/UploadFile.viewmodel";
+import IDocument from "@interfaces/Document";
 import GenerateFileViewModel from "@view-models/GenerateFiles.viewmodel";
 import TagViewModel from "@view-models/Tag.viewmodel";
-import IDocument from "@interfaces/Document";
+import UploadFileViewModel from "@view-models/UploadFile.viewmodel";
 
 type fileDetails = {
   file: UploadFileViewModel | GenerateFileViewModel;
@@ -10,11 +10,11 @@ type fileDetails = {
 }
 
 interface IFolder extends IDocument {
-  name?: string;
-  officialName?: string;
-  file?: fileDetails[];
-  tagId?: TagViewModel[];
-  type?: string;
+  private name?: string;
+  private officialName?: string;
+  private file?: fileDetails[];
+  private tagId?: TagViewModel[];
+  private type?: string;
 }
 
 export default IFolder;

@@ -270,7 +270,6 @@ class FolderService {
 
       const promise = await async.map(generatedFiles, async (generatedFile) => {
         const { id } = generatedFile
-        console.log(id)
         const updateGeneratedFile = await Prisma.$queryRaw`
           INSERT INTO "UserGeneratedFile" ("id","userId","generatedFileId","date")
           VALUES (

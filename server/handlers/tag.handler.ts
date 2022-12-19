@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import TagController from '../controllers/tag.controller'
+import TagController from '@controllers/tag.controller'
 
 class TagHandler {
 

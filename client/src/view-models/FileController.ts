@@ -1,18 +1,18 @@
-import axios from 'axios'
 import UserModel from '@models/User.model'
-import UploadFileViewModel from '@view-models/UploadFile.viewmodel'
-import GenerateFileViewModel from '@view-models/GenerateFiles.viewmodel'
-import FreeUploadedFileViewModel from '@view-models/FreeUploadFile.viewmodel'
-import FieldViewModel from '@view-models/Field.viewmodel'
+import AgeFieldViewModel from '@view-models/AgeField.viewmodel'
 import DateFieldViewModel from '@view-models/DateField.viewmodel'
-import TextFieldViewModel from '@view-models/TextField.viewmodel'
-import NumberFieldViewModel from '@view-models/NumberField.viewmodel'
 import EmailFieldViewModel from '@view-models/EmailField.viewmodel'
+import FieldViewModel from '@view-models/Field.viewmodel'
+import FreeUploadedFileViewModel from '@view-models/FreeUploadFile.viewmodel'
+import GenerateFileViewModel from '@view-models/GenerateFiles.viewmodel'
+import MultipleSelectFieldViewModel from '@view-models/MultipleSelectField.viewmodel'
+import NumberFieldViewModel from '@view-models/NumberField.viewmodel'
 import PhoneNumberFieldViewModel from '@view-models/PhoneNumberField.viewmodel'
 import SingleSelectFieldViewModel from '@view-models/SingleSelectField.viewmodel'
-import MultipleSelectFieldViewModel from '@view-models/MultipleSelectField.viewmodel'
-import AgeFieldViewModel from '@view-models/AgeField.viewmodel'
 import TagViewModel from '@view-models/Tag.viewmodel'
+import TextFieldViewModel from '@view-models/TextField.viewmodel'
+import UploadFileViewModel from '@view-models/UploadFile.viewmodel'
+import axios, { AxiosResponse } from 'axios'
 
 type fieldType = TextFieldViewModel
   | NumberFieldViewModel
@@ -24,6 +24,15 @@ type fieldType = TextFieldViewModel
   | AgeFieldViewModel
 
 class FileController {
+
+  private static instance: FileController
+  private constructor() { }
+  static getInstance() {
+    if (!FileController.instance) {
+      FileController.instance = new FileController()
+    }
+    return FileController.instance
+  }
 
   static getTypeName = (type: string) => {
     switch (type) {
@@ -39,8 +48,11 @@ class FileController {
   }
 
   static async getFileById(id: string, type: string, isSharedFile: boolean = false) {
+    let response: AxiosResponse<any, any>
     if (isSharedFile) {
-      let responseTest = await axios.get(
+      console.log('endpoint', `${process.env.VITE_API_ENDPOINT
+      }/file/get-shared-file/${this.getTypeName(type)}/${id}`)
+      response = await axios.get(
         `${process.env.VITE_API_ENDPOINT
         }/file/get-shared-file/${this.getTypeName(type)}/${id}`,
         {
@@ -50,19 +62,21 @@ class FileController {
           },
         }
       )
-    }
-    let response = await axios.get(
-      `${process.env.VITE_API_ENDPOINT}/file/get-by-id/${this.getTypeName(
-        type
-      )}/${id}`,
-      {
-        headers: {
-          'user-id': UserModel.getState()?.user?.id,
-          token: UserModel.getState()?.user?.token,
-        },
-      }
-    )
 
+      console.log('r', response.data)
+    } else {
+      response = await axios.get(
+        `${process.env.VITE_API_ENDPOINT}/file/get-by-id/${this.getTypeName(
+          type
+        )}/${id}`,
+        {
+          headers: {
+            'user-id': UserModel.getState()?.user?.id,
+            token: UserModel.getState()?.user?.token,
+          },
+        }
+      )
+    }
     let { URI, date, description, fields, name, note, officialName } = response.data
     let tagsArray: TagViewModel[] = []
     response.data?.tags.map((tag: any) => {
@@ -132,7 +146,7 @@ class FileController {
           name,
           tag: tagsArray,
           fields: fieldsArray
-          }))
+        }))
       case 'uploadedFile':
         return new UploadFileViewModel(Object.assign(fileArg, {
           name,
@@ -144,7 +158,6 @@ class FileController {
   }
 
   static async getLatestFile(type: string) {
-    console.log(`${process.env.VITE_API_ENDPOINT}/file/latest-files/${type}`)
     let response = await axios.get(
       `${process.env.VITE_API_ENDPOINT}/file/latest-files/${type}`,
       {
@@ -165,7 +178,6 @@ class FileController {
         officialName,
         isShared
       }
-      console.log(fileArg)
       let owner = `${firstName} ${lastName}`
       switch (type) {
         case 'userFreeUploadFile':
@@ -218,19 +230,19 @@ class FileController {
         case 'userFreeUploadFile':
           files.push(new FreeUploadedFileViewModel(Object.assign(fileArg, {
             officialName: name
-            })))
+          })))
           break
         case 'uploadedFile':
           files.push(new UploadFileViewModel(Object.assign(fileArg, {
             officialName,
             name
-            })))
+          })))
           break
         case 'generatedFile':
           files.push(new GenerateFileViewModel(Object.assign(fileArg, {
             officialName,
             name
-            })))
+          })))
           break
         default:
           break

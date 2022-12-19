@@ -3,12 +3,12 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
-  Icon,
+  Icon
 } from '@chakra-ui/react'
 import Navbar from '@components/Navbar.component'
 import UserModel from '@models/User.model'
-import { IoChevronForward } from 'react-icons/io5'
 import getBreadcrumbFromPath from '@utils/getBreadcrumbFromPath'
+import { IoChevronForward } from 'react-icons/io5'
 
 type propsType = {
   children: JSX.Element | JSX.Element[]

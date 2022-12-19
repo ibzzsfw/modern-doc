@@ -1,10 +1,10 @@
-import { Flex, Box } from '@chakra-ui/react'
-import FileList from '@components/FileList.component'
+import { Flex } from '@chakra-ui/react'
 import DocumentDetail from '@components/DocumentDetail.component'
-import { useState } from 'react'
-import FolderController from '@view-models/FolderController'
-import { useQuery } from '@tanstack/react-query'
+import FileList from '@components/FileList.component'
 import FormPageModel from '@models/FormPage.model'
+import { useQuery } from '@tanstack/react-query'
+import FolderController from '@view-models/FolderController'
+import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 const Folder = () => {
@@ -36,17 +36,16 @@ const Folder = () => {
   )
 
   if (folderData && generateFileList && uploadedFileList) {
-    console.log('folderData', folderData)
     return (
       <Flex sx={documentView}>
         <DocumentDetail
-          title={folderData.officialName}
-          description={folderData.note}
-          markdown={folderData.description}
+          title={folderData.officialName ?? 'ไม่มีชื่อแฟ้ม'}
+          description={folderData.note ?? 'ไม่มีบันทึก'}
+          markdown={folderData.description ?? ''}
           status={folderData.dateUpload ? 'มีอยู่ในคลัง' : 'ไม่มีอยู่ในคลัง'}
           type="folder"
         />
-        <FileList files={folderData.file?.map(file => file.file)} />
+        <FileList files={folderData.file} />
       </Flex>
     )
   }

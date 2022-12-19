@@ -1,5 +1,5 @@
-import FieldViewModel from "@view-models/Field.viewmodel";
 import IField from "@interfaces/Field";
+import FieldViewModel from "@view-models/Field.viewmodel";
 import * as Yup from "yup";
 
 class AgeFieldViewModel extends FieldViewModel {

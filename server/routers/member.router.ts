@@ -1,16 +1,12 @@
-import { NextFunction, Request, Response, Router } from 'express'
-import MemberHandler from '../handlers/member.handler'
+import MemberHandler from '@handlers/member.handler'
+import AbstractRouter from '@routers/abstract.router'
 
-class UserRouter {
-  private router = Router()
+class UserRouter extends AbstractRouter {
   private handler = new MemberHandler()
 
   constructor() {
+    super()
     this.configureRoutes()
-  }
-
-  getRouter = (): Router => {
-    return this.router
   }
 
   configureRoutes = (): void => {

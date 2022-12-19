@@ -1,16 +1,12 @@
-import { NextFunction, Request, Response, Router } from 'express'
-import FolderHandler from '../handlers/folder.handler'
+import FolderHandler from '@handlers/folder.handler'
+import AbstractRouter from '@routers/abstract.router'
 
-class FolderRouter {
-  private router = Router()
+class FolderRouter extends AbstractRouter {
   private handler = new FolderHandler()
 
   constructor() {
+    super()
     this.configureRoutes()
-  }
-
-  getRouter = (): Router => {
-    return this.router
   }
 
   configureRoutes = (): void => {

@@ -5,7 +5,7 @@ import TableList from '@components/TableList.component'
 type propsType = {
   title: string
   view: 'box' | 'table'
-  children: React.ReactNode | React.ReactNode[]
+  children?: JSX.Element | JSX.Element[]
 }
 
 

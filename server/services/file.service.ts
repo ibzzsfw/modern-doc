@@ -67,8 +67,7 @@ class FileService {
           SELECT "UploadedFile".*, "UserUploadedFile"."URI",
           "UploadedFile"."URI" AS "previewURI",
           "UserUploadedFile"."date",
-          "UserUploadedFile"."expirationDate",
-          ""
+          "UserUploadedFile"."expirationDate"
           array(
           SELECT (json_build_object(
               'id', "Tag"."id",

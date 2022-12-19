@@ -1,31 +1,28 @@
 import { Box, Divider, Flex, Text } from '@chakra-ui/react'
+import UserModel from '@models/User.model'
+import { useQuery } from '@tanstack/react-query'
+import FileController from '@view-models/FileController'
+import FolderViewModel from '@view-models/Folder.viewmodel'
+import FolderController from '@view-models/FolderController'
+import GenerateFileViewModel from '@view-models/GenerateFiles.viewmodel'
+import NoteController from '@view-models/NoteController'
+import UploadFileViewModel from '@view-models/UploadFile.viewmodel'
+import { useState } from 'react'
+import { AiFillPlusCircle } from 'react-icons/ai'
+import { useNavigate } from 'react-router-dom'
 import DocumentBar from 'src/views/components/DocumentBar.component'
 import DocumentBlankBox from 'src/views/components/DocumentBlankBox.component'
 import DocumentBox from 'src/views/components/DocumentBox.component'
 import SearchBox from 'src/views/components/SearchBox.component'
 import TakeNote from 'src/views/components/TakeNote.component'
 import UploadFile from 'src/views/components/UploadFile.component'
-import FileController from '@view-models/FileController'
-import FolderController from '@view-models/FolderController'
-import NoteController from '@view-models/NoteController'
-import UserModel from '@models/User.model'
-import { useQuery } from '@tanstack/react-query'
-import { useState } from 'react'
-import { AiFillPlusCircle } from 'react-icons/ai'
-import { useNavigate } from 'react-router-dom'
-import GenerateFileViewModel from '@view-models/GenerateFiles.viewmodel'
-import UploadFileViewModel from '@view-models/UploadFile.viewmodel'
 
 const MyDocument = () => {
 
   const [search, setSearch] = useState('')
   const navigate = useNavigate()
   const { user } = UserModel()
-  const [shareFile, setShareFile] = useState([])
-  const [myFile, setMyFile] = useState([])
-  const [myFolder, setMyFolder] = useState([])
-  const [note, setNote] = useState([])
-  const [uploadedFile, setUploadedFile] = useState([])
+
   const {
     data: latestGeneratedFiles,
     isLoading: latestGeneratedFilesLoading,
@@ -176,23 +173,20 @@ const MyDocument = () => {
           }}
         >
           {latestFolder && latestFolder
-            .filter((folder: any) =>
-              folder.officialName.toLowerCase().includes(search)
+            .filter((folder: FolderViewModel) =>
+              folder.officialName?.toLowerCase().includes(search)
             )
-            .map((folder: any) => {
+            .map((folder: FolderViewModel) => {
               return (
                 <DocumentBox
-                  id={folder.id}
-                  title={folder.officialName}
+                  id={folder.id ?? ''}
+                  title={folder.officialName ?? 'ไม่มีชื่อ'}
                   type="generatedFolder"
-                  createdDate={folder.date}
+                  createdDate={folder.dateUpload}
                   showDate
-                  image={folder.image}
-                  amount={folder.amount}
                   showNote
                   note={folder.note}
                   showMenu={true}
-                  isShared={folder.isShared}
                 />
               )
             })
@@ -221,7 +215,7 @@ const MyDocument = () => {
                   type={file.type ?? 'generatedFile'}
                   note={file.note}
                   showDate
-                  createdDate={new Date(file.date)}
+                  createdDate={new Date(file.dateUpload)}
                   isShared={file.isShared}
                 />
               )
@@ -250,17 +244,14 @@ const MyDocument = () => {
               .filter((file: UploadFileViewModel) =>
                 file.officialName?.toLowerCase().includes(search)
               )
-              .map((file: any) => {
+              .map((file: UploadFileViewModel) => {
                 return (
                   <DocumentBox
-                    id={file.id}
-                    type={file.type}
-                    title={file.officialName}
-                    image={file.image}
-                    amount={file.amount}
+                    id={file.id ?? ''}
+                    type={file.type ?? 'uploadedFile'}
+                    title={file.officialName ?? 'ไม่มีชื่อ'}
                     showNote
                     note={file.note}
-                    size={file.size}
                     showMenu={true}
                     isShared={file.isShared}
                   />

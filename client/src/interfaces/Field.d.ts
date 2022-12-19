@@ -14,17 +14,17 @@ type Choice = {
 }
 
 interface IField {
-  id: string;
-  name: string;
-  type?: FieldList;
-  officialName?: string;
-  description?: string;
-  choices?: Choice[] | any;
-  userValue?: string;
-  date?: Date;
-  generatedFileId?: string;
-  isRequired?: boolean;
-  order?: number;
+  private id: string;
+  private name: string;
+  private type?: FieldList;
+  private officialName?: string;
+  private description?: string;
+  private choices?: Choice[] | any;
+  private userValue?: string;
+  private date?: Date;
+  private generatedFileId?: string;
+  private isRequired?: boolean;
+  private order?: number;
 }
 
 export default IField;

@@ -9,37 +9,43 @@ import {
   Icon,
   IconButton,
   Spacer,
-  useDisclosure,
+  useDisclosure
 } from '@chakra-ui/react'
+import DocumentBadge from '@components/DocumentBadge.component'
+import ImportFromFamily from '@components/ImportFromFamily.component'
 import MenuProvider from '@components/MenuProvider.component'
 import UploadFile from '@components/UploadFile.component'
-import GenerateFileViewModel from '@view-models/GenerateFiles.viewmodel'
 import FormPageModel from '@models/FormPage.model'
+import fontkit from '@pdf-lib/fontkit'
+import FieldViewModel from '@view-models/Field.viewmodel'
+import FileController from '@view-models/FileController'
+import FileViewModel from '@view-models/Files.viewmodel'
+import GenerateFileViewModel from '@view-models/GenerateFiles.viewmodel'
+import UploadFileViewModel from '@view-models/UploadFile.viewmodel'
+import { PDFDocument } from 'pdf-lib'
+import PDFMerger from 'pdf-merger-js'
 import { useEffect, useState } from 'react'
 import {
   AiFillClockCircle,
   AiFillTag,
   AiOutlineDownload,
   AiOutlinePlus,
-  AiOutlineUpload,
+  AiOutlineUpload
 } from 'react-icons/ai'
 import { BsThreeDots } from 'react-icons/bs'
 import { GrUpload } from 'react-icons/gr'
 import { HiArrowDownRight } from 'react-icons/hi2'
 import { RiFileSearchLine } from 'react-icons/ri'
-import DocumentBadge from '@components/DocumentBadge.component'
-import UploadFileViewModel from '@view-models/UploadFile.viewmodel'
-import FileViewModel from '@view-models/Files.viewmodel'
-import FileController from '@view-models/FileController'
 import { useNavigate } from 'react-router-dom'
-import { PDFDocument } from 'pdf-lib'
-import fontkit from '@pdf-lib/fontkit'
-import PDFMerger from 'pdf-merger-js'
-import FieldViewModel from '@view-models/Field.viewmodel'
-import ImportFromFamily from '@components/ImportFromFamily.component'
+
+type fileDetails = {
+  file: UploadFileViewModel | GenerateFileViewModel;
+  amount: number;
+  remark: string;
+}
 
 type propsType = {
-  files: any[]
+  files: fileDetails[]
 }
 
 const FileList = ({ files }: propsType) => {
@@ -71,13 +77,13 @@ const FileList = ({ files }: propsType) => {
 
   const onChangeAllCheckbox = (checked: boolean) => {
     if (checked) {
-      setSelectedFile(files.filter((file) => file.URI != null))
+      setSelectedFile(files.map((f) => f.file))
     } else {
       setSelectedFile([])
     }
   }
 
-  const isSelectedThisFile = (file: GenerateFileViewModel) => {
+  const isSelectedThisFile = (file: GenerateFileViewModel | UploadFileViewModel) => {
     return selectedFile.filter((f) => f.id === file.id).length > 0
   }
 
@@ -151,7 +157,8 @@ const FileList = ({ files }: propsType) => {
     await Promise.all(pdfListPromise)
     await Promise.all(uploadedListPromise)
 
-    const testMergePdf = await merger.save(`${document?.officialName}`)
+    await merger.save(`${document?.officialName}`)
+
   }
 
   useEffect(() => {
@@ -169,9 +176,6 @@ const FileList = ({ files }: propsType) => {
     getGeneratedFileField()
 
   }, [selectedFile])
-
-  const countGeneratedFile = () =>
-    files.filter((file) => file.type == 'generatedFile').length
 
   const menuOption = [
     [
@@ -221,7 +225,7 @@ const FileList = ({ files }: propsType) => {
           <Grid templateColumns="1fr 3fr 2fr 2fr 1fr 1fr" sx={tableHead}>
             <Box sx={simpleBox}>
               <Checkbox
-                isChecked={selectedFile.length === countGeneratedFile()}
+                isChecked={selectedFile.length === files.length}
                 onChange={(e) => onChangeAllCheckbox(e.target.checked)}
               />
             </Box>
@@ -238,8 +242,12 @@ const FileList = ({ files }: propsType) => {
           </Grid>
           <Divider />
           <Box sx={tableContent}>
-            {files.map((file) => {
-              file = new UploadFileViewModel(file)
+            {files.map((f) => {
+              let {file, remark, amount} = f
+              file = file.type == 'generatedFile'
+              ? new GenerateFileViewModel(file)
+              : new UploadFileViewModel(file)
+              console.log(file)
               return (
                 <>
                   <Grid
@@ -272,13 +280,12 @@ const FileList = ({ files }: propsType) => {
                       )}
                     </Box>
                     <Box sx={simpleBox}>{file.officialName}</Box>
-                    <Box sx={simpleBox}>{file.amount}</Box>
+                    <Box sx={simpleBox}>{amount}</Box>
                     <Box sx={simpleBox}>
-                      {/* {'API'} */}
                       <DocumentBadge status={file.getStatus()} />
                     </Box>
                     <Box sx={{ ...simpleBox, fontSize: '14px' }}>
-                      {file.remark}
+                      {remark}
                     </Box>
                     <Box sx={simpleBox}>
                       <Box
@@ -324,6 +331,7 @@ const FileList = ({ files }: propsType) => {
         </ButtonGroup>
       </Flex>
       <UploadFile open={open} setOpen={(e) => setOpen(e)} file={file} />
+      {console.log(fileMenu)}
       <ImportFromFamily
         isOpen={isOpenImport}
         onClose={onCloseImport}

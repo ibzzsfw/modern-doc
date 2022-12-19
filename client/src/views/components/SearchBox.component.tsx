@@ -1,6 +1,6 @@
 import { HStack, Icon, IconButton, Input } from '@chakra-ui/react'
-import { FiSearch } from 'react-icons/fi'
 import { useState } from 'react'
+import { FiSearch } from 'react-icons/fi'
 type propsType = {
   page?: string
   value?: string

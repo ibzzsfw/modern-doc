@@ -1,23 +1,21 @@
 import {
   Avatar,
-  background,
-  Box,
+  Button,
   Flex,
   HStack,
   Modal,
   ModalBody,
   ModalContent,
+  ModalFooter,
   ModalHeader,
   ModalOverlay,
-  ModalFooter,
   Text,
-  VStack,
-  Button,
+  VStack
 } from '@chakra-ui/react'
-import MemberController from '@view-models/MemberController'
-import FileController from '@view-models/FileController'
-import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import FileController from '@view-models/FileController'
+import MemberController from '@view-models/MemberController'
+import { useEffect, useState } from 'react'
 
 type propsType = {
   isOpen: boolean
@@ -98,9 +96,8 @@ const ImportFromFamily = ({
                   FileController.newUploadedFile(
                     fileId,
                     selected,
-                    `นำเข้าจาก ${
-                      data.find((member: any) => member.URI === selected)
-                        .firstName
+                    `นำเข้าจาก ${data.find((member: any) => member.URI === selected)
+                      .firstName
                     }`,
                     null
                   )

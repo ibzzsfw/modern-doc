@@ -5,20 +5,20 @@ import {
   Heading,
   HStack,
   Spacer,
-  Text,
+  Text
 } from '@chakra-ui/react'
+import ConfirmationModal from '@components/ConfirmationModal.component'
 import GeneratedDocumentBadge from '@components/DocumentBadge.component'
+import TakeNote from '@components/TakeNote.component'
+import UploadFile from '@components/UploadFile.component'
 import FilePageModel from '@models/FilePage.model'
 import FormPageModel from '@models/FormPage.model'
-import Markdown from 'marked-react'
-import { useNavigate } from 'react-router-dom'
-import shallow from 'zustand/shallow'
-import TakeNote from '@components/TakeNote.component'
-import ConfirmationModal from '@components/ConfirmationModal.component'
-import { useState } from 'react'
-import UploadFile from '@components/UploadFile.component'
 import FieldViewModel from '@view-models/Field.viewmodel'
 import GenerateFileViewModel from '@view-models/GenerateFiles.viewmodel'
+import Markdown from 'marked-react'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import shallow from 'zustand/shallow'
 
 type propsType = {
   title: string
@@ -45,10 +45,9 @@ const DocumentDetail = ({
     description: '',
   })
 
-  const { file, setFile } = FilePageModel((state) => {
+  const { file } = FilePageModel((state) => {
     return {
       file: state.file,
-      setFile: state.setFile,
     }
   }, shallow)
 
@@ -139,7 +138,7 @@ const DocumentDetail = ({
               แก้ไขเอกสารเดิม
             </Button>
 
-          <TakeNote
+            <TakeNote
               doucmentType={file.type}
               documentId={file.id}
               noteContent={file.note}
@@ -151,8 +150,8 @@ const DocumentDetail = ({
                 </Button>
               }
             />
-            </Flex>
-       </> ) : null}
+          </Flex>
+        </>) : null}
         {type === 'folder' ? (
           <>
             <Flex
@@ -165,7 +164,7 @@ const DocumentDetail = ({
                 colorScheme="green"
                 onClick={() => {
                   let temp = generatedFile.map((document: GenerateFileViewModel) => {
-                    document.fields.map((field) => {
+                    document.fields?.map((field: FieldViewModel) => {
                       if (keepField.includes(field.name) === false)
                         field.userValue = ''
                       return field

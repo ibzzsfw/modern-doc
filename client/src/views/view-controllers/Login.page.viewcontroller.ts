@@ -1,5 +1,5 @@
-import shallow from "zustand/shallow";
 import { LoginPageModel } from "@models/LoginPage.state.model";
+import shallow from "zustand/shallow";
 
 class LoginPageViewController {
 

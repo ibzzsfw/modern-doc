@@ -1,7 +1,7 @@
 import { Viewer } from '@react-pdf-viewer/core'
 import '@react-pdf-viewer/core/lib/styles/index.css'
-import '@react-pdf-viewer/default-layout/lib/styles/index.css'
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout/lib'
+import '@react-pdf-viewer/default-layout/lib/styles/index.css'
 
 type propsType = {
   fileUrl: string
@@ -9,6 +9,8 @@ type propsType = {
 const FileViewer = ({ fileUrl }: propsType) => {
   const defaultLayoutPluginInstance = defaultLayoutPlugin()
 
+
+  
   return (
     <Viewer
       fileUrl={fileUrl}

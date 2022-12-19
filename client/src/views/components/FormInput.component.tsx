@@ -1,13 +1,13 @@
 import {
+  chakra,
   FormControl,
   FormLabel,
   Input,
   InputGroup,
-  Text,
-  InputRightElement,
   InputLeftElement,
+  InputRightElement,
   Select,
-  chakra,
+  Text
 } from '@chakra-ui/react'
 import { ErrorMessage, Field } from 'formik'
 

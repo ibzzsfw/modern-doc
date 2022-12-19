@@ -1,31 +1,29 @@
 import {
-  useDisclosure,
+  Box,
   Button,
+  Center,
+  chakra,
+  Checkbox,
+  Image,
+  Input,
   Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
-  Center,
-  Image,
-  Select,
-  Input,
-  Checkbox,
-  Box,
-  Textarea,
-  Text,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Spacer,
-  HStack,
-  chakra,
+  Text,
+  Textarea,
+  useDisclosure
 } from '@chakra-ui/react'
-import { AiOutlineDelete } from 'react-icons/ai'
-import { useState, useEffect } from 'react'
-import FileController from '@view-models/FileController'
 import { uploadFile } from '@firebase'
-import { v4 as uuidv4 } from 'uuid'
+import FileController from '@view-models/FileController'
 import UploadedFile from '@view-models/UploadFile.viewmodel'
+import { useEffect, useState } from 'react'
+import { AiOutlineDelete } from 'react-icons/ai'
+import { v4 as uuidv4 } from 'uuid'
 
 type propsType = {
   open?: boolean
@@ -145,7 +143,6 @@ const UploadFile = ({ open, setOpen, file, customButton, type }: propsType) => {
                   type="date"
                   width="30%"
                   onChange={(e) => {
-                    console.log(e.target.value)
                     setExpiredDate(new Date(e.target.value))
                   }}
                 />
@@ -176,8 +173,9 @@ const UploadFile = ({ open, setOpen, file, customButton, type }: propsType) => {
                       type="date"
                       width="30%"
                       onChange={(e) => {
-                        if (e.target.files) console.log(e.target.value)
-                        setExpiredDate(new Date(e.target.value))
+                        if (e.target.files) {
+                          setExpiredDate(new Date(e.target.value))
+                        }
                       }}
                     />
                   )}
@@ -220,7 +218,6 @@ const UploadFile = ({ open, setOpen, file, customButton, type }: propsType) => {
                     note
                   )
                 } else if (fileType != 'generate') {
-                  console.log(expiredDate)
                   FileController.newUploadedFile(
                     file?.id,
                     await uploadFile(

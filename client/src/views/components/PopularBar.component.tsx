@@ -1,7 +1,7 @@
-import { VStack, Text, Button, Icon, Flex } from '@chakra-ui/react'
+import { Button, Flex, Icon, Text, VStack } from '@chakra-ui/react'
+import SearchModel from '@models/Search.model'
 import { TiThLargeOutline } from 'react-icons/ti'
 import { useNavigate } from 'react-router-dom'
-import SearchModel from '@models/Search.model'
 
 type propsType = {
   title: string

@@ -1,41 +1,41 @@
 import {
-  Box,
+  Accordion,
+  AccordionButton,
+  AccordionItem,
+  AccordionPanel,
   Avatar,
-  useDisclosure,
+  Box,
+  Button,
+  Divider,
+  Flex,
+  HStack,
+  Icon,
+  Link,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Popover,
+  PopoverBody,
   PopoverContent,
   PopoverHeader,
-  PopoverBody,
-  HStack,
-  VStack,
   Text,
-  Flex,
-  Icon,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  Divider,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  Button,
-  Link,
+  useDisclosure,
+  VStack
 } from '@chakra-ui/react'
-import UserController from '@view-models/UserController'
-import UserViewModel from '@view-models/User.viewmodel'
 import UserModel from '@models/User.model'
+import { useMutation } from '@tanstack/react-query'
+import UserViewModel from '@view-models/User.viewmodel'
+import UserController from '@view-models/UserController'
+import { useState } from 'react'
+import { BiLogOutCircle } from 'react-icons/bi'
 import { BsPersonCircle } from 'react-icons/bs'
 import { IoChevronDownOutline, IoChevronForwardOutline } from 'react-icons/io5'
 import { MdGroups } from 'react-icons/md'
-import { BiLogOutCircle } from 'react-icons/bi'
-import { useState } from 'react'
-import shallow from 'zustand/shallow'
 import { useNavigate } from 'react-router-dom'
-import { useMutation } from '@tanstack/react-query'
+import shallow from 'zustand/shallow'
 
 const NavbarAvatar = () => {
   const navigate = useNavigate()

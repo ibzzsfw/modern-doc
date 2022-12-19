@@ -1,12 +1,11 @@
-import { Flex, Box } from '@chakra-ui/react'
+import { Box, Flex } from '@chakra-ui/react'
 import DocumentDetail from '@components/DocumentDetail.component'
 import FileViewer from '@components/FileViewer.component'
 import { useQuery } from '@tanstack/react-query'
+import FileViewController from '@view-controllers/Files.page.viewcontroller'
 import FileController from '@view-models/FileController'
 import { useEffect } from 'react'
 import BlankPdf from '../../../public/assets/blank.pdf'
-import FileViewController from '@view-controllers/Files.page.viewcontroller'
-import GenerateFileViewModel from '@view-models/GenerateFiles.viewmodel'
 
 const File = () => {
 
@@ -48,7 +47,6 @@ const File = () => {
     },
     {
       onSuccess(data) {
-        console.log(data)
         if (data?.type == 'generatedFile') {
           viewController.fillForm(data)
         }

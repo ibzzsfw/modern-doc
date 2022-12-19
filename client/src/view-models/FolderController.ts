@@ -1,10 +1,19 @@
-import axios from 'axios'
 import UserModel from '@models/User.model'
 import FieldViewModel from '@view-models/Field.viewmodel'
 import FolderViewModel from '@view-models/Folder.viewmodel'
 import GenerateFileViewModel from '@view-models/GenerateFiles.viewmodel'
 import UploadFileViewModel from '@view-models/UploadFile.viewmodel'
+import axios from 'axios'
 class FolderController {
+
+  private static instance: FolderController
+  private constructor() { }
+  static getInstance() {
+    if (!FolderController.instance) {
+      FolderController.instance = new FolderController()
+    }
+    return FolderController.instance
+  }
 
   static async getFolderById(id: string | undefined) {
     let response = await axios.get(
@@ -104,20 +113,6 @@ class FolderController {
       }))
     })
     return searchResult
-  }
-
-  static async getField(idArr: string[]) {
-    let response = await axios.get(
-      `${process.env.VITE_API_ENDPOINT}/folder/get-field`,
-      {
-        headers: {
-          'user-id': UserModel.getState()?.user?.id,
-          token: UserModel.getState()?.user?.token,
-          'generated-file-ids': JSON.stringify(idArr),
-        },
-      }
-    )
-    return response.data
   }
 
   static async editNote(content: string, id: string | undefined) {

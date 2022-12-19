@@ -1,18 +1,18 @@
 interface IUser {
-  id?: string;
-  householdId?: string;
-  title?: string;
-  firstName?: string;
-  lastName?: string;
-  citizenId?: string;
-  phoneNumber?: string;
-  sex?: 'ชาย' | 'หญิง' | 'ไม่ระบุ';
-  relationship?: string;
-  profileURI?: string;
-  password?: string;
-  token?: string;
-  email?: string;
-  birthDate?: string;
+  private id?: string;
+  private householdId?: string;
+  private title?: string;
+  private firstName?: string;
+  private lastName?: string;
+  private citizenId?: string;
+  private phoneNumber?: string;
+  private sex?: 'ชาย' | 'หญิง' | 'ไม่ระบุ';
+  private relationship?: string;
+  private profileURI?: string;
+  private password?: string;
+  private token?: string;
+  private email?: string;
+  private birthDate?: string;
 }
 
 export default IUser;

@@ -6,7 +6,7 @@ import {
   PopoverBody,
   PopoverContent,
   Text,
-  useDisclosure,
+  useDisclosure
 } from '@chakra-ui/react'
 import { Link } from 'react-router-dom'
 

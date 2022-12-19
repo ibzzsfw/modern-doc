@@ -1,14 +1,13 @@
-import Field from "src/view-models/Field";
-import FileData from 'src/view-models/File'
-import FilePageModel from "../../models/FilePage.model";
-import FormPageModel from "../../models/FormPage.model";
+import fontkit from '@pdf-lib/fontkit';
+import FieldViewModel from '@view-models/Field.viewmodel';
+import axios from 'axios';
+import { PDFDocument } from 'pdf-lib';
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import shallow from "zustand/shallow";
-import { PDFDocument } from 'pdf-lib'
-import fontkit from '@pdf-lib/fontkit'
-import GenerateFileViewModel from '../../view-models/GenerateFiles.viewmodel'
-import axios from 'axios'
+import FilePageModel from "../../models/FilePage.model";
+import FormPageModel from "../../models/FormPage.model";
+import GenerateFileViewModel from '../../view-models/GenerateFiles.viewmodel';
 
 class FileViewController {
 
@@ -53,7 +52,7 @@ class FileViewController {
 
     const form = pdfDoc.getForm()
 
-    file.fields.map((field: Field) => {
+    file.fields?.map((field: FieldViewModel) => {
       if (form.getFieldMaybe(field.name)) {
         switch (field.type) {
           case 'text':

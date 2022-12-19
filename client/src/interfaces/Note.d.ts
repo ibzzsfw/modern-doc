@@ -1,9 +1,9 @@
 interface INote {
-  id: string;
-  heading?: string;
-  content?: string;
-  createdDate?: Date;
-  modifiedDate?: Date;
+  private id: string;
+  private heading?: string;
+  private content?: string;
+  private createdDate?: Date;
+  private modifiedDate?: Date;
 }
 
 export default INote;

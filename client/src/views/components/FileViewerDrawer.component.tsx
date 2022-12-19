@@ -1,19 +1,19 @@
 import {
+  Button,
   Drawer,
   DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
   DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
-  useDisclosure,
-  Button,
-  Spacer,
   Highlight,
-  Text
+  Spacer,
+  Text,
+  useDisclosure
 } from '@chakra-ui/react'
-import { useState } from 'react'
 import FileViewer from '@components/FileViewer.component'
+import { useState } from 'react'
 import { AiOutlineLeft, AiOutlineRight } from 'react-icons/ai'
 
 type propsType = {

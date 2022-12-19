@@ -1,7 +1,7 @@
-import create from "zustand";
+import FreeUploadedFileViewModel from "@view-models/FreeUploadFile.viewmodel";
 import GenerateFileViewModel from "@view-models/GenerateFiles.viewmodel";
 import UploadFileViewModel from "@view-models/UploadFile.viewmodel";
-import FreeUploadedFileViewModel from "@view-models/FreeUploadFile.viewmodel";
+import create from "zustand";
 
 type searchResultType = GenerateFileViewModel
   | UploadFileViewModel

@@ -1,15 +1,15 @@
+import AgeFieldViewModel from '@view-models/AgeField.viewmodel';
+import DateFieldViewModel from '@view-models/DateField.viewmodel';
+import EmailFieldViewModel from '@view-models/EmailField.viewmodel';
+import FreeUploadedFileViewModel from '@view-models/FreeUploadFile.viewmodel';
+import GenerateFileViewModel from '@view-models/GenerateFiles.viewmodel';
+import MultipleSelectFieldViewModel from '@view-models/MultipleSelectField.viewmodel';
+import NumberFieldViewModel from '@view-models/NumberField.viewmodel';
+import PhoneNumberFieldViewModel from '@view-models/PhoneNumberField.viewmodel';
+import SingleSelectFieldViewModel from '@view-models/SingleSelectField.viewmodel';
+import TextFieldViewModel from '@view-models/TextField.viewmodel';
+import UploadFileViewModel from '@view-models/UploadFile.viewmodel';
 import create from "zustand";
-import UploadFileViewModel from '@view-models/UploadFile.viewmodel'
-import GenerateFileViewModel from '@view-models/GenerateFiles.viewmodel'
-import FreeUploadedFileViewModel from '@view-models/FreeUploadFile.viewmodel'
-import DateFieldViewModel from '@view-models/DateField.viewmodel'
-import TextFieldViewModel from '@view-models/TextField.viewmodel'
-import NumberFieldViewModel from '@view-models/NumberField.viewmodel'
-import EmailFieldViewModel from '@view-models/EmailField.viewmodel'
-import PhoneNumberFieldViewModel from '@view-models/PhoneNumberField.viewmodel'
-import SingleSelectFieldViewModel from '@view-models/SingleSelectField.viewmodel'
-import MultipleSelectFieldViewModel from '@view-models/MultipleSelectField.viewmodel'
-import AgeFieldViewModel from '@view-models/AgeField.viewmodel'
 
 type fieldType = TextFieldViewModel
   | NumberFieldViewModel
@@ -25,7 +25,7 @@ type fileType = GenerateFileViewModel
   | FreeUploadedFileViewModel
 
 interface IFilePageModel {
-  file: GenerateFileViewModel | UploadFileViewModel | FreeUploadedFileViewModel | null;
+  file: fileType | null;
   field: fieldType[];
   sharedFileType: string;
   setFile: (file: fileType | null) => void;

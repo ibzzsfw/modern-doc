@@ -1,49 +1,46 @@
 import {
   Badge,
   Box,
-  Flex,
-  SimpleGrid,
-  HStack,
-  Image,
-  Text,
-  Editable,
-  EditablePreview,
-  EditableTextarea,
-  GridItem,
-  Center,
-  useDisclosure,
-  Icon,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
   Button,
-  useToast,
-  Textarea,
   ButtonGroup,
+  Center,
+  Flex,
+  GridItem,
+  HStack,
+  Icon,
+  Image,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  SimpleGrid,
+  Text,
+  Textarea,
+  useDisclosure,
+  useToast
 } from '@chakra-ui/react'
 import MenuProvider from '@components/MenuProvider.component'
-import { AiOutlineEdit } from 'react-icons/ai'
-import { MdLeakRemove } from 'react-icons/md'
-import { BsThreeDots, BsTrash, BsShareFill } from 'react-icons/bs'
-import { useState } from 'react'
+import { useMutation } from '@tanstack/react-query'
 import FileController from '@view-models/FileController'
 import FolderController from '@view-models/FolderController'
 import NoteController from '@view-models/NoteController'
-import { useMutation } from '@tanstack/react-query'
 import { Field, Form, Formik } from 'formik'
+import { useState } from 'react'
+import { AiOutlineEdit } from 'react-icons/ai'
+import { BsShareFill, BsThreeDots, BsTrash } from 'react-icons/bs'
+import { MdLeakRemove } from 'react-icons/md'
 import { Link } from 'react-router-dom'
 type propsType = {
   type:
-    | 'generatedFolder'
-    | 'generatedFile'
-    | 'uploadedFile'
-    | 'sharedFile'
-    | 'userFreeUploadFile'
-    | 'note'
-    | undefined
+  | 'generatedFolder'
+  | 'generatedFile'
+  | 'uploadedFile'
+  | 'sharedFile'
+  | 'userFreeUploadFile'
+  | 'note'
+  | undefined
   id: string
   isShared?: boolean
   title: string
@@ -228,7 +225,7 @@ const TableListItem = ({
     },
     {
       onSuccess: () => {
-        ;async () => {
+        ; async () => {
           await toast({
             title: 'แก้ไขบันทึกสำเร็จ',
             status: 'success',
@@ -426,11 +423,11 @@ const TableListItem = ({
             >
               {showDate
                 ? `สร้างเมื่อ ${new Date(createdDate ?? '').toLocaleDateString(
-                    'en-GB'
-                  )}`
+                  'en-GB'
+                )}`
                 : `แก้ไขล่าสุดเมื่อ ${new Date(modifiedDate ?? '').toLocaleDateString(
-                    'en-GB'
-                  )}`}
+                  'en-GB'
+                )}`}
             </Badge>
           </Center>
         </GridItem>

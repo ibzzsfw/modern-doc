@@ -1,6 +1,6 @@
+import SearchModel from '@models/Search.model';
+import UserModel from '@models/User.model';
 import { useState } from "react";
-import UserModel from '../../models/User.model'
-import SearchModel from '../../models/Search.model';
 
 class HomePageViewController {
 

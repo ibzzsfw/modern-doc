@@ -1,5 +1,5 @@
-import create from "zustand/react";
 import FieldViewModel from "@view-models/Field.viewmodel";
+import create from "zustand/react";
 
 interface IFieldModel {
   field: FieldViewModel[],

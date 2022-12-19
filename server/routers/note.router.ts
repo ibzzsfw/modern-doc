@@ -1,16 +1,12 @@
-import { NextFunction, Request, Response, Router } from 'express'
-import NoteHandler from '../handlers/note.handler'
+import NoteHandler from '@handlers/note.handler'
+import AbstractRouter from '@routers/abstract.router'
 
-class NoteRouter {
-  private router = Router()
+class NoteRouter extends AbstractRouter {
   private handler = new NoteHandler()
 
   constructor() {
+    super()
     this.configureRoutes()
-  }
-
-  getRouter = (): Router => {
-    return this.router
   }
 
   configureRoutes = (): void => {

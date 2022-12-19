@@ -1,5 +1,5 @@
-import FieldModel from "@view-models/Field.viewmodel";
 import IField from "@interfaces/Field";
+import FieldModel from "@view-models/Field.viewmodel";
 import * as Yup from "yup";
 
 class PhoneNumberFieldViewModel extends FieldModel implements IField {

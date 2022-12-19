@@ -1,19 +1,18 @@
 import {
+  Button,
+  HStack,
+  Link,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
   PinInput,
   PinInputField,
   Text,
-  Button,
-  useToast,
-  Link,
-  VStack,
-  HStack,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
   useDisclosure,
+  VStack
 } from '@chakra-ui/react'
 import { useState } from 'react'
 

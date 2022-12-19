@@ -1,6 +1,6 @@
 interface ITag {
-  id: string;
-  name?: string;
+  private id: string;
+  private name?: string;
 }
 
 export default ITag;

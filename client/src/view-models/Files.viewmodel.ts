@@ -22,21 +22,11 @@ abstract class FileViewModel extends DocumentViewModel implements IFile {
   }
 
   getStatus(): DocumentStatus {
-    const today = new Date()
-    if (
-      (this.URI != null &&
-        this.URI != '' &&
-        this.type == 'uploadedFile') ||
-      (this.type == 'generatedFile' && this.dateUpload != null)
-    ) {
-      return 'มีอยู่ในคลัง'
-    }
-    if (this.URI == '' || this.URI == null) {
+    if (this.type == 'generatedFile' && this.URI != '') {
+      return 'ไม่มีอยู่ในคลัง'
+    } else if (this.type == 'uploadedFile' && this.URI == null) {
       return 'ไม่มีอยู่ในคลัง'
     }
-    // if (this.expirationDate < today) {
-    //   return 'หมดอายุ'
-    // }
     return 'มีอยู่ในคลัง'
   }
 }

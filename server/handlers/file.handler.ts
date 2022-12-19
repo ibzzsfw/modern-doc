@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import FileController from '../controllers/file.controller'
+import FileController from '@controllers/file.controller'
 
 class FileHandler {
 

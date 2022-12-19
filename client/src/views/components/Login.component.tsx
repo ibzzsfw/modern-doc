@@ -5,22 +5,22 @@ import {
   Icon,
   Text,
   useToast,
-  VStack,
+  VStack
 } from '@chakra-ui/react'
 import FormInput from '@components/FormInput.component'
 import OTPVerify from '@components/OTPVerify.component'
-import UserViewModel from '@view-models/User.viewmodel'
-import UserController from '@view-models/UserController'
+import { phoneLogin, validateOTP } from '@firebase'
 import { LoginPageModel } from '@models/LoginPage.state.model'
 import UserModel from '@models/User.model'
 import { useMutation } from '@tanstack/react-query'
+import { withCountryCode, withoutCountryCode } from '@utils/formatPhoneNumber'
+import UserViewModel from '@view-models/User.viewmodel'
+import UserController from '@view-models/UserController'
+import { AxiosError } from 'axios'
 import { Form, Formik } from 'formik'
+import { useState } from 'react'
 import { AiFillLock, AiFillPhone } from 'react-icons/ai'
 import * as Yup from 'yup'
-import { phoneLogin, validateOTP } from '@firebase'
-import { withCountryCode, withoutCountryCode } from '@utils/formatPhoneNumber'
-import { useState } from 'react'
-import { AxiosError } from 'axios'
 
 const Login = () => {
 

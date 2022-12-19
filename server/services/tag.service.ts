@@ -1,6 +1,5 @@
-import { Request, Response } from 'express'
-import { z } from 'zod'
 import Prisma from '@utils/prisma'
+import { z } from 'zod'
 
 class TagService {
   addTag = async (name: string) => {

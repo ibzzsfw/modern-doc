@@ -1,7 +1,7 @@
 import IFile from "@interfaces/File";
 
 interface IFreeUploadFile extends IFile {
-  dateExpired?: Date;
+  private dateExpired?: Date;
 }
 
 export default IFreeUploadFile;

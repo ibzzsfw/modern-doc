@@ -1,6 +1,6 @@
-import { z } from 'zod'
 import getRelationshipEnum from '@utils/getRelationshipEnum'
 import Prisma from '@utils/prisma'
+import { z } from 'zod'
 
 class MemberService {
   static getUserHouseholdId(userId: string) {

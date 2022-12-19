@@ -1,11 +1,11 @@
-import bcrypt from 'bcryptjs'
-import jwt from 'jsonwebtoken'
-import { z } from 'zod'
 import checkCitizenId from '@utils/checkCitizenId'
 import getSexEnum from '@utils/getSexEnum'
 import getSexText from '@utils/getSexText'
 import Prisma from '@utils/prisma'
 import async from 'async'
+import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
+import { z } from 'zod'
 
 class UserService {
   private getFieldValue = (field: string, data: any): string => {

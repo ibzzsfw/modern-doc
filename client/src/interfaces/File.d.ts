@@ -1,11 +1,11 @@
 import IDocument from "@interfaces/Document";
 
 interface IFile extends IDocument {
-  lastModified?: Date;
-  URI?: string;
-  previewURI?: string
-  type?: 'generatedFile' | 'uploadedFile' | 'userFreeUploadFile';
-  isShared?: boolean;
+  private lastModified?: Date;
+  private URI?: string;
+  private previewURI?: string
+  private type?: 'generatedFile' | 'uploadedFile' | 'userFreeUploadFile';
+  private isShared?: boolean;
 }
 
 export default IFile;
