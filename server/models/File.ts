@@ -71,7 +71,6 @@ class File {
           "UploadedFile"."URI" AS "previewURI",
           "UserUploadedFile"."date",
           "UserUploadedFile"."expirationDate",
-          ""
           array(
           SELECT (json_build_object(
               'id', "Tag"."id",
