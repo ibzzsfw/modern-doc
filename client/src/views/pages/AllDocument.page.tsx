@@ -2,7 +2,6 @@ import {
   Button,
   ButtonGroup,
   Flex,
-  Icon,
   IconButton,
   Menu,
   MenuButton,
@@ -21,7 +20,6 @@ import {
 } from '@chakra-ui/react'
 import DocumentBox from '@components/DocumentBox.component'
 import Frame from '@components/Frame.component'
-import MenuProvider from '@components/MenuProvider.component'
 import SearchBox from '@components/SearchBox.component'
 import TableListItem from '@components/TableListItem.component'
 import FileController from '@view-models/FileController'
@@ -29,13 +27,8 @@ import FolderController from '@view-models/FolderController'
 import NoteController from '@view-models/NoteController'
 import { useEffect, useState } from 'react'
 import {
-  AiFillPrinter,
-  AiOutlineAppstore,
-  AiOutlineEdit,
-  AiOutlineMenu
+  AiOutlineAppstore, AiOutlineMenu
 } from 'react-icons/ai'
-import { BsThreeDots, BsTrash } from 'react-icons/bs'
-import { GrDocumentText, GrDownload } from 'react-icons/gr'
 import { IoChevronDownOutline } from 'react-icons/io5'
 import { useParams } from 'react-router-dom'
 
@@ -114,53 +107,6 @@ const AllDocumentPage = () => {
     setData(temp)
   }, [search])
 
-  let menu = (
-    <MenuProvider
-      menusList={[
-        [
-          {
-            title: 'รายละเอียด',
-            icon: <Icon as={GrDocumentText} />,
-            onClick: () => { },
-          },
-          {
-            title: 'แก้ไขโน้ต',
-            icon: <Icon as={AiOutlineEdit} />,
-            onClick: () => { },
-          },
-          {
-            title: 'ดาวน์โหลด',
-            icon: <Icon as={GrDownload} />,
-            onClick: () => { },
-          },
-          {
-            title: 'พิมพ์',
-            icon: <Icon as={AiFillPrinter} />,
-            onClick: () => { },
-          },
-        ],
-        [
-          {
-            title: 'ลบแฟ้ม',
-            icon: <Icon as={BsTrash} color="accent.red" />,
-            onClick: () => {
-              onOpen()
-            },
-            style: {
-              color: 'accent.red',
-            },
-          },
-        ],
-      ]}
-    >
-      <Icon
-        as={BsThreeDots}
-        sx={view === 'box' ? menuBlock : menuList}
-        boxSize="18px"
-      />
-    </MenuProvider>
-  )
-
   const getType = (category: string | undefined) => {
     switch (category) {
       case 'note':
@@ -216,9 +162,7 @@ const AllDocumentPage = () => {
             <Button
               variant="solid"
               colorScheme="red"
-              onClick={() => {
-                //delete api
-              }}
+              onClick={() => {}}
             >
               ลบ
             </Button>

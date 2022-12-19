@@ -47,14 +47,8 @@ const FamilyInfoBox = ({
   handleForm,
 }: propsType) => {
   const [isEdit, setEdit] = useState(false)
-  const [mouseOnImage, setmouseOnImage] = useState(false)
   const { isOpen, onOpen, onClose } = useDisclosure()
   const toast = useToast()
-  const controls = useAnimation()
-  const startAnimation = () => controls.start('hover')
-  const stopAnimation = () => controls.stop()
-
-  const user = UserModel((state) => state.user)
 
   //------------api zone---------
   const addFamily = async (values: any) => {

@@ -45,7 +45,7 @@ const Folder = () => {
           status={folderData.dateUpload ? 'มีอยู่ในคลัง' : 'ไม่มีอยู่ในคลัง'}
           type="folder"
         />
-        <FileList files={folderData.file} />
+        <FileList files={folderData.file ?? []} />
       </Flex>
     )
   }

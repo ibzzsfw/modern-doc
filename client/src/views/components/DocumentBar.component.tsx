@@ -8,19 +8,6 @@ type propsType = {
 }
 
 const DocumentBar = ({ title, children, onAddonButtonClick }: propsType) => {
-  let layout = {
-    padding: '24px 0',
-    gap: '24px',
-    flexDirection: 'column',
-    width: '100%',
-  }
-
-  let childrenFlex = {
-    width: '100%',
-    flexWrap: 'wrap',
-    margin: 'auto',
-    gap: '32px',
-  }
 
   return (
     <>
@@ -53,3 +40,17 @@ const DocumentBar = ({ title, children, onAddonButtonClick }: propsType) => {
 }
 
 export default DocumentBar
+
+let layout = {
+  padding: '24px 0',
+  gap: '24px',
+  flexDirection: 'column',
+  width: '100%',
+}
+
+let childrenFlex = {
+  width: '100%',
+  flexWrap: 'wrap',
+  margin: 'auto',
+  gap: '32px',
+}

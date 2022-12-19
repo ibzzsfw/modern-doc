@@ -4,6 +4,7 @@ import FileViewer from '@components/FileViewer.component'
 import { useQuery } from '@tanstack/react-query'
 import FileViewController from '@view-controllers/Files.page.viewcontroller'
 import FileController from '@view-models/FileController'
+import GenerateFileViewModel from '@view-models/GenerateFiles.viewmodel'
 import { useEffect } from 'react'
 import BlankPdf from '../../../public/assets/blank.pdf'
 
@@ -48,7 +49,7 @@ const File = () => {
     {
       onSuccess(data) {
         if (data?.type == 'generatedFile') {
-          viewController.fillForm(data)
+          viewController.fillForm(data as GenerateFileViewModel)
         }
       },
     }
@@ -61,10 +62,9 @@ const File = () => {
   if (data)
     return (
       <Flex sx={documentView}>
-        <Box sx={abstractArea}>{/* <UploadFile /> */}</Box>
         <DocumentDetail
           title={file?.officialName ?? 'ไม่มีชื่อเอกสาร'}
-          description={file?.note}
+          description={file?.note ?? 'ไม่มีรายละเอียดเอกสาร'}
           markdown={file?.description ?? 'ไม่มีรายละเอียดเอกสาร'}
           status={file?.dateUpload ? 'มีอยู่ในคลัง' : 'ไม่มีอยู่ในคลัง'}
           type={file?.type}
@@ -78,15 +78,6 @@ const File = () => {
 let documentView = {
   justifyContent: 'space-evenly',
   height: '768px',
-}
-
-let abstractArea = {
-  display: 'flex',
-  flexDirection: 'column',
-  rowGap: '1rem',
-  position: 'absolute',
-  top: '0',
-  right: '2rem',
 }
 
 export default File

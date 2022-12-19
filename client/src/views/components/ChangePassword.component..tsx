@@ -35,7 +35,7 @@ const ChangePassword = () => {
       )
     },
     {
-      onSuccess: (data: any) => {
+      onSuccess: () => {
         toast({
           title: 'เปลี่ยนรหัสผ่านสำเร็จ',
           status: 'success',
@@ -43,7 +43,7 @@ const ChangePassword = () => {
         })
         window.location.reload()
       },
-      onError: (error: any) => {
+      onError: () => {
         toast({
           title: 'เปลี่ยนรหัสผ่านไม่สำเร็จ',
           status: 'error',

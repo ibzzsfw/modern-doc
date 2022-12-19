@@ -302,7 +302,7 @@ const FormPage = () => {
               viewController.validationSchemaExraction(mergedField)
             )}
             onSubmit={async (values) => {
-              let ids: { id: string }[] = []
+              let ids: object[] = []
               generatedFile.map((file) => {
                 ids.push({ id: file.id })
               })

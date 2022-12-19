@@ -17,8 +17,8 @@ type propTypes = {
 }
 
 const ProfilePicture = ({ url }: propTypes) => {
-  const { isEdit, setEdit } = MyProfilePageModel()
-  const { user, setUser } = UserModel()
+  const { isEdit } = MyProfilePageModel()
+  const { user } = UserModel()
 
 
   const [image, setImage] = useState<any>(null)

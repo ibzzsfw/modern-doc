@@ -12,10 +12,7 @@ class FamilyPageViewController {
     shallow
   )
 
-  constructor() {
-    this.lockEditState = useState(false)
-    this.addMemberState = useState(false)
-  }
+  constructor() { }
 
   lockId = (id: string | null) => this.lockEditState[1](id !== null)
 }

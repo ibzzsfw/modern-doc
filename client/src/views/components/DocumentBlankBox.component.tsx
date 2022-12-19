@@ -13,10 +13,7 @@ const DocumentBlankBox = ({
   onClick,
   icon,
   size,
-
-  
   color,
-  children,
 }: propsTypes) => {
   return (
     <Flex
