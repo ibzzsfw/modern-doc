@@ -1,16 +1,16 @@
+import IFolderService from '@services/interfaces/folder.service';
 import { Request, Response } from 'express';
-import FolderService from '@services/folder.service';
 
 class FolderController {
 
-  private service = new FolderService();
+  private _service: IFolderService
 
   async getFolderById(req: Request, res: Response) {
 
     const { id } = req.params
     const userId = req.headers['user-id'] as string
 
-    const response = await this.service.getFolderById(id, userId)
+    const response = await this._service.getFolderById(id, userId)
     res.status(response.status).json(response.json)
   }
 
@@ -18,7 +18,7 @@ class FolderController {
 
     const userId = req.headers['user-id'] as string
 
-    const response = await this.service.getLatestFolder(userId)
+    const response = await this._service.getLatestFolder(userId)
     res.status(response.status).json(response.json)
   }
 
@@ -27,7 +27,7 @@ class FolderController {
     const { name } = req.params
     const userId = req.headers['user-id'] as string
 
-    const response = await this.service.searchByName(name, userId)
+    const response = await this._service.searchByName(name, userId)
     res.status(response.status).json(response.json)
   }
 
@@ -35,7 +35,7 @@ class FolderController {
 
     const userId = req.headers['user-id'] as string
 
-    const response = await this.service.getAll(userId)
+    const response = await this._service.getAll(userId)
     res.status(response.status).json(response.json)
   }
 
@@ -45,7 +45,7 @@ class FolderController {
     const { note } = req.body
     const userId = req.headers['user-id'] as string
 
-    const response = await this.service.addNote(userFolderId, note, userId)
+    const response = await this._service.addNote(userFolderId, note, userId)
     res.status(response.status).json(response.json)
   }
 
@@ -56,7 +56,7 @@ class FolderController {
     )
     const userId = req.headers['user-id'] as string
 
-    const response = await this.service.getField(generatedFileIds, userId)
+    const response = await this._service.getField(generatedFileIds, userId)
     res.status(response.status).json(response.json)
   }
 
@@ -66,7 +66,7 @@ class FolderController {
     const { fields, generatedFiles } = req.body
     const userId = req.headers['user-id'] as string
 
-    const response = await this.service.saveFolder(
+    const response = await this._service.saveFolder(
       folderId,
       fields,
       generatedFiles,

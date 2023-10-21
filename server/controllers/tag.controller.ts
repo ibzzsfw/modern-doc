@@ -1,15 +1,15 @@
+import ITagService from '@services/interfaces/tag.service';
 import { Request, Response } from 'express';
-import TagService from '@services/tag.service';
 
 class TagController {
 
-  private service = new TagService();
+  private _service: ITagService
 
   addTag = async (req: Request, res: Response) => {
 
     const { name } = req.body
 
-    const response = await this.service.addTag(name)
+    const response = await this._service.addTag(name)
     res.status(response.status).json(response.json)
   }
 
@@ -17,13 +17,13 @@ class TagController {
 
     const { tags } = req.body
 
-    const response = await this.service.addTagMany(tags)
+    const response = await this._service.addTagMany(tags)
     res.status(response.status).json(response.json)
   }
 
   getAllTag = async (req: Request, res: Response) => {
 
-    const response = await this.service.getAllTag()
+    const response = await this._service.getAllTag()
     res.status(response.status).json(response.json)
   }
 
@@ -31,7 +31,7 @@ class TagController {
 
     const { name } = req.params
 
-    const response = await this.service.getTagByName(name)
+    const response = await this._service.getTagByName(name)
     res.status(response.status).json(response.json)
   }
 
@@ -39,7 +39,7 @@ class TagController {
 
     const { id } = req.params
 
-    const response = await this.service.getTagById(id)
+    const response = await this._service.getTagById(id)
     res.status(response.status).json(response.json)
   }
 
@@ -47,7 +47,7 @@ class TagController {
 
     const { id, name } = req.body
 
-    const response = await this.service.editTagName(id, name)
+    const response = await this._service.editTagName(id, name)
     res.status(response.status).json(response.json)
   }
 

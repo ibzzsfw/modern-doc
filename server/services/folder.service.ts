@@ -1,30 +1,30 @@
-import Prisma from '@utils/prisma'
 import async from 'async'
-import { z } from 'zod'
+import BaseService from '.'
+import IFolderService from '@services/interfaces/folder.service'
 
-class FolderService {
+class FolderService extends BaseService implements IFolderService {
   async getFolderById(id: string, userId: string) {
 
-    const schema = z.object({
-      id: z.string().uuid(),
-      userId: z.string().uuid(),
+    const schema = this._z.object({
+      id: this._z.string().uuid(),
+      userId: this._z.string().uuid(),
     })
 
     try {
       schema.parse({ id, userId })
-      const folder = await Prisma.$queryRaw`
+      const folder = await this._prisma.$queryRaw`
         SELECT "Folder".*
         FROM "Folder" 
         WHERE "Folder"."id" = ${id}::uuid
       `
 
-      let userFolder = await Prisma.$queryRaw`
+      let userFolder = await this._prisma.$queryRaw`
         SELECT "UserFolder"."note","UserFolder"."date"
         FROM "UserFolder"
         WHERE "UserFolder"."folderId" = ${id}::uuid AND "UserFolder"."userId" = ${userId}::uuid
       `
 
-      const file = await Prisma.$queryRaw`
+      const file = await this._prisma.$queryRaw`
         SELECT "GeneratedFile"."id","GeneratedFile"."officialName"
         ,"FolderGeneratedFile"."amount","FolderGeneratedFile"."remark",
         "UserGeneratedFile"."note","UserGeneratedFile"."date",'generatedFile' AS "type",
@@ -71,11 +71,11 @@ class FolderService {
 
   async getLatestFolder(userId: string) {
 
-    const schema = z.string().uuid()
+    const schema = this._z.string().uuid()
 
     try {
       schema.parse(userId)
-      const folder = await Prisma.$queryRaw`
+      const folder = await this._prisma.$queryRaw`
         SELECT "Folder".*,"UserFolder"."note","UserFolder"."date" 
         FROM "UserFolder"
         LEFT JOIN "Folder" ON "UserFolder"."folderId" = "Folder"."id"
@@ -96,14 +96,14 @@ class FolderService {
 
   async searchByName(name: string, userId: string) {
 
-    const schema = z.object({
-      name: z.string(),
-      userId: z.string().uuid(),
+    const schema = this._z.object({
+      name: this._z.string(),
+      userId: this._z.string().uuid(),
     })
 
     try {
       schema.parse({ name, userId })
-      const folder = await Prisma.$queryRaw`
+      const folder = await this._prisma.$queryRaw`
         SELECT DISTINCT "Folder".*,'generatedFolder' AS "type"
         ,"UserFolder"."date"
         FROM "Folder"
@@ -130,13 +130,13 @@ class FolderService {
 
   async getAll(userId: string) {
 
-    const schema = z.object({
-      userId: z.string().uuid(),
+    const schema = this._z.object({
+      userId: this._z.string().uuid(),
     })
 
     try {
       schema.parse({ userId })
-      const folder = await Prisma.$queryRaw`
+      const folder = await this._prisma.$queryRaw`
         SELECT DISTINCT "Folder".*,'generatedFolder' AS "type" 
         ,"UserFolder"."date" FROM "Folder"
         LEFT JOIN "FolderTag" ON "Folder"."id" = "FolderTag"."folderId"
@@ -160,15 +160,15 @@ class FolderService {
 
   addNote = async (userFolderId: string, note: string, userId: string) => {
 
-    const schema = z.object({
-      userFolderId: z.string().uuid(),
-      note: z.string(),
-      userId: z.string().uuid(),
+    const schema = this._z.object({
+      userFolderId: this._z.string().uuid(),
+      note: this._z.string(),
+      userId: this._z.string().uuid(),
     })
 
     try {
       schema.parse({ userFolderId, note, userId })
-      const folder = await Prisma.$queryRaw`
+      const folder = await this._prisma.$queryRaw`
         UPDATE "UserFolder" SET "note" = ${note} 
         WHERE "folderId" = ${userFolderId}::uuid 
         AND "userId" = ${userId}::uuid
@@ -187,15 +187,15 @@ class FolderService {
 
   getField = async (generatedFileIds: any, userId: string) => {
 
-    const schema = z.object({
-      generatedFileIds: z.array(z.string().uuid()),
-      userId: z.string().uuid(),
+    const schema = this._z.object({
+      generatedFileIds: this._z.array(this._z.string().uuid()),
+      userId: this._z.string().uuid(),
     })
     try {
       schema.parse({ generatedFileIds, userId })
       let arr = []
       let promise = generatedFileIds.map(async (generatedFileId, index) => {
-        const field = await Prisma.$queryRaw`
+        const field = await this._prisma.$queryRaw`
           SELECT  array(
           SELECT DISTINCT jsonb_build_object(
             'id', "Field"."id",
@@ -239,26 +239,26 @@ class FolderService {
 
   saveFolder = async (folderId: string, fields: any, generatedFiles: any, userId: string) => {
 
-    const schema = z.object({
-      folderId: z.string().uuid(),
-      fields: z.array(
-        z.object({
-          id: z.string().uuid(),
-          userValue: z.string(),
+    const schema = this._z.object({
+      folderId: this._z.string().uuid(),
+      fields: this._z.array(
+        this._z.object({
+          id: this._z.string().uuid(),
+          userValue: this._z.string(),
         })
       ),
-      generatedFiles: z.array(
-        z.object({
-          id: z.string().uuid(),
+      generatedFiles: this._z.array(
+        this._z.object({
+          id: this._z.string().uuid(),
         })
       ),
-      userId: z.string().uuid(),
+      userId: this._z.string().uuid(),
     })
     try {
       schema.parse({ folderId, fields, generatedFiles, userId })
       let arr = []
 
-      const updateUserFolder = await Prisma.$queryRaw`
+      const updateUserFolder = await this._prisma.$queryRaw`
         INSERT INTO "UserFolder" ("id","userId","folderId","date")
         VALUES (
         (SELECT gen_random_uuid())
@@ -270,7 +270,7 @@ class FolderService {
 
       const promise = await async.map(generatedFiles, async (generatedFile) => {
         const { id } = generatedFile
-        const updateGeneratedFile = await Prisma.$queryRaw`
+        const updateGeneratedFile = await this._prisma.$queryRaw`
           INSERT INTO "UserGeneratedFile" ("id","userId","generatedFileId","date")
           VALUES (
           (SELECT gen_random_uuid())
@@ -283,7 +283,7 @@ class FolderService {
 
       const promise2 = await async.map(fields, async (field) => {
         const { name, userValue } = field
-        const updateField = await Prisma.$queryRaw`
+        const updateField = await this._prisma.$queryRaw`
           INSERT INTO "UserField" ("id","userId","fieldId","rawValue","date")
           VALUES (
           (SELECT gen_random_uuid())

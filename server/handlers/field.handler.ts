@@ -4,11 +4,11 @@ import FieldController from '@controllers/field.controller'
 class FieldHandler {
 
   private controller = new FieldController()
-  
+
   createField = async (req: Request, res: Response) => {
     this.controller.createField(req, res)
   }
-  
+
   createFieldMany = async (req: Request, res: Response) => {
     this.controller.createFieldMany(req, res)
   }

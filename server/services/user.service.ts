@@ -1,13 +1,13 @@
+import IUserService from '@services/interfaces/user.service'
 import checkCitizenId from '@utils/checkCitizenId'
 import getSexEnum from '@utils/getSexEnum'
 import getSexText from '@utils/getSexText'
-import Prisma from '@utils/prisma'
 import async from 'async'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import { z } from 'zod'
+import BaseService from '.'
 
-class UserService {
+class UserService extends BaseService implements IUserService {
   private getFieldValue = (field: string, data: any): string => {
     switch (field) {
       case 'firstname_personal':
@@ -29,7 +29,7 @@ class UserService {
 
   checkCitizenIdStatus = async (citizenId: string) => {
 
-    const schema = z.string().regex(/^[0-9]{13}$/)
+    const schema = this._z.string().regex(/^[0-9]{13}$/)
     try {
       schema.parse(citizenId)
       if (!checkCitizenId(citizenId)) {
@@ -38,7 +38,7 @@ class UserService {
           json: { message: 'Citizen ID is not valid' },
         }
       }
-      const user = await Prisma.user.findUnique({
+      const user = await this._prisma.user.findUnique({
         where: {
           citizenId,
         },
@@ -63,10 +63,10 @@ class UserService {
 
   checkPhoneStatus = async (phone: string) => {
 
-    const schema = z.string().regex(/^[0-9]{10}$/)
+    const schema = this._z.string().regex(/^[0-9]{10}$/)
     try {
       schema.parse(phone)
-      const user = await Prisma.user.findUnique({
+      const user = await this._prisma.user.findUnique({
         where: {
           phoneNumber: phone,
         },
@@ -92,15 +92,15 @@ class UserService {
 
   addUser = async (body: any) => {
 
-    const schema = z.object({
-      title: z.string(),
-      firstName: z.string(),
-      lastName: z.string(),
-      sex: z.enum(['ชาย', 'หญิง']),
-      birthDate: z.string(),
-      citizenId: z.string(),
-      phoneNumber: z.string().length(10),
-      password: z.string().min(6),
+    const schema = this._z.object({
+      title: this._z.string(),
+      firstName: this._z.string(),
+      lastName: this._z.string(),
+      sex: this._z.enum(['ชาย', 'หญิง']),
+      birthDate: this._z.string(),
+      citizenId: this._z.string(),
+      phoneNumber: this._z.string().length(10),
+      password: this._z.string().min(6),
     })
     try {
       schema.parse(body)
@@ -118,7 +118,7 @@ class UserService {
 
       birthDate = new Date(birthDate)
 
-      const createUser = await Prisma.user.create({
+      const createUser = await this._prisma.user.create({
         data: {
           title,
           firstName,
@@ -140,7 +140,7 @@ class UserService {
         'lastname_personal',
       ]
 
-      const getFieldId = await Prisma.field.findMany({
+      const getFieldId = await this._prisma.field.findMany({
         where: {
           name: {
             in: wantedField,
@@ -155,7 +155,7 @@ class UserService {
       wantedField.map((field) => {
         getFieldId.map(async (item) => {
           if (field === item.name) {
-            await Prisma.userField.create({
+            await this._prisma.userField.create({
               data: {
                 userId: createUser.id,
                 fieldId: item.id,
@@ -180,14 +180,14 @@ class UserService {
 
   checkPhonePassword = async (phoneNumber: any, password: any) => {
 
-    const schema = z.object({
-      phoneNumber: z.string().length(10),
-      password: z.string().min(6),
+    const schema = this._z.object({
+      phoneNumber: this._z.string().length(10),
+      password: this._z.string().min(6),
     })
 
     try {
       schema.parse({ phoneNumber, password })
-      const getUser = await Prisma.user.findUnique({
+      const getUser = await this._prisma.user.findUnique({
         where: {
           phoneNumber: phoneNumber,
         },
@@ -227,11 +227,11 @@ class UserService {
 
   login = async (phoneNumber: string) => {
 
-    const schema = z.string().length(10)
+    const schema = this._z.string().length(10)
 
     try {
       schema.parse(phoneNumber)
-      const getUser = await Prisma.user.findUnique({
+      const getUser = await this._prisma.user.findUnique({
         where: {
           phoneNumber: phoneNumber,
         },
@@ -260,7 +260,7 @@ class UserService {
         expiresIn: '1d',
       })
 
-      const getFamilyMember = await Prisma.user.findMany({
+      const getFamilyMember = await this._prisma.user.findMany({
         where: {
           householdId: getUser.householdId,
           id: {
@@ -300,11 +300,11 @@ class UserService {
 
   getFolders = async (userId: string) => {
 
-    const schema = z.string()
+    const schema = this._z.string()
 
     try {
       schema.parse(userId)
-      const folder = await Prisma.userFolder.findMany({
+      const folder = await this._prisma.userFolder.findMany({
         where: {
           userId: userId,
         },
@@ -330,11 +330,11 @@ class UserService {
 
   getFiles = async (userId: string) => {
 
-    const schema = z.string()
+    const schema = this._z.string()
 
     try {
       schema.parse(userId)
-      const generatedFile = await Prisma.userGeneratedFile.findMany({
+      const generatedFile = await this._prisma.userGeneratedFile.findMany({
         where: {
           userId: userId,
         },
@@ -342,7 +342,7 @@ class UserService {
           generatedFile: true,
         },
       })
-      const uploadedFile = await Prisma.userUploadedFile.findMany({
+      const uploadedFile = await this._prisma.userUploadedFile.findMany({
         where: {
           userId: userId,
         },
@@ -350,7 +350,7 @@ class UserService {
           uploadedFile: true,
         },
       })
-      const freeUploadFile = await Prisma.userFreeUploadFile.findMany({
+      const freeUploadFile = await this._prisma.userFreeUploadFile.findMany({
         where: {
           userId: userId,
         },
@@ -396,11 +396,11 @@ class UserService {
 
   switchMember = async (userId: string) => {
 
-    const schema = z.string().uuid()
+    const schema = this._z.string().uuid()
 
     try {
       schema.parse(userId)
-      const getUser = await Prisma.user.findUnique({
+      const getUser = await this._prisma.user.findUnique({
         where: {
           id: userId,
         },
@@ -426,7 +426,7 @@ class UserService {
         }
       }
 
-      const getFamilyMember = await Prisma.user.findMany({
+      const getFamilyMember = await this._prisma.user.findMany({
         where: {
           householdId: getUser.householdId,
           id: {
@@ -474,16 +474,16 @@ class UserService {
       password,
     } = body
 
-    const schema = z.object({
-      userId: z.string().uuid(),
-      title: z.string(),
-      firstName: z.string(),
-      lastName: z.string(),
-      sex: z.any(),
-      phoneNumber: z.string(),
-      birthDate: z.string(),
-      profileURI: z.string(),
-      password: z.string(),
+    const schema = this._z.object({
+      userId: this._z.string().uuid(),
+      title: this._z.string(),
+      firstName: this._z.string(),
+      lastName: this._z.string(),
+      sex: this._z.any(),
+      phoneNumber: this._z.string(),
+      birthDate: this._z.string(),
+      profileURI: this._z.string(),
+      password: this._z.string(),
     })
     try {
       schema.parse({
@@ -498,7 +498,7 @@ class UserService {
         password,
       })
 
-      const getUser = await Prisma.user.findUnique({
+      const getUser = await this._prisma.user.findUnique({
         where: {
           id: userId,
         },
@@ -527,7 +527,7 @@ class UserService {
         }
       }
 
-      const editProfile = await Prisma.$queryRaw`
+      const editProfile = await this._prisma.$queryRaw`
       UPDATE "User" SET "title" = ${title}, "firstName" = ${firstName}, 
       "lastName" = ${lastName}, sex= ${getSexEnum(
         sex
@@ -552,10 +552,10 @@ class UserService {
 
   changePassword = async (userId: string, oldPassword: string, newPassword: string) => {
 
-    const schema = z.object({
-      userId: z.string().uuid(),
-      oldPassword: z.string(),
-      newPassword: z.string(),
+    const schema = this._z.object({
+      userId: this._z.string().uuid(),
+      oldPassword: this._z.string(),
+      newPassword: this._z.string(),
     })
 
     try {
@@ -565,7 +565,7 @@ class UserService {
         newPassword,
       })
 
-      const getUser = await Prisma.user.findUnique({
+      const getUser = await this._prisma.user.findUnique({
         where: {
           id: userId,
         },
@@ -596,7 +596,7 @@ class UserService {
 
       const hashedPassword = await bcrypt.hash(newPassword, 10)
 
-      const changePassword = await Prisma.$queryRaw`
+      const changePassword = await this._prisma.$queryRaw`
       UPDATE "User" SET "hashedPassword" = ${hashedPassword} WHERE "id" = ${userId}::uuid RETURNING *
       `
       return {

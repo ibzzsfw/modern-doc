@@ -1,6 +1,6 @@
-import Prisma from '@utils/prisma'
+import IFileService from '@services/interfaces/file.service'
 import async from 'async'
-import { z } from 'zod'
+import BaseService from '.'
 
 const fileType = [
   'generatedFile',
@@ -9,12 +9,12 @@ const fileType = [
   'sharedFile',
 ] as const
 
-class FileService {
+class FileService extends BaseService implements IFileService {
 
   private async getFile(id: string, type: string, userId: string) {
     switch (type) {
       case 'generatedFile': {
-        return await Prisma.$queryRaw`
+        return await this._prisma.$queryRaw`
         SELECT *,
         array(
           SELECT DISTINCT (jsonb_build_object(
@@ -63,7 +63,7 @@ class FileService {
         `
       }
       case 'uploadedFile': {
-        return await Prisma.$queryRaw`
+        return await this._prisma.$queryRaw`
           SELECT "UploadedFile".*, "UserUploadedFile"."URI",
           "UploadedFile"."URI" AS "previewURI",
           "UserUploadedFile"."date",
@@ -86,7 +86,7 @@ class FileService {
         `
       }
       case 'userFreeUploadFile': {
-        return await Prisma.$queryRaw`
+        return await this._prisma.$queryRaw`
             SELECT * FROM "UserFreeUploadFile"
             WHERE "id" = ${id}::uuid
           `
@@ -100,7 +100,7 @@ class FileService {
   private async getLatestFile(type: string, userId: string) {
     switch (type) {
       case 'generatedFile':
-        return await Prisma.userGeneratedFile.findMany({
+        return await this._prisma.userGeneratedFile.findMany({
           where: {
             userId,
           },
@@ -122,7 +122,7 @@ class FileService {
         })
 
       case 'uploadedFile':
-        return await Prisma.userUploadedFile.findMany({
+        return await this._prisma.userUploadedFile.findMany({
           where: {
             userId,
           },
@@ -145,13 +145,13 @@ class FileService {
         })
 
       case 'sharedFile':
-        const user = await Prisma.user.findUnique({
+        const user = await this._prisma.user.findUnique({
           where: { id: userId },
           select: { householdId: true },
         })
         const householdId = user.householdId
 
-        return await Prisma.$queryRaw`
+        return await this._prisma.$queryRaw`
           SELECT "UserUploadedFile"."isShared",
           "UserUploadedFile"."date", "UserUploadedFile"."note",  
           "UploadedFile"."name",
@@ -178,7 +178,7 @@ class FileService {
         `
 
       default:
-        return await Prisma.userFreeUploadFile.findMany({
+        return await this._prisma.userFreeUploadFile.findMany({
           where: {
             userId,
           },
@@ -190,10 +190,10 @@ class FileService {
   }
 
   async getFileById(id: string, type: string, userId: string) {
-    const schema = z.object({
-      id: z.string().uuid(),
-      type: z.enum(fileType),
-      userId: z.string().uuid(),
+    const schema = this._z.object({
+      id: this._z.string().uuid(),
+      type: this._z.enum(fileType),
+      userId: this._z.string().uuid(),
     })
     try {
       schema.parse({ id, type, userId })
@@ -214,9 +214,9 @@ class FileService {
   }
 
   async getLatestFiles(type: string, userId: string) {
-    const schema = z.object({
-      type: z.enum(fileType),
-      userId: z.string().uuid(),
+    const schema = this._z.object({
+      type: this._z.enum(fileType),
+      userId: this._z.string().uuid(),
     })
     try {
       schema.parse({ type, userId })
@@ -242,14 +242,14 @@ class FileService {
   }
 
   async searchByName(name: string, userId: string) {
-    const schema = z.object({
-      name: z.string(),
-      userId: z.string().uuid(),
+    const schema = this._z.object({
+      name: this._z.string(),
+      userId: this._z.string().uuid(),
     })
 
     try {
       schema.parse({ name, userId })
-      const file = await Prisma.$queryRaw`
+      const file = await this._prisma.$queryRaw`
         SELECT "GeneratedFile".*, 'generatedFile' as "type",
         "UserGeneratedFile"."date" as "date"
          FROM "GeneratedFile"
@@ -287,13 +287,13 @@ class FileService {
   }
 
   async getAll(userId: string) {
-    const schema = z.object({
-      userId: z.string().uuid(),
+    const schema = this._z.object({
+      userId: this._z.string().uuid(),
     })
 
     try {
       schema.parse({ userId })
-      const file = await Prisma.$queryRaw`
+      const file = await this._prisma.$queryRaw`
       SELECT "GeneratedFile".*, 'generatedFile' as "type",
       "UserGeneratedFile"."date"
       FROM "GeneratedFile"
@@ -329,28 +329,28 @@ class FileService {
   }
 
   async newGeneratedFile(fileId: string, fields: any[], userId: string) {
-    const schema = z.object({
-      fields: z.array(
-        z.object({
-          id: z.string().uuid(),
-          name: z.string(),
-          userValue: z.string(),
+    const schema = this._z.object({
+      fields: this._z.array(
+        this._z.object({
+          id: this._z.string().uuid(),
+          name: this._z.string(),
+          userValue: this._z.string(),
         })
       ),
-      fileId: z.string().uuid(),
-      userId: z.string().uuid(),
+      fileId: this._z.string().uuid(),
+      userId: this._z.string().uuid(),
     })
 
     try {
       schema.parse({ fields, fileId, userId })
-      const updateUserGeneratedFile = await Prisma.$queryRaw`
+      const updateUserGeneratedFile = await this._prisma.$queryRaw`
         INSERT INTO "UserGeneratedFile" ( "id","userId", "generatedFileId", "date")
         VALUES ((SELECT gen_random_uuid()),${userId}::uuid, ${fileId}::uuid, ${new Date()})
         ON CONFLICT ("userId", "generatedFileId") DO UPDATE SET "date" = ${new Date()}
         `
       const promise = await async.map(fields, async (field) => {
         const { name, userValue } = field
-        const updateField = await Prisma.$queryRaw`
+        const updateField = await this._prisma.$queryRaw`
           INSERT INTO "UserField" ("id","userId","fieldId","rawValue","date")
           VALUES (
           (SELECT gen_random_uuid())
@@ -374,15 +374,15 @@ class FileService {
   }
 
   async newUploadedFile(fileId: string, URI: string, note: string, expired: Date | null, userId: string,) {
-    const schema = z.object({
-      fileId: z.string().uuid(),
-      URI: z.string().url(),
-      userId: z.string().uuid(),
-      note: z.string().optional(),
+    const schema = this._z.object({
+      fileId: this._z.string().uuid(),
+      URI: this._z.string().url(),
+      userId: this._z.string().uuid(),
+      note: this._z.string().optional(),
     })
     try {
       schema.parse({ fileId, URI, userId })
-      const result = await Prisma.$queryRaw`
+      const result = await this._prisma.$queryRaw`
         INSERT INTO "UserUploadedFile" ("id","userId","uploadedFileId","URI","isShared"
         ,"note","expirationDate","date")
         VALUES ((SELECT gen_random_uuid()),${userId}::uuid, ${fileId}::uuid, ${URI}, false, ${note}, ${expired}, ${new Date()})
@@ -401,29 +401,29 @@ class FileService {
   }
 
   addNote = async (fileId: string, type: string, note: string, userId: string) => {
-    const schema = z.object({
-      fileId: z.string().uuid(),
-      type: z.enum(fileType),
-      userId: z.string().uuid(),
-      note: z.string(),
+    const schema = this._z.object({
+      fileId: this._z.string().uuid(),
+      type: this._z.enum(fileType),
+      userId: this._z.string().uuid(),
+      note: this._z.string(),
     })
     try {
       schema.parse({ fileId, type, userId, note })
       switch (type) {
         case 'generatedFile': {
-          const result = await Prisma.$queryRaw`
+          const result = await this._prisma.$queryRaw`
             UPDATE "UserGeneratedFile" SET "note" = ${note} 
             WHERE "generatedFileId" = ${fileId}::uuid AND "userId" = ${userId}::uuid`
           break
         }
         case 'uploadedFile': {
-          const result = await Prisma.$queryRaw`
+          const result = await this._prisma.$queryRaw`
             UPDATE "UserUploadedFile" SET "note" = ${note}
             WHERE "uploadedFileId" = ${fileId}::uuid AND "userId" = ${userId}::uuid`
           break
         }
         case 'userFreeUploadFile': {
-          const result = await Prisma.$queryRaw`
+          const result = await this._prisma.$queryRaw`
             UPDATE "UserFreeUploadFile" SET "note" = ${note}
             WHERE "id" = ${fileId}::uuid AND "userId" = ${userId}::uuid`
           break
@@ -443,16 +443,16 @@ class FileService {
 
   shareFile = async (fileId: string, type: string, userId: string) => {
 
-    const schema = z.object({
-      fileId: z.string().uuid(),
-      type: z.enum(fileType),
-      userId: z.string().uuid(),
+    const schema = this._z.object({
+      fileId: this._z.string().uuid(),
+      type: this._z.enum(fileType),
+      userId: this._z.string().uuid(),
     })
     try {
       schema.parse({ fileId, type, userId })
       switch (type) {
         case 'uploadedFile': {
-          const result = await Prisma.$queryRaw`
+          const result = await this._prisma.$queryRaw`
             UPDATE "UserUploadedFile" SET "isShared" = true
             WHERE "uploadedFileId" = ${fileId}::uuid AND "userId" = ${userId}::uuid`
           return {
@@ -461,7 +461,7 @@ class FileService {
           }
         }
         case 'userFreeUploadFile': {
-          const result = await Prisma.$queryRaw`
+          const result = await this._prisma.$queryRaw`
           UPDATE "UserFreeUploadFile" SET "isShared" = true
           WHERE "id" = ${fileId}::uuid AND "userId" = ${userId}::uuid`
           return {
@@ -486,16 +486,16 @@ class FileService {
 
   unShareFile = async (fileId: string, type: string, userId: string) => {
 
-    const schema = z.object({
-      fileId: z.string().uuid(),
-      type: z.enum(fileType),
-      userId: z.string().uuid(),
+    const schema = this._z.object({
+      fileId: this._z.string().uuid(),
+      type: this._z.enum(fileType),
+      userId: this._z.string().uuid(),
     })
     try {
       schema.parse({ fileId, type, userId })
       switch (type) {
         case 'uploadedFile': {
-          const result = await Prisma.$queryRaw`
+          const result = await this._prisma.$queryRaw`
             UPDATE "UserUploadedFile" SET "isShared" = false
             WHERE "uploadedFileId" = ${fileId}::uuid AND "userId" = ${userId}::uuid`
           return {
@@ -505,7 +505,7 @@ class FileService {
           break
         }
         case 'userFreeUploadFile': {
-          const result = await Prisma.$queryRaw`
+          const result = await this._prisma.$queryRaw`
             UPDATE "UserFreeUploadFile" SET "isShared" = false
             WHERE "id" = ${fileId}::uuid AND "userId" = ${userId}::uuid`
           return {
@@ -531,28 +531,28 @@ class FileService {
 
   deleteFile = async (fileId: string, type: string, userId: string) => {
 
-    const schema = z.object({
-      fileId: z.string().uuid(),
-      type: z.enum(fileType),
-      userId: z.string().uuid(),
+    const schema = this._z.object({
+      fileId: this._z.string().uuid(),
+      type: this._z.enum(fileType),
+      userId: this._z.string().uuid(),
     })
     try {
       schema.parse({ fileId, type, userId })
       switch (type) {
         case 'generatedFile': {
-          const result = await Prisma.$queryRaw`
+          const result = await this._prisma.$queryRaw`
             DELETE FROM "UserGeneratedFile"
             WHERE "generatedFileId" = ${fileId}::uuid AND "userId" = ${userId}::uuid`
           break
         }
         case 'uploadedFile': {
-          const result = await Prisma.$queryRaw`
+          const result = await this._prisma.$queryRaw`
             DELETE FROM "UserUploadedFile"
             WHERE "uploadedFileId" = ${fileId}::uuid AND "userId" = ${userId}::uuid`
           break
         }
         case 'userFreeUploadFile': {
-          const result = await Prisma.$queryRaw`
+          const result = await this._prisma.$queryRaw`
             DELETE FROM "UserFreeUploadFile"
             WHERE "id" = ${fileId}::uuid AND "userId" = ${userId}::uuid`
           break
@@ -572,18 +572,18 @@ class FileService {
 
   newUserFreeUploadFile = async (officialName: string, note: string, expirationDate: any, URI: string, userId: string) => {
 
-    const schema = z.object({
-      officialName: z.string(),
-      note: z.string(),
-      userId: z.string().uuid(),
-      URI: z.string(),
+    const schema = this._z.object({
+      officialName: this._z.string(),
+      note: this._z.string(),
+      userId: this._z.string().uuid(),
+      URI: this._z.string(),
     })
     try {
       schema.parse({ officialName, note, userId, URI })
 
       const expired = expirationDate ? new Date(expirationDate) : null
 
-      const result = await Prisma.$queryRaw`
+      const result = await this._prisma.$queryRaw`
         INSERT INTO "UserFreeUploadFile" ("id","userId", "uploadedDate", "expirationDate", "note", "URI",
         "isShared", "officialName","date")
         VALUES (gen_random_uuid(), ${userId}::uuid, now(), ${expired}, ${note}, ${URI}, false, ${officialName}, now())
@@ -603,12 +603,12 @@ class FileService {
 
   getFreeUploadFile = async (fileId: string) => {
 
-    const schema = z.object({
-      fileId: z.string().uuid(),
+    const schema = this._z.object({
+      fileId: this._z.string().uuid(),
     })
     try {
       schema.parse({ fileId })
-      const result = await Prisma.$queryRaw`
+      const result = await this._prisma.$queryRaw`
       SELECT * FROM "UserFreeUploadFile"
       WHERE "id" = ${fileId}::uuid
    `
@@ -626,15 +626,15 @@ class FileService {
 
   getSharedFile = async (fileId: string, type: string) => {
 
-    const schema = z.object({
-      fileId: z.string().uuid(),
-      type: z.enum(fileType),
+    const schema = this._z.object({
+      fileId: this._z.string().uuid(),
+      type: this._z.enum(fileType),
     })
     try {
       schema.parse({ fileId, type })
       switch (type) {
         case 'uploadedFile': {
-          const result = await Prisma.$queryRaw`
+          const result = await this._prisma.$queryRaw`
             SELECT * FROM "UserUploadedFile"
             LEFT JOIN "UploadedFile" ON "UserUploadedFile"."uploadedFileId" = "UploadedFile"."id"
             WHERE "UserUploadedFile"."id" = ${fileId}::uuid
@@ -645,7 +645,7 @@ class FileService {
           }
         }
         case 'userFreeUploadFile': {
-          const result = await Prisma.$queryRaw`
+          const result = await this._prisma.$queryRaw`
             SELECT * FROM "UserFreeUploadFile"
             WHERE "id" = ${fileId}::uuid
          `

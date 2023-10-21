@@ -1,13 +1,13 @@
-import Prisma from '@utils/prisma'
-import { z } from 'zod'
+import BaseService from "."
+import ITagService from "@services/interfaces/tag.service"
 
-class TagService {
+class TagService extends BaseService implements ITagService {
   addTag = async (name: string) => {
 
-    const schema = z.string()
+    const schema = this._z.string()
     try {
       schema.parse(name)
-      const tag = await Prisma.tag.create({
+      const tag = await this._prisma.tag.create({
         data: {
           name,
         },
@@ -26,10 +26,10 @@ class TagService {
 
   addTagMany = async (tags: any) => {
 
-    const schema = z.array(z.string())
+    const schema = this._z.array(this._z.string())
     try {
       schema.parse(tags)
-      const tag = await Prisma.tag.createMany({
+      const tag = await this._prisma.tag.createMany({
         data: tags.map((tag) => {
           return {
             name: tag,
@@ -50,7 +50,7 @@ class TagService {
 
   getAllTag = async () => {
     try {
-      const tags = await Prisma.tag.findMany()
+      const tags = await this._prisma.tag.findMany()
       return {
         status: 200,
         json: tags,
@@ -65,10 +65,10 @@ class TagService {
 
   getTagByName = async (name: any) => {
 
-    const schema = z.string()
+    const schema = this._z.string()
     try {
       schema.parse(name)
-      const tag = await Prisma.tag.findFirst({
+      const tag = await this._prisma.tag.findFirst({
         where: {
           name: {
             contains: name,
@@ -88,10 +88,10 @@ class TagService {
   }
 
   getTagById = async (id: string) => {
-    const schema = z.string().uuid()
+    const schema = this._z.string().uuid()
     try {
       schema.parse(id)
-      const tag = await Prisma.tag.findFirst({
+      const tag = await this._prisma.tag.findFirst({
         where: {
           id: id,
         },
@@ -110,13 +110,13 @@ class TagService {
 
   editTagName = async (id: string, name: string) => {
 
-    const schema = z.object({
-      id: z.string().uuid(),
-      name: z.string(),
+    const schema = this._z.object({
+      id: this._z.string().uuid(),
+      name: this._z.string(),
     })
     try {
       schema.parse({ id, name })
-      const editTag = await Prisma.tag.update({
+      const editTag = await this._prisma.tag.update({
         where: {
           id,
         },

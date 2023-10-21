@@ -1,15 +1,15 @@
-import { z } from 'zod'
-import Prisma from '@utils/prisma'
+import IFieldService from '@services/interfaces/field.service'
+import BaseService from '.'
 
-class FieldService {
+class FieldService extends BaseService implements IFieldService {
 
   async createField(name: string, officialName: string, description: string, type: any) {
 
-    const schema = z.object({
-      name: z.string(),
-      officialName: z.string(),
-      description: z.string(),
-      type: z.enum([
+    const schema = this._z.object({
+      name: this._z.string(),
+      officialName: this._z.string(),
+      description: this._z.string(),
+      type: this._z.enum([
         'text',
         'number',
         'date',
@@ -20,7 +20,7 @@ class FieldService {
 
     try {
       schema.parse({ name, officialName, description, type })
-      const field = await Prisma.field.create({
+      const field = await this._prisma.field.create({
         data: {
           name,
           officialName,
@@ -42,7 +42,7 @@ class FieldService {
 
   async getAllField() {
     try {
-      const fields = await Prisma.field.findMany()
+      const fields = await this._prisma.field.findMany()
       return {
         status: 200,
         json: fields
@@ -56,12 +56,12 @@ class FieldService {
   }
 
   async createFieldMany(fields: any) {
-    const schema = z.array(
-      z.object({
-        name: z.string(),
-        officialName: z.string(),
-        description: z.string(),
-        type: z.enum([
+    const schema = this._z.array(
+      this._z.object({
+        name: this._z.string(),
+        officialName: this._z.string(),
+        description: this._z.string(),
+        type: this._z.enum([
           'text',
           'number',
           'date',
@@ -72,7 +72,7 @@ class FieldService {
     )
     try {
       schema.parse(fields)
-      const field = await Prisma.field.createMany({
+      const field = await this._prisma.field.createMany({
         data: fields.map((field) => {
           return {
             name: field.name,
@@ -95,13 +95,13 @@ class FieldService {
   }
 
   async editFieldOfficialName(id: string, officialName: string) {
-    const schema = z.object({
-      id: z.string().uuid(),
-      officialName: z.string(),
+    const schema = this._z.object({
+      id: this._z.string().uuid(),
+      officialName: this._z.string(),
     })
     try {
       schema.parse({ id, officialName })
-      const editField = await Prisma.field.update({
+      const editField = await this._prisma.field.update({
         where: {
           id,
         },
@@ -123,10 +123,10 @@ class FieldService {
 
   async addChoice(fieldId: string, name: string, officialName: string) {
 
-    const schema = z.object({
-      fieldId: z.string().uuid(),
-      name: z.string(),
-      officialName: z.string(),
+    const schema = this._z.object({
+      fieldId: this._z.string().uuid(),
+      name: this._z.string(),
+      officialName: this._z.string(),
     })
     try {
       schema.parse({
@@ -134,7 +134,7 @@ class FieldService {
         name,
         officialName,
       })
-      const checkType = await Prisma.field.findUnique({
+      const checkType = await this._prisma.field.findUnique({
         where: {
           id: fieldId,
         },
@@ -148,7 +148,7 @@ class FieldService {
           json: { message: 'This field is not a select field' }
         }
       }
-      const addChoice = await Prisma.fieldChoice.create({
+      const addChoice = await this._prisma.fieldChoice.create({
         data: {
           fieldId: fieldId,
           name: name,
@@ -169,10 +169,10 @@ class FieldService {
 
   async deleteChoice(choiceId: string) {
 
-    const schema = z.string().uuid()
+    const schema = this._z.string().uuid()
     try {
       schema.parse(choiceId)
-      const deleteChoice = await Prisma.fieldChoice.delete({
+      const deleteChoice = await this._prisma.fieldChoice.delete({
         where: {
           id: choiceId,
         },

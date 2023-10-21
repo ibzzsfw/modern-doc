@@ -1,22 +1,21 @@
 import { Request, Response } from 'express'
-import FieldService from "@services/field.service"
+import IFieldService from '@services/interfaces/field.service'
 
 class FieldController {
 
-  private service = new FieldService()
-
+  private _service: IFieldService
 
   async createField(req: Request, res: Response) {
 
     const { name, officialName, description, type } = req.body
 
-    const response = await this.service.createField(name, officialName, description, type)
+    const response = await this._service.createField(name, officialName, description, type)
     res.status(response.status).json(response.json)
   }
 
   async getAllField(req: Request, res: Response) {
 
-    const response = await this.service.getAllField()
+    const response = await this._service.getAllField()
     res.status(response.status).json(response.json)
   }
 
@@ -24,7 +23,7 @@ class FieldController {
 
     const { fields } = req.body
 
-    const response = await this.service.createFieldMany(fields)
+    const response = await this._service.createFieldMany(fields)
     res.status(response.status).json(response.json)
   }
 
@@ -32,7 +31,7 @@ class FieldController {
 
     let { id, officialName } = req.body
 
-    const response = await this.service.editFieldOfficialName(id, officialName)
+    const response = await this._service.editFieldOfficialName(id, officialName)
     res.status(response.status).json(response.json)
   }
 
@@ -40,7 +39,7 @@ class FieldController {
 
     let { fieldId, name, officialName } = req.body
 
-    const response = await this.service.addChoice(fieldId, name, officialName)
+    const response = await this._service.addChoice(fieldId, name, officialName)
     res.status(response.status).json(response.json)
   }
 
@@ -48,7 +47,7 @@ class FieldController {
 
     let { choiceId } = req.params
 
-    const response = await this.service.deleteChoice(choiceId)
+    const response = await this._service.deleteChoice(choiceId)
     res.status(response.status).json(response.json)
   }
 

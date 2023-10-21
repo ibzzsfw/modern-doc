@@ -1,16 +1,16 @@
 import { Request, Response } from 'express'
-import FileService from '@services/file.service'
+import IFileService from '@services/interfaces/file.service'
 
 class FileController {
 
-  private service = new FileService()
+  private _service: IFileService
 
   async getFileById(req: Request, res: Response) {
 
     const { id, type } = req.params
     const userId = req.headers['user-id'] as string
 
-    const response = await this.service.getFileById(id, type, userId)
+    const response = await this._service.getFileById(id, type, userId)
     res.status(response.status).json(response.json)
   }
 
@@ -19,7 +19,7 @@ class FileController {
     const { type } = req.params
     const userId = req.headers['user-id'] as string
 
-    const response = await this.service.getLatestFiles(type, userId)
+    const response = await this._service.getLatestFiles(type, userId)
     res.status(response.status).json(response.json)
   }
 
@@ -28,7 +28,7 @@ class FileController {
     const { name } = req.params
     const userId = req.headers['user-id'] as string
 
-    const response = await this.service.searchByName(name, userId)
+    const response = await this._service.searchByName(name, userId)
     res.status(response.status).json(response.json)
   }
 
@@ -36,7 +36,7 @@ class FileController {
 
     const userId = req.headers['user-id'] as string
 
-    const response = await this.service.getAll(userId)
+    const response = await this._service.getAll(userId)
     res.status(response.status).json(response.json)
   }
 
@@ -52,7 +52,7 @@ class FileController {
     }
     const userId = req.headers['user-id'] as string
 
-    const response = await this.service.newGeneratedFile(fileId, fields, userId)
+    const response = await this._service.newGeneratedFile(fileId, fields, userId)
     res.status(response.status).json(response.json)
   }
 
@@ -63,7 +63,7 @@ class FileController {
     const expired: Date | null = expiredDate ? new Date(expiredDate) : null
     const userId = req.headers['user-id'] as string
 
-    const response = await this.service.newUploadedFile(fileId, URI, note, expired, userId)
+    const response = await this._service.newUploadedFile(fileId, URI, note, expired, userId)
     res.status(response.status).json(response.json)
   }
 
@@ -73,7 +73,7 @@ class FileController {
     const { note } = req.body
     const userId = req.headers['user-id'] as string
 
-    const response = await this.service.addNote(fileId, type, note, userId)
+    const response = await this._service.addNote(fileId, type, note, userId)
     res.status(response.status).json(response.json)
   }
 
@@ -82,7 +82,7 @@ class FileController {
     const { fileId, type } = req.params
     const userId = req.headers['user-id'] as string
 
-    const response = await this.service.shareFile(fileId, type, userId)
+    const response = await this._service.shareFile(fileId, type, userId)
     res.status(response.status).json(response.json)
   }
 
@@ -91,7 +91,7 @@ class FileController {
     const { fileId, type } = req.params
     const userId = req.headers['user-id'] as string
 
-    const response = await this.service.unShareFile(fileId, type, userId)
+    const response = await this._service.unShareFile(fileId, type, userId)
     res.status(response.status).json(response.json)
   }
 
@@ -100,7 +100,7 @@ class FileController {
     const { fileId, type } = req.params
     const userId = req.headers['user-id'] as string
 
-    const response = await this.service.deleteFile(fileId, type, userId)
+    const response = await this._service.deleteFile(fileId, type, userId)
     res.status(response.status).json(response.json)
   }
 
@@ -109,7 +109,7 @@ class FileController {
     const { officialName, note, expirationDate, URI } = req.body
     const userId = req.headers['user-id'] as string
 
-    const response = await this.service.newUserFreeUploadFile(officialName, note, expirationDate, URI, userId)
+    const response = await this._service.newUserFreeUploadFile(officialName, note, expirationDate, URI, userId)
     res.status(response.status).json(response.json)
   }
 
@@ -117,7 +117,7 @@ class FileController {
 
     const { fileId } = req.params
 
-    const response = await this.service.getFreeUploadFile(fileId)
+    const response = await this._service.getFreeUploadFile(fileId)
     res.status(response.status).json(response.json)
   }
 
@@ -125,7 +125,7 @@ class FileController {
 
     const { fileId, type } = req.params
 
-    const response = await this.service.getSharedFile(fileId, type)
+    const response = await this._service.getSharedFile(fileId, type)
     res.status(response.status).json(response.json)
   }
 

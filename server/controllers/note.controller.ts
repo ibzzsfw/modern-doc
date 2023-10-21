@@ -1,16 +1,16 @@
+import INoteService from '@services/interfaces/note.service';
 import { Request, Response } from 'express';
-import NoteService from '@services/note.service';
 
 class NoteController {
 
-  private service = new NoteService();
+  private _service: INoteService
 
   addFreeNote = async (req: Request, res: Response) => {
 
     const { heading, content } = req.body
     const userId = req.headers['user-id'] as string
 
-    const response = await this.service.addFreeNote(heading, content, userId)
+    const response = await this._service.addFreeNote(heading, content, userId)
     res.status(response.status).json(response.json)
   }
 
@@ -20,7 +20,7 @@ class NoteController {
     const { heading, content } = req.body
     const userId = req.headers['user-id'] as string
 
-    const response = await this.service.editNote(noteId, heading, content, userId)
+    const response = await this._service.editNote(noteId, heading, content, userId)
     res.status(response.status).json(response.json)
   }
 
@@ -29,7 +29,7 @@ class NoteController {
     const { noteId } = req.params
     const userId = req.headers['user-id'] as string
 
-    const response = await this.service.deleteNote(noteId, userId)
+    const response = await this._service.deleteNote(noteId, userId)
     res.status(response.status).json(response.json)
   }
 
@@ -37,7 +37,7 @@ class NoteController {
 
     const userId = req.headers['user-id'] as string
 
-    const response = await this.service.getAllNote(userId)
+    const response = await this._service.getAllNote(userId)
     res.status(response.status).json(response.json)
   }
 

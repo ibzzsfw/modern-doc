@@ -1,15 +1,15 @@
-import { z } from 'zod'
-import Prisma from '@utils/prisma'
+import BaseService from '.'
+import INoteService from '@services/interfaces/note.service'
 
-class NoteService {
+class NoteService extends BaseService implements INoteService {
   addFreeNote = async (heading: string, content: string, userId: string) => {
-    const schema = z.object({
-      heading: z.string(),
-      content: z.string().optional(),
+    const schema = this._z.object({
+      heading: this._z.string(),
+      content: this._z.string().optional(),
     })
     try {
       schema.parse({ heading, content })
-      const addNote = await Prisma.$queryRaw`
+      const addNote = await this._prisma.$queryRaw`
         INSERT INTO "Note" ("id","userId","createdDate","modifiedDate","heading","content")
         VALUES (gen_random_uuid(),${userId}::uuid,NOW(),NOW(),${heading},${content})
       `
@@ -27,14 +27,14 @@ class NoteService {
 
   editNote = async (noteId: string, heading: string, content: string, userId: string) => {
 
-    const schema = z.object({
-      noteId: z.string().uuid(),
-      heading: z.string(),
-      content: z.string().optional(),
+    const schema = this._z.object({
+      noteId: this._z.string().uuid(),
+      heading: this._z.string(),
+      content: this._z.string().optional(),
     })
     try {
       schema.parse({ noteId, heading, content })
-      const editNote = await Prisma.$queryRaw`
+      const editNote = await this._prisma.$queryRaw`
         UPDATE "Note"
         SET "modifiedDate" = NOW(), "heading" = ${heading}, "content" = ${content}
         WHERE "id" = ${noteId}::uuid AND "userId" = ${userId}::uuid
@@ -54,12 +54,12 @@ class NoteService {
 
   deleteNote = async (noteId: string, userId: string) => {
 
-    const schema = z.object({
-      noteId: z.string().uuid(),
+    const schema = this._z.object({
+      noteId: this._z.string().uuid(),
     })
     try {
       schema.parse({ noteId })
-      const deleteNote = await Prisma.$queryRaw`
+      const deleteNote = await this._prisma.$queryRaw`
         DELETE FROM "Note"
         WHERE id = ${noteId}::uuid AND "userId" = ${userId}::uuid
         RETURNING *
@@ -79,7 +79,7 @@ class NoteService {
   getAllNote = async (userId: string) => {
 
     try {
-      const getAllNote = await Prisma.$queryRaw`
+      const getAllNote = await this._prisma.$queryRaw`
         SELECT *
         FROM "Note"
         WHERE "userId" = ${userId}::uuid

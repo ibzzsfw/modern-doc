@@ -1,15 +1,15 @@
+import IUserService from '@services/interfaces/user.service';
 import { Request, Response } from 'express';
-import UserService from '@services/user.service';
 
 class UserController {
 
-  private service = new UserService();
+  private _service: IUserService
 
   checkCitizenIdStatus = async (req: Request, res: Response) => {
 
     const citizenId = req.params.citizenId
 
-    const response = await this.service.checkCitizenIdStatus(citizenId)
+    const response = await this._service.checkCitizenIdStatus(citizenId)
     res.status(response.status).json(response.json)
   }
 
@@ -17,7 +17,7 @@ class UserController {
 
     const body = req.body
 
-    const response = await this.service.addUser(body)
+    const response = await this._service.addUser(body)
     res.status(response.status).json(response.json)
   }
 
@@ -25,7 +25,7 @@ class UserController {
 
     const { phoneNumber, password } = req.body
 
-    const response = await this.service.checkPhonePassword(phoneNumber, password)
+    const response = await this._service.checkPhonePassword(phoneNumber, password)
     res.status(response.status).json(response.json)
   }
 
@@ -33,7 +33,7 @@ class UserController {
 
     const { phoneNumber } = req.body
 
-    const response = await this.service.login(phoneNumber)
+    const response = await this._service.login(phoneNumber)
     res.status(response.status).json(response.json)
   }
 
@@ -41,7 +41,7 @@ class UserController {
 
     let { userId } = req.params
 
-    const response = await this.service.getFolders(userId)
+    const response = await this._service.getFolders(userId)
     res.status(response.status).json(response.json)
   }
 
@@ -49,7 +49,7 @@ class UserController {
 
     let { userId } = req.params
 
-    const response = await this.service.getFiles(userId)
+    const response = await this._service.getFiles(userId)
     res.status(response.status).json(response.json)
   }
 
@@ -57,7 +57,7 @@ class UserController {
 
     const { userId } = req.body
 
-    const response = await this.service.switchMember(userId)
+    const response = await this._service.switchMember(userId)
     res.status(response.status).json(response.json)
   }
 
@@ -66,7 +66,7 @@ class UserController {
     const body = req.body
     const userId = req.headers['user-id'] as string
 
-    const response = await this.service.editProfile(userId, body)
+    const response = await this._service.editProfile(userId, body)
     res.status(response.status).json(response.json)
   }
 
@@ -75,7 +75,7 @@ class UserController {
     let { oldPassword, newPassword } = req.body
     const userId = req.headers['user-id'] as string
 
-    const response = await this.service.changePassword(userId, oldPassword, newPassword)
+    const response = await this._service.changePassword(userId, oldPassword, newPassword)
     res.status(response.status).json(response.json)
   }
 
@@ -83,7 +83,7 @@ class UserController {
 
     const phone = req.params.phone
 
-    const response = await this.service.checkPhoneStatus(phone)
+    const response = await this._service.checkPhoneStatus(phone)
     res.status(response.status).json(response.json)
   }
 
