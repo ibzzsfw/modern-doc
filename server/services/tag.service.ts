@@ -2,6 +2,11 @@ import BaseService from "."
 import ITagService from "@services/interfaces/tag.service"
 
 class TagService extends BaseService implements ITagService {
+
+  constructor() {
+    super()
+  }
+
   addTag = async (name: string) => {
 
     const schema = this._z.string()

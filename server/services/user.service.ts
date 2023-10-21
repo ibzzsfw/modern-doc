@@ -8,6 +8,11 @@ import jwt from 'jsonwebtoken'
 import BaseService from '.'
 
 class UserService extends BaseService implements IUserService {
+
+  constructor() {
+    super()
+  }
+
   private getFieldValue = (field: string, data: any): string => {
     switch (field) {
       case 'firstname_personal':

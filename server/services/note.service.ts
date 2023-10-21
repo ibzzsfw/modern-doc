@@ -2,6 +2,11 @@ import BaseService from '.'
 import INoteService from '@services/interfaces/note.service'
 
 class NoteService extends BaseService implements INoteService {
+
+  constructor() {
+    super()
+  }
+
   addFreeNote = async (heading: string, content: string, userId: string) => {
     const schema = this._z.object({
       heading: this._z.string(),

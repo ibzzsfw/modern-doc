@@ -2,6 +2,11 @@ import IMemberService from '@services/interfaces/member.service'
 import getRelationshipEnum from '@utils/getRelationshipEnum'
 import BaseService from '.'
 class MemberService extends BaseService implements IMemberService {
+
+  constructor() {
+    super()
+  }
+
   static getUserHouseholdId(userId: string) {
     throw new Error('Method not implemented.')
   }

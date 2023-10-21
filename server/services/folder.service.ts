@@ -3,6 +3,11 @@ import BaseService from '.'
 import IFolderService from '@services/interfaces/folder.service'
 
 class FolderService extends BaseService implements IFolderService {
+
+  constructor() {
+    super()
+  }
+
   async getFolderById(id: string, userId: string) {
 
     const schema = this._z.object({

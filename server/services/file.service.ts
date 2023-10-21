@@ -11,6 +11,10 @@ const fileType = [
 
 class FileService extends BaseService implements IFileService {
 
+  constructor() {
+    super()
+  }
+
   private async getFile(id: string, type: string, userId: string) {
     switch (type) {
       case 'generatedFile': {

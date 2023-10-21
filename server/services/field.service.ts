@@ -3,6 +3,10 @@ import BaseService from '.'
 
 class FieldService extends BaseService implements IFieldService {
 
+  constructor() {
+    super()
+  }
+
   async createField(name: string, officialName: string, description: string, type: any) {
 
     const schema = this._z.object({
