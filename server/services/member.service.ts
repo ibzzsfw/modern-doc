@@ -1,4 +1,4 @@
-import IMemberService from '@services/interfaces/member.service'
+import IMemberService from '@contracts/services/member.service'
 import getRelationshipEnum from '@utils/getRelationshipEnum'
 import BaseService from '.'
 class MemberService extends BaseService implements IMemberService {

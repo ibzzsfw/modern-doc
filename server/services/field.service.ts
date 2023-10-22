@@ -1,10 +1,13 @@
-import IFieldService from '@services/interfaces/field.service'
+import IFieldService from '@contracts/services/field.service'
 import BaseService from '.'
 
 class FieldService extends BaseService implements IFieldService {
 
   constructor() {
     super()
+  }
+  testConsoleLog(): void {
+    console.log("Log from Service impl")
   }
 
   async createField(name: string, officialName: string, description: string, type: any) {

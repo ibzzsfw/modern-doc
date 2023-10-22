@@ -1,4 +1,4 @@
-import IFileService from '@services/interfaces/file.service'
+import IFileService from '@contracts/services/file.service'
 import async from 'async'
 import BaseService from '.'
 

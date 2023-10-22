@@ -1,9 +1,20 @@
+import IFieldController from '@contracts/controllers/field.controller'
+import IFieldService from '@contracts/services/field.service'
 import { Request, Response } from 'express'
-import IFieldService from '@services/interfaces/field.service'
+import BaseController from '.'
 
-class FieldController {
+class FieldController extends BaseController implements IFieldController {
 
   private _service: IFieldService
+
+  constructor(service: IFieldService) {
+    super()
+    this._service = service
+  }
+
+  testConsoleLog(): void {
+    this._service.testConsoleLog()
+  }
 
   async createField(req: Request, res: Response) {
 

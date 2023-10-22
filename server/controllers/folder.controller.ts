@@ -1,7 +1,8 @@
-import IFolderService from '@services/interfaces/folder.service';
+import IFolderService from '@contracts/services/folder.service';
 import { Request, Response } from 'express';
+import BaseController from '.';
 
-class FolderController {
+class FolderController extends BaseController {
 
   private _service: IFolderService
 

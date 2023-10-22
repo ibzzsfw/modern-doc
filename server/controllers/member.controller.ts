@@ -1,7 +1,8 @@
-import IMemberService from '@services/interfaces/member.service';
+import IMemberService from '@contracts/services/member.service';
 import { Request, Response } from 'express';
+import BaseController from '.';
 
-class MemberController {
+class MemberController extends BaseController {
 
   private _service: IMemberService
 

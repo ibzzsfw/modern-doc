@@ -1,4 +1,4 @@
-interface IController { }
+export interface IController { }
 
 class BaseController implements IController {
     constructor() {
@@ -8,4 +8,4 @@ class BaseController implements IController {
     }
 }
 
-export default IController
+export default BaseController

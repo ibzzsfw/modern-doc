@@ -1,6 +1,6 @@
 import async from 'async'
 import BaseService from '.'
-import IFolderService from '@services/interfaces/folder.service'
+import IFolderService from '@contracts/services/folder.service'
 
 class FolderService extends BaseService implements IFolderService {
 

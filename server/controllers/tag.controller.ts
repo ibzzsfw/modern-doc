@@ -1,7 +1,8 @@
-import ITagService from '@services/interfaces/tag.service';
+import ITagService from '@contracts/services/tag.service';
 import { Request, Response } from 'express';
+import BaseController from '.';
 
-class TagController {
+class TagController extends BaseController {
 
   private _service: ITagService
 

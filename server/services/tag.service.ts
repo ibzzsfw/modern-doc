@@ -1,5 +1,5 @@
 import BaseService from "."
-import ITagService from "@services/interfaces/tag.service"
+import ITagService from "@contracts/services/tag.service"
 
 class TagService extends BaseService implements ITagService {
 

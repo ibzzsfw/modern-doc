@@ -1,5 +1,5 @@
 import BaseService from '.'
-import INoteService from '@services/interfaces/note.service'
+import INoteService from '@contracts/services/note.service'
 
 class NoteService extends BaseService implements INoteService {
 

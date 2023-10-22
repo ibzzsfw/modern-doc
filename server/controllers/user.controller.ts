@@ -1,7 +1,8 @@
-import IUserService from '@services/interfaces/user.service';
+import IUserService from '@contracts/services/user.service';
 import { Request, Response } from 'express';
+import BaseController from '.';
 
-class UserController {
+class UserController extends BaseController {
 
   private _service: IUserService
 

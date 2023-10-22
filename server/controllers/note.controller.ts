@@ -1,7 +1,8 @@
-import INoteService from '@services/interfaces/note.service';
+import INoteService from '@contracts/services/note.service';
 import { Request, Response } from 'express';
+import BaseController from '.';
 
-class NoteController {
+class NoteController extends BaseController {
 
   private _service: INoteService
 

@@ -31,6 +31,9 @@
       "@middlewares/*": [
         "./middlewares/*"
       ],
+      "@contracts/*": [
+        "./contracts/*"
+      ],
     },
     "moduleResolution": "Node",
   }

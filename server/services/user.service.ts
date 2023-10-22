@@ -1,4 +1,4 @@
-import IUserService from '@services/interfaces/user.service'
+import IUserService from '@contracts/services/user.service'
 import checkCitizenId from '@utils/checkCitizenId'
 import getSexEnum from '@utils/getSexEnum'
 import getSexText from '@utils/getSexText'

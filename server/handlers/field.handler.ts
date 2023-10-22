@@ -1,9 +1,17 @@
+import IFieldController from '@contracts/controllers/field.controller'
 import { Request, Response } from 'express'
-import FieldController from '@controllers/field.controller'
 
 class FieldHandler {
 
-  private controller = new FieldController()
+  private controller: IFieldController
+
+  constructor(controller: IFieldController) {
+    this.controller = controller
+  }
+
+  testConsoleLog = (req: Request, res: Response) => {
+    this.controller.testConsoleLog()
+  }
 
   createField = async (req: Request, res: Response) => {
     this.controller.createField(req, res)

@@ -5,6 +5,7 @@ interface IFieldService {
     editFieldOfficialName(id: string, officialName: string): Promise<any>
     addChoice(fieldId: string, name: string, officialName: string): Promise<any>
     deleteChoice(choiceId: string): Promise<any>
+    testConsoleLog(): void
 }
 
 export default IFieldService

@@ -1,7 +1,8 @@
+import IFileService from '@contracts/services/file.service'
 import { Request, Response } from 'express'
-import IFileService from '@services/interfaces/file.service'
+import BaseController from '.'
 
-class FileController {
+class FileController extends BaseController {
 
   private _service: IFileService
 
